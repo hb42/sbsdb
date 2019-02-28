@@ -1,0 +1,21 @@
+# node
+/node_modules
+
+# IDE
+/.idea
+
+# build
+/dist
+/src/**/*.js
+/src/**/*.map
+
+# logs, internal files
+*.zip
+*.tgz
+*.log
+/div
+
+# os
+.DS_STORE
+
+/src/resource/config*

@@ -1,0 +1,1437 @@
+﻿
+
+#######################################################################################
+## v5.x:  Relaunch als JavaScript-Anwendung mit REST-API-BAckend
+#######################################################################################
+
+
+4.7.8  27.07.17 (Build 4925)
+           - Bugfix fuer Programmstart via nodejs: "&" in der Kommandozeile wird 
+             escaped zu "%26". Vor Ausfuehren replace.
+             
+4.7.7  25.07.17 (Build 4923)
+           - Logging fuer Test auf nodejs
+
+4.7.6  04.07.17 (Build 4922)
+           - NW.js kann Fenstergroesse und -position jetzt ohne Hilfe speichern. Damit
+             kann das Script wieder raus (war sowieso nicht sauber).
+
+4.7.5  02.03.16 (Build 4921)
+           - Bugfix im Excel-Export aus "Alle *"-Listen
+
+4.7.4  29.10.15 (Build 4920)
+           - bug#137 Liste fuer Netzwerkuebersicht mit Switch-Port, Datendose und MAC
+             (koennte schneller sein, muss aber erstmal reichen).
+             
+4.7.3  28.10.15 (Build 4904)
+           - Excel-Export gefixt
+           
+4.7.2  08.10.15 (Build 4898)
+           - Regression aus dem Chromium-Bugfix (v4.7.0) behoben.
+           - Timeout fuer Ajax-Loading-Overlay auf 3 Sekunden gesenkt.
+           
+4.7.1  14.09.15 (Build 4894)
+           - Script eingebaut, das in NW.js Fenstergroesse und -position speichert.
+           
+4.7.0  13.09.15 (Build 4887)
+           - Umzug in neue Entwicklungsumgebung (JBoss Tools, Maven...). Erstmal ohne 
+             Software-Management da sowieso keine Weiterentwicklung fuer v4 geplant
+             und mit v5 ein Neustart ansteht.  
+           - Ajax-Loading-Overlay wird nach spaetestens 4 Sek. abgeschaltet.
+           - Anpassungen fuer NW.js:
+             Kleinere Darstellungsprobleme mit Chromium behoben.
+             Wenn node.js gefunden wird, werden externe Programme lokal gestartet,
+             sonst per Applet, wie bisher (beseitigt Abhaengigkeit von JRE). 
+               
+4.6.11 31.03.14 (Build 4878)
+           - bug#136 webstart .jar mit gueltigem Zertifikat signieren.  (svn r509)  
+             
+4.6.10 15.02.14 (Build 4877)
+           - bug#135 Telefon auch als Peripherie auswaehlbar.  (svn r507)
+             
+4.6.9  26.10.13 (Build 4876)
+           - bug#134 Fehler auf der AP-Edit-Seite bei der Eingabe neuer Adressen und beim
+             Bearbeiten vorhandener behoben.
+             (svn r505)  
+
+4.6.8  04.08.13 (Build 4866)
+           - bug#126 ENTER-Handling im Suchen-Feld verbessert.  (svn r503) 
+
+4.6.7  24.07.13 (Build 4860)
+           - bug#125 AP-Klasse-Filter zeigt nur vorhandene Klassen an. Darstellung des 
+             Dropdown gefixt.  (svn r501)
+
+4.6.6  20.07.13 (Build 4856)
+           - bug#123 BST mit fuehrenden Nullen wurde in der OE-Admin-Seite octal interpretiert.
+             (svn r473)
+           - bug#118 Auf der Admin-Seite wurde nach Umsortierung, der falsche Datensatz fuers
+             Bearbeiten ausgewaehlt.  (svn r474)
+           - bug#122 Webservice-Schnittstelle fuer "low level"-Zugriff (suche/setzte AP, 
+             suche/setze HW, suche Segment, suche OE, setze sonst. Adresse).
+             (svn r494, r497)
+           - bug#124 AP-Suchliste nach Standort sortieren. (svn r495)
+           - bug#125 AP-Klasse-Filter fuer AP-Liste (das ist ein Test, mal sehen, wie
+             praxistauglich das ist).  (svn r495)    
+
+4.6.5  12.02.13 (Build 4798)
+           - bug#117 Feldlaenge fuer AP-Name erweitert.  (svn r471) 
+           
+4.6.4  17.11.12 (Build 4796)
+           - bug#112 Fehler bei Excel-Ausgabe aus Listen behoben. (svn r467)
+           - bug#116 Switch kann auch als Peripherie eingetragen werden (wg. Stacking). 
+             (svn r468)
+           - bug#112 Fehler bei HwList ist hoffentlich behoben. Das ist noch zu beobachten.
+             (svn r469)
+
+4.6.3  04.10.12 (Build 4789)
+           - bug#112 Noch ein Bug in der Listendarstellung. (svn r445)
+
+4.6.2  01.10.12 (Build 4787)
+           - bug#112 Bugfix bei der Listen-Darstellung. (svn r441)
+           
+4.6.1  30.09.12 (Build 4785)
+           - bug#112 Filter und Sortierung fuer (fast) alle Listen. (svn r432)
+           - bug#113 Excel-Export an veraendertes Listen-Handling angepasst. (svn r432)
+           - bug#114 Datentypen der Sonstigen Daten in den Listen als eigene Spalte
+             anzeigen. (svn r432)
+           - bug#111 Anzeige der IP fuer Vertraege korrigiert. (svn r434)
+           - bug#111 Bugfix beim Handling der Sonstige-Daten-Eingabe. (svn r435)
+
+4.6.0  20.09.12 (Build 4664)
+           - bug#112 Filter und Sort fuer Listen. Im ersten Schritt bekommen die Listen
+             im Admin-Bereich Sortierung und Filter. (svn r430)
+           - bug#111 Datentyp fuer Sonstige Daten statt Bitmask als enum. Admin-Seite
+             fuer die Pflege der Adress-Typen. (svn r429)
+
+4.5.5  12.09.12 (Build 4630)
+           - bug#111 Bugfix fuer hardcoded Index-Wert. (svn r427)
+
+4.5.4  12.09.12 (Build 4629)
+           - bug#111 Bugfix beim Eintragen neuer Adressen. (svn r425)
+           
+4.5.3  11.09.12 (Build 4624)
+           - bug#111 Handy-Vertraege in der SBSDB pflegen. Erstmal ein paar Dinge
+             flexibler gestalten, das ist auf jeden Fall von Vorteil.
+             Das Handling der flags vereinheitlicht. Bitmasks als Konstante, in den 
+             Entities transiente isXxxx-Funktionen. (svn r418)
+             Beim AP Bezeichnung von Adressen in Sonstige Daten geaendert. (svn r419)
+             Bezeichnungen Host-/Rechnername geändert auf Name, AP-Klasse auf Klasse.
+             Ein paar weitere hardcodierte Strings eliminiert. Erster Schritt in
+             Richtung AP ohne IP. (svn r420)
+             Mechanik fuer neuen AP "Handy-Vertrag". (svn r421)
+             Datentyp fuer Adressen an Aptyp gekoppelt ("Sonstige Daten"). (svn r422)
+             Datentypen fuer Sonstige Daten (date, int, real, regex), wird bei Eingabe
+             mit entsprechendem Converter geprueft. (svn r423) 
+
+4.5.2  16.06.12 (Build 4581)
+           - bug#105 Handling der IP-Adressen fuer nicht-/24-Segmente korrigiert.
+             (svn r409)
+
+4.5.1  04.06.12 (Build 4568)
+           - bug#104 Fehler in EditAp beim Handling doppelter Adressen. (svn r407)
+
+4.5.0  30.05.12 (Build 4566)
+           - bug#58 Admin-Seite um Bearbeitung der IP-Segmente erweitert. (svn r402)
+           - bug#102 Neuer AP-Typ Telefon. (svn r400) 
+           - bug#40 HW-Historie: Aenderungsdatum als Timestamp speichern, damit eindeutige
+             Sortierung moeglich ist. (svn r399)
+           - bug#80 Erster Anlauf hardcoded values in einer Klasse zu sammeln. (svn r400, r401)
+            
+4.4.9  15.08.11 (Build 4541)
+           - bug#91 Auf-/Zuklapp-Button fuer HW-Liste. (svn r383)
+           - bug#92 HW-Listen um Feld Bemerkung ergaenzen. (svn r382)
+           
+4.4.8.1  14.08.11 (Build 4538)
+           - bug#11, bug#79 Der Aerger mit den ajax requests ist endlich erledigt.
+             Da parallele requests immer wieder zu undefinierten Situationen fuehren
+             koennen, werden sie jetzt seriell abgearbeitet (a4j:queue). Der Timeout
+             von 100 Millisekunden ist im Sparkassennetz ggf. noch anzupassen. (svn r378) 
+           - bug#89 SW-Version und -Anzahl sind keine Pflichtfelder mehr. Fuer leere
+             wird "#" bzw. 0 eingetragen. (svn r378)
+           - bug#11 Neuer AP: Nach Bearbeiten zurueck zum neuen AP gefixt. (svn r350)
+           - bug#79 Kleine Designaenderung an apPage. (svn r350) 
+
+4.4.8  28.07.11 (Build 4526)
+           - bug#11 Endlich funktioniert auch die Neuanlage von Arbeitsplaetzen. 
+             (svn r348)
+           - bug#76 Zu lange Bezeichnung fuer AP wird nicht abgefangen (im Rahmen
+             neue ApEdit-Seite). (svn r348)
+           - bug#48 Verschobene Fehlermeldung auf EditAp hat sich durch Redesign der
+             EditAp-Seite erledigt. (svn r348)
+           - bug#79 Layout aller Seiten ueberarbeitet, da liegt jetzt eine sauberere
+             css-Struktur dahinter. Mittels jquery.layout sind Splitter dazugekommen.
+             Die EditAp-Seite bekommt eine Generalueberholung. Als Folge ist auch noch
+             ein Redesign der Webstart-Routine noetig geworden. Ausserdem div.
+             Kleinigkeiten bei nicht zurueckkehrenden ajax request behoben. (svn r348) 
+           
+4.4.7  10.07.11 (Build 4434)
+           - bug#77 Fehlendes Exception-Handling bei .createQuery().getSingleResult()
+             ergaenzt. (svn r345)
+           - bug78 Importfunktion fuer IP-Adressen der SB-Geraete aus einem KV-Report.
+             (svn r346)
+            
+4.4.6.5  23.06.11 (Build 4421)
+           - bug#75 SB-Stoerungsliste: Basisklasse war nicht serializable. (svn r343) 
+           - bug#74 TCP/IP-Import: im Cron-Job DAO's zu verwenden macht Probleme, also
+             wird die Abloesung der native sql ohne Umwege in der fn erledigt. (svn r343)
+              
+4.4.6.4  21.06.11 (Build 4416)
+           Und noch ein Bugfix-Release 
+           - bug#75 Problem bei Sb-Stoerungs-Liste: zusaetzlicher Check eingebaut,
+             mal sehen ob's hilft. 
+           - bug#74 native SQL eliminieren: TCP/IP-Import, HW- und SW-Aussonderung sind
+             geaendert, auch hier ist zu testen wie gut es sich in der Praxis macht.
+           
+4.4.6.3  20.06.11 (Build 4413)
+           - Problem beim HW-Loeschen: foreign key fuer SbsHwshift hat in SbsHw gefehlt,
+             was dann beim delete wg. fehlendem cascade Aerger macht (evtl. Prob. durch
+             Umzug auf MySQL).
+
+4.4.6.2  19.06.11 (Build 4411)
+           - Entfernen der quartz.jar war etwas voreilig. Mit jboss-quartz gibt es 
+             classloading-Probleme, also wieder mit einpacken.
+
+4.4.6.1  14.06.11 (Build 4410)
+           - bug#73 Anmeldeproblem: AD-Zugriff abgeklemmt, Oracle-DS auf XA geaendert.
+           - Drei .jar entfernt, die jBoss schon mitbringt.
+           
+4.4.6  24.04.11 (Build 4407)
+           - bug#58 Admin-Seite mit Bearbeitungsmoeglichkeit fuer OEs, GS-Adressen und 
+             User eingebaut (nur fuer SBS). Weitere Tabellen folgen.  (svn r338)
+           - bug#53 sbsdb.client an JBoss5 angepasst. Externer Import funktioniert
+             wieder.  (svn r336)
+           - bug#69 Weitere Schritte zur DB-Unabhängigkeit. Zur Zeit bedeutet das, dass
+             Oracle und MySQL unterstuetzt werden, so ganz neutral geht's noch nicht.
+             (svn r335, r336, r337)
+           - generic edit abgeklemmt. Ist nicht aktuell und ein Update wuerde nur Zeit
+             kosten, die besser in der sowieso faelligen Adminseite investiert ist.
+
+4.4.5.1 08.03.11 (Build 4319)
+           - Bugfix auf SW-Seite: zwei Filter liefern falsche Daten, Bearbeiten laeuft
+             auf Fehler, wenn noch kein OPDV-Datensatz vorhanden. (svn r332)
+           
+4.4.5  07.03.11 (Build 4313)
+           - bug#71 Auf der SW-Seite gewaehlten Tab merken. (svn r328)
+           - bug#64 Weitere Filter fuer die Software-Seite. (svn r327)
+           - Bugfix
+           
+4.4.4  06.03.11 (Build 4307)
+           - bug#64 Software-Seite um Such-/Filter-Optionen erweitert. (svn r325)
+           - edithw: Anschaffungs-Datum-Feld um rich:calendar erweitert. (svn r324)
+           - Bugfixes
+           
+4.4.3  02.03.11 (Build 4277)
+           - bug#64 Bearbeiten aus der Software-Seite in eigene Seite verschoben. Applet 
+             fuer's Oeffnen eines Pfads. Div. Kleinigkeiten.  (svn r321)  
+           
+4.4.2  27.02.11 (Build 4262)
+           - bug#64 Software-Seite um Bearbeitung der OPDV- und Verfahrensverzeichnis-
+             Daten erweitert (more to come). (svn r319) 
+           
+4.4.1  24.02.11 (Build 4233)
+           - bug#70 Ausgabe in Excel war, vermutlich seit Umstellung auf JBoss5, nicht
+             in Ordnung (es wurden nur 16KB an Daten uebertragen). Umstellung auf die
+             Excel-Erzeugung via SEAM funktioniert besser. (svn r315) 
+           
+4.4.0  20.02.11 (Build 4211)
+           - bug#64 Software-Seite grundueberholt. SW-Tabelle um eine ziemliche Menge
+             Felder ergaenzt, damit hier auch Informationen ueber OPDV, Verfahrens-
+             verzeichnis etc. abgelegt werden koennen. Dank SEAM sieht die Eingabe-Seite
+             jetzt besser aus. Aenderungen im restlichen Programm, soweit die Verzahnung 
+             mit SW betroffen ist. Die Funktionalitaet der alten SW-Seite ist schonmal 
+             vollstaendig vorhanden (+ ein paar weiterer Felder). Jetzt fehlen noch die 
+             Daten fuer OPDV und Verfahrensverzeichnis. (svn r311, r312)
+           - bug#69 Erste Vorbereitungen, um die Oracle-Besonderheiten zu entfernen.
+             In einer der naechsten Versionen sollte das dann auf allen gaengigen RDBMs
+             laufen koennen. (svn r311, r312)
+           
+4.3.14 08.02.11 (Build 4137)
+           - bug#62 Fuer Server auch PC-Hardware anbieten und umgekehrt (hardwareseitig 
+             ist die Trennung nicht mehr von Bedeutung, fuer die Arbeitsplaetze ist's
+             weiterhin uebersichtlicher). (svn r309)
+           - Kleine Aenderung in der ApPage-Optik.  (svn r309)
+             
+4.3.13 06.02.11 (Build 4134)
+           - bug#67 Vor-/Zurueck-Button in HW-Bearbeiten (mit Beruecksichtigung von "Neu").
+             Das sollte erstmal unter Beobachtung bleiben, da koennten noch Seiteneffekte
+             auftreten. (svn r306)
+           - bug#37 Backlink auf Tree in HW-Page. (svn r307)
+           - bug#68 Button fuer Tree aktualisieren in allen Baeumen hinzugefuegt. Das
+             war insbesondere bei der Hardware ein Problem. (svn r306)  
+           
+4.3.12 31.01.11 (Build 4099)
+           - bug#66 Update auf SEAM 2.2.1-final. (svn r301)
+           - bug#63 Probleme mit Abfragen-Menue bereinigt. (svn r302) 
+           - bug#65 Alle Drucker-Abfrage um Drucker-Share ergaenzt. (svn r303)
+           
+4.3.11 24.10.10 (Build 4091)
+           - Uebersichtslisten fuer die verschiedenen AP-Typen. (svn r296)  
+           - bug#40 HW-Historie an den entsprechenden Stellen angehaengt. Anzeige beim
+             AP und bei der Hardware, sowie als Gesamtliste. (svn r295)
+           
+4.3.10 30.09.10 (Build 4040)
+           - bug#57 Update fuer sbsdb_gen (v2.0) mit der neuen Seam-Version. (svn r290)
+           - bug#52 0-Byte-Files beim TCP/IP-Import werden beruecksichtigt. (svn r282)  
+           - bug#51 Bug in Inventar-Liste behoben. (svn r281)  
+           - bug#55 Suchstring mit Blank funktioniert nicht und bug#56 Blanks in Serien-Nr.
+             machen Probleme behoben. (svn r280)  
+           - bug#54 In HW-Bearbeiten entfernt Enter den AP: Problem mit automatischem
+             Submit im FF, behoben durch Verwendung eines link. Ausserdem bekommen alle
+             Formulare, bei denen das Aerger macht einen submit-button, der einen 
+             minimalen Postback macht. (svn r279) 
+           - bug#47 Library-Update: JBoss 5.1.0, Seam 2.2.1-CR2, Richfaces 3.3.3 
+             Veraenderungen die sich durch den Update ergeben eingearbeitet. 
+             Diverse Aenderungen an der Optik (Seiten-Header, Menue-, Titel-Leisten)
+             damit das aufgeraeumter aussieht und nicht so viel Platz mit Header etc.
+             verschwendet wird. (svn r276, svn r277, svn r278)
+           - bug#49 Webstart-Problem mit Java >= 6.0 ist behoben (Syntax in der .jnlp).
+             (svn r275)
+           - Weiter geht's, jetzt mit trac statt Bugzilla und OSX als Basis fuer die
+             Entwicklungsumgebung. Erst mal Update der Libraries erledigen, sowie die 
+             "einfachen" Bugs beseitigen.
+             
+4.3.9  21.08.08
+           - bug#43 Auswertung fuer SB-Stoerungen. (svn#259)
+
+4.3.8  17.08.08
+           - bug#43 SB-Stoerung: daylight savings time-Problem ist behoben. (svn#254)
+           - bug#45 Namen der Printershares aus dem AD holen und importieren. Import
+             ueber Webservice (sbsdb-client.jar v 1.2.0).  (svn#255)
+           
+4.3.7  14.08.08
+           - bug#43 SB-Stoerungen koennen erfasst werden. Bearbeiten und Auswertung fehlt
+             noch. Zum Test mit zwei Icons. Bei Uhrzeit wird als CET gespeichert, das 
+             ist noch zu regeln. (svn#253)
+           
+4.3.6  12.08.08
+           - bug#43 History fuer SB-Probleme, erstmal nur Mockup.
+           - bug#44 Remote-Aufruf war fuer einige Programme nicht moeglich. Ursache ist
+             die Aenderung im WebStart-Aufruf: die Kommandozeile wird in einer URL
+             uebergeben, dadurch wird '&' falsch interpretiert. Wird kuenftig mit %26
+             escaped. (svn#249)
+
+4.3.5  10.08.08
+           - bug#34 Vor-, Zurueck-Buttons in editAp zum Blaettern ueber die aktuelle
+             AP-Liste. (svn#244, svn#245)
+           - Tooltips fuer die History-Buttons mit Namen der vorherigen/naechsten Liste.
+             (svn#243) 
+           - bug#39 Richfaces 3.2.x stoert das Webstart-Handling und es scheint auch 
+             keinen Weg zu geben, das wieder zum Laufen zu bekommen (irgendein Filter
+             zerstoert den MIME-Type der .jnlp-Datei). Damit es kuenftig keine Stoerungen
+             mehr gibt, wird Webstart jetzt ueber eine eigene Webanwendung aufgerufen.
+             (svn#239 - svn#242)  
+           
+4.3.4  22.06.08  [web start broken]
+           - bug#38 Neue Abfrage "Uebersicht der IP-Segmente". (svn#233)
+           - bug#17 Update Richfaces 3.2.1: neuer Skin "laguna" und eine Modifikation 
+             "lagunaDark" als erster Test fuer eigenen Skin. Div. Anpassungen wg. 
+             Aenderungen in Richfaces (die leider reichlich schlecht dokumentiert sind).
+             (svn#231)
+           
+4.3.3  28.05.08
+           - bug#35 CSV-Import ueber Webservice fuer primaere Hardware, Peripherie und
+             Adressen. (svn#229) Commandline-tool fuer den Import angepasst 
+             (sbsdb-client.jar 1.1.0). (svn#228)
+           - Update seam 2.0.2.SP1 (svn#227)
+           - bug#36 Abfrage fuer SB-Geraete incl. WSID. (svn#226)
+           
+4.3.2  25.05.08 
+           - bug#32 Eingabefeld fuer neue Serien-Nr. in edithw vergroessert. (svn#220) 
+           - bug#33 Fehler bei der Positionierung der Adress-Tabelle im AP-Bearbeiten-
+             Fenster behoben. (svn#218)
+           - bug#31 Update auf Seam 2.0.2 (svn#215)
+           - bug#29 Nachdem der Zugriff aus dem Webservice heraus auf die Preferences
+             endlich funktioniert, wird jetzt auch die BST fuer zz_sonstige, in der 
+             Preferences-Tabelle gespeichert. (svn#213)
+           - bug#30 In der Ausgabe des Webservice "\n" durch "\r\n" ersetzt, dann kann
+             auch Windows damit umgehen. (svn#211)
+           
+4.3.1  04.05.08
+           - Neue externe Programme fuer PC/Notebooks: "Programm ausfuehren" startet
+             remote eine Batchdatei via psexec und "Prozess Liste" zeigt die remote
+             laufenden Programme mittels pslist an.
+           - bug#28 Import der Hardware-Daten (MAC, NetbbotGUID, SerienNr) ueber den
+             Webservice. Zusaetzliche Option mit der die Aenderungen nur protokolliert
+             werden. Bevor hier Daten geaendert werden muss erstmal die Sache mit den
+             vertauschten Deckeln geregelt sein. sbsdb-client.jar -H fuer den Testlauf 
+             ohne Veraenderung der Daten und sbsdb-client.jar -h fuer den Import. 
+             (svn#207)
+           - bug#27 Import der SMS-Pakete, ueber einen Webservice geregelt, zzgl. der
+             Client-Anwendung, die den Import von der AD-Seite aus steuert. 
+             (svn#204, svn#205, svn#206)
+           - bug#26 Sortierung der Software in den AP-Details gerichtet. (svn#203) 
+           - Kleinigkeiten an der about-Box geaendert. (svn#195, svn#196)
+           - bug#24 Aenderung in jboss/server/default/conf/jboss-log4j.xml: Meldungen
+             aus dem Programm werden zusaetzlich in eigenes log-file geschrieben.
+           - bug#13 Sowohl System- wie auch User-Properties werden kuenftig in einer
+             Tabelle abgelegt (sbs_prefs). Div. Klassen angepasst, damit moeglichst viele
+             Parameter ueber die DB konfigurierbar sind. 
+             (svn#191, svn#193, svn#194, svn#197) 
+           
+4.3.0  11.04.08
+           - sbs_sw um Feld fuer SMS-Paketnamen ergaenzt.
+           - In sbsdb_gen die Statistik-Typ-Aenderung aufgenommen (v1.0.2). (svn#187)
+           - bug#10 Statistik-Typ in sbs_ap aufgenommen. Tabellen-Definitionen, Seiten,
+             Abfragen angepasst. Statistik-Typ wird damit nicht mehr in den Adressen
+             gefuehrt, sondern beim Arbeitsplatz. (svn#183)
+           
+4.2.2  09.04.08
+          - bug#16 Import der Thin Client-IPS als cron-job (bug#8) eingebaut, zusaetzlich
+            manueller Aufruf in apPage (der Import selbst wird asynchron ausgefuehrt).
+            (svn#178)  
+          - bug#18 DNS-Cache-Problem: Eine JVM hat ein eigenes DNS-Caching, per default
+            werden die Adressen vorgehalten bis die JVM beendet wird. Abhilfe entweder
+            durch einen Eintrag in einem properies-file der aktuellen JRE (unpraktisch)
+            oder durch Kommandozeilen-Paramter. Der zweite Ansatz ist besser, also wird
+            JBoss kuenftig mit zusaetzlichen Parametern gestartet, damit sollten 
+            geaenderte IP-Adressen endlich ohne Verzoegerung auch in der SBSDB ankommen.
+          - bug#7 User-Berechtigungen als Gruppen im AD (Fallback ueber sbs_user-table
+            bleibt erst mal). (svn#176)
+          - bug#21 UserID kann (nach erfolgreicher Anmeldung) lokal in einem Cookie
+            gespeichert werden, wenn "..angemeldet bleiben.." angehakt ist. Alle 
+            folgenden Anmeldungen passieren dann automatisch.
+            Zuruecksetzen durch "Abmelden", Haken entfernen und anmelden, dann wird der
+            Cookie geloescht. (svn#174) 
+          - bug#8 Zeitsteuerung fuer cron-jobs. Dafuer neue Tabelle sbs_cron, die die
+            Timerdefinition und die Namen der Jobs enthaelt. Die Jobs muessen in SLSBs
+            verpackt werden. (svn#171)
+          - bug#9 session-timeout handling geaendert: alle Seiten  pollen im 15 Sek.-Takt, 
+            dadurch kein timeout, solange Browser laeuft und zuverlaessiger Abwurf auf
+            Login nach Standby. (svn#170)
+          - bug#1 Adresstyp bei den AP-Details sortieren. (svn#168)
+          - In sbsdb_gen die Aenderungen an sbs_aussond nachgezogen (v1.0.1). Beim
+            Bearbeiten von sbs_aussond gibt es noch Probleme, aber das muss warten zum
+            demnaechst faelligen seam_gen-rebuild. (svn#166) 
+          - bug#6 Ausgesonderte Software wird in sbs_aussond gespeichert, sofern 
+            Inventar-Nr. vorhanden. Dafuer muss in sbs_aussond der foreign key zu 
+            sbs_konfig geloescht werden. Das Design von sbs_aussond entspricht dann nicht
+            mehr der reinen Lehre, weil konfig_index Indizes aus zwei Tabellen enthalten
+            kann (sbs_konfig und sbs_sw). Die Tabelle wird allerdings nur fuer die 
+            Buchfuehrung der Aussonderungen gebraucht. (svn#164)
+          - Bugzilla als neues Spielzeug fuer die TODO-Liste.
+
+4.2.1  26.03.08
+          - Neuer Test mit eventsQueue= (scheint zu klappen). (svn#162) [das war's auch
+            nicht, damit kommt das kleine Problem auf die TODO-Liste "irgendwann" bug#5]
+          - ignoreDupResponses="true" fuer die Speichern- und Abbrechen-Buttons in den
+            edit-pages, mal sehen ob das das 2x-Klick-Problem behebt (laesst sich nicht
+            nachstellen, also live-Test). (svn#160) [is nich]
+          - Bugfix: im SW-Tree gab es beim Select Probleme wenn mehrere Spaces im
+            Hersteller-Namen sind. (svn#159)
+
+4.2.0  24.03.08    white easter-release
+          - Abfrage Inventar-Liste. (svn#155)
+          - Bemerkungsfelder in PRE-Tags, damit mehrzeiliger Text sauber angezeigt wird,
+            zuzueglich class fuer Formatierung mit Standardschrift (statt Courier).
+            Wird eingefuegt ueber outputText mit escape='false' und
+            value="#{sessionBean.getMultiline(<Text-Variable>)}". (svn#152)
+          - Neue Abfragen PCs und Drucker je OE. (svn#151)
+          - Die EQL-Query bekommt eine History. Diese wird vorerst in der Session
+            gespeichert, evtl. spaeter in der DB ablegen. (svn#149)
+          - Excel-Export fuer Liste der Lizenzen und fuer die AP-Liste. (svn#148)
+          - Software bearbeiten, Lizenzen bearbeiten ist vollstaendig. (svn#144)
+          - Software-Seite incl. Integration in History und Verlinkung zum und vom AP.
+            Die Bearbeiten-Buttons sind auch schon an Ort und Stelle. (svn#134)
+          - HWPage: mit reRender werden nur noch Elemente innerhalb der Panels, die auf
+            eine feste Hoehe gesetzt sind, angesprochen. Dadurch muss nicht jedesmal die
+            Hoehe neu gesetzt werden (die Seite "wackelt" weniger).
+
+4.1.7  19.03.08
+          - Auf-/Zuklappen fuer AP-Table. (svn#129)
+          - Bugfix Liste Summe AP je OE: Letzte Zeile und Summe wurde verschluckt. 
+            (svn#128)
+
+4.1.6  18.03.08
+          - Liste Summe AP je OE. (svn#121)
+
+4.1.5  17.03.08
+          - EQL-Query besser abgesichert. Exceptions werden gefangen und anstatt der
+            Tabelle angezeigt. (svn#118)
+          - Bugfix: hwStateBean ist noch nicht da, wenn ueber Klick auf die Hardware die
+            HW-Seite das erste Mal aufgerufen wird. Check auf null (analog fuer
+            apStateBean). (svn#117)
+
+4.1.4  16.03.08
+          - Geruest fuer die Abfragen ausgebaut und um freie EQL-Eingabe ergaenzt.
+          - Der Knoten im Baum wird nach dem Klick auf unselect gesetzt, dadurch kann
+            nach dem Suchen der zuletzt gewaehlte Knoten wieder ausgewaehlt werden
+            (Nachteil: der zuletzt angeklickte Knoten ist nicht mehr erkennbar). (svn#112)
+          - History-Navigation: history speichert nur isLeaf-Knoten, dadurch geht der
+            Back-Button von einem !isLeaf aus ein Schritt zuweit zurueck, was nicht
+            allzu intuitiv ist. Dieses Verhalten ist jetzt korrigiert. (svn#112)
+
+4.1.3  13.03.08
+          - Knoten im Baum finden funktioniert endlich. BST in der AP-Ansicht auf den
+            Baum zurueckverlinkt. Abhaenig von der Baumsortierung wird jetzt auch
+            entweder Standort- oder OE-BST angezeigt. (svn#109)
+
+4.1.2  09.03.08
+          - Icons fuer expand/collapse tree eingebaut. (svn#106)
+          - Fix fuer die fehlende .png-Transparenz im IE eingebaut. Funktioniert aber
+            nicht fuer alle .png, z.T. verschwinden auch Icons beim zweiten Seitenaufruf.
+            Also via style nur fuer die .pngS setzen, bei denen es besonders stoert, das
+            bremst den Seitenaufbau auch nicht so sehr (hoffentlich kommt bald IE7...).
+            (svn#105)
+          - Facelets-Konfig geaendert: Kommentare werden nicht mehr automatisch ignoriert
+            wodurch die vorhandenen in ui:remove-Tags gesetzt werden muessen, damit sich
+            Facelets nicht daran verschluckt (dafuer sind dann im IE bedingte JS-Bloecke
+            moeglich). (svn#105)
+          - Designaenderung: andere (groessere) Icons fuer die Pfeile. (svn#105)
+          - ENTER fuer das Suchen-Feld wird jetzt mit einem Stueck Javascript abgefangen,
+            dadurch ist die Reihenfolge der Buttons nicht mehr so wichtig (die History-
+            Buttons koennen damit weiter nach links). Ausserdem funktioniert das damit
+            endlich auch im IE. (svn#105)
+
+4.1.1.1  05.03.08
+          - Bugfix: Peripherie entfernen hat nicht funktioniert (der Fehler duerfte schon
+            laenger im Programm gewesen sein). Iterieren ueber eine Collection, aus der
+            in der Schleife ein Objekt entfernt wird, ist reichlich daemlich :-(
+
+4.1.1  04.03.08
+          - EditHW: Button fuer HW von AP entfernen eingefuegt. (svn#102)
+          - Hardware und AP gegenseitig verlinkt.
+          - ApHistory umbenannt auf History, verwaltet jetzt TreeNode-Objekte. Dadurch
+            koennen auch Hardware-Tree-Objekte gemanagt werden. Damit die Navigation
+            umgebaut, so dass alle Hardware- und AP-Auswahlen in der Liste sind.
+
+4.1.0  02.03.08
+          - Hardware-Bearbeiten: HW-Typ (SbsKonfig) neu/aendern, HW (SbsHw) neu/aendern/
+            aussondern (einschliesslich der zugehoerigen Seiten, Converter etc.). (svn#94)
+          - Focus-Probleme in den Bearbeiten-Seiten bereinigt (braucht "redirect" in der
+            faces.xml).
+          - Excel-Liste der APs um OE ergaenzt.
+          - Mittels Checkstyle-Plugin wird der Code nach und nach aufgeraeumt.
+
+4.0.5  26.02.08
+          - Hardware-Seite ist zum groessten Teil fertig. Jetzt muessen die Funktionen
+            fuers Editieren mit Leben gefuellt werden, und die passenden Seiten gebaut
+            werden.  (svn#93)
+
+4.0.4  25.02.08
+          - Design der Hardware-Seite ausgebaut: die Aktionen bekommen erst mal Icons
+            als Platzhalter, Suchen-Funktion fuer die Serien-Nr.  (svn#92)
+
+4.0.3  17.02.08
+          - Start fuer die Hardware-Seite, erstmal nur Anzeige sowie Excel-Export. 
+            (svn#88)
+          - AP-Table: ausgeblendete Zeile endlich vollstaendig weg. (svn#87)
+          - Design-Verbesserung: die AP-Tabelle wird, analog zum Tree, in ein Panel
+            eingebettet, das den Style "overflow:scroll" bekommt. Dadurch wird nur das
+            Panel, nicht aber die Seite gescrollt. Die HW-Seite wird ebenso aufgebaut
+            sein. (svn#87)
+
+4.0.2  16.02.08
+          - Ungereimtheit bei APTable-Titel bereinigt. (svn#84)
+          - History fuer die AP-Auswahl aus dem Baum, bzw. Suchen. (svn#80)
+
+4.0.1  10.02.08
+          - seam-gen-EAR fuer's Lowlevel Editieren eingefuegt, Aufruf erstmal nur fuer
+            SBS (das Aendern ist nochmal mit Password versehen, besser is das...) (svn#76).
+          - Sequence-Typ fuer die Tabellen auf AUTO statt SEQUENCE gesetzt (funktioniert
+            zumindest in seam-gen besser). Bei Oracle wird dann die eingestellte Sequence
+            genommen, fuer andere RDBMS wuerde die jeweils passende Strategie verwendet.
+            (svn#62)
+
+4.0.0  03.02.08
+          - Es scheint leidlich fehlerfrei zu sein, also wird das die erste "offizielle"
+            Version. AP-neu ist im Moment nicht so dringlich, das kann noch warten. Fuer
+            4.1 steht erst mal die Hardware an. (svn#59)
+          - Zusaetzlichen Button in die Hauptseite eingebaut, fuer die Suche nach der
+            Serien-Nr. Ausgegebenen werden die APs, bei denen Hardware mit der gesuchten
+            Serien-Nr. (Wildcardsuche) zugeordnet ist. (svn#58)
+          - Bugfix: seit Richfaces 3.1.3 duerfen rich:menuItem nicht mehr ausserhalb von
+            MenuGroup verwendet werden. MenuItems in den Toolbars in a4j:commandLink
+            geaendert und passende Styles gestrickt. (svn#57)
+          - Bugfix: EditAp: Peripherie Aendern, Darstellung bei Abbrechen (svn#56)
+          - Bugfix: aktuelle Suche nach Excel ausgeben (svn#54)
+          - Bugfix: Suche nach &szlig; klappt jetzt (svn#54)
+          - Richfaces 3.1.4, Seam 2.0.1 (svn#54,svn#r55)
+
+4.0.0 beta-8  06.01.08
+          - Neuer Parameter fuer Extprog: $p setzt Printershare ein (Adrtyp #11). (svn#48)
+            mit der passenden Kommandozeile klappt dann auch der Aufruf der Printerqueue.
+            (svn#46)
+          - Neue Liste "VD, Standort, AP-Typ": zeigt die OEs in der Hierarchie.  (svn#45)
+          - rich:messages-tags wieder entfernt und durch rich:message fuer einzelne Felder
+            ersetzt (logon-page + ap-main). In den neuen Richfaces-Versionen werden einige
+            Meldungen erzeugt, die hier nur Verwirrung stiften.
+          - Tabellen fuer ausgesonderte HW und HW-Veraenderungen sind wieder integriert.
+            Ebenso stored proc fuer Aussondern. Die Trigger fuer die HW-Bewegungen fehlen
+            noch. (svn#42)
+          - OE-Table ueberarbeitet: einstufige Hierarchie (z.B. VD/GST), Kennzeichen
+            ob der OE APs zugeordnet werden koennen, BST darf auch 0 sein. Damit wird
+            es einfacher Pseudo-OEs mitzufuehren und trotzdem brauchbare Statistiken
+            zu erzeugen.  (svn#42)
+          - sbs_extprog. flag || 1 == kein ping vor Progstart (fuer ping)  (svn#42)
+          - Richfaces 3.1.3 taugt nichts, es bleibt bei 3.1.2
+
+4.0.0 beta-7  04.12.07
+          - Bugfix tree-node-select aus beta6 wieder zurueckgenommen (svn#41):
+            Treeselect macht noch Probleme: nodeSelectListener wird immer getriggert,
+            wenn sich current geaendert hat, d.h. jeder Klick in apTable wird bei search
+            die table auf die urspruengliche zuruecksetzen. Also fkt. node auf null setzen
+            bei search nicht, damit sind wir wieder beim Anfang: select auf gleichen node
+            nach search waehlt nichts aus. -> evtl. via onclick im tree
+
+4.0.0 beta-6  02.12.07
+          - EditAp: leere priHw wurde nicht erkannt. (svn#35)
+          - Ping vor Remoteaufruf wieder eingebaut, das spart ueberfluessige (und
+            langwierige) Programmstarts.  (svn#30)
+            [Namensaufloesung vom Linux-Server aus funktioniert nicht fuer alle, daher
+             gilt b.a.w. host not found als erfolgreicher ping]
+          - Remote-Programme werden ueber den onchange-event des dropdown gestartet.
+            Dadurch kann der Aufruf-Button (und ein Mausklick) entfallen.
+          - Bugfix: select auf gleichen Tree-Node nach Suchen wird ignoriert (aus Sicht
+            des Tree hat sich nichts geaendert). Suchen setzt tree.selected auf null,
+            dadurch ist der naechste Klick wieder ein neuer select. (svn#29)
+          - Bugfix: Extprog mit leerer Programmauswahl wirft NPE (mit ein paar netten
+            Seiteneffekten)
+          - Update auf Seam 2.0.0-GA (svn#27)
+          - Anzahl der APs in der AP-Tabelle anzeigen (ausserdem wird Table-Header
+            endlich sauber ausgeblendet). (svn#20-22)
+
+4.0.0 beta-5  27.10.07
+          - Der Programmcode wird ab sofort via SVN verwaltet (svn#11).
+          - Loeschen-Button ins AP-Detail-Panel eingebaut.
+          - Stateful EJBs wirft der Server nach Timeout raus, das gibt dann Aerger wenn
+            die Sitzung laenger inaktiv ist, da hinter den Seiten z.T. SFSBs stehen
+            -> EJB-Timeout und Session-Timeout raufsetzen und synchronisieren: 12h bean
+            + 11,5h session.
+          - Neue, nicht ganz so bunte, Icons (von KDE "Slick" geklaut).
+          - editap: Darstellung fuer Eingabe neuer Zeilen ueberarbeitet (Praxistest steht
+            noch aus).
+          - Endlich CSS-Notation fuer den Font gefunden, die beide Browser einheitlich
+            interpretieren ("font-familiy:Helvetica, Arial, sans-serif;" Verdana mag der
+            IE anscheinend nicht).
+          - Ausgabe der aktuellen AP-Liste in Excel.
+          - Klassen um "implements Serializable" ergaenzt, sonst kommt JBoss ins
+            Schleudern, wenn er eine laenger inaktive Session reaktivieren will.
+          - Ausgabe der Queries nach Excel als Servlet realisiert.
+          - Richfaces 3.12.
+          - JBoss Seam (2.0.0.CR3) als neue Basis eingezogen, das sollte den weiteren
+            Ausbau deutlich vereinfachen (hoffentlich). Das Login ist damit schon mal
+            besser geworden (kein Startup-Filter mehr). Der Rest ist erstmal nur soweit
+            noetig, an das Framework angepasst.
+
+4.0.0 beta-4  14.10.07
+          - Geruest fuer Abfragen steht. Die Querys sind kuenftig als Java-Klassen
+            realisiert, dadurch mehr Flexibilitaet bei der Gestaltung. Zur Zeit nur eine
+            Test-Query aber das wird wohl nicht lange so bleiben.
+          - Kleinigkeiten im Design verbessert.
+          - Neuer Listentyp Segment, APtyp.
+          - editap: Hardware-Sort auf Serien-Nr. erweitert.
+          - Javascript-Automatismen laufen jetzt mittels <body onload= >.
+          - Der startup-Filter scheint auch endlich vernuenftig zu funktionieren.
+          - Das globale Menue "Links" wird jetzt aus der Datenbank generiert (sbs_extprog
+            fuer AP-Typ 0).
+          - Erweiterung um Facelets-Lib, damit einhergehend Umbau der Seiten auf XHTML.
+            Design auf Facelets-Templating umgestellt, das sollte sich beim weiteren
+            Ausbau auszahlen.
+
+4.0.0 beta-3  05.10.07
+          - Beschraenkung der user role #8 auf VNC-Aufruf.
+          - Update auf Richfaces 3.1.1
+
+4.0.0 beta-2  04.10.07
+          - IP-Adresse-Aendern klappt jetzt auch, damit fehlen fuer die Grundfunktionen
+            nur noch SW-Details und AP-Neu.
+
+4.0.0 beta-1  03.10.07
+          - Der Daten-Import laeuft jetzt weitgehend automatisch. Ping vor RemoteRun ist
+            erstmal deaktiviert, da die Namensaufloesung vom Server aus nicht sauber ist.
+          - Update auf Richfaces 3.1.1-Snapshot, bringt leider keine Besserung beim
+            IE-Aerger. Besser mit Firefox arbeiten.
+
+4.0.0 alpha-35 02.10.07
+          - AP-Bearbeiten ist vollstaendig (vermutlich noch nicht bugfrei). Der
+            Datenbestand muss noch sauber uebertragen werden, dann kann das Ding
+            in die Beta-Phase gehen.
+
+4.0.0 alpha-34 01.10.07
+          - AP-Bearbeiten ist ein Stueck weiter, Buttons durch Images ersetzt.
+          - Bugfix in Web Start-.jar: Java Web Start muss explizit mit System.exit(0);
+            beendet werden, sonst bleiben javaw-Prozesse haengen.
+
+4.0.0 alpha-33 30.09.07
+          - AP-Details funktionieren, auch die Formatierung ist weitgehend i.O.
+            AP-Bearbeiten ca. zur Haelfte fertig, das wird einige Arbeit geben. Ext.
+            Programm starten ins Hauptmenue eingebaut.
+
+4.0.0 alpha-32 25.09.07
+          - ModalPanel fuer Hardwaredetails.
+
+4.0.0 alpha-31 24.09.07
+          - IE-Inkompatiblitaeten ausgebuegelt, diverse Kleinigkeiten.
+
+4.0.0 alpha-30 23.09.07
+          - ADF-Faces durch Richfaces ersetzt (besser zu handhaben, ausserdem ist die
+            AJAX-Implementierung besser, damit muessen allerdings die JSPs vollstaendig
+            neu gebaut werden). AP-Details, AP-Bearbeiten und AP-Neu fehlen
+            noch.
+
+4.0.0 alpha-29 16.09.07
+          - Refactoring fuer EJB3 und die Aenderungen im Datenmodell ist weitgehend
+            abgeschlossen. Sobald JBoss in einer Version verfuegbar ist, die auch @EJB
+            innerhalb von Web-Anwendungen unterstuetzt, sind noch ein paar Kleinigkeiten
+            zu aendern. Ansonsten wieder der Stand der alpha-27.
+
+4.0.0 alpha-28 12.09.07
+          - DB-Design nochmal ueberarbeitet: die Arbeitsplatz-Typen aus SBS_APTYP werden
+            mit SBS_APKLASSE nochmal untergliedert. SBS_AP bekommt den Typ dann ueber
+            die apKlasse (damit sind natuerlich noch ein paar Aenderungen im Sourcecode
+            erforderlich...). Der Statistik-Typ bleibt in SBS_AP_ADR (evtl. wieder mit
+            einem Trigger regeln).
+          - Wenn der Code schon komplett ueberarbeitet werden muss: der DB-Zugriff und
+            die Business Logic werden zu EJBs umgebaut (sbsdb-ejb.jar), die Web-
+            Application kuemmert sich dann nur noch um die Darstellung (sbsdb4.war),
+            Deployment als sbsdb.ear.
+            Da JBoss 4.0 EJB3 nicht unterstuetzt, Umstieg auf JBoss 4.2.1. Damit auch
+            Umstellung auf die Sun-JSF-RI, da der JBoss die bereits mitbringt und eine
+            Application, die eine eigene RI mitbringt jede Menge Eingriffe in den
+            JBoss-Server erfordern wuerde (zusaetzliche Libs, wie ADF sind kein Problem).
+          - Aenderungen sind groesstenteils erledigt, zumindest gibt es schon mal einen
+            Teil der Startseite zu sehen.
+            .
+4.0.0 alpha-27 27.08.07
+          - Bugfixes: u.a. editap + apName, Sort bei Suche
+
+4.0.0 alpha-26 26.08.07
+          - Grundelemente fuer AP anlegen stehen, bei den Details fehlt noch eine
+            Menge (Typ PC muesste fuer die Namens-Generierung irgendwie untergliedert
+            werden f. TC etc., aber das geht bis zum DB-Design runter).
+          - Wiederkehrende Elemente der .jsp-Seiten in include-Dateien ausgelagert.
+          - AP-Aendern-Seite um Hardware und Peripherie ergaenzt, damit ist die Seite
+            vollstaendig (Optik und Handling sind ein anderes Thema...).
+            Evtl. noch um Moeglichkeit zur Namens-Aenderung erweitern.
+          - Bugfix: NPEs bei neue SW eintragen bereinigt. MAC + NetbootGUID bei den
+            HW-Details ergaenzt.
+
+4.0.0 alpha-25 20.08.07
+          - Bugfixing: StartupFilter muss auf *.jsp eingestellt werden, sonst wird der
+            Filter fuer jede .css etc. ausgefuehrt, was anscheinend Aerger gibt (ADF wird
+            nicht initialisiert).
+
+4.0.0 alpha-24 19.08.07
+          - Neue Tabelle SBS_USER mit den erlaubten Usern und vorgeschaltete Logon-
+            Seite (muss in web.xml als default deklariert werden, der Servlet-Filter
+            wirft auf "/" ab). Logout funktioniert z.Zt. nur als Umweg ueber HTML-Seite
+            mit http-eqiv="refresh" (wird wohl auch so ein dauerhaftes Provisorium).
+            Passwort-Aendern-Seite funktioniert. Benutzerrollen sind in der Tabelle schon
+            vorgesehen, an den entsprechenden Stellen muessen noch die passenden Checks
+            eingebaut werden.
+          - log4j-Logging herausgenommen, da es Probleme mit der Art gibt, wie JBoss
+            das handhabt. Mit eigener Routine ersetzt, die direkt nach server.log
+            schreibt.
+          - Focus auf das erste Eingabefeld setzen klappt endlich (->af:document).
+          - In der AP-Suche die Suche nach Serien-Nr. wieder herausgenommen. Funktioniert
+            nicht sauber, ausserdem Probleme beim Sortieren. In Hardware-Seite
+            integrieren (sobald es da was zum Integrieren gibt...)
+
+4.0.0 alpha-23 04.04.07
+          - AP-Bearbeiten um Tabelle fuer Softwareaenderung ergaenzt.
+          - Session-Timeout in oracle-ds.xml auf 0 gesetzt, da es sonst Probleme mit
+            abgelaufenen Sessions gibt (ist vermutlich nicht sehr sauber, aber fuer mehr
+            fehlt erst mal die Zeit).
+          - In SbsAp Hardware in zwei Set aufgeteilt (pri='J'/'N'), mal sehen ob das
+            beim Speichern Aerger gibt (fuer pri='J' wuerde eine one-to-one Beziehung
+            reichen, das ist aber den Aufwand nicht wert).
+
+4.0.0 alpha-22 25.03.07
+          - Im AP-Bearbeiten-Fenster Tabelle fuer Adressaenderungen eingebaut (das
+            Durchschreiben in die DB funktioniert jetzt auch endlich - hoffentlich)
+          - SBS_HW um Felder fuer MAC und NetBoot-GUID erweitert
+
+4.0.0 alpha-21 04.03.07
+          - Aenderung der TCP/IP ins Bearbeiten-Fenster eingebaut. Die Vergabe der IP
+            wird in der class IpValidator erledigt => waere anzupassen, wenn sich das
+            Schema fuer die statischen IPs aendert.
+
+4.0.0 alpha-20 01.03.07
+          - Bearbeiten weiter ausgebaut (Dropdown-Liste ist nicht ohne, in der jeweiligen
+            Klasse muss equals() passend gemacht werden -> vgl. auf Index).
+
+4.0.0 alpha-19 28.02.07
+          - Detailanzeige fuer Baumansichten ist fertig
+          - Suche sucht jetzt auch in Serien-Nr. (muss mittels "union" laufen, sonst
+            gibt's doppelte - dafuer klappt der Sort nicht mehr...)
+          - Erster Entwurf fuer ein Bearbeiten-Formular (speichern funktioniert
+            dank Hibernate fast automatisch)
+
+4.0.0 alpha-18 27.02.07
+          - AP: Wechsel zwischen AP-Tabelle und sonst. Details eingebaut, jetzt fehlt
+            noch das Design der Detailanzeige fuer die verschiedenen Baumansichten.
+
+4.0.0 alpha-17 26.02.07
+          - Detailansicht in der AP-Liste funktioniert (Optik muss erst mal reichen)
+          - Suchen kann jetzt auch mit [Enter] ausgeloest werden
+          - Fenster fuer Hardware-Details
+
+4.0.0 alpha-16 19.02.07
+          - Bugfixes, Icons fuer AP-Typ, Verbesserung der AP-Detailansicht.
+
+4.0.0 alpha-15 18.02.07
+           - AP-Detailansicht (die Optik ist noch ausbaufaehig)
+
+4.0.0 alpha-14 17.02.07
+           - Suchen-Funktion eingebaut
+           - Neue Baumansicht Segment, Aptyp
+
+4.0.0 alpha-13 16.02.07
+           - Remote Aufruf funktioniert jetzt endlich auch ordenlich mit dem IE (es sollte
+             ein Gesetz gegen diese Sorte Muell geben)
+
+4.0.0 alpha-12 14.02.07
+           - Remote Aufruf funktioniert endlich (hoffentlich)
+             [war wohl nix, der IE laeuft immer noch Amok]
+4.0.0 alpha-11 13.02.07
+           - ping vor remote execute, damit Programmausfuehrung nur fuer erreichbare
+             Rechner aufgerufen wird
+
+4.0.0 alpha-10 12.02.07
+           - AP-Darstellung weiter ausgebaut
+
+4.0.0 alpha-9  11.02.07
+           - Datenmodell nochmal ueberarbeitet: APklasse wird beim AP gespeichert,
+             zwei BST-Felder beim AP (phys. Standort, OE). Die IP-Adressen werden als
+             Long-Werte gespeichert damit auch ungerade Netmasks funktionieren.
+             Offen: Hierarchie in BST-Tabelle (MB->GS, Abt.->Gruppe)
+           - Aufruf von externen Programmen fuer einen AP mittels Java Web Start
+             (Maus-Cursor-Problem im IE ist noch offen)
+
+4.0.0 alpha-8  06.02.07
+           - Baumdarstellung fuer die AP-Ansicht weiter ausgebaut: Umschalten auf andere
+             Sortierung funktioniert. Kleine Experimente mit Skins.
+
+4.0.0 alpha-7  01.02.07
+           - Datenmodell fuer AP-Baeume
+
+4.0.0 alpha-6  28.01.07
+           - Grundgeruest mit ADF Faces (10.1.3.1) steht
+
+4.0.0 alpha-5  18.01.07
+           - Test mit Oracle ADF Faces: koennte funktionieren
+             (die Inkompatiblitaet des IE ist ein anderes Thema...)
+
+4.0.0 alpha-4  14.01.07
+           - Java Web Start-Anwendung eingebaut: die zugehoerige JAR versucht lokal das
+             als Parameter uebergebene Programm zu starten (JAR ist mit einem selbst
+             signierten Zertifikat versehen).
+
+4.0.0 alpha-3  13.01.07
+           - StartupFilter, der verhindert, dass mitten in die Anwendung gesprungen wird
+           - Debugging ausgebaut
+           - Navigation
+
+4.0.0 alpha-2  12.01.07
+           - Debuggingcode zum Ansehen der diversen Parameter
+           - about-Fenster
+
+4.0.0 alpha-1  06.01.07
+           - Start der Neuentwicklung: grundlegende Verzeichnisse und Bibliotheken sind
+             vorbereitet, jetzt muessen nur noch Inhalte rein...
+           - Datenmodell ueberarbeitet, Hauptveraenderungen:
+             + die Primaerschluessel werden durchgaengig nur noch als IDs verwendet
+             + Hostname wird beim Arbeitsplatz gespeichert
+             + Hardware zu AP wird nur noch in der join table gespeichert
+               (zzgl. KZ fuer "primaere" HW)
+           - Basis: JBoss 4.0.5  (Bei JBoss muessen die JSF-Libs entfernt werden, sonst
+                                  gibt's Aerger mit den JARs, die MyEclipse mit einpackt)
+                    Java Server Faces 1.1
+                    - MyFaces Core 1.1.1
+                    - MyFaces Tomahawk 1.1.1
+                    Oracle 10XE
+
+#######################################################################################
+## v4.x:  Relaunch als Java Web-Anwendung (RdS-, SI-, whatever-kompatibel)
+#######################################################################################
+
+
+3.6.0.924  01.09.06
+           - fuer XP-Umstellung:
+             Die Aufrufe der externen Programme fuer den Remotezugriff werden ausgelagert.
+             Das Programm ruft nur noch die remote.cmd mit mehreren Paramtern auf,
+             in der Batch-Datei wird der Rest erledigt. Dadurch sind Anpassungen fuer
+             Remotezugriff moeglich ohne, dass das Programm geaendert werden muss
+             Das Programm fuehrt drei verschluesselte Passwoerter in der Registry, die
+             als Parameter 2-4 an die Batch-Datei uebergeben werden.
+             (neuer Par. "-enc <password>" gibt verschluesseltes PW in encrypt.txt aus)
+             Der Check der Berechtigung via Gruppenzugehoerigkeit ist ausgeschaltet
+             weil es damit im AD-Umfeld Probleme gibt.
+
+3.5.0.921  16.05.05
+           - Fusions-Update:
+             Das Feld tcp_ring in den Tabellen sbsd_ap und sbsd_ring wird nur noch
+             als Index gefuehrt. sbsd_ring ergaenzt um drei Felder tcp_o1, tcp_o2, tcp_o3
+             die die eigentliche IP-Adresse enthalten (Oktett Nr. 4 weiterhin in
+             sbsd_ap.tcp_ap). Fuer DHCP-Adressen wird in tcp_ap 0 gespeichert, dadurch
+             Unterscheidung, ob der Hostname oder die IP-Adresse verwendet werden soll.
+             Diese Unterscheidung wird in den entsprechenden Abfragen erledigt, d.h.
+             die Programmlogik bleibt davon unberuehrt. Die Eingabe neuer Arbeitsplaetze,
+             sowie die aenderung des "TCP-Ringes" erweitert um die Auswahl
+             DHCP (tcp_ap = 0), Automatik (wie gehabt, das Programm nimmt die naechste
+             freie Adresse) und fest (Eingabe einer Zahl fuer Teil 4, ohne ueberpruefung).
+             Zusaetzlich besteht jetzt die Moeglichkeit, Arbeitsplaetze anzulegen,
+             ohne, dass das Programm einen Rechnernamen vergibt, damit auch bereits
+             existierende LIF-PCs angelegt werden koennen.
+           - Bezeichnung Ring in IP-Segment geaendert, um die letzten TR-Spuren
+             zu beseitigen.
+           - Netzdrucker-Bezeichnung umgestellt auf n92xxNxx (angeblich IZB-konform
+             und Voraussetzung fuer RdS).
+           - Hinweise auf SBS-Info entfernt - hat eh nie funktioniert.
+
+3.4.3.914  26.07.04
+           - Bugfix: fuer Ping auf Hostname muss erst die zugehoerige IP geholt werden
+             (fn gethostbyname() ).
+
+3.4.2.913  21.07.04
+           - Fuer AP-Typ 1 (PC) wird statt der IP der Hostname angegeben (Aenderung
+             der SQL-query) damit nach der Umstellung auf DHCP die Pings noch
+             funktionieren.
+
+3.4.1.911  12.11.02
+           - aenderung am Feld sbsd_swlookup.swlookup im Programm nachvollzogen
+
+3.4.0.909  10.11.02
+           - SW-Inventur wieder entfernt (wird kuenftig vom Perl-Script aus erledigt)
+           - aenderung an table sbsd_swlookup: Feld swlookup ist kein PK mehr und
+             darf NULL sein, Feld sw_index ist neuer PK. Zusaetzliche stored proc
+             fuer den Zugriff via ODBC von Perl aus.
+
+3.3.5.907  04.08.02
+           - SQL-Abfragen: Verbesserungen bei der Optik (Menueleiste, Button-Anordnung).
+             Die Liste der SQL-Texte wird nicht mehr in der Registry abgelegt sondern
+             in einer Datei gespeichert (<prog-dir>\SQLtext.sav).
+
+3.3.4.899  01.08.02
+           - SQL-Abfragen: Verbesserungen im Handling (Anzeige der DB, Shortcut
+             fuer Ausfuehren, en-/disable von Buttons).
+
+3.3.3.895  31.07.02
+           - SQL-Abfragen-Fenster ueberarbeitet: Speichern- und Drucken-Option ergaenzt,
+             sowie die Moeglichkeit zu anderen Datenbanken zu verbinden.
+
+3.3.2.886  13.07.02
+           - Bugfix: im Suchenfeld fuer den Rechnernamen funktioniert das automatische
+             Springen zum Rechner nach Eingabe von 8 Zeichen nicht mehr (auto-Auswahl
+             aus der Dropdownliste - evtl BCB6-Feature) -> fuer Auswahl muss kuenftig
+             ENTER gedrueckt werden.
+
+3.3.1.885  05.04.02
+           - recompile BCB 6 (hblib.bpl v 1.3.3.49)
+
+3.3.1.884  02.04.02
+           - Schoenheitsfehler: im neuen Softwarefenster oeffnet ein Doppelklick auf
+             die Software oder die Lizenzen das jeweilige Edit-Fenster.
+
+3.3.0.883  01.04.02
+           - Software-Bearbeitung in eigenes Fenster ausgegliedert. Die bereits im
+             Hauptmenue enthaltenen Funktionen 'Installation' und 'Update' und die
+             Abfrage 'Installierte Software' kommen in das neue Fenster. Als neue
+             Funktionalitaet kommt Bearbeiten der SW-Stammdaten, sowie der SW-Lizenzen
+             hinzu ausserdem die Abfrage 'Lizenz-uebersicht'.
+           - Tabelle sbsd_liz (Lizenzierungs-Arten) ergaenzt um Feld 'abrechnung'. Das
+             Feld enthaelt 1 fuer SW, die einzeln abgerechnet wird, 0 fuer Institutslizenzen
+             (d.h. mind. 1 Liz. muss vorhanden sein) und -1 fuer den Rest (Info etc.).
+             aenderung wurde notwendig, damit eine Auswertung fehlender Lizenzen
+             moeglich ist (Abfrage 'Lizenz-uebersicht').
+           - Funktionen 'neuer AP', 'AP loeschen' fuer alle freigegeben.
+           - Felder "Wartung"/"Wartung p.a." geaendert in "Wartungsfirma"/"Wartung
+             Bemerkung" (in der Darstellung, nicht auf DB-Ebene, in der DB nur aenderung
+             Datentyp 'p.a.' von Number in Varchar2).
+           - Rueckwaerts-/Vorwaerts-Buttons analog IE fuer die ausgewaehlten APs.
+
+3.2.0.849  23.01.02
+           - Arbeitsplatz-Klassen: ueber den Adresstyp "AP-Klasse" (#5) werden die
+             APs klassifiziert. Bei einem neuen AP wird automatisch die Standardklasse
+             fuer den AP-Typ eingetragen, loeschen des Adresstyps ist nicht erlaubt.
+             Beim aendern wird gegen die Werte in der Tabelle sbsd_apklassen geprueft.
+
+3.1.0.835  30.10.01
+           - AP-Druckmaske (prtAP_Unit): Bugfixes in der Optik. Druck wird ohne Preview
+             sofort auf den Drucker geschickt
+           - Das Programm, das als SBS-Info aufgerufen wird, ist nicht mehr hardcoded,
+             sondern wird in der globalen Konfigdatei \\<logonserver>\netlogon\config.hb
+             hinterlegt.
+
+3.0.3.831  29.10.01
+           - Druckmaske fuer AP-Daten verfeinert
+           - div. Shortcuts eingefuegt
+
+3.0.3.826  28.10.01  *BETA*
+           - Die meisten Fenster koennen jetzt auch mit ESC geschlossen werden.
+           - Ausdruck aller Daten des AP
+
+3.0.2.812  18.04.01
+           - recompile wg. aenderung hblib.bpl
+
+3.0.1.811  02.02.01
+           - SBS-Info ausgegliedert in eigene EXE -> SBS-Info v2.0
+             ('alte' Info fliegt sobald alles in den neuen Bestand uebernommen ist).
+           - Button 'Info' startet externes Programm SBSInfo.exe (s.o.), das im
+             Programm-Dir gesucht wird.
+
+3.0.0.809  01.02.01  *BETA*
+           - SBS-Info: Bearbeitung der HTML-Seiten mittels shellExecute("edit"...), dadurch
+             wird das jeweils 'zustaendige' Programm gestartet (der Stub fuer neue Seiten
+             ist dahingehend geaendert, dass Word als default-Editor gestartet wird).
+             Ausserdem Button fuer Drucken [ungetestet].
+
+3.0.0.807  31.01.01  *BETA*
+           - SBS-Info: Bugfix
+
+3.0.0.806  15.01.01  *BETA*
+           - SBS-Info: Status-Zeile analog IE. Position des Splitters wird in der
+             Registry gespeichert.
+
+3.0.0.803  14.01.01  *BETA*
+           - SBS-Info: loeschen moeglich, fuer Directory externer Aufruf von 'rd /s /q'.
+             Fuer die Knoten wird ein html-Doc generiert, das als Inhaltsverzeichnis
+             angezeigt wird.
+             Zugriff auf das Dokument fuer Bearbeiten/Loeschen ueber das filesystem
+             (Param 'InfoDir'), geoeffnet wird es via http (Param 'InfoWeb').
+             Fuer obersten Level wird '.asp' als Extension angenommen, damit kann in der
+             obersten Ebene ein Suchen-Formular eingebaut werden.
+
+3.0.0.783  11.01.01  *BETA*
+           - SBS-Info ueberarbeitet: Darstellung in einer TTreeView, die Eintraege werden
+             in Word-HTM-Dokumenten gespeichert und in einer WebBrowser-Control angezeigt.
+             Die Verwaltung der Texte erledigt eine Tabelle, in der die Hierarchie abgelegt
+             wird, die Texte selbst werden fuer die Bearbeitung mit Word gestartet. Die
+             Baumstruktur wird analog im filesystem abgebildet, dadurch muss nicht der
+             komplette Pfad gespeichert werden, sondern nur der Document-Name (=Tree-Eintrag).
+             Der Startpfad wird zentral in der netlogon\config.hb abgelegt (Param 'InfoDir'),
+             ebenso (baw.) der Pfad zur winword.exe (Param 'WordDir').
+             Eintraege der obersten Ebene koennen (noch) nicht geaendert werden.
+             Eintrag loeschen fehlt noch.
+             (nice to have: drag'n'drop)
+
+2.7.0.730  09.07.00
+           - Neue Tabelle sbsd_views enthaelt allle Abfragen, die ohne Parameter auskommen
+             mit Namen und SQL-Text. Auswahl der Abfrage aus Liste, Darstellung in
+             simpleChanges indem das jeweilige SQL-Statement augefuehrt wird.
+             Dadurch koennen zusaetzliche Abfragen einfach als weiterer Datensatz
+             in sbsd_views eingegeben werden, es ist also keine aenderung am Programmcode
+             notwendig.
+             Die entsprechenden Abfragen wurden aus den Menues entfernt.
+
+2.6.6.724  03.07.00
+           - Bugfix: Beim Loeschen eines AP funktionieren die Trigger nicht, die die
+             HW-Veraenderungen protokollieren sollen (table mutating) -> der Trigger
+             holt Daten aus sbsd_ap, waehrend die Tabelle geaendert wird.
+             Loesung: neue stored proc. delAP, die erst die HW vom AP entfernt und dann den
+             record aus sbsd_ap loescht. Die entsprechende Funktion im Programm loescht nicht
+             mehr direkt sondern ruft die stored proc. auf. (Das ist allerdings keine
+             vollstaendige Loesung weil ein delete auf sbsd_ap ohne vorher die HW zu
+             entfernen weiterhin einen Fehler ausloest)
+           - Bugfix: in simpleChanges hat das Umsortieren mittels Klick auf die entsprechende
+             Spalte nicht mehr funktioniert (anderes Verhalten in v5.0?).
+             Ausserdem wird jetzt beim Schliessen des Fensters der Text der urspruenglichen SQL
+             wieder gesetzt (die Query bleibt also nicht mehr bis zum Programmende umsortiert).
+
+2.6.5.720  20.06.00
+           - Die Routine zum Einlesen der AP-Daten zeigt in der Statusleiste an, was
+             gerade passiert. Der Name der Protokoll-Datei wird um Datum/Uhrzeit
+             erweitert, womit jede Datei erhalten bleibt.
+
+2.6.4.717  19.06.00
+           - Alle AP's einlesen mit Sanduhr (schliesslich dauert's einige Zeit)
+           - Protokoll des Einlesens 'verschoenert'
+           - Bugfix in stored proc. addSW
+
+2.6.3.716  18.06.00
+           - VNC-Start umbenannt in 'Remote Control', auch die cmd-Datei heisst jetzt
+             remote_control.cmd
+           - Paramter, die gemeinsam mit den Scripten verwendet werden, die die installierte
+             SW holen, werden ab sofort in \\<Logon-Server>\netlogon\SBSDoku.ini bereitgestellt.
+           - Bugfix: FindFirst/FindNext beim Einlesen aller Rechner
+           - Beim Einlesen der HW/SW werden die Aktionen genauer protokolliert
+           - Einlesen HW/SW: eine Serien-Nr. die mit '--' beginnt, bewirkt, dass der zugeordnete
+             Drucker entfernt wird.
+
+2.6.2.710  07.06.00
+           - Beim Einlesen der HW/SW wird die Gueltigkeit der Datei geprueft (var GC_isValid in
+             letzter Zeile).
+             Die Fehlermeldungen beim Einlesen werden gesammelt und in einem Fenster angezeigt.
+           - Einlesen aller vorhandenen Dumpfiles in einer Aktion. Protokoll wird nach c:\temp
+             geschrieben. [funktioniert nicht!]
+
+2.6.1.709  11.05.00
+           - Schoenheitsfehler beim Einlesen der SW/HW-Daten bereinigt
+           - Fuer Server/PC Start VNC-Viewer. Es wird nur das externe Programm 'VNC'
+             mit dem Rechnernamen als Parameter gestartet. Die Batchdatei vnc.cmd
+             ist damit offen fuer aenderungen/Erweiterungen.
+
+2.6.0.705  07.05.00
+           - Software- und Hardware-Daten, die per Script erfasst werden, koennen in die DB
+             eingelesen werden. Dafuer neue Tabelle sbsd_swlookup, in der definiert ist, wie
+             nach der installierten Software gesucht wird.
+             Problem (z.Zt.): einige Pfade sind hard coded
+           - Die Tabellen sbsd_ap und sbsd_hw_ap protokolliern mittels Trigger aenderungen
+             der zugeordneten HW in die Tabelle sbsd_hwshift. Protokolliert wird sysdate,
+             Rechnername, BST, Standort und der HW-Index, sowie die Art der
+             Veraenderung ('+' || '-').
+
+2.5.5.699  24.04.00
+           - Kommunikation mit dem rexecsvc-Dienst: INFW via Kommando an den Dienst loeschen
+             oder eine Batch-Datei remote starten, deren Inhalt jeweils eingegeben werden
+             kann
+
+2.5.4.697  08.03.00
+           - neu compiliert mit BCB 5.0
+
+2.5.4.696  06.12.99
+           - Mit geaenderter hblib.bpl compiliert ('beta'-Bit)
+           - simpleChanges-Window: Problem mit QRCreateList behoben
+           - Suchen ueber Serien-Nr.: nicht vorhandene Serien-Nr. wird nicht mehr als
+             'keinem AP zugeordnet' gemeldet
+           - NT-Gruppen-Check fuer Samba-Server umgehen
+           - Bugfix: falscher Reg-Eintrag fuer listKind wird jetzt abgefangen
+
+2.5.3.691  07.11.99
+           - Wiederholter Programmstart wird nicht mehr mit MessageBox abgebrochen, statt dessen
+             Wechsel zur laufenden Instance
+           - Check ob Rechner aktiv wird erst nach 3x Ping mit Fehler beendet (bisher nur 1x)
+           - c$-Share kann auch in eigenem Explorer-Fenster geoeffnet werden (Ansicht|C$ als Laufwerk)
+           - In den Abfragen nls_sort=binary in punctuation geaendert
+
+2.5.2.686  14.05.99
+           - Ping-Fenster: Ping kann wieder aufgenommen werden (bisher nur Stop moeglich)
+
+2.5.1.683  25.04.99
+           - Bugs, Schoenheitsfehler ausgebuegelt
+           - table sbsd_hw_ausge um Feld auss_grund ergaenzt, beim Aussondern wird der Grund der
+             Aussonderung abgefragt und ueber die (erweiterte) procedure Aussondern in die Tabelle
+             eingetragen (in der procedure geaendert: sysdate wird als trunc(sysdate) eingetragen,
+             Uhrzeit interessiert nicht).
+
+2.5.0.678  20.04.99
+           - SBS-Doku-Fenster ist jetzt Hauptfenster, MainForm entfaellt komplett (war sowieso
+             nur Show). SBS-Info wird vom Doku-Fenster aus gestartet.
+
+2.4.1.675  14.04.99
+           SBS-Doku
+           - neue Abfragen: alle LUs, Summen je Server & LU-Typ
+           - Menuepunkt SBS-Doku|Hardware auch als Button
+
+2.4.0.673  08.04.99
+           - C++Builder 4 => neuer Setup (wg. Update)
+           SBS-Doku
+           - Aussondern-Option fuer Hardware
+             zusaetzliche Tabelle fuer ausges. HW (sbsd_hw_ausge), gespeicherte Prozedur (aussondern)
+             fuer das Verschieben des record
+           - aenderung/Neuanlage von Hardware-Konfigurationen in Fenster Hardware integriert
+
+2.3.9.627  23.03.99
+           - Sortierung nochmal geaendert: 'xgerman_din' sortiert ae wie ae aber Ziffern am Ende,
+             fuer HexZahlen und Ser.Nr. etc. nlssort(xxx, 'nls_sort=binary')
+             [ab Oracle 8 in 'punctuation' aendern!]
+             Die grundsaetzliche Einstellung mittels alter session wird im Package hblib erledigt.
+           - Initialisierung des Package hblib ueberarbeitet
+           SBS-Doku
+           - Bugfix: bei Neuinst. ist die Ansicht (Ring, BST etc.) undefiniert.
+           - neue Option 'Explorer' oeffnet den gewaehlten Rechner im Explorer (fuer Zugriff auf Drucker)
+
+2.3.8.615  21.02.99
+           - Sortierung funktioniert auch ohne fn nlssort() richtig: beim Starten der DB-Verbindung
+             wird die Sortierreihenfolge mittels 'alter session set nls_sort=german' geaendert
+           SBS-Doku
+           - die Ausgabe in eine CSV-Datei vom simple_changes-Win gibt Real-Zahlen im Format 1,234.56 aus,
+             weil Excel das Feld sonst nicht als Zahl erkennt
+           - neue Abfrage Inventar-Liste, gibt alle Geraete aus, die eine Inv-Nr. haben
+
+2.3.7.604  14.02.99
+           - offene Probleme: Update auf BDE 5.0 ist problematisch
+           - Die Module AppParam/Splash/Param sind ab sofort ausgelagert in das Package HBLIB.BPL
+           - Zeichensatz geaendert auf ascii ANSI, dadurch gleiche Zeichendarstellung auf Client & Server
+             Vorteil: lexikalische Sortierung mittels nlssort() moeglich
+
+2.3.6.599  04.02.99
+           - BDE 5.0
+           SBS-Doku
+           - Bugfix: - Aufruf von 'Dienste' funktionierte beim ersten Mal nicht
+                       ausserdem erkennt die func jetzt wann der SrvMgr soweit ist
+                     - fn TAppParam::GetFreeDrive() nochmals ueberarbeitet, der naechste freie
+                       LW-Buchstabe wird jetzt mittels GetDriveType() festgestellt, das scheint
+                       endlich verlaesslich zu funktionieren
+
+2.3.5.595  06.01.99
+           SBS-Doku
+           - zusaetzlicher Menuepunkt 'Dienste': Aufruf Server-Manager fuer den gewaehlten Rechner
+             und Ausfuehren des Menuepunktes 'Dienste' durch Simulation der entsprechenden
+             Tastatureingaben. Problem: (1) der Server-Manager muss in der deutschen Version
+             installiert sein, da der Menuepunkt explizit ueber die Tastenkuerzel gestartet wird
+             und (2) die Routine kann nicht feststellen wann das Fenster soweit ist, sondern
+             wartet 500 msec.
+           - Fenster Hardware: Anzahl Datensaetze in der Statuszeile. Splitter.
+
+2.3.4.573  25.10.98
+           - Splash-Screen hat nicht mehr den Style fsTopmost, d.h. er kann beim Prog.Start
+             in den Hintergrund gebracht werden.
+           - Prog. kann (endlich) auch durch Shutdown/Abmelden ohne Fehlermeldung beendet werden.
+             (Hauptform->FormCloseQuery(): Prog. via exit() beenden, auch wenn die DB-Verbindung
+                                           nicht ordentlich geschlossen werden kann)
+           SBS-Doku
+           - Listen fuer BST/Ring etc. enthalten statt TZE/LNC/AP-Nr. die Dialog-/Kassen-/SB-Server
+             dafuer neue view sbsd_lu definiert
+             da die Abfrage dadurch sehr komplex geworden ist, dauert der Aufruf sehr lang
+             (es sind noch ein paar Optimierungen faellig)
+           - Fenster fuer Hardware- bzw. Software-Auswahl: Anordnung der Buttons geaendert
+           - Menuepunkt SBS-Doku|Massenaenderung entfernt, die beiden Unterpunkte sind jetzt unter
+             SBS-Doku|Software zu finden
+           - im simple_changes-Fenster koennen Abfragen als CSV-Datei gespeichert werden
+             (Format: 1. Zeile Feldnamen, ab Zeile 2 Feldinhalt mit '"' eingeschlossen,
+              durch ',' getrennt)
+           SBS-Hotline
+           - Button und Menue-Eintrag entfernt, da hierfuer das IZB-ARS-Tool eingesetzt werden soll,
+             wenn's was taugt :-)
+
+2.3.3.544  10.09.98 *keine Freigabe*
+           SBS-Doku
+           - Sanduhr beim Umsortieren einer angezeigte Abfrage
+           - Sort der Listen fuer BST, Ring, AP-Typ bereinigt
+             (bisher Sort nach kompletter IP-Addr. == alpha -> .100 vor .99
+              jetzt numerischer Sort nach IP-Ring, IP-AP)
+
+2.3.2.541  03.09.98
+           SBS-Doku
+           - Hardware-uebersicht: die ap-lookup-query wird beim oeffnen/Schliessen der form
+             aktualisiert damit die AP-HW-Zuordnung aktuell bleibt
+           - Abfrage Journal-Server + Feld AP-Nr.
+
+2.3.1.539  30.08.98
+           Beim Start nur noch ein Splash-Screen (MsgWin nur noch zur Laufzeit)
+           SBS-Doku
+           - Sanduhr an- und ausschalten mit #define's vereinfacht
+           - Massenaenderung (1) Software-Version fuer mehrere APs gleichzeitig aendern (leerer
+             Versions-String entfernt die SW von den entsprechenden APs)
+             (2) Software zu mehreren APs hinzufuegen
+           - aenderung des IP-Rings (und Berechnung der neuen IP-AP-Nr.) ueber Menuepunkt
+             in APchange
+           - Hardware-uebersicht mit der Moeglichkeit bei vorhanden Geraeten, die Serien-Nr, Inv.Nr.
+             etc. zu aendern sowie der Neuanlage (mehrere identische Geraete, die auf eine Nr.
+             aktiviert werden, koennen in einem Zug angelegt werden)
+
+2.2.2.482  27.08.98
+           SBS-Doku
+           - Sanduhr fuer (so gut wie) alle Aktionen, die laenger dauern.
+
+2.2.1.479  07.08.98
+           - DB-Verbindung laeuft direkt ueber ORACLE-Treiber, ohne BDE-Alias, die Verbindungs-
+             Parameter werden beim Start der Anw. eingestellt. Server, User & PW sind in der
+             Registry abgelegt => Beim ersten Start wird der z.Zt. fehlende Servername
+             abgefragt werden (war bisher ueber den Alias festgelegt).
+           - div. Ungereimtheiten bei den Farben bereinigt (clBtnFace <-> clSilver)
+           - div. Detaileinstellungen fuer den DB-Treiber (ob's reicht um den Fehler
+             0x2501 (Init) bei Aufruf von 2 DB-Apps endlich zu verhindern erfordert
+             aber noch einige Tests)
+           SBS-Doku
+           - neue Abfrage Summen der AP-Typen je BST
+           - uebersicht der aktiven PC's (mittels Ping) [Freigabe nur fuer Master - zu langsam]
+           - in der Detailanzeige wird zur LU der zugehoerige Server angezeigt
+           - neue Abfrage Journal-Server mit allen SB-Geraeten und Kassenplaetzen
+
+2.2.0.466  12.07.98
+           - Splash-Screen (MsgWin nur noch fuer Programm-Meldungen)
+           - In der Exception-Behandlung der obersten Ebene werden die 'StayOnTop'-Fenster
+             geschlossen bevor die Fehlermeldung angezeigt wird.
+           - Eigenschaft 'isMaster' (== Zugriff auf alles) wird jetzt ueber Zugehoerigkeit
+             zur Gruppe SBSDB_SYSTEM gesteuert.
+           - Bei allen Fenstern ist die Eigenschaft 'Scaled' auf false gesetzt, damit wird das
+             Problem large/small fonts umgangen
+           - Status der Hauptfenster (Info/Doku/Hotline) wird unter HKCU gespeichert und
+             beim Starten wiederhergestellt.
+           - GetFreeDrive() erkennt jetzt auch offene Wechselplatten-LW (ZIP etc.)
+             fn ausgelagert in AppParam
+           SBS-Doku
+           - im Fenster APchange Menueleiste hinzugefuegt (Punkt IP-Ring aendern muss noch
+             programmiert werden)
+
+2.1.14.455 05.07.98
+           Im Hauptfenster Menuepunkt Druckereinrichtung hinzugefuegt
+           Toolbars geaendert: Icons aus Access 2.0
+           command-line-param '-db' fuer die aenderung der DB-Parameter
+           SBS-Doku
+           - im Fenster APchange kann jetzt auch die Hardware geloescht werden
+             (Event KeyPress der ComboBox -> if (DEL) query->FindField("xxx")->AsInteger = 0)
+             ACHTUNG: beim ersten Mal wird ein Oracle-Fehler ausgeloest, den Namen der
+                      gemeldeten constraint aufschreiben und dann aus der Tabelle
+                      entfernen: alter table sbsd_ap drop constraint sys_...;
+
+2.1.13.450 22.06.98
+           AppParam
+           - MailTo ueberarbeitet
+           SBS-Doku
+           - freieHW: Auswahl einz. Konfig || Gesamtbestand
+
+2.1.12.439 21.06.98
+           Die Anwendung kann nur noch einmal gestartet werden.
+           SBS-Hotline (DEMO)
+           - Bezeichnungen verdeutlicht
+           - MailTo() -> AppParam
+           AppParam
+           - neue Funktion MailTo()
+             e-Mail an vorgegebenen oder im Dialog ausgewaehlten Empfaenger, ausserdem
+             Option zum Anzeigen des Standard-Mail-Dialogs fuer die Eingabe variabler
+             Mails
+           SBS-Doku
+           - Report fuer gesamten Ring/BST/AP-Typ
+           - bei den Abfragen Hardware/instSW kann ausgewaehlt werden zwischen der
+             Anzeige des Gesamtbestandes und der Anzeige nur fuer einzelne HW/SW
+
+2.1.11.407 17.06.98
+           SBS-Hotline (DEMO-Version)
+           - Bugfix beim Eingabe Problem: Cursor verschwindet in Eingabe-Feldern
+           - Bugfix im SendMail-Test
+
+2.1.10.399 16.06.98
+           SBS-Doku
+           - aus gegebenem Anlass neue Abfrage fuer Summen PC/Kassen-/Beraterplaetze
+
+2.1.9.395 15.06.98
+          SBS-Hotline
+          - Eingabe Stoerung ueberarbeitet (immer noch Demo)
+
+2.1.8.385 15.06.98
+          BST
+          - neues Feld (OEFF varchar2(2000)) an table BETRIEBSSTELLEN
+            angefuegt -> oeffnungszeiten als MEMO-Feld
+
+2.1.7.383 14.06.98
+          SBS-Doku
+          - Form Hardware ist unabhaengig von SBS_Doku
+          - fixes
+          SBS-Hotline
+          - Fenster fuer Eingabe Stoerung - Demo-Version
+
+2.1.7.369 14.06.98
+          Bugfix v 2.1.6: Fehler beim Speicherzugriff koennte evtl. durch einen Bug
+                          im Compiler/Linker od. im Borland-Speichermanager
+                          verursacht sein.
+
+2.1.6.338 11.06.98  [Bug bei Verbinden/EvtMgr/RegEdt32]
+          SBS-Doku
+          - zusaetzliche Abfragen
+          - Extern: Ping, Shutdown f. NT-Rechner
+                    Aufruf v. RegEdt32 etc. nur wenn ein Ping erfolgreich war
+          - (einfacher) Report fuer die Abfragen
+          - Report fuer den ausgewaehlten Teilbaum
+            (Druck des Parent-Knotens fehlt noch)
+
+2.1.2.249 04.06.98
+          SBS-Doku
+          - Abfragen: Leitungspunkte, freie Hardware
+          - Bugfixes (bes. Listen mit freier HW in APchange)
+          SQL-Win
+          - die letzten (max. 50) SQL-statements werden gespeichert
+            incl. Vor- und Zurueckblaettern (v2.1.1)
+          - Bugfix: TList *cmds nach delete auf NULL setzten (v2.1.2)
+          MainForm
+          - Versions-Nr. ohne Build-Nr. (Freigabe-Versionen unterscheiden
+                                         sich mind. in der dritten Stelle)
+
+2.1.0.230 01.06.98   *Freigabe*
+          Freigabe fuer gesamten SBS.
+          Endgueltiges Ende des Access-Bestandes, ab jetzt gelten nur noch
+          die Daten aus Oracle.
+          SBS-Doku
+          - AP-aenderung: modales Fenster, Transaktions-Kontrolle
+                         SW-Grundinstall.
+          - TreeList: sort. nach BST, Ring oder AP-Typ
+          - RegEdit etc. ueber NetBios-Name -> auch f. Server
+          - div. Bugfixes etc.
+
+2.0.3.194 26.05.98   *beta-Freigabe*
+          SBS-Doku
+          - AP-aenderung (sichere(?) form)
+          - Menue umgestellt
+          - Suchen nach Ser-Nr.
+          - Daten der BST im rechten Fenster anzeigen
+          - div. Kleinigkeiten
+          MainForm
+          - Design umgestellt auf Button-Leiste
+          - zusaetzlich: BST-Liste + freie SQL-Abfrage
+
+2.0.2.132 21.05.98   *beta-Freigabe*
+          SBS-Doku:
+          - eventvwr etc. nur fuer PC, Server folgt spaeter
+          - aenderungen moeglich fuer alles ausser AP (+ zugehoerige tables)
+            das Interface ist recht simpel, aber die meisten Tabellen
+            werden kaum jemals fuer alle freigegeben werden, und fuer die,
+            die freigegeben werden muessen noch komfortablere (und sichere)
+            forms erstellt werden
+
+2.0.1.84 19.05.98    *beta-Freigabe*
+         SBS-Doku:
+         - Verbindung zur Registry (regedt32)
+         - Ereignisanzeige (eventvwr)
+         - Menues umgestellt
+         offen: eventvwr + regdt32 sollten jew. nur einmal geoeffnet werden (?).
+                Fuer Server kann es noch nicht funktionieren, da der hostname
+                verwendet wird.
+                Ausserdem fehlt immer noch das Konzept fuer aenderung
+
+2.0.0.79 18.05.98    *beta-Freigabe*
+         SBS-Doku:
+         - Verbindung auf C$-share des ausgewaehlten Rechners
+
+2.0.0.73 17.05.98    *beta-Freigabe*
+         Die DB-Parameter werden jetzt unter HKLM gespeichert, Fenster etc.
+         unter HKCU. Routine integriert, die vorhandene Werte von HKCU nach HKLM
+         uebernimmt (fliegt raus wenn alle umgestellt).
+         SBS-Doku:
+         - Design des Hauptfensters
+         - lesender Zugriff auf die Daten des AP
+         - Anzeige des AP + Anzeige der Hardware-Details
+         offen: handling der aenderungen/Neueingaben
+                weitere Abfrage-Moeglichkeiten
+
+1.1.0.29 13.05.98    *Freigabe*
+         Eigene Eintraege koennen geaendert werden ("neu" vollstaendig ueber-
+         arbeitet).
+         Berechtigungspruefung nur noch fuer Zugang, im Prog. keine
+         Differenzierung mehr.
+         offen: Tastenhandling analog Access
+         Am Info-Modul vorerst keine Weiterentwicklung, hoechstens Details, die
+         Zuge der Entwicklung es Doku-Moduls abfallen.
+
+1.0.4.22 03.05.98    *Freigabe*
+         Modul AppParam ist jetzt eigenstaendig (initialisiert sich selbst).
+         Funktionalitaet entspricht v1.0.3
+
+1.0.3.19 02.05.98
+         Erfolgreiche Konvertierung fuer BCPP 3.0
+         (bis jetzt: Test 3.51, sowie InstallShield-Test fehlen noch)
+         AboutBox ist jetzt nach AppParam ausgelagert, damit ist die gesamte
+         Versions-Geschichte projektunabhaengig, ausserdem Spielereien aus der
+         form entfernt (Build-Time u. -Date evtl. spaeter).
+         Das Programm wird wieder dynamisch gelinkt, da mind. zwei DLLs
+         anscheinend immer gebraucht werden => dann kommt es auf den Rest
+         auch nicht mehr an.
+
+1.0.3.1  02.03.98    *Freigabe*
+         Optik fuer NT 3.51 -large fonts- verbessert:
+         - Alle Fenster Borderstyle bsDialog (bis jetzt geht das noch)
+         - in AboutBox mehr Platz fuer Copyright-String
+         Parameter fuer BDE-Alias im InstallShield vorgegeben
+
+1.0.3.0  01.03.98   *Freigabe*
+         Erste Freigabeversion
+         Stand entspricht 1.0.2.6
+
+1.0.2.6  01.03.98
+         Anfuehrungszeichen (' und ") in Eingabefeldern werden auf das
+         unkritische Zeichen ` umgesetzt.
+         Die Kombination CR/LF in Memofeldern wird vor der Uebergabe an die
+         DB auf CR geaendert, da sonst bei der Anzeige eine zusaetzliche Leer-
+         zeile eingefuegt wuerde.
+
+1.0.2.5  01.03.98
+         Mit BDE 4.51 neu compiliert, damit kann auch eine TQuery fuer
+         TDBLookupComboBox verwendet werden (vorher nur TTable -> kein Sort).
+
+1.0.2    Info-DB mit den Funktionen Suchen, Neueingabe und Pflege der Kategorien.
+
+1.0      initial version zur Abloesung der alten Access-Anwendung
+         Nur Info-DB, weitere DB's (Hotline, Bestand) folgen, wenn das Grund-
+         system ordentlich laeuft.
+
