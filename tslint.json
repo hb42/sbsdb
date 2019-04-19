@@ -12,7 +12,9 @@
     "curly": true,
     "eofline": true,
     "forin": true,
-    "import-blacklist": [true],
+    "import-blacklist": [
+      true
+    ],
     "import-spacing": true,
     "indent": [
       true,
@@ -48,12 +50,22 @@
     "no-empty": false,
     "no-empty-interface": true,
     "no-eval": true,
-    "no-inferrable-types": [true, "ignore-params"],
+    "no-inferrable-types": [
+      true,
+      "ignore-params"
+    ],
     "no-shadowed-variable": true,
     "no-string-literal": false,
     "no-string-throw": true,
     /* submodule imports erlauben */
-    "no-submodule-imports": [true, "rxjs", true, "@angular", true, "primeng"],
+    "no-submodule-imports": [
+      true,
+      "rxjs",
+      true,
+      "@angular",
+      true,
+      "primeng"
+    ],
     "no-switch-case-fall-through": true,
     /* die Webstorm-IDE rueckt auch Leerzeilen ein, das wuerde dauernd angemeckert */
     "no-trailing-whitespace": false,
@@ -103,9 +115,18 @@
       "check-separator",
       "check-type"
     ],
-
-    "directive-selector": [true, "attribute", "farc", "camelCase"],
-    "component-selector": [true, "element", "farc", "kebab-case"],
+    "directive-selector": [
+      true,
+      "attribute",
+      "farc",
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      "farc",
+      "kebab-case"
+    ],
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
     "use-host-property-decorator": true,
