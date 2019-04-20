@@ -1,0 +1,23 @@
+
+<p-toolbar>
+  <div class="ui-toolbar-group-left">
+    <button type="button" pButton icon="pi pi-chevron-circle-left" class="ui-button-secondary nav-btn" title="zurück"></button>
+    <button type="button" pButton icon="pi pi-chevron-circle-right" class="ui-button-secondary spacer2 nav-btn" title="vorwärts"></button>
+
+    <p-splitButton label="Arbeitsplätze" icon="pi pi-user" [model]="items" class="spacer" [appendTo]="'body'"></p-splitButton>
+    <p-splitButton label="Hardware" icon="pi pi-print" [model]="items" class="spacer2" [appendTo]="'body'"></p-splitButton>
+
+    <label>
+      <input type="text" pInputText placeholder="Suche" class="spacer">
+      <button pButton type="button" label="Suche" icon="fa fa-search" class="ui-button-warning spacer"></button>
+      <button pButton type="button" label="Erweiterte Suche" icon="fa fa-search-plus" class="ui-button-warning"></button>
+    </label>
+  </div>
+  <div class="ui-toolbar-group-right">
+    <p-slideMenu #menu [model]="mainmenu" [popup]="true" [appendTo]="'body'"
+                 backLabel="zurück" [viewportHeight]="mainmenuheight"></p-slideMenu>
+    <button type="button" pButton icon="pi pi-bars" (click)="menu.toggle($event)" class="ui-button-secondary"></button>
+
+  </div>
+</p-toolbar>
+

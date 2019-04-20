@@ -24,7 +24,7 @@
     "label-position": true,
     "max-line-length": [
       true,
-      120
+      140
     ],
     "member-access": false,
     "member-ordering": [
@@ -118,13 +118,11 @@
     "directive-selector": [
       true,
       "attribute",
-      "farc",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "farc",
       "kebab-case"
     ],
     "use-input-property-decorator": true,

@@ -1,0 +1,24 @@
+<p-tree
+        selectionMode="single"
+        class="flex-panel flex-content-fix"
+        id="aptree"
+         >
+<!--        [value]="farcService.tree"-->
+<!--        (onNodeExpand)="farcService.nodeClick($event, false)"-->
+<!--        (onNodeSelect)="farcService.nodeClick($event, true)"-->
+<!--        [(selection)]="farcService.selectedNode"-->
+<!--        [class.orig-border]="!farcService.isArcTree"-->
+<!--        [class.arc-border]="farcService.isArcTree"-->
+  <ng-template let-node pTemplate="strukt">
+    <span [class.archivenode]="node.arc" class="node-strukt">{{node.label}} ({{node.size | filesize}})</span>
+  </ng-template>
+  <ng-template let-node pTemplate="ep">
+    <span [class.archivenode]="node.arc" class="node-ep" >{{node.label}} ({{node.size | filesize}})</span>
+  </ng-template>
+  <ng-template let-node pTemplate="dir">
+    <span [class.archivenode]="node.arc" >{{node.label}} ({{node.size | filesize}})</span>
+  </ng-template>
+  <ng-template let-node pTemplate="wait">
+    <span [class.archivenode]="node.arc" ><i class="fa fa-spinner fa-spin"></i></span>
+  </ng-template>
+</p-tree>

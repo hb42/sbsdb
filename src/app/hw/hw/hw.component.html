@@ -1,0 +1,11 @@
+<div class="flex-row" >
+  <div class="flex-panel" [style.width]="leftPaneWidth" [style.min-width]="leftPaneMinWidth"
+  >
+    <sbsdb-hw-tree></sbsdb-hw-tree>
+  </div>
+  <div fb-splitter ></div>
+  <div class="flex-panel flex-max" [style.width]="centerPaneWidth" [style.min-width]="centerPaneMinWidth"
+  >
+    <sbsdb-hw-list></sbsdb-hw-list>
+  </div>
+</div>

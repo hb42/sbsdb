@@ -1,3 +1,7 @@
+// ng build --prod
+
 export const environment = {
-    production: true
+  env       : "Production",
+  production: true,
+  configFile: "./resource/config.prod.json",
 };

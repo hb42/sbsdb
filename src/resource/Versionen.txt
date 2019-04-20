@@ -1,7 +1,7 @@
 ﻿
 
 #######################################################################################
-## v5.x:  Relaunch als JavaScript-Anwendung mit REST-API-BAckend
+## v5.x:  Relaunch als JavaScript-Anwendung mit REST-API-Backend (.NET Core/IIS)
 #######################################################################################
 
 

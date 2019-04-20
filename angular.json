@@ -7,7 +7,7 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "app",
+      "prefix": "sbsdb",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
@@ -41,22 +41,78 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
+            "baseHref": "/791/sbsdb/",
+            "deployUrl": "/791/sbsdb/",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/resource",
+              {
+                "glob": "package.json",
+                "input": "",
+                "output": "/"
+              },
+              {
+                "glob": "start-electron.js",
+                "input": "",
+                "output": "/"
+              }
             ],
             "styles": [
+              "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/primeng/resources/themes/nova-light/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
               "src/styles.scss"
             ],
             "scripts": [],
             "es5BrowserSupport": true
           },
           "configurations": {
-            "production": {
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "devx": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.devx.ts"
+                }
+              ]
+            },
+            "prod": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            },
+            "prodx": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prodx.ts"
                 }
               ],
               "optimization": true,

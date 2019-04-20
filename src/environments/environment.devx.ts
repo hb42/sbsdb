@@ -2,12 +2,12 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-// ng build --dev
+// ng build --devx
 
 export const environment = {
-  env       : "Development",
+  env       : "DevelopmentX",
   production: false,
-  configFile: "./resource/config.dev.json",
+  configFile: "./resource/config.devx.json",
 };
 
 /*
