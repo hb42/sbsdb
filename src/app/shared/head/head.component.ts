@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api";
 
 @Component({
@@ -12,7 +13,7 @@ export class HeadComponent implements OnInit {
   mainmenu: MenuItem[];
   mainmenuheight: number;
 
-  constructor() {
+  constructor(private router: Router) {
   }
 
   ngOnInit() {
@@ -101,6 +102,18 @@ export class HeadComponent implements OnInit {
     ];
 
     this.mainmenuheight = this.mainmenu.length * 41;
+  }
+
+  public navigate(target: string) {
+    this.router.navigate([target]);
+  }
+
+  public backBtn() {
+    history.back();
+  }
+
+  public forwardBtn() {
+    history.forward();
   }
 
 }

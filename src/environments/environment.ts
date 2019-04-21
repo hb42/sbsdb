@@ -7,7 +7,8 @@
 export const environment = {
   env       : "Development",
   production: false,
-  configFile: "./resource/config.dev.json",
+  // configFile: "./resource/config.dev.json",
+  webservice: "/ws",
 };
 
 /*

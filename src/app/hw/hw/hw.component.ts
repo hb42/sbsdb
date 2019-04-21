@@ -14,9 +14,11 @@ export class HwComponent implements OnInit {
   public centerPaneMinWidth: string;
 
   constructor() {
+    console.debug("c'tor HwComponent");
   }
 
   ngOnInit() {
+    console.debug("onInit HwComponent");
     this.leftPaneWidth = "350px";
     this.leftPaneMinWidth = "100px";
     this.centerPaneWidth = "100%";

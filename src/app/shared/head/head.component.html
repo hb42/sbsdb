@@ -1,11 +1,19 @@
 
 <p-toolbar>
   <div class="ui-toolbar-group-left">
-    <button type="button" pButton icon="pi pi-chevron-circle-left" class="ui-button-secondary nav-btn" title="zurück"></button>
-    <button type="button" pButton icon="pi pi-chevron-circle-right" class="ui-button-secondary spacer2 nav-btn" title="vorwärts"></button>
+    <button type="button" pButton icon="pi pi-chevron-circle-left"
+            class="ui-button-secondary nav-btn" title="zurück"
+            (click)="backBtn()"
+    ></button>
+    <button type="button" pButton icon="pi pi-chevron-circle-right"
+            class="ui-button-secondary spacer2 nav-btn" title="vorwärts"
+            (click)="forwardBtn()"
+    ></button>
 
-    <p-splitButton label="Arbeitsplätze" icon="pi pi-user" [model]="items" class="spacer" [appendTo]="'body'"></p-splitButton>
-    <p-splitButton label="Hardware" icon="pi pi-print" [model]="items" class="spacer2" [appendTo]="'body'"></p-splitButton>
+    <p-splitButton label="Arbeitsplätze" icon="pi pi-user" [model]="items" class="spacer"
+                   [appendTo]="'body'" (onClick)="navigate('/ap')"></p-splitButton>
+    <p-splitButton label="Hardware" icon="pi pi-print" [model]="items" class="spacer2"
+                   [appendTo]="'body'" (onClick)="navigate('/hw')"></p-splitButton>
 
     <label>
       <input type="text" pInputText placeholder="Suche" class="spacer">
