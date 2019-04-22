@@ -1,4 +1,5 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
+import { ConfigService } from "../../shared/config/config.service";
 
 @Component({
              selector   : "sbsdb-hw",
@@ -13,8 +14,9 @@ export class HwComponent implements OnInit {
   public centerPaneWidth: string;
   public centerPaneMinWidth: string;
 
-  constructor() {
+  constructor(private config: ConfigService) {
     console.debug("c'tor HwComponent");
+    config.getUser().path = "TEST";
   }
 
   ngOnInit() {

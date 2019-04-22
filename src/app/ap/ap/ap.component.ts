@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { UserService } from "../../shared/config/user.service";
+import { ConfigService } from "../../shared/config/config.service";
 
 @Component({
              selector   : "sbsdb-ap",
@@ -15,15 +15,15 @@ export class ApComponent implements OnInit {
   public centerPaneWidth: string;
   public centerPaneMinWidth: string;
 
-  constructor(private route: ActivatedRoute, private user: UserService) {
+  constructor(private route: ActivatedRoute, private config: ConfigService) {
     console.debug("c'tor ApComponent");
   }
 
   ngOnInit() {
     const par = this.route.snapshot.params["tree"];
     console.debug("onInit ApComponent par=" + par);
-    if (this.user) {
-      console.debug("onInit UserSession path=" + this.user.path);
+    if (this.config.getUser()) {
+      console.debug("onInit UserSession path=" + this.config.getUser().path);
     } else {
       console.debug("onInit UserSession is undefined");
     }

@@ -38,7 +38,7 @@ import { AppComponent } from "./app.component";
 import { HwListComponent } from "./hw/hw-list/hw-list.component";
 import { HwTreeComponent } from "./hw/hw-tree/hw-tree.component";
 import { HwComponent } from "./hw/hw/hw.component";
-import { UserService } from "./shared/config/user.service";
+import { ConfigService } from "./shared/config/config.service";
 import { FootComponent } from "./shared/foot/foot.component";
 import { HeadComponent } from "./shared/head/head.component";
 
@@ -50,12 +50,12 @@ export function logonOptionsFactory(): LogonParameter {
   };
 }
 
-// Damit UserService so frueh, wie moeglich geladen wird und die Benutzer-Daten
-// fuer alle anderen Services verfuegbar sind (holt implizit ConfigService)..
+// Damit ConfigService so frueh, wie moeglich geladen wird und die Config-Daten
+// (u.a. Benutzer-Session) fuer alle anderen Services verfuegbar sind.
 // (fn , die fn liefert, die ein Promise liefert)
 // mit AOT fkt. nur das folgende Konstrukt
-export function initConf(userService: UserService) {
-  return () => userService.init();
+export function initConf(configService: ConfigService) {
+  return () => configService.init();
 }
 
 @NgModule(
@@ -113,11 +113,11 @@ export function initConf(userService: UserService) {
         {
           provide   : APP_INITIALIZER,
           useFactory: initConf,
-          deps      : [UserService],  // f. IE11-Prob. + Injector
+          deps      : [ConfigService],  // f. IE11-Prob. + Injector
           multi     : true
         },
 
-        // Konfig fuer Autologon
+        // Konfig fuer Autologon TODO Altschuld, entfernen, sobald lib-client umgebaut
         {
           provide   : LOGON_OPTIONS,
           useFactory: logonOptionsFactory
