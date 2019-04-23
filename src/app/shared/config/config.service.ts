@@ -1,5 +1,5 @@
 import { Location } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
 // tslint:disable-next-line:no-submodule-imports
 import { VersionService } from "@hb42/lib-client/lib/src";
@@ -103,7 +103,8 @@ export class ConfigService {
 
   public getConfig(confName: string): Promise<any> {
     return this.http.get<string>(this.getConf + "/" + confName).toPromise().then((val) => {
-      return JSON.parse(val);
+      // return JSON.parse(val);
+      return val;
     });
   }
 
