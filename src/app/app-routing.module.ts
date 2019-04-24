@@ -6,7 +6,6 @@ import { HwComponent } from "./hw/hw/hw.component";
 const routes: Routes = [
   {path: "", component: ApComponent},
   {path: "ap", component: ApComponent},
-  {path: "ap/:tree", component: ApComponent},
   {path: "hw", component: HwComponent}
 ];
 

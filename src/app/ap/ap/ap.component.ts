@@ -1,15 +1,14 @@
-import { Component, HostBinding, OnInit } from "@angular/core";
-import {ActivatedRoute, ParamMap} from "@angular/router";
+import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
-import {switchMap} from "rxjs/operators";
-import {Observable, Subscription} from "rxjs";
 
 @Component({
              selector   : "sbsdb-ap",
              templateUrl: "./ap.component.html",
              styleUrls  : ["./ap.component.scss"]
            })
-export class ApComponent implements OnInit {
+export class ApComponent implements OnInit, OnDestroy {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
   public leftPaneWidth: string;
@@ -17,20 +16,32 @@ export class ApComponent implements OnInit {
   public centerPaneWidth: string;
   public centerPaneMinWidth: string;
 
-  private urlParams: Observable<ParamMap>;
+  public urlParams: string[];
+  public subscription: Subscription;
 
   constructor(private route: ActivatedRoute, private config: ConfigService) {
     console.debug("c'tor ApComponent");
   }
 
   ngOnInit() {
-    const par = this.route.snapshot.params["tree"];
-    console.debug("onInit ApComponent par=" + par);
+    // const par = this.route.snapshot.params["tree"];
+    // console.debug("onInit ApComponent par=" + par);
 
     /*  verschiedene parameter
     https://stackoverflow.com/questions/49738911/angular-5-routing-to-same-component-but-different-param-not-working
      */
-    this.urlParams = this.route.paramMap;
+    this.route.params.subscribe((params) => {
+      console.debug("## subscribe");
+      console.dir(params);
+      // URL /ap;id=11;tree=bst -> {id: 11, tree: 'bst'}
+      // als zweiter Navigationsparameter:
+      //   this.router.navigate(['/ap', { id: 11, tree: 'bst' }]);
+      //   <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">test</a>
+      this.urlParams = [
+        params.tree,
+        params.id
+      ];
+    });
 
     if (this.config.getUser()) {
       console.debug("onInit UserSession path=" + this.config.getUser().path);
@@ -43,6 +54,10 @@ export class ApComponent implements OnInit {
     this.centerPaneWidth = "100%";
     this.centerPaneMinWidth = "100px";
 
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }
