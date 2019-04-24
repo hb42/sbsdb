@@ -1,3 +1,10 @@
+# *hb*
+# config files mit internen Daten, von github ausnehmen
+/src/resource/config*
+# Verzeichnisse die nur lokal genutzt werden
+/div
+
+
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
@@ -30,6 +37,8 @@ speed-measure-plugin.json
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+# Visual Studio 2015/2017 cache/options directory
+.vs/
 
 # misc
 /.sass-cache
@@ -49,6 +58,3 @@ Thumbs.db
 *.zip
 *.tgz
 *.log
-/div
-
-/src/resource/config*

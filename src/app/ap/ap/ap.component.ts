@@ -1,6 +1,8 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import {ActivatedRoute, ParamMap} from "@angular/router";
 import { ConfigService } from "../../shared/config/config.service";
+import {switchMap} from "rxjs/operators";
+import {Observable, Subscription} from "rxjs";
 
 @Component({
              selector   : "sbsdb-ap",
@@ -15,6 +17,8 @@ export class ApComponent implements OnInit {
   public centerPaneWidth: string;
   public centerPaneMinWidth: string;
 
+  private urlParams: Observable<ParamMap>;
+
   constructor(private route: ActivatedRoute, private config: ConfigService) {
     console.debug("c'tor ApComponent");
   }
@@ -22,6 +26,12 @@ export class ApComponent implements OnInit {
   ngOnInit() {
     const par = this.route.snapshot.params["tree"];
     console.debug("onInit ApComponent par=" + par);
+
+    /*  verschiedene parameter
+    https://stackoverflow.com/questions/49738911/angular-5-routing-to-same-component-but-different-param-not-working
+     */
+    this.urlParams = this.route.paramMap;
+
     if (this.config.getUser()) {
       console.debug("onInit UserSession path=" + this.config.getUser().path);
     } else {

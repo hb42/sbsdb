@@ -16,14 +16,21 @@ export class HwComponent implements OnInit {
 
   constructor(private config: ConfigService) {
     console.debug("c'tor HwComponent");
-    this.config.saveConfig("test2", 42);
   }
 
   ngOnInit() {
     console.debug("onInit HwComponent");
+    this.config.saveConfig("test2", 42).then((val) => {
+      console.debug("save config test2: " + val);
+      this.config.getConfig("test2").then((val2) => {
+        console.debug("get config test2: " + val2);
+      });
+    });
+    this.config.saveConfig("test.entry", {a: 10, b: "test"}).then((rc) => {
+      console.debug("save config test.entry");
+      console.dir(rc);
+    });
     // this.config.getUser().path = "TEST";
-    this.config.saveConfig("test.entry", {a: 10, b: "test"});
-    console.debug("config#2 " + this.config.getConfig("test2"));
     this.leftPaneWidth = "350px";
     this.leftPaneMinWidth = "100px";
     this.centerPaneWidth = "100%";
