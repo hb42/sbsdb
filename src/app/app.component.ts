@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { NavigationService } from "./shared/navigation.service";
 
 @Component(
     {
@@ -7,4 +8,8 @@ import { Component } from "@angular/core";
       styleUrls  : ["./app.component.scss"]
     })
 export class AppComponent {
+  constructor(private nav: NavigationService) {
+
+  }
+
 }

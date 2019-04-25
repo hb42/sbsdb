@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
 
@@ -19,7 +19,9 @@ export class ApComponent implements OnInit, OnDestroy {
   public urlParams: string[];
   public subscription: Subscription;
 
-  constructor(private route: ActivatedRoute, private config: ConfigService) {
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private config: ConfigService) {
     console.debug("c'tor ApComponent");
   }
 
@@ -57,7 +59,10 @@ export class ApComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      console.debug("ApComponent - subscription.unsubscribe");
+      this.subscription.unsubscribe();
+    }
   }
 
 }
