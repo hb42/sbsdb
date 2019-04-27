@@ -9,11 +9,6 @@ import { ConfigService } from "../../shared/config/config.service";
 export class HwComponent implements OnInit {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
-  public leftPaneWidth: string;
-  public leftPaneMinWidth: string;
-  public centerPaneWidth: string;
-  public centerPaneMinWidth: string;
-
   constructor(private config: ConfigService) {
     console.debug("c'tor HwComponent");
   }
@@ -31,10 +26,6 @@ export class HwComponent implements OnInit {
       console.dir(rc);
     });
     // this.config.getUser().path = "TEST";
-    this.leftPaneWidth = "350px";
-    this.leftPaneMinWidth = "100px";
-    this.centerPaneWidth = "100%";
-    this.centerPaneMinWidth = "100px";
   }
 
 }

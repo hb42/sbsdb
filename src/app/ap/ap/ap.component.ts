@@ -11,11 +11,6 @@ import { ConfigService } from "../../shared/config/config.service";
 export class ApComponent implements OnInit, OnDestroy {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
-  public leftPaneWidth: string;
-  public leftPaneMinWidth: string;
-  public centerPaneWidth: string;
-  public centerPaneMinWidth: string;
-
   public urlParams: string[];
   public subscription: Subscription;
 
@@ -50,11 +45,6 @@ export class ApComponent implements OnInit, OnDestroy {
     } else {
       console.debug("onInit UserSession is undefined");
     }
-
-    this.leftPaneWidth = "350px";
-    this.leftPaneMinWidth = "100px";
-    this.centerPaneWidth = "100%";
-    this.centerPaneMinWidth = "100px";
 
   }
 

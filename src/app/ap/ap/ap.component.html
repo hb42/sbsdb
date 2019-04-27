@@ -1,16 +1,15 @@
 <div class="flex-row" >
-  <div class="flex-panel" [style.width]="leftPaneWidth" [style.min-width]="leftPaneMinWidth"
-  >
+  <div class="flex-panel treePanel">
     <sbsdb-ap-tree></sbsdb-ap-tree>
   </div>
   <div fb-splitter ></div>
-  <div class="flex-panel flex-max" [style.width]="centerPaneWidth" [style.min-width]="centerPaneMinWidth"
-  >
+  <div class="flex-panel flex-max listPanel">
+    <!--    <sbsdb-ap-list></sbsdb-ap-list>-->
+
     <a [routerLink]="['/ap', { id: 1, tree: 'oes' }]">1-oes</a><br>
     <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">11-bst</a><br>
     <a [routerLink]="['/ap', { id: 42, tree: 'vlan' }]">42-vlan</a><br>
     <a [routerLink]="['/ap', { id: 123, tree: 'oes', test: 1 }]">123-oes</a><br>
-    <!--    <sbsdb-ap-list></sbsdb-ap-list>-->
     <ul>
       <li *ngFor="let par of urlParams ">
         <!--      <a [routerLink]="['/hero', hero.id]">-->

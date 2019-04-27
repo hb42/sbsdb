@@ -1,0 +1,17 @@
+// Dimensionen fuer Baum und Liste
+$treeWidth: 350px;
+$treeMinWidth: 100px;
+
+$listWidth: 100%;
+$listMinWidth: 100px;
+
+
+.treePanel {
+  width: $treeWidth;
+  min-width: $treeMinWidth;
+}
+
+.listPanel {
+  width: $listWidth;
+  min-width: $listMinWidth;
+}

@@ -1,8 +1,7 @@
 import { Location } from "@angular/common";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
-// tslint:disable-next-line:no-submodule-imports
-import { VersionService } from "@hb42/lib-client/lib/src";
+import { VersionService } from "@hb42/lib-client";
 import { environment } from "../../../environments/environment";
 import { UserSession } from "./user.session";
 
@@ -16,6 +15,7 @@ export class ConfigService {
     return this._webservice;
   }
 
+  // Web-API calls
   private readonly getConf: string;
   private readonly setConf: string;
   private readonly delConf: string;
@@ -52,9 +52,9 @@ export class ConfigService {
    * User-Daten aus der DB holen, Version aus package.json auslesen.
    *
    * Die fn wird beim Modulstart aufgerufen, damit die Config-Daten
-   * verfuegbar sind, wenn die Anwendung initilisiert wird.
+   * verfuegbar sind, wenn die Anwendung initialisiert wird.
    *
-   * wird in app.modules wie folgt aufgerufen:
+   * Wird in app.modules wie folgt aufgerufen:
    *
    * // fn , die fn liefert, die ein Promise liefert
    * export function initConf(configService: ConfigService) {
@@ -74,6 +74,7 @@ export class ConfigService {
    */
   public init(): Promise<any> {
     // SSE init
+    // TODO SSE mit .NET Core? Falls ja, gibt's Verwendung dafuer?
 
     // Benutzerdaten holen
     return this.http.get<UserSession>(this.getUserConf).toPromise()

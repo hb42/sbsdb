@@ -2,8 +2,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-// tslint:disable-next-line:no-submodule-imports
-import { LibClientModule, LOGON_OPTIONS, LogonParameter } from "@hb42/lib-client/lib/src";
+import { LibClientModule, LOGON_OPTIONS, LogonParameter } from "@hb42/lib-client";
 import {
   ButtonModule,
   CheckboxModule,
@@ -39,6 +38,7 @@ import { HwListComponent } from "./hw/hw-list/hw-list.component";
 import { HwTreeComponent } from "./hw/hw-tree/hw-tree.component";
 import { HwComponent } from "./hw/hw/hw.component";
 import { ConfigService } from "./shared/config/config.service";
+import { ErrorComponent } from "./shared/error/error.component";
 import { FootComponent } from "./shared/foot/foot.component";
 import { HeadComponent } from "./shared/head/head.component";
 
@@ -69,7 +69,8 @@ export function initConf(configService: ConfigService) {
         HwListComponent,
         HwTreeComponent,
         ApComponent,
-        HwComponent
+        HwComponent,
+        ErrorComponent
       ],
       imports     : [
         BrowserModule,
