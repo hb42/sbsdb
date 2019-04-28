@@ -77,7 +77,9 @@ export class ConfigService {
     // TODO SSE mit .NET Core? Falls ja, gibt's Verwendung dafuer?
 
     // Benutzerdaten holen
-    return this.http.get<UserSession>(this.getUserConf).toPromise()
+    // Jeder Benutzer wird authorisiert, was er dann sehen darf muss in der
+    // Oberflaeche entschiweden werden.
+    return this.http.get<any>(this.getUserConf).toPromise()
         .then(data => {
           this.userSession = new UserSession(this.userDataChange, data);
           console.debug(">>> user config done");

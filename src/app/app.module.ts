@@ -28,6 +28,7 @@ import {
   TreeModule
 } from "primeng/primeng";
 import { TableModule } from "primeng/table";
+import { AdminComponent } from "./ap/admin/admin/admin.component";
 import { ApListComponent } from "./ap/ap-list/ap-list.component";
 import { ApTreeComponent } from "./ap/ap-tree/ap-tree.component";
 import { ApComponent } from "./ap/ap/ap.component";
@@ -70,7 +71,8 @@ export function initConf(configService: ConfigService) {
         HwTreeComponent,
         ApComponent,
         HwComponent,
-        ErrorComponent
+        ErrorComponent,
+        AdminComponent
       ],
       imports     : [
         BrowserModule,

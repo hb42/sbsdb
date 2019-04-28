@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api";
+import { NavigationService } from "../navigation.service";
 
 @Component({
              selector   : "sbsdb-head",
@@ -13,7 +14,7 @@ export class HeadComponent implements OnInit {
   mainmenu: MenuItem[];
   mainmenuheight: number;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, public navigationService: NavigationService) {
   }
 
   ngOnInit() {
@@ -105,7 +106,9 @@ export class HeadComponent implements OnInit {
   }
 
   public navigate(target: string) {
-    this.router.navigate([target]);
+    if (!this.navigationService.isPage(target)) {
+      this.router.navigate([target]);
+    }
   }
 
   public backBtn() {

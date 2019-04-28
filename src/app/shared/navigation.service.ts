@@ -11,7 +11,7 @@ export class NavigationService {
   constructor(private router: Router,
               private route: ActivatedRoute,
               private location: Location,
-              private configService: ConfigService) {
+              public configService: ConfigService) {
 
     console.debug("c'tor NavigationService");
 
@@ -33,6 +33,9 @@ export class NavigationService {
 
   }
 
+  public isPage(check: string): boolean {
+    return this.location.path().startsWith(check);
+  }
   /**
    * Beim Start der Anwendung zur letzten gespeicherten URL
    * des Users navigieren.

@@ -10,10 +10,30 @@
             (click)="forwardBtn()"
     ></button>
 
-    <p-splitButton label="Arbeitsplätze" icon="pi pi-user" [model]="items" class="spacer"
-                   [appendTo]="'body'" (onClick)="navigate('/ap')"></p-splitButton>
-    <p-splitButton label="Hardware" icon="pi pi-print" [model]="items" class="spacer2"
-                   [appendTo]="'body'" (onClick)="navigate('/hw')"></p-splitButton>
+    <span class="spacer page-btn">
+      <button *ngIf="!navigationService.isPage('/ap')"
+              label="Arbeitsplätze" icon="pi pi-user"
+              type="button" pButton (click)="navigate('/ap')"></button>
+      <p-splitButton *ngIf="navigationService.isPage('/ap')"
+                     label="Arbeitsplätze" icon="pi pi-user" styleClass="ui-button-warning"
+                     [model]="items" [appendTo]="'body'"></p-splitButton>
+    </span>
+    <span class="spacer page-btn">
+      <button *ngIf="!navigationService.isPage('/hw')"
+              label="Hardware" icon="pi pi-print"
+              type="button" pButton (click)="navigate('/hw')"></button>
+      <p-splitButton *ngIf="navigationService.isPage('/hw')"
+                     label="Hardware" icon="pi pi-print" styleClass="ui-button-warning"
+                     [model]="items" [appendTo]="'body'"></p-splitButton>
+    </span>
+    <span class="spacer page-btn">
+      <button *ngIf="!navigationService.isPage('/admin')"
+              label="Admin" icon="pi pi-unlock"
+              type="button" pButton (click)="navigate('/admin')"></button>
+      <p-splitButton *ngIf="navigationService.isPage('/admin')"
+                     label="Admin" icon="pi pi-unlock" styleClass="ui-button-warning"
+                     [model]="items" [appendTo]="'body'"></p-splitButton>
+    </span>
 
     <label>
       <input type="text" pInputText placeholder="Suche" class="spacer">
