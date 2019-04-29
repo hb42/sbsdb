@@ -1,5 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatButtonModule, MatIconModule, MatInputModule, MatTabsModule, MatToolbarModule } from "@angular/material";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { LibClientModule, LOGON_OPTIONS, LogonParameter } from "@hb42/lib-client";
@@ -79,6 +81,7 @@ export function initConf(configService: ConfigService) {
         BrowserAnimationsModule,
         AppRoutingModule,
         HttpClientModule,
+        FormsModule,
 
         // -- primeng
         ButtonModule,
@@ -104,6 +107,13 @@ export function initConf(configService: ConfigService) {
         ToolbarModule,
         TooltipModule,
         TreeModule,
+
+        // -- Material
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        MatTabsModule,
+        MatToolbarModule,
 
         // -- eigene
         LibClientModule,

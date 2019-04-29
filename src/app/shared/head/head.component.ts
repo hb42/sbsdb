@@ -14,6 +14,14 @@ export class HeadComponent implements OnInit {
   mainmenu: MenuItem[];
   mainmenuheight: number;
 
+  public navLinks = [
+    {path: "/ap", label: "Arbeitsplätze"},
+    {path: "/hw", label: "Hardware"},
+    {path: "/admin", label: "Admin"},
+  ];
+
+  public search = "test";
+
   constructor(private router: Router, public navigationService: NavigationService) {
   }
 

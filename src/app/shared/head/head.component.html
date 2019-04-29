@@ -1,4 +1,4 @@
-
+<!--
 <p-toolbar>
   <div class="ui-toolbar-group-left">
     <button type="button" pButton icon="pi pi-chevron-circle-left"
@@ -48,4 +48,37 @@
 
   </div>
 </p-toolbar>
+-->
+<mat-toolbar>
+  <nav mat-tab-nav-bar class="spacer2">
+    <a mat-tab-link
+       *ngFor="let link of navLinks"
+       [routerLink]="link.path"
+       routerLinkActive #rla="routerLinkActive"
+       [active]="rla.isActive">
+      {{link.label}}
+    </a>
+  </nav>
 
+  <button mat-icon-button (click)="backBtn()">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <button mat-icon-button (click)="forwardBtn()" class="spacer2">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+
+  <!--  <button mat-button (click)="navigate('/ap')">Arbeitsplätze</button>-->
+  <!--  <button mat-button (click)="navigate('/hw')">Hardware</button>-->
+  <!--  <button mat-button (click)="navigate('/admin')">Admin</button>-->
+
+  <mat-form-field style="font-size: 14px">
+    <input matInput type="search" placeholder="Suche" [(ngModel)]="search">
+    <button mat-button *ngIf="search" matSuffix mat-icon-button (click)="search=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <button mat-button color="accent">Suche</button>
+  <button mat-button color="accent">Erweiterte Suche</button>
+
+</mat-toolbar>
