@@ -7,7 +7,7 @@ import { HwComponent } from "./hw/hw/hw.component";
 import { ErrorComponent } from "./shared/error/error.component";
 
 const routes: Routes = [
-  {path: "", component: ApComponent},
+  {path: "", redirectTo: "/ap", pathMatch: "full"},
   {path: "ap", component: ApComponent},
   {path: "hw", component: HwComponent},
   {path: "admin", component: AdminComponent},

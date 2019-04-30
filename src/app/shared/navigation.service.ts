@@ -82,5 +82,9 @@ export class NavigationService {
 
   }
 
+  public resetApp() {
+    window.location.href = this.location.prepareExternalUrl("/");
+  }
+
 
 }

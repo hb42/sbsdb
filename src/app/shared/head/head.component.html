@@ -50,7 +50,12 @@
 </p-toolbar>
 -->
 <mat-toolbar>
-  <nav mat-tab-nav-bar class="spacer2">
+  <button mat-button (click)="navigationService.resetApp()">
+    <img src="./resource/sbs32-grey2.png" title="{{configService.version.displayname}} {{configService.version.version}}"/>
+  </button>
+  <span class="spacer"></span>
+
+  <nav mat-tab-nav-bar>
     <a mat-tab-link
        *ngFor="let link of navLinks"
        [routerLink]="link.path"
@@ -59,21 +64,22 @@
       {{link.label}}
     </a>
   </nav>
+  <span class="spacer"></span>
 
   <button mat-icon-button (click)="backBtn()">
-    <mat-icon>chevron_left</mat-icon>
+    <mat-icon>arrow_back</mat-icon>
   </button>
-  <button mat-icon-button (click)="forwardBtn()" class="spacer2">
-    <mat-icon>chevron_right</mat-icon>
+  <button mat-icon-button (click)="forwardBtn()">
+    <mat-icon>arrow_forward</mat-icon>
   </button>
-
+  <span class="spacer"></span>
   <!--  <button mat-button (click)="navigate('/ap')">Arbeitsplätze</button>-->
   <!--  <button mat-button (click)="navigate('/hw')">Hardware</button>-->
   <!--  <button mat-button (click)="navigate('/admin')">Admin</button>-->
 
   <mat-form-field style="font-size: 14px">
     <input matInput type="search" placeholder="Suche" [(ngModel)]="search">
-    <button mat-button *ngIf="search" matSuffix mat-icon-button (click)="search=''">
+    <button mat-button [disabled]="!search" matSuffix mat-icon-button (click)="search=''">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>

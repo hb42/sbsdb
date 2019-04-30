@@ -1,11 +1,16 @@
 .spacer {
-  margin-right: 5px;
+  min-width: 25px;
 }
 .spacer2 {
   margin-right: 20px;
 }
 
-/* Vor- Zurueck-Button */
+.spacer3 {
+  margin-right: 25px;
+}
+
+
+/* Vor- Zurueck-Button (primeng) */
 .nav-btn {
   height: 33px;
   width: 40px !important;
