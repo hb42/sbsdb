@@ -1,39 +1,14 @@
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { MatButtonModule, MatIconModule, MatInputModule, MatTabsModule, MatToolbarModule } from "@angular/material";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { LibClientModule, LOGON_OPTIONS, LogonParameter } from "@hb42/lib-client";
-import {
-  ButtonModule,
-  CheckboxModule,
-  DropdownModule,
-  InputTextModule,
-  MegaMenuModule,
-  MenubarModule,
-  MenuModule,
-  MessageModule,
-  MessagesModule,
-  OverlayPanelModule,
-  PanelModule,
-  PickListModule,
-  RadioButtonModule,
-  SelectButtonModule,
-  SharedModule,
-  SlideMenuModule,
-  SplitButtonModule,
-  TabMenuModule,
-  TieredMenuModule,
-  ToolbarModule,
-  TooltipModule,
-  TreeModule
-} from "primeng/primeng";
-import { TableModule } from "primeng/table";
-import { AdminComponent } from "./ap/admin/admin/admin.component";
+import { AdminComponent } from "./admin/admin/admin.component";
 import { ApListComponent } from "./ap/ap-list/ap-list.component";
 import { ApTreeComponent } from "./ap/ap-tree/ap-tree.component";
 import { ApComponent } from "./ap/ap/ap.component";
+import { AppMaterialModule } from "./app-material.module";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -83,37 +58,8 @@ export function initConf(configService: ConfigService) {
         HttpClientModule,
         FormsModule,
 
-        // -- primeng
-        ButtonModule,
-        CheckboxModule,
-        DropdownModule,
-        InputTextModule,
-        MegaMenuModule,
-        MenubarModule,
-        MenuModule,
-        MessageModule,
-        MessagesModule,
-        OverlayPanelModule,
-        PanelModule,
-        PickListModule,
-        RadioButtonModule,
-        SelectButtonModule,
-        SharedModule,  // w/template etc.
-        SlideMenuModule,
-        SplitButtonModule,
-        TableModule,
-        TabMenuModule,
-        TieredMenuModule,
-        ToolbarModule,
-        TooltipModule,
-        TreeModule,
-
-        // -- Material
-        MatButtonModule,
-        MatIconModule,
-        MatInputModule,
-        MatTabsModule,
-        MatToolbarModule,
+        // -- Angular Material
+        AppMaterialModule,
 
         // -- eigene
         LibClientModule,

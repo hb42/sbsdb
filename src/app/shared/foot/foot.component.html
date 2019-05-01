@@ -1,11 +1,18 @@
-<p-toolbar>
-  footer
-  <!--
-  <div class="foot-center"></div>
-  <div class="foot-right small">
-    Angemeldet: {{configService.getUserConfig().vorname}} {{configService.getUserConfig().name}}
-    <span *ngIf="configService.getUserConfig().isAdmin()"> (Admin)</span>
-  </div>
+<!--<p-toolbar>-->
+
+<!--
+<div class="foot-center"></div>
+<div class="foot-right small">
+  Angemeldet: {{configService.getUserConfig().vorname}} {{configService.getUserConfig().name}}
+  <span *ngIf="configService.getUserConfig().isAdmin()"> (Admin)</span>
+</div>
 -->
 
-</p-toolbar>
+<!--</p-toolbar>-->
+<mat-toolbar class="footer">
+
+  <div class="fill"></div>
+  <div style="font-size: 10px">
+    {{configService.version.displayname}} {{configService.version.version}}
+  </div>
+</mat-toolbar>

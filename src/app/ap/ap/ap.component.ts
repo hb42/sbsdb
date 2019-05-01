@@ -2,6 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
+import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
              selector   : "sbsdb-ap",
@@ -11,12 +12,14 @@ import { ConfigService } from "../../shared/config/config.service";
 export class ApComponent implements OnInit, OnDestroy {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
-  public urlParams: string[];
+
   public subscription: Subscription;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private config: ConfigService) {
+              private config: ConfigService,
+              private apService: ArbeitsplatzService
+  ) {
     console.debug("c'tor ApComponent");
   }
 
@@ -28,16 +31,19 @@ export class ApComponent implements OnInit, OnDestroy {
     https://stackoverflow.com/questions/49738911/angular-5-routing-to-same-component-but-different-param-not-working
      */
     this.route.params.subscribe((params) => {
-      console.debug("## subscribe");
+      console.debug("## route params changed");
       console.dir(params);
       // URL /ap;id=11;tree=bst -> {id: 11, tree: 'bst'}
       // als zweiter Navigationsparameter:
       //   this.router.navigate(['/ap', { id: 11, tree: 'bst' }]);
       //   <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">test</a>
-      this.urlParams = [
-        params.tree,
-        params.id
-      ];
+      this.apService.urlParams = {
+        tree: params.tree,
+        id  : params.id
+      };
+      if (params.tree && params.tree === "oe") {
+        this.apService.expandTree(params.id);
+      }
     });
 
     if (this.config.getUser()) {

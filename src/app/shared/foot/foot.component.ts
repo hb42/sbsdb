@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ConfigService } from "../config/config.service";
 
 @Component({
              selector   : "sbsdb-foot",
@@ -7,7 +8,7 @@ import { Component, OnInit } from "@angular/core";
            })
 export class FootComponent implements OnInit {
 
-  constructor() {
+  constructor(public configService: ConfigService) {
   }
 
   ngOnInit() {

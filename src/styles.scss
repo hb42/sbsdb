@@ -6,6 +6,21 @@ body {
   height: 100%;
 }
 
+/* fill space between items */
+.fill {
+  flex: 1;
+}
+
+/* header + footer size */
+.header {
+  height: 68px;
+}
+
+.footer {
+  height: 30px !important;
+}
+
+
 /* flex layout */
 
 /* Komplette Seite belegen */
@@ -59,7 +74,7 @@ body {
   height: 100%;
   width: 100%;
   overflow: auto;
-  display: block;
+  display: grid;
 }
 
 /* Inhalt eines flex-panel ohne Scrollbalken */

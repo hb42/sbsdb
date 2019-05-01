@@ -49,13 +49,13 @@
   </div>
 </p-toolbar>
 -->
-<mat-toolbar>
-  <button mat-button (click)="navigationService.resetApp()">
-    <img src="./resource/sbs32-grey2.png" title="{{configService.version.displayname}} {{configService.version.version}}"/>
-  </button>
-  <span class="spacer"></span>
+<mat-toolbar color="primary">
+  <!--  <button mat-button (click)="navigationService.resetApp()">-->
+  <!--    <img src="./resource/sbs32-grey.png" title="{{configService.version.displayname}} {{configService.version.version}}"/>-->
+  <!--  </button>-->
+  <!--  <span class="spacer"></span>-->
 
-  <nav mat-tab-nav-bar>
+  <nav mat-tab-nav-bar backgroundColor="primary">
     <a mat-tab-link
        *ngFor="let link of navLinks"
        [routerLink]="link.path"
@@ -87,4 +87,21 @@
   <button mat-button color="accent">Suche</button>
   <button mat-button color="accent">Erweiterte Suche</button>
 
+  <div class="fill"></div>
+  <!-- TODO Menue anhaengen -->
+  <button mat-icon-button [mat-menu-trigger-for]="mainmenu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <mat-menu #mainmenu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>info</mat-icon>
+      <span>Über</span>
+    </button>
+    <button mat-menu-item (click)="navigationService.resetApp()">
+      <mat-icon>power_settings_new</mat-icon>
+      <span>Reset</span>
+    </button>
+
+  </mat-menu>
 </mat-toolbar>
