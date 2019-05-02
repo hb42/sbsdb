@@ -2,6 +2,7 @@ import { Component, HostBinding, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 import { OeTreeItem } from "../model/oe.tree.item";
+import {AppRoutingModule} from "../../app-routing.module";
 
 @Component({
              selector   : "sbsdb-ap-tree",
@@ -28,7 +29,7 @@ export class ApTreeComponent implements OnInit {
   public select(node: OeTreeItem) {
     console.debug("node selected " + node.id);
     this.apService.selected = node;
-    this.router.navigate(["/ap", {tree: "oe", id: node.id}]);
+    this.router.navigate(["/" + AppRoutingModule.apPath, {tree: "oe", id: node.id}]);
   }
 
   public isSelected = (id: number) => !!this.apService.selected && this.apService.selected.id === id;

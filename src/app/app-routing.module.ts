@@ -6,13 +6,15 @@ import { ApComponent } from "./ap/ap/ap.component";
 import { HwComponent } from "./hw/hw/hw.component";
 import { ErrorComponent } from "./shared/error/error.component";
 
-// TODO Pfadnamen als const exportieren
+const AP_PATH = "ap";
+const HW_PATH = "hw";
+const ADM_PATH = "admin";
 
 const routes: Routes = [
-  {path: "", redirectTo: "/ap", pathMatch: "full"},
-  {path: "ap", component: ApComponent},
-  {path: "hw", component: HwComponent},
-  {path: "admin", component: AdminComponent},
+  {path: "", redirectTo: "/" + AP_PATH, pathMatch: "full"},
+  {path: AP_PATH, component: ApComponent},
+  {path: HW_PATH, component: HwComponent},
+  {path: ADM_PATH, component: AdminComponent},
   {path: ErrorService.errorPage, component: ErrorComponent}
 ];
 
@@ -21,4 +23,7 @@ const routes: Routes = [
             exports: [RouterModule]
           })
 export class AppRoutingModule {
+  public static apPath = AP_PATH;
+  public static hwPath = HW_PATH;
+  public static admPath = ADM_PATH;
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import {ArbeitsplatzService} from "../arbeitsplatz.service";
 
 @Component({
              selector   : "sbsdb-ap-list",
@@ -7,7 +8,7 @@ import { Component, OnInit } from "@angular/core";
            })
 export class ApListComponent implements OnInit {
 
-  constructor() {
+  constructor(public apService: ArbeitsplatzService) {
   }
 
   ngOnInit() {

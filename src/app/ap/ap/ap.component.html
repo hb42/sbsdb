@@ -4,19 +4,6 @@
   </div>
   <div fb-splitter ></div>
   <div class="flex-panel flex-max listPanel">
-    <!--    <sbsdb-ap-list></sbsdb-ap-list>-->
-
-    <a [routerLink]="['/ap', { id: 1, tree: 'oes' }]">1-oes</a><br>
-    <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">11-bst</a><br>
-    <a [routerLink]="['/ap', { id: 42, tree: 'vlan' }]">42-vlan</a><br>
-    <a [routerLink]="['/ap', { id: 123, tree: 'oes', test: 1 }]">123-oes</a><br>
-    <ul>
-      <li *ngFor="let par of urlParams ">
-        <!--      <a [routerLink]="['/hero', hero.id]">-->
-        <span>{{ par }}</span>
-        <!--      </a>-->
-      </li>
-    </ul>
-    <p>{{urlParams}}</p>
+    <sbsdb-ap-list></sbsdb-ap-list>
   </div>
 </div>

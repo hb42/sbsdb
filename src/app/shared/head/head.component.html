@@ -49,13 +49,13 @@
   </div>
 </p-toolbar>
 -->
-<mat-toolbar color="primary">
+<mat-toolbar>
   <!--  <button mat-button (click)="navigationService.resetApp()">-->
   <!--    <img src="./resource/sbs32-grey.png" title="{{configService.version.displayname}} {{configService.version.version}}"/>-->
   <!--  </button>-->
   <!--  <span class="spacer"></span>-->
 
-  <nav mat-tab-nav-bar backgroundColor="primary">
+  <nav mat-tab-nav-bar>
     <a mat-tab-link
        *ngFor="let link of navLinks"
        [routerLink]="link.path"

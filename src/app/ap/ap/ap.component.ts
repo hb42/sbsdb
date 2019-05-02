@@ -30,6 +30,9 @@ export class ApComponent implements OnInit, OnDestroy {
     /*  verschiedene parameter
     https://stackoverflow.com/questions/49738911/angular-5-routing-to-same-component-but-different-param-not-working
      */
+    // TODO ActivatedRoute ist nur in der jeweiligen component sinnvoll
+    //      d.h. je comp. in der das gebraucht wird .params.subscribe und das Handling an den Service delegieren
+    //      (evtl. NaviagatonService ??)
     this.route.params.subscribe((params) => {
       console.debug("## route params changed");
       console.dir(params);
@@ -39,10 +42,10 @@ export class ApComponent implements OnInit, OnDestroy {
       //   <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">test</a>
       this.apService.urlParams = {
         tree: params.tree,
-        id  : params.id
+        id  : Number.parseInt(params.id, 10)
       };
       if (params.tree && params.tree === "oe") {
-        this.apService.expandTree(params.id);
+        this.apService.expandTree(this.apService.urlParams.id);
       }
     });
 
