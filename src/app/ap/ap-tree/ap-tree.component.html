@@ -24,10 +24,11 @@
     <li class="mat-tree-node">
       <!-- use a disabled button to provide padding for tree leaf -->
       <button mat-icon-button disabled></button>
-      <button mat-button [color]="isSelected(node.id) ? 'accent' : ''"
+      <button mat-button [color]="isSelected(node.id) ? 'accent' : ''" id="tree{{node.id}}"
               (click)="select(node)">
         {{node.betriebsstelle}}
       </button>
+      <mat-icon>info</mat-icon>
     </li>
   </mat-tree-node>
   <!-- This is the tree node template for expandable nodes -->
@@ -39,10 +40,11 @@
             {{apService.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        <button mat-button [color]="isSelected(node.id) ? 'accent' : ''"
+        <button mat-button [color]="isSelected(node.id) ? 'accent' : ''" id="tree{{node.id}}"
                 (click)="select(node)">
           {{node.betriebsstelle}}
         </button>
+        <mat-icon>info</mat-icon>
       </div>
       <ul [class.example-tree-invisible]="!apService.treeControl.isExpanded(node)">
         <ng-container matTreeNodeOutlet></ng-container>

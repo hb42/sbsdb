@@ -35,22 +35,11 @@ export class ArbeitsplatzService {
     if (!this.oeTree || (!!this.selected && this.selected.id === id)) {
       return;
     }
-    this.expandTreeRecurse(id, this.oeTree);
-    // this.oeTree.some((oe) => {
-    //   if (oe.id === id) {
-    //     this.selected = oe;
-    //     return true;
-    //   } else {
-    //     console.debug("recurse OEs for id=" + id + " " + oe.betriebsstelle);
-    //     if (this.expandTreeRecurse(id, oe.children)) {
-    //       console.debug("expand OE " + oe.betriebsstelle);
-    //       this.treeControl.expand(oe);
-    //       return true;
-    //     } else {
-    //       return false;
-    //     }
-    //   }
-    // });
+    if (this.expandTreeRecurse(id, this.oeTree)) {
+      setTimeout(() => {
+        document.getElementById("tree" + id).scrollIntoView(false);
+      }, 0);
+    }
   }
 
   private expandTreeRecurse(id: number, oes: OeTreeItem[]): boolean {
@@ -66,7 +55,6 @@ export class ArbeitsplatzService {
           if (this.expandTreeRecurse(id, oe.children)) {
             console.debug("expand OE " + oe.betriebsstelle);
             this.treeControl.expand(oe);
-            // TODO scrollto oe
             return true;
           } else {
             return false;
