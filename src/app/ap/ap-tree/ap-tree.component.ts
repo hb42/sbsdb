@@ -34,4 +34,7 @@ export class ApTreeComponent implements OnInit {
 
   public isSelected = (id: number) => !!this.apService.selected && this.apService.selected.id === id;
 
+  public showInfo(node) {
+    window.alert(node.oeff);
+  }
 }

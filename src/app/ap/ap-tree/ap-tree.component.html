@@ -28,7 +28,9 @@
               (click)="select(node)">
         {{node.betriebsstelle}}
       </button>
-      <mat-icon>info</mat-icon>
+      <button mat-icon-button (click)="showInfo(node)">
+        <mat-icon class="material-icons-outlined" style="font-size: 14px; vertical-align: baseline">info</mat-icon>
+      </button>
     </li>
   </mat-tree-node>
   <!-- This is the tree node template for expandable nodes -->
@@ -44,7 +46,9 @@
                 (click)="select(node)">
           {{node.betriebsstelle}}
         </button>
-        <mat-icon>info</mat-icon>
+        <button mat-icon-button (click)="showInfo(node)">
+          <mat-icon class="material-icons-outlined" style="font-size: 14px; vertical-align: baseline">info</mat-icon>
+        </button>
       </div>
       <ul [class.example-tree-invisible]="!apService.treeControl.isExpanded(node)">
         <ng-container matTreeNodeOutlet></ng-container>
