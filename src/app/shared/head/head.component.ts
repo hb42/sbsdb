@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api";
+import { ConfigService } from "../config/config.service";
 import { NavigationService } from "../navigation.service";
-import {ConfigService} from "../config/config.service";
 
 @Component({
              selector   : "sbsdb-head",
@@ -24,7 +24,8 @@ export class HeadComponent implements OnInit {
   public search: string;
 
   constructor(private router: Router, public navigationService: NavigationService,
-              public configService: ConfigService) {
+              public configService: ConfigService,
+  ) {
   }
 
   ngOnInit() {

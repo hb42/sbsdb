@@ -5,6 +5,8 @@ import {
   MatIconModule,
   MatInputModule,
   MatMenuModule,
+  MatSidenavModule,
+  MatTableModule,
   MatTabsModule,
   MatToolbarModule,
   MatTreeModule
@@ -20,6 +22,8 @@ import {
               MatIconModule,
               MatInputModule,
               MatMenuModule,
+              MatSidenavModule,
+              MatTableModule,
               MatTabsModule,
               MatToolbarModule,
               MatTreeModule,

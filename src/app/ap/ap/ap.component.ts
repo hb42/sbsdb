@@ -23,7 +23,7 @@ export class ApComponent implements OnInit, OnDestroy {
     console.debug("c'tor ApComponent");
   }
 
-  ngOnInit() {
+  public async ngOnInit() {
     // const par = this.route.snapshot.params["tree"];
     // console.debug("onInit ApComponent par=" + par);
 
@@ -48,6 +48,7 @@ export class ApComponent implements OnInit, OnDestroy {
         this.apService.expandTree(this.apService.urlParams.id);
       }
     });
+    await this.apService.getAps();
 
     if (this.config.getUser()) {
       console.debug("onInit UserSession path=" + this.config.getUser().path);

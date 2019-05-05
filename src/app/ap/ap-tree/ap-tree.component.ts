@@ -1,8 +1,8 @@
-import { Component, HostBinding, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { AppRoutingModule } from "../../app-routing.module";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 import { OeTreeItem } from "../model/oe.tree.item";
-import {AppRoutingModule} from "../../app-routing.module";
 
 @Component({
              selector   : "sbsdb-ap-tree",
@@ -10,7 +10,7 @@ import {AppRoutingModule} from "../../app-routing.module";
              styleUrls  : ["./ap-tree.component.scss"]
            })
 export class ApTreeComponent implements OnInit {
-  @HostBinding("attr.class") cssClass = "flex-content";
+  // @HostBinding("attr.class") cssClass = "flex-content";
 
 
   constructor(public apService: ArbeitsplatzService,

@@ -8,6 +8,8 @@ import { ConfigService } from "./config/config.service";
 @Injectable({providedIn: "root"})
 export class NavigationService {
 
+  public currentPath = "";
+
   constructor(private router: Router,
               private route: ActivatedRoute,
               private location: Location,
@@ -28,6 +30,7 @@ export class NavigationService {
           //   this.router.navigateByUrl(this.router.parseUrl("/ap;id=42;tree=vlan"))
           if (last && !last.endsWith(ErrorService.errorPage)) {
             this.configService.getUser().path = last;
+            this.currentPath = last;
           }
         });
 

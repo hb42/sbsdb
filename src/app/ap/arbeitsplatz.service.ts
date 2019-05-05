@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material";
 import { ConfigService } from "../shared/config/config.service";
+import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
 
 @Injectable({providedIn: "root"})
@@ -16,12 +17,21 @@ export class ArbeitsplatzService {
   public selected: OeTreeItem;
   public urlParams: any;
 
+  public apDataSource: Arbeitsplatz[] = [];
+  public displayedColumns: string[] = ["aptyp", "apname", "betrst", "bezeichnung"];
+
   // Web-API calls
   private readonly oeTreeUrl: string;
+  private readonly allApsUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
+    this.allApsUrl = this.configService.webservice + "/ap/all";
     // this.getOeTree();
+  }
+
+  public async getAps() {
+    this.apDataSource = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
   }
 
   public async getOeTree() {
