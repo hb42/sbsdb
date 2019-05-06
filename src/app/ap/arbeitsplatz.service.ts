@@ -1,7 +1,7 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
+import { MatTableDataSource, MatTreeNestedDataSource } from "@angular/material";
 import { ConfigService } from "../shared/config/config.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
@@ -47,6 +47,10 @@ export class ArbeitsplatzService {
           return 0;
       }
     }
+    this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
+      console.debug("FILTER " + ap.apname + " " + filter);
+      return true;
+    };
   }
 
   public async getOeTree() {

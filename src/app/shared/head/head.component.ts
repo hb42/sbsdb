@@ -1,6 +1,7 @@
-import {Component, HostBinding, OnInit} from "@angular/core";
+import { Component, HostBinding, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api";
+import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";
 import { ConfigService } from "../config/config.service";
 import { NavigationService } from "../navigation.service";
 
@@ -26,6 +27,7 @@ export class HeadComponent implements OnInit {
 
   constructor(private router: Router, public navigationService: NavigationService,
               public configService: ConfigService,
+              public apService: ArbeitsplatzService
   ) {
   }
 

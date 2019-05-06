@@ -112,7 +112,9 @@
     </button>
   </mat-form-field>
 
-  <button mat-button color="accent">Suche</button>
+  <button mat-button color="accent"
+          (click)="apService.apDataSource.filter = search">Suche
+  </button>
   <button mat-button color="accent">Erweiterte Suche</button>
 
   <div class="fill"></div>
