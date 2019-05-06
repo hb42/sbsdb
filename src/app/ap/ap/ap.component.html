@@ -15,28 +15,30 @@
 <!--  <mat-sidenav-content>Main content</mat-sidenav-content>-->
 <!--</mat-sidenav-container>-->
 
-<table mat-table [dataSource]="apService.apDataSource" id="container">
+<table mat-table [dataSource]="apService.apDataSource"
+       matSort
+       class="flex-content">
 
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
   <ng-container matColumnDef="apname">
-    <th mat-header-cell *matHeaderCellDef> AP-Name</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> AP-Name</th>
     <td mat-cell *matCellDef="let element"> {{element.apname}} </td>
   </ng-container>
 
   <ng-container matColumnDef="betrst">
-    <th mat-header-cell *matHeaderCellDef> OE</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> OE</th>
     <td mat-cell *matCellDef="let element"> {{element.oe.betriebsstelle}} </td>
   </ng-container>
 
   <ng-container matColumnDef="bezeichnung">
-    <th mat-header-cell *matHeaderCellDef> Bezeichnung</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Bezeichnung</th>
     <td mat-cell *matCellDef="let element"> {{element.bezeichnung}} </td>
   </ng-container>
 
   <ng-container matColumnDef="aptyp">
-    <th mat-header-cell *matHeaderCellDef> Typ</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Typ</th>
     <td mat-cell *matCellDef="let element"> {{element.aptyp}} </td>
   </ng-container>
 

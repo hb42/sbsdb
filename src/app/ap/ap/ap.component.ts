@@ -1,8 +1,9 @@
-import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
+import {Component, HostBinding, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
+import {MatSort} from "@angular/material";
 
 @Component({
              selector   : "sbsdb-ap",
@@ -12,6 +13,7 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
 export class ApComponent implements OnInit, OnDestroy {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
+  @ViewChild(MatSort) sort: MatSort;
 
   public subscription: Subscription;
 
@@ -48,7 +50,9 @@ export class ApComponent implements OnInit, OnDestroy {
         this.apService.expandTree(this.apService.urlParams.id);
       }
     });
+
     await this.apService.getAps();
+    this.apService.apDataSource.sort = this.sort;
 
     if (this.config.getUser()) {
       console.debug("onInit UserSession path=" + this.config.getUser().path);
@@ -65,4 +69,8 @@ export class ApComponent implements OnInit, OnDestroy {
     }
   }
 
+  public sortData(event) {
+    console.debug("SORT");
+    console.dir(event);
+  }
 }

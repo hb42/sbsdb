@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, HostBinding, OnInit} from "@angular/core";
 import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api";
 import { ConfigService } from "../config/config.service";
@@ -10,6 +10,7 @@ import { NavigationService } from "../navigation.service";
              styleUrls  : ["./head.component.scss"]
            })
 export class HeadComponent implements OnInit {
+  @HostBinding("attr.class") cssClass = "flex-panel";
 
   items: MenuItem[];
   mainmenu: MenuItem[];

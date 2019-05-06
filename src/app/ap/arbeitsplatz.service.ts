@@ -1,7 +1,7 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { MatTreeNestedDataSource } from "@angular/material";
+import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
 import { ConfigService } from "../shared/config/config.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
@@ -17,7 +17,8 @@ export class ArbeitsplatzService {
   public selected: OeTreeItem;
   public urlParams: any;
 
-  public apDataSource: Arbeitsplatz[] = [];
+  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>(); // Arbeitsplatz[] =
+                                                                                                  // [];
   public displayedColumns: string[] = ["aptyp", "apname", "betrst", "bezeichnung"];
 
   // Web-API calls
@@ -31,7 +32,21 @@ export class ArbeitsplatzService {
   }
 
   public async getAps() {
-    this.apDataSource = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
+    this.apDataSource.data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
+    this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
+      switch (id) {
+        case "aptyp":
+          return ap.aptyp.toLowerCase();
+        case "apname":
+          return ap.apname.toLowerCase();
+        case "betrst":
+          return ap.oe.betriebsstelle.toLowerCase();
+        case "bezeichnung":
+          return ap.bezeichnung.toLowerCase();
+        default:
+          return 0;
+      }
+    }
   }
 
   public async getOeTree() {

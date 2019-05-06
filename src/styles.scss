@@ -44,14 +44,93 @@ $footerHeight: 30px;
   right: 0;
 }
 
+/* flex layout */
 
-/* header + footer size */
-.header {
-  height: $headerHeight;
+/* Komplette Seite belegen */
+.flex-page, sbsdb-root {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
+/* children vertikal anordnen */
+.flex-col, sbsdb-root {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: auto;
+  height: 100%;
+  width: 100%;
+}
+
+/* children horizontal anordnen */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  flex: auto;
+  height: 100%;
+  width: 100%;
+}
+
+/* Element innerhalb flex-col oder flex-row */
+/* position:relative ist wichtig, damit auch der gesamte Platz belegt wird.
+   Breite bzw. Hoehe immer mit height & min-height bzw. width & min-width auf den
+   gleichen Wert setzen (ausser % -> min-width:100px; width:100%).
+ */
+.flex-panel {
+  overflow: hidden;
+  position: relative;
+}
+
+/* flex-panel, das den "Rest" belegt (width|height 100%) */
+/* Sonst fkt. Splitter nicht */
+.flex-max {
+  flex-grow: 100;
+  flex-shrink: 100;
+}
+
+/* Inhalt eines flex-panel mit Scrollbalken */
+.flex-content {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  display: block;
+}
+
+/* Inhalt eines flex-panel ohne Scrollbalken */
+.flex-content-fix {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+sbsdb-head {
+  height: $headerHeight;
+  width: 100%;
+  overflow: hidden;
+}
+
+sbsdb-foot {
+  height: $footerHeight;
+  width: 100%;
+  overflow: hidden;
+}
 .footer {
   height: $footerHeight !important;
+  min-height: $footerHeight !important;
+}
+
+.header {
+  height: $headerHeight !important;
+  min-height: $headerHeight !important;
+}
+
+.fullsize {
+  height: 100%;
+  width: 100%;
 }
 
 

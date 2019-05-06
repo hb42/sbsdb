@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, HostBinding, OnInit} from "@angular/core";
 import { ConfigService } from "../config/config.service";
 
 @Component({
@@ -7,6 +7,7 @@ import { ConfigService } from "../config/config.service";
              styleUrls  : ["./foot.component.scss"]
            })
 export class FootComponent implements OnInit {
+  @HostBinding("attr.class") cssClass = "flex-panel";
 
   constructor(public configService: ConfigService) {
   }
