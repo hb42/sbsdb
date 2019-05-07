@@ -17,34 +17,78 @@
 
 <!-- custom filter:
 https://stackoverflow.com/questions/48276404/filtering-specific-column-in-angular-material-table-in-angular-5
+table:
+https://blog.angular-university.io/angular-material-data-table/
+https://github.com/angular/components/issues/6178
 -->
+
 <table mat-table [dataSource]="apService.apDataSource"
        matSort
        class="flex-content">
 
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
+  <ng-container matColumnDef="aptyp">
+    <th mat-header-cell *matHeaderCellDef>
+      <span mat-sort-header class="sort-header">Typ</span>
+      <mat-form-field floatLabel="never" class="filter-xs">
+        <mat-label>Filter</mat-label>
+        <input matInput [formControl]="apService.typFilter">
+        <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.aptyp}} </td>
+  </ng-container>
 
   <ng-container matColumnDef="apname">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> AP-Name</th>
+    <th mat-header-cell *matHeaderCellDef>
+      <span mat-sort-header class="sort-header">AP-Name</span>
+      <mat-form-field floatLabel="never" class="filter-s">
+        <mat-label>Filter</mat-label>
+        <input matInput [formControl]="apService.nameFilter">
+        <button mat-button [disabled]="!apService.nameFilter.dirty" matSuffix mat-icon-button (click)="apService.nameFilter.reset()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </th>
     <td mat-cell *matCellDef="let element"> {{element.apname}} </td>
   </ng-container>
 
   <ng-container matColumnDef="betrst">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> OE</th>
+    <th mat-header-cell *matHeaderCellDef>
+      <span mat-sort-header class="sort-header">OE</span>
+      <mat-form-field floatLabel="never" class="filter-m">
+        <mat-label>Filter</mat-label>
+        <input matInput [formControl]="apService.bstFilter">
+        <button mat-button [disabled]="!apService.bstFilter.dirty" matSuffix mat-icon-button (click)="apService.bstFilter.reset()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </th>
     <td mat-cell *matCellDef="let element"> {{element.oe.betriebsstelle}} </td>
   </ng-container>
 
   <ng-container matColumnDef="bezeichnung">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Bezeichnung</th>
+    <th mat-header-cell *matHeaderCellDef>
+      <span mat-sort-header class="sort-header">Bezeichnung</span>
+      <mat-form-field floatLabel="never" class="filter-m">
+        <mat-label>Filter</mat-label>
+        <input matInput [formControl]="apService.bezFilter">
+        <button mat-button [disabled]="!apService.bezFilter.dirty" matSuffix mat-icon-button (click)="apService.bezFilter.reset()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </th>
     <td mat-cell *matCellDef="let element"> {{element.bezeichnung}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="aptyp">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Typ</th>
-    <td mat-cell *matCellDef="let element"> {{element.aptyp}} </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="apService.displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: apService.displayedColumns;"></tr>
 </table>
+
+<div class="spinner-container" *ngIf="apService.loading">
+  <mat-spinner></mat-spinner>
+</div>
+

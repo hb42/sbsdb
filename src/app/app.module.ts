@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { LibClientModule, LOGON_OPTIONS, LogonParameter } from "@hb42/lib-client";
@@ -57,6 +57,7 @@ export function initConf(configService: ConfigService) {
         AppRoutingModule,
         HttpClientModule,
         FormsModule,
+        ReactiveFormsModule,
 
         // -- Angular Material
         AppMaterialModule,

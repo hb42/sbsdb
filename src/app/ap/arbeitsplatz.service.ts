@@ -5,6 +5,7 @@ import { MatTableDataSource, MatTreeNestedDataSource } from "@angular/material";
 import { ConfigService } from "../shared/config/config.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
+import {FormControl} from "@angular/forms";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -21,6 +22,20 @@ export class ArbeitsplatzService {
                                                                                                   // [];
   public displayedColumns: string[] = ["aptyp", "apname", "betrst", "bezeichnung"];
 
+  // Filter
+  public typFilter = new FormControl("");
+  public nameFilter = new FormControl("");
+  public bstFilter = new FormControl("");
+  public bezFilter = new FormControl("");
+  // Inhalte aller Filter -> Profil | URL ??
+  filterValues = {
+    aptyp      : "",
+    apname     : "",
+    betrst     : "",
+    bezeichnung: "",
+  };
+  public loading = false;
+
   // Web-API calls
   private readonly oeTreeUrl: string;
   private readonly allApsUrl: string;
@@ -29,10 +44,45 @@ export class ArbeitsplatzService {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
     // this.getOeTree();
+
+    // Filter-Felder
+    this.typFilter.valueChanges
+        .subscribe(
+            text => {
+              this.filterValues.aptyp = text ? text.toLowerCase() : "";
+              this.apDataSource.filter = JSON.stringify(this.filterValues);
+            }
+        );
+    this.nameFilter.valueChanges
+        .subscribe(
+            text => {
+              this.filterValues.apname = text ? text.toLowerCase() : "";
+              this.apDataSource.filter = JSON.stringify(this.filterValues);
+            }
+        );
+    this.bstFilter.valueChanges
+        .subscribe(
+            text => {
+              this.filterValues.betrst = text ? text.toLowerCase() : "";
+              this.apDataSource.filter = JSON.stringify(this.filterValues);
+            }
+        );
+    this.bezFilter.valueChanges
+        .subscribe(
+            text => {
+              this.filterValues.bezeichnung = text ? text.toLowerCase() : "";
+              this.apDataSource.filter = JSON.stringify(this.filterValues);
+            }
+        );
   }
 
+  // APs aus der DB holen  TODO ist das hier richtig?
   public async getAps() {
+    this.loading = true;
     this.apDataSource.data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
+    this.loading = false;
+
+    // liefert Daten fuer sort -> immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
       switch (id) {
         case "aptyp":
@@ -47,9 +97,14 @@ export class ArbeitsplatzService {
           return 0;
       }
     }
+
+    // eigner Filter
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
-      console.debug("FILTER " + ap.apname + " " + filter);
-      return true;
+      const searchTerms = JSON.parse(filter);
+      return ap.aptyp.toLowerCase().indexOf(searchTerms.aptyp) !== -1
+          && ap.apname.toString().toLowerCase().indexOf(searchTerms.apname) !== -1
+          && ap.oe.betriebsstelle.toLowerCase().indexOf(searchTerms.betrst) !== -1
+          && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1;
     };
   }
 

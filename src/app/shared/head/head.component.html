@@ -105,17 +105,17 @@
   <!--  <button mat-button (click)="navigate('/hw')">Hardware</button>-->
   <!--  <button mat-button (click)="navigate('/admin')">Admin</button>-->
 
-  <mat-form-field style="font-size: 14px">
-    <input matInput type="search" placeholder="Suche" [(ngModel)]="search">
-    <button mat-button [disabled]="!search" matSuffix mat-icon-button (click)="search=''">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-form-field>
+  <!--  <mat-form-field style="font-size: 14px">-->
+  <!--    <input matInput type="search" placeholder="Suche" [(ngModel)]="search">-->
+  <!--    <button mat-button [disabled]="!search" matSuffix mat-icon-button (click)="search=''">-->
+  <!--      <mat-icon>close</mat-icon>-->
+  <!--    </button>-->
+  <!--  </mat-form-field>-->
 
-  <button mat-button color="accent"
-          (click)="apService.apDataSource.filter = search">Suche
-  </button>
-  <button mat-button color="accent">Erweiterte Suche</button>
+  <!--  <button mat-button color="accent"-->
+  <!--          (click)="apService.apDataSource.filter = search">Suche-->
+  <!--  </button>-->
+  <!--  <button mat-button color="accent">Erweiterte Suche</button>-->
 
   <div class="fill"></div>
   <button mat-icon-button [mat-menu-trigger-for]="mainmenu">
