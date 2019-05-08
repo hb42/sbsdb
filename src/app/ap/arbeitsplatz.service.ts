@@ -1,11 +1,11 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { MatTableDataSource, MatTreeNestedDataSource } from "@angular/material";
 import { ConfigService } from "../shared/config/config.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
-import {FormControl} from "@angular/forms";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -80,13 +80,27 @@ export class ArbeitsplatzService {
   public async getAps() {
     this.loading = true;
     this.apDataSource.data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
+    this.apDataSource.data.forEach((ap) => {
+      let typ = "";
+      let tag = "";
+      ap.tags.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
+      ap.tags.forEach((t) => {
+        if (t.flag === 1) {
+          typ += t.bezeichnung + " ";
+        } else {
+          tag += t.bezeichnung + "=" + t.text + " ";
+        }
+      });
+      ap.typTagsStr = typ;
+      ap.tagsStr = tag;
+    });
     this.loading = false;
 
     // liefert Daten fuer sort -> immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
       switch (id) {
         case "aptyp":
-          return ap.aptyp.toLowerCase();
+          return (ap.aptyp + ap.typTagsStr).toLowerCase();
         case "apname":
           return ap.apname.toLowerCase();
         case "betrst":
@@ -101,7 +115,7 @@ export class ArbeitsplatzService {
     // eigner Filter
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
       const searchTerms = JSON.parse(filter);
-      return ap.aptyp.toLowerCase().indexOf(searchTerms.aptyp) !== -1
+      return (ap.aptyp + ap.typTagsStr).toLowerCase().indexOf(searchTerms.aptyp) !== -1
           && ap.apname.toString().toLowerCase().indexOf(searchTerms.apname) !== -1
           && ap.oe.betriebsstelle.toLowerCase().indexOf(searchTerms.betrst) !== -1
           && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1;

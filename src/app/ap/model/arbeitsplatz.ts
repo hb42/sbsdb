@@ -13,4 +13,9 @@ export class Arbeitsplatz {
   public tags: Tag[];
   public hw: Hardware[];
   public vlan: Netzwerk[];
+
+  // interne Felder fuer die Darstellung
+  public typTagsStr: string;
+  public tagsStr: string;  // wird das gebraucht??
+
 }

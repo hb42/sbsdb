@@ -37,7 +37,7 @@ $listMinWidth: 100px;
 }
 
 mat-cell, mat-footer-cell, mat-header-cell {
-  padding-right: 15px;
+  margin-right: 15px;
 }
 
 table.mat-table {
@@ -46,10 +46,11 @@ table.mat-table {
   white-space: nowrap;
 }
 
+/* kein Zeilenumbruch in der Zelle TODO noetig, sinnvoll?*/
 mat-cell > div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  //white-space: nowrap;
+  //overflow: hidden;
+  //text-overflow: ellipsis;
 }
 
 .filter-xs {
@@ -71,8 +72,7 @@ mat-cell > div {
 }
 
 .mat-column-aptyp {
-  width: 100px;
-  min-width: 100px;
-  max-width: 100px;
-
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
 }

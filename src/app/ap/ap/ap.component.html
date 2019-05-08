@@ -35,7 +35,7 @@ https://github.com/angular/components/issues/6178
     <ng-container matColumnDef="aptyp">
       <mat-header-cell *matHeaderCellDef>
         <span mat-sort-header class="sort-header">Typ</span>
-        <mat-form-field floatLabel="never" class="filter-xs">
+        <mat-form-field floatLabel="never" class="filter-s">
           <mat-label>Filter</mat-label>
           <input matInput [formControl]="apService.typFilter">
           <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()">
@@ -43,8 +43,9 @@ https://github.com/angular/components/issues/6178
           </button>
         </mat-form-field>
       </mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <div>{{element.aptyp}}</div>
+      <mat-cell *matCellDef="let element" style="flex-direction: column; align-items: flex-start;">
+        <div style="margin-top: 4px;">{{element.aptyp}}</div>
+        <div style="margin-top: 4px; font-size: 12px;">{{element.typTagsStr}}</div>
       </mat-cell>
     </ng-container>
 
