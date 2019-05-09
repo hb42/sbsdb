@@ -1,5 +1,6 @@
 import {Component, HostBinding, OnInit} from "@angular/core";
 import { ConfigService } from "../config/config.service";
+import {ArbeitsplatzService} from "../../ap/arbeitsplatz.service";
 
 @Component({
              selector   : "sbsdb-foot",
@@ -9,7 +10,8 @@ import { ConfigService } from "../config/config.service";
 export class FootComponent implements OnInit {
   @HostBinding("attr.class") cssClass = "flex-panel";
 
-  constructor(public configService: ConfigService) {
+  // TODO apService muss hier wieder raus - Footer notwendig?
+  constructor(public configService: ConfigService, public apService: ArbeitsplatzService) {
   }
 
   ngOnInit() {

@@ -39,10 +39,12 @@ export class ArbeitsplatzService {
   // Web-API calls
   private readonly oeTreeUrl: string;
   private readonly allApsUrl: string;
+  private readonly pageApsUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
+    this.pageApsUrl = this.configService.webservice + "/ap/page";
     // this.getOeTree();
 
     // Filter-Felder
@@ -79,22 +81,28 @@ export class ArbeitsplatzService {
   // APs aus der DB holen  TODO ist das hier richtig?
   public async getAps() {
     this.loading = true;
-    this.apDataSource.data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
-    this.apDataSource.data.forEach((ap) => {
-      let typ = "";
-      let tag = "";
-      ap.tags.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
-      ap.tags.forEach((t) => {
-        if (t.flag === 1) {
-          typ += t.bezeichnung + " ";
-        } else {
-          tag += t.bezeichnung + "=" + t.text + " ";
-        }
+    const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
+    let data: Arbeitsplatz[];
+    let page = 0;
+    do {
+      data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + "/" + page++).toPromise();
+      data.forEach((ap) => {
+        let typ = "";
+        let tag = "";
+        ap.tags.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
+        ap.tags.forEach((t) => {
+          if (t.flag === 1) {
+            typ += t.bezeichnung + " ";
+          } else {
+            tag += t.bezeichnung + "=" + t.text + " ";
+          }
+        });
+        ap.typTagsStr = typ;
+        ap.tagsStr = tag;
       });
-      ap.typTagsStr = typ;
-      ap.tagsStr = tag;
-    });
-    this.loading = false;
+      this.apDataSource.data = this.apDataSource.data.concat(data);
+      this.loading = false;
+    } while (data.length);
 
     // liefert Daten fuer sort -> immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {

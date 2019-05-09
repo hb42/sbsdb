@@ -8,8 +8,10 @@ import { UserSession } from "./user.session";
 @Injectable({providedIn: "root"})
 export class ConfigService {
 
-  private _webservice: string;
+  // Name in der Config-DB
+  public static AP_PAGE_SIZE = "ap.pagesize";
 
+  private _webservice: string;
   // Pfad zur Web-API
   public get webservice(): string {
     return this._webservice;
