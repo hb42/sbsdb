@@ -6,6 +6,7 @@ import { MatTableDataSource, MatTreeNestedDataSource } from "@angular/material";
 import { ConfigService } from "../shared/config/config.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
+import { TypTag } from "./model/typtag";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -29,29 +30,33 @@ export class ArbeitsplatzService {
   public bezFilter = new FormControl("");
   // Inhalte aller Filter -> Profil | URL ??
   filterValues = {
-    aptyp      : "",
+    aptyp      : [],
     apname     : "",
     betrst     : "",
     bezeichnung: "",
   };
   public loading = false;
+  public typtagSelect: TypTag[];
 
   // Web-API calls
   private readonly oeTreeUrl: string;
   private readonly allApsUrl: string;
   private readonly pageApsUrl: string;
+  private readonly typtagUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
     this.pageApsUrl = this.configService.webservice + "/ap/page";
+    this.typtagUrl = this.configService.webservice + "/ap/typtags";
     // this.getOeTree();
 
     // Filter-Felder
     this.typFilter.valueChanges
         .subscribe(
-            text => {
-              this.filterValues.aptyp = text ? text.toLowerCase() : "";
+            arr => {
+              // this.filterValues.aptyp = text ? text.toLowerCase() : "";
+              this.filterValues.aptyp = arr ? arr : [];
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
@@ -81,7 +86,12 @@ export class ArbeitsplatzService {
   // APs aus der DB holen  TODO ist das hier richtig?
   public async getAps() {
     this.loading = true;
+
+    this.typtagSelect = await this.http.get<TypTag[]>(this.typtagUrl).toPromise();
+    this.typtagSelect.forEach((t) => t.select = t.apTyp + ": " + t.tagTyp);
+
     const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
+
     let data: Arbeitsplatz[];
     let page = 0;
     do {
@@ -123,7 +133,13 @@ export class ArbeitsplatzService {
     // eigner Filter
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
       const searchTerms = JSON.parse(filter);
-      return (ap.aptyp + ap.typTagsStr).toLowerCase().indexOf(searchTerms.aptyp) !== -1
+      // return (ap.aptyp + ap.typTagsStr).toLowerCase().indexOf(searchTerms.aptyp) !== -1
+      //     ap.tags.reduce((prev, cur) =>
+      //       prev || searchTerm.aptyp.indexOf(cur.apTagId) !== -1
+      // , false) === true
+      return (searchTerms.aptyp.length === 0 ||
+              ap.tags.reduce((prev, cur) => prev || searchTerms.aptyp.indexOf(cur.tagId) !== -1, false)
+          )
           && ap.apname.toString().toLowerCase().indexOf(searchTerms.apname) !== -1
           && ap.oe.betriebsstelle.toLowerCase().indexOf(searchTerms.betrst) !== -1
           && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1;

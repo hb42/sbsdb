@@ -37,7 +37,10 @@ https://github.com/angular/components/issues/6178
         <span mat-sort-header class="sort-header">Typ</span>
         <mat-form-field floatLabel="never" class="filter-s">
           <mat-label>Filter</mat-label>
-          <input matInput [formControl]="apService.typFilter">
+          <mat-select [formControl]="apService.typFilter" multiple>
+            <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>
+          </mat-select>
+          <!--          <input matInput [formControl]="apService.typFilter">-->
           <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()">
             <mat-icon>close</mat-icon>
           </button>
