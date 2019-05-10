@@ -17,5 +17,5 @@ export class Arbeitsplatz {
   // interne Felder fuer die Darstellung
   public typTagsStr: string;
   public tagsStr: string;  // wird das gebraucht??
-
+  public hwStr = "";
 }

@@ -35,20 +35,23 @@ https://github.com/angular/components/issues/6178
     <ng-container matColumnDef="aptyp">
       <th mat-header-cell *matHeaderCellDef>
         <span mat-sort-header class="sort-header">Typ</span>
-        <mat-form-field floatLabel="never" class="filter-s">
-          <mat-label>Filter</mat-label>
-          <mat-select [formControl]="apService.typFilter" multiple>
-            <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>
-          </mat-select>
+        <div class="select-filter">
+          <mat-form-field floatLabel="never" class="filter-s">
+            <mat-label>Filter</mat-label>
+            <mat-select [formControl]="apService.typFilter" multiple>
+              <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>
+            </mat-select>
           <!--          <input matInput [formControl]="apService.typFilter">-->
-          <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()">
-            <mat-icon>close</mat-icon>
+          </mat-form-field>
+          <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
+                  class="select-filter-reset-btn">
+            <mat-icon class="select-filter-reset-icn">close</mat-icon>
           </button>
-        </mat-form-field>
+        </div>
       </th>
-      <td mat-cell *matCellDef="let element" style="flex-direction: column; align-items: flex-start;">
-        <div style="margin-top: 4px;">{{element.aptyp}}</div>
-        <div style="margin-top: 4px; font-size: 12px;">{{element.typTagsStr}}</div>
+      <td mat-cell *matCellDef="let element" class="aptyp">
+        <div class="aptyp-typ md-primary-color">{{element.aptyp}}</div>
+        <div class="aptyp-typ aptyp-tag">{{element.typTagsStr}}</div>
       </td>
     </ng-container>
 
@@ -80,7 +83,14 @@ https://github.com/angular/components/issues/6178
         </mat-form-field>
       </th>
       <td mat-cell *matCellDef="let element">
-        <div>{{element.oe.betriebsstelle}}</div>
+        <div>{{element.oe.betriebsstelle}}
+          <mat-icon class="material-icons-outlined"
+                    [matTooltip]="element.oe.oeff"
+                    matTooltipClass="example-tooltip-red"
+                    #tooltip="matTooltip"
+                    (click)="tooltip.show()">info
+          </mat-icon>
+        </div>
       </td>
     </ng-container>
 
@@ -97,6 +107,22 @@ https://github.com/angular/components/issues/6178
       </th>
       <td mat-cell *matCellDef="let element">
         <div>{{element.bezeichnung}}</div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="hardware">
+      <th mat-header-cell *matHeaderCellDef>
+        <span mat-sort-header class="sort-header">Hardware</span>
+        <mat-form-field floatLabel="never" class="filter-m">
+          <mat-label>Filter</mat-label>
+          <input matInput [formControl]="apService.hwFilter">
+          <button mat-button [disabled]="!apService.hwFilter.dirty" matSuffix mat-icon-button (click)="apService.hwFilter.reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div>{{element.hwStr}}</div>
       </td>
     </ng-container>
 

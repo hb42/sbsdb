@@ -12,6 +12,7 @@ import {
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
+  MatTooltipModule,
   MatTreeModule
 } from "@angular/material";
 
@@ -32,6 +33,7 @@ import {
               MatTableModule,
               MatTabsModule,
               MatToolbarModule,
+              MatTooltipModule,
               MatTreeModule,
 
             ]

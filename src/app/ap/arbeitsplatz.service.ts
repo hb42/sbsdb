@@ -21,19 +21,21 @@ export class ArbeitsplatzService {
 
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>(); // Arbeitsplatz[] =
                                                                                                   // [];
-  public displayedColumns: string[] = ["aptyp", "apname", "betrst", "bezeichnung"];
+  public displayedColumns: string[] = ["aptyp", "apname", "betrst", "bezeichnung", "hardware"];
 
   // Filter
   public typFilter = new FormControl("");
   public nameFilter = new FormControl("");
   public bstFilter = new FormControl("");
   public bezFilter = new FormControl("");
+  public hwFilter = new FormControl("");
   // Inhalte aller Filter -> Profil | URL ??
   filterValues = {
     aptyp      : [],
     apname     : "",
     betrst     : "",
     bezeichnung: "",
+    hardware   : "",
   };
   public loading = false;
   public typtagSelect: TypTag[];
@@ -47,6 +49,7 @@ export class ArbeitsplatzService {
   constructor(private http: HttpClient, private configService: ConfigService) {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
+    this.pageApsUrl = this.configService.webservice + "/ap/page";
     this.pageApsUrl = this.configService.webservice + "/ap/page";
     this.typtagUrl = this.configService.webservice + "/ap/typtags";
     // this.getOeTree();
@@ -81,6 +84,17 @@ export class ArbeitsplatzService {
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
+    this.hwFilter.valueChanges
+        .subscribe(
+            text => {
+              this.filterValues.hardware = text ? text.toLowerCase() : "";
+              this.apDataSource.filter = JSON.stringify(this.filterValues);
+            }
+        );
+    // DEBUG
+    setTimeout(() => {
+      this.getAps();
+    }, 0)
   }
 
   // APs aus der DB holen  TODO ist das hier richtig?
@@ -92,10 +106,11 @@ export class ArbeitsplatzService {
 
     const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
 
-    let data: Arbeitsplatz[];
-    let page = 0;
-    do {
-      data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + "/" + page++).toPromise();
+    // let data: Arbeitsplatz[];
+    // let page = 0;
+    // do {
+    //   data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + "/" + page++).toPromise();
+    const data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
       data.forEach((ap) => {
         let typ = "";
         let tag = "";
@@ -109,10 +124,18 @@ export class ArbeitsplatzService {
         });
         ap.typTagsStr = typ;
         ap.tagsStr = tag;
+        ap.hwStr = ""; // keine undef Felder!
+        ap.hw.forEach((h) => {
+          if (h.pri) {
+            ap.hwStr = h.hersteller + " - " + h.bezeichnung + " [" + h.sernr + "]";
+          }
+        });
       });
-      this.apDataSource.data = this.apDataSource.data.concat(data);
+    this.apDataSource.data = data;
       this.loading = false;
-    } while (data.length);
+    //   this.apDataSource.data = this.apDataSource.data.concat(data);
+    //   this.loading = false;
+    // } while (data.length);
 
     // liefert Daten fuer sort -> immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
@@ -125,26 +148,27 @@ export class ArbeitsplatzService {
           return ap.oe.betriebsstelle.toLowerCase();
         case "bezeichnung":
           return ap.bezeichnung.toLowerCase();
+        case "hardware":
+          return ap.hwStr.toLowerCase();
         default:
           return 0;
       }
-    }
+    };
 
     // eigner Filter
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
       const searchTerms = JSON.parse(filter);
-      // return (ap.aptyp + ap.typTagsStr).toLowerCase().indexOf(searchTerms.aptyp) !== -1
-      //     ap.tags.reduce((prev, cur) =>
-      //       prev || searchTerm.aptyp.indexOf(cur.apTagId) !== -1
-      // , false) === true
       return (searchTerms.aptyp.length === 0 ||
               ap.tags.reduce((prev, cur) => prev || searchTerms.aptyp.indexOf(cur.tagId) !== -1, false)
           )
           && ap.apname.toString().toLowerCase().indexOf(searchTerms.apname) !== -1
           && ap.oe.betriebsstelle.toLowerCase().indexOf(searchTerms.betrst) !== -1
-          && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1;
+          && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1
+          && ap.hwStr.toLowerCase().indexOf(searchTerms.hardware) !== -1;
     };
   }
+
+  public getBstData
 
   public async getOeTree() {
     this.oeTree = await this.http.get<OeTreeItem[]>(this.oeTreeUrl).toPromise();

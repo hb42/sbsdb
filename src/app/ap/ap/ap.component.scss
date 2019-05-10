@@ -1,3 +1,5 @@
+@import '~@angular/material/theming';
+
 // Dimensionen fuer Baum und Liste
 $treeWidth: 350px;
 $treeMinWidth: 100px;
@@ -50,7 +52,7 @@ table.mat-table {
 .mat-cell > div {
   white-space: nowrap;
   overflow: hidden;
-  //text-overflow: ellipsis;
+  text-overflow: ellipsis;
 }
 
 .filter-xs {
@@ -66,13 +68,54 @@ table.mat-table {
 }
 
 .mat-column-apname {
-  //width: 180px;
-  min-width: 180px;
+  width: 180px;
+  //min-width: 180px;
+  //max-width: 180px;
+}
+.mat-column-aptyp {
+  width: 180px;
+  //min-width: 180px;
   //max-width: 180px;
 }
 
-.mat-column-aptyp {
-  //width: 180px;
-  min-width: 180px;
-  //max-width: 180px;
+.mat-column-betrst {
+  width: 20%;
+}
+
+.mat-column-bezeichnung {
+  width: 40%;
+}
+
+.mat-column-hardware {
+  width: 40%;
+}
+
+.select-filter {
+  white-space: nowrap;
+}
+
+.select-filter-reset-btn {
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.125em;
+}
+
+.select-filter-reset-icn {
+  height: 1.125em;
+  width: 1.125em;
+  line-height: 1.125;
+  font-size: inherit;
+}
+
+.aptyp {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.aptyp-typ {
+  margin-top: 4px;
+}
+
+.aptyp-tag {
+  font-size: 12px;
 }

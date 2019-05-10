@@ -51,7 +51,7 @@ export class ApComponent implements OnInit, OnDestroy {
       }
     });
 
-    await this.apService.getAps();
+    // await this.apService.getAps();
     this.apService.apDataSource.sort = this.sort;
 
     if (this.config.getUser()) {
