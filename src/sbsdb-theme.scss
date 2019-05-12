@@ -24,7 +24,7 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
 // that you are using.
 @include angular-material-theme($sbsdb-app-theme);
 
-// fuer allgemeine Tags
+// classes fuer allgemeine Tags
 @mixin material-colors($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -48,7 +48,6 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   }
 
 }
-
 @include material-colors($sbsdb-app-theme);
 
 // orig:    "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",

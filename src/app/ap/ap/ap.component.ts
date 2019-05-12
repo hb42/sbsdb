@@ -1,19 +1,28 @@
-import {Component, HostBinding, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import { animate, state, style, transition, trigger } from "@angular/animations";
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { MatPaginator, MatSort } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
-import {MatSort} from "@angular/material";
 
 @Component({
              selector   : "sbsdb-ap",
              templateUrl: "./ap.component.html",
-             styleUrls  : ["./ap.component.scss"]
+             styleUrls  : ["./ap.component.scss"],
+             animations : [
+               trigger("detailExpand", [
+                 state("collapsed", style({height: "0px", minHeight: "0", display: "none"})),
+                 state("expanded", style({height: "*"})),
+                 transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
+               ])
+             ],
            })
 export class ApComponent implements OnInit, OnDestroy {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public subscription: Subscription;
 
@@ -53,6 +62,7 @@ export class ApComponent implements OnInit, OnDestroy {
 
     // await this.apService.getAps();
     this.apService.apDataSource.sort = this.sort;
+    this.apService.apDataSource.paginator = this.paginator;
 
     if (this.config.getUser()) {
       console.debug("onInit UserSession path=" + this.config.getUser().path);

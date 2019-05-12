@@ -21,113 +21,222 @@ table:
 https://blog.angular-university.io/angular-material-data-table/
 https://github.com/angular/components/issues/6178
 -->
-<div class="flex-content">
-  <div class="spinner-container" *ngIf="apService.loading">
-    <mat-spinner></mat-spinner>
+<div class="flex-col">  <!-- table + paginator -->
+  <div class="flex-content">  <!-- table -->
+    <div class="spinner-container" *ngIf="apService.loading">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <table mat-table [dataSource]="apService.apDataSource"
+           matSort
+           multiTemplateDataRows
+    >
+
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+      <ng-container matColumnDef="aptyp" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">Typ</span>
+          <div class="select-filter">
+            <mat-form-field floatLabel="never" class="filter-s">
+              <!--              <mat-label>Filter</mat-label>-->
+              <mat-select [formControl]="apService.typFilter" multiple>
+                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>
+              </mat-select>
+              <!--          <input matInput [formControl]="apService.typFilter">-->
+            </mat-form-field>
+            <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
+                    class="select-filter-reset-btn">
+              <mat-icon class="select-filter-reset-icn">close</mat-icon>
+            </button>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element" class="aptyp">
+          <div class="aptyp-btn">
+            <button mat-icon-button color="accent"
+                    (click)="apService.expandedRow = apService.expandedRow === element ? null : element">
+              <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>
+              <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>
+            </button>
+            <div>{{element.aptyp}}</div>
+          </div>
+          <div class="aptyp-typ aptyp-tag">{{element.typTagsStr}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="apname" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">AP-Name</span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.nameFilter">
+            <button mat-button [disabled]="!apService.nameFilter.dirty" matSuffix mat-icon-button (click)="apService.nameFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{element.apname}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="betrst">
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">Standort</span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.bstFilter">
+            <button mat-button [disabled]="!apService.bstFilter.dirty" matSuffix mat-icon-button (click)="apService.bstFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element" (click)="bstTooltip.show(0)">
+          <div [matTooltip]="apService.bstTooltip(element)"
+               matTooltipClass="bst-tooltip"
+               matTooltipShowDelay="5000"
+               matTooltipHideDelay="1000"
+               #bstTooltip="matTooltip"
+          >
+            {{element.oe.betriebsstelle}}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="bezeichnung">
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">Bezeichnung</span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.bezFilter">
+            <button mat-button [disabled]="!apService.bezFilter.dirty" matSuffix mat-icon-button (click)="apService.bezFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{element.bezeichnung}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ip">
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">IP</span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.ipFilter">
+            <button mat-button [disabled]="!apService.ipFilter.dirty" matSuffix mat-icon-button (click)="apService.ipFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{element.ipStr}}/ {{element.macStr}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="hardware">
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">Hardware</span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.hwFilter">
+            <button mat-button [disabled]="!apService.hwFilter.dirty" matSuffix mat-icon-button (click)="apService.hwFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{element.hwStr}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="menu" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-icon>more_vert</mat-icon>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button
+                  [matMenuTriggerFor]="apMenu"
+                  [matMenuTriggerData]="{ap: element}"
+                  color="accent">
+            <!--                  (click) = "$event.stopPropagation()"-->
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- details template -->
+      <ng-container matColumnDef="apdetails">
+        <td mat-cell *matCellDef="let element" [colSpan]="apService.displayedColumns.length">
+          <div [@detailExpand]="element == apService.expandedRow ? 'expanded' : 'collapsed'"
+               class="ap-detail-content">
+            <div style="flex-direction: row">
+              <div style="margin-right: 20px">
+                <div *ngFor="let hw of element.hw">
+                <span *ngIf="!hw.pri">
+                  {{hw.hersteller}} - {{hw.bezeichnung}} [{{hw.sernr}}]
+                </span>
+                </div>
+                <br>
+              </div>
+              <div>
+                <div *ngFor="let vlan of element.vlan">
+                  {{vlan.mac}}
+                </div>
+              </div>
+            </div>
+            <div>
+              {{element.bemerkung}}
+            </div>
+            <div class="fill"></div>
+            <div>
+              <!--  rechtsbuendiger Text -->
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- footer template -->
+      <ng-container matColumnDef="footer">
+        <td mat-footer-cell *matFooterCellDef [colSpan]="apService.displayedColumns.length">
+          <div>
+            {{apService.apDataSource.filteredData.length}} APs von {{apService.apDataSource.data.length}}
+          </div>
+          <div class="fill"></div>
+          <div style="font-size: 10px">
+            <!--  rechtsbuendiger Text -->
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="apService.displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let element; columns: apService.displayedColumns;"
+          class="ap-row"
+          [class.ap-detail-expanded]="apService.expandedRow === element"
+      ></tr>
+      <tr mat-row *matRowDef="let row; columns: ['apdetails']" class="ap-detail-row"></tr>
+      <!--    <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true" ></tr>-->
+    </table>
   </div>
 
-  <table mat-table [dataSource]="apService.apDataSource"
-         matSort
-  >
-
-    <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-    <ng-container matColumnDef="aptyp">
-      <th mat-header-cell *matHeaderCellDef>
-        <span mat-sort-header class="sort-header">Typ</span>
-        <div class="select-filter">
-          <mat-form-field floatLabel="never" class="filter-s">
-            <mat-label>Filter</mat-label>
-            <mat-select [formControl]="apService.typFilter" multiple>
-              <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>
-            </mat-select>
-          <!--          <input matInput [formControl]="apService.typFilter">-->
-          </mat-form-field>
-          <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
-                  class="select-filter-reset-btn">
-            <mat-icon class="select-filter-reset-icn">close</mat-icon>
-          </button>
-        </div>
-      </th>
-      <td mat-cell *matCellDef="let element" class="aptyp">
-        <div class="aptyp-typ md-primary-color">{{element.aptyp}}</div>
-        <div class="aptyp-typ aptyp-tag">{{element.typTagsStr}}</div>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="apname">
-      <th mat-header-cell *matHeaderCellDef>
-        <span mat-sort-header class="sort-header">AP-Name</span>
-        <mat-form-field floatLabel="never" class="filter-s">
-          <mat-label>Filter</mat-label>
-          <input matInput [formControl]="apService.nameFilter">
-          <button mat-button [disabled]="!apService.nameFilter.dirty" matSuffix mat-icon-button (click)="apService.nameFilter.reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div>{{element.apname}}</div>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="betrst">
-      <th mat-header-cell *matHeaderCellDef>
-        <span mat-sort-header class="sort-header">OE</span>
-        <mat-form-field floatLabel="never" class="filter-m">
-          <mat-label>Filter</mat-label>
-          <input matInput [formControl]="apService.bstFilter">
-          <button mat-button [disabled]="!apService.bstFilter.dirty" matSuffix mat-icon-button (click)="apService.bstFilter.reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div>{{element.oe.betriebsstelle}}
-          <mat-icon class="material-icons-outlined"
-                    [matTooltip]="element.oe.oeff"
-                    matTooltipClass="example-tooltip-red"
-                    #tooltip="matTooltip"
-                    (click)="tooltip.show()">info
-          </mat-icon>
-        </div>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="bezeichnung">
-      <th mat-header-cell *matHeaderCellDef>
-        <span mat-sort-header class="sort-header">Bezeichnung</span>
-        <mat-form-field floatLabel="never" class="filter-m">
-          <mat-label>Filter</mat-label>
-          <input matInput [formControl]="apService.bezFilter">
-          <button mat-button [disabled]="!apService.bezFilter.dirty" matSuffix mat-icon-button (click)="apService.bezFilter.reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div>{{element.bezeichnung}}</div>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="hardware">
-      <th mat-header-cell *matHeaderCellDef>
-        <span mat-sort-header class="sort-header">Hardware</span>
-        <mat-form-field floatLabel="never" class="filter-m">
-          <mat-label>Filter</mat-label>
-          <input matInput [formControl]="apService.hwFilter">
-          <button mat-button [disabled]="!apService.hwFilter.dirty" matSuffix mat-icon-button (click)="apService.hwFilter.reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div>{{element.hwStr}}</div>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="apService.displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: apService.displayedColumns;"></tr>
-  </table>
-
+                        <!-- ?? background: linear-gradient(to top, #fd3232 0%, #ce0000 100%); -->
+  <mat-paginator [pageSizeOptions]="[20, 50, 100, 200]"
+                 showFirstLastButtons
+                 class="paginator"
+                 color="primary"></mat-paginator>
 </div>
+
+<mat-menu #apMenu="matMenu">
+  <ng-template matMenuContent let-ap="ap">
+    <button mat-menu-item (click)="apService.testApMenu(ap)">
+      Test1
+    </button>
+    <button mat-menu-item>
+      Test2
+    </button>
+    <button mat-menu-item *ngIf="ap.typTagsStr.indexOf('Thin') !== -1">
+      Test3 TC
+    </button>
+  </ng-template>
+</mat-menu>

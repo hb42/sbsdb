@@ -10,6 +10,7 @@ export class Arbeitsplatz {
   public aptyp: string;
   public oe: Betrst;
   public verantwOe: Betrst;
+  public bemerkung: string;
   public tags: Tag[];
   public hw: Hardware[];
   public vlan: Netzwerk[];
@@ -18,4 +19,7 @@ export class Arbeitsplatz {
   public typTagsStr: string;
   public tagsStr: string;  // wird das gebraucht??
   public hwStr = "";
+  public ipStr = "";
+  public macStr = "";
+  public ipsearch = "";
 }

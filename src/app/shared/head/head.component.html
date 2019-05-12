@@ -1,54 +1,3 @@
-<!--
-<p-toolbar>
-  <div class="ui-toolbar-group-left">
-    <button type="button" pButton icon="pi pi-chevron-circle-left"
-            class="ui-button-secondary nav-btn" title="zurück"
-            (click)="backBtn()"
-    ></button>
-    <button type="button" pButton icon="pi pi-chevron-circle-right"
-            class="ui-button-secondary spacer2 nav-btn" title="vorwärts"
-            (click)="forwardBtn()"
-    ></button>
-
-    <span class="spacer page-btn">
-      <button *ngIf="!navigationService.isPage('/ap')"
-              label="Arbeitsplätze" icon="pi pi-user"
-              type="button" pButton (click)="navigate('/ap')"></button>
-      <p-splitButton *ngIf="navigationService.isPage('/ap')"
-                     label="Arbeitsplätze" icon="pi pi-user" styleClass="ui-button-warning"
-                     [model]="items" [appendTo]="'body'"></p-splitButton>
-    </span>
-    <span class="spacer page-btn">
-      <button *ngIf="!navigationService.isPage('/hw')"
-              label="Hardware" icon="pi pi-print"
-              type="button" pButton (click)="navigate('/hw')"></button>
-      <p-splitButton *ngIf="navigationService.isPage('/hw')"
-                     label="Hardware" icon="pi pi-print" styleClass="ui-button-warning"
-                     [model]="items" [appendTo]="'body'"></p-splitButton>
-    </span>
-    <span class="spacer page-btn">
-      <button *ngIf="!navigationService.isPage('/admin')"
-              label="Admin" icon="pi pi-unlock"
-              type="button" pButton (click)="navigate('/admin')"></button>
-      <p-splitButton *ngIf="navigationService.isPage('/admin')"
-                     label="Admin" icon="pi pi-unlock" styleClass="ui-button-warning"
-                     [model]="items" [appendTo]="'body'"></p-splitButton>
-    </span>
-
-    <label>
-      <input type="text" pInputText placeholder="Suche" class="spacer">
-      <button pButton type="button" label="Suche" icon="fa fa-search" class="ui-button-warning spacer"></button>
-      <button pButton type="button" label="Erweiterte Suche" icon="fa fa-search-plus" class="ui-button-warning"></button>
-    </label>
-  </div>
-  <div class="ui-toolbar-group-right">
-    <p-slideMenu #menu [model]="mainmenu" [popup]="true" [appendTo]="'body'"
-                 backLabel="zurück" [viewportHeight]="mainmenuheight"></p-slideMenu>
-    <button type="button" pButton icon="pi pi-bars" (click)="menu.toggle($event)" class="ui-button-secondary"></button>
-
-  </div>
-</p-toolbar>
--->
 <mat-toolbar color="primary" class="head-spk header">
   <!--  <button mat-button (click)="navigationService.resetApp()">-->
   <!--    <img src="./resource/sbs32-grey.png" title="{{configService.version.displayname}} {{configService.version.version}}"/>-->
@@ -118,6 +67,8 @@
   <!--  <button mat-button color="accent">Erweiterte Suche</button>-->
 
   <div class="fill"></div>
+  <div style="font-size: 11px"> {{configService.version.displayname}} {{configService.version.version}}</div>
+  <span class="spacer"></span>
   <button mat-icon-button [mat-menu-trigger-for]="mainmenu">
     <mat-icon>menu</mat-icon>
   </button>

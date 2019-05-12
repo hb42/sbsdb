@@ -59,7 +59,6 @@
             ],
             "styles": [
               "src/sbsdb-theme.scss",
-              "node_modules/font-awesome/css/font-awesome.css",
               "src/styles.scss"
             ],
             "scripts": [],

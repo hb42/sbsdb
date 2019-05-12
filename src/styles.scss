@@ -142,3 +142,16 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+/* Styles, die in den Component-Stylesheets nicht funktionieren
+   (waere auch mit "encapsulation: ViewEncapsulation.None" zu loesen,
+    dann sind aber alle Component-Styles global)
+ */
+
+/* ap.component */
+.bst-tooltip {
+  white-space: pre;
+  font-family: monospace;
+  font-size: 11px;
+  max-width: 300px !important;
+}

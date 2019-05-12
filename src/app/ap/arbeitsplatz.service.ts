@@ -21,13 +21,16 @@ export class ArbeitsplatzService {
 
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>(); // Arbeitsplatz[] =
                                                                                                   // [];
-  public displayedColumns: string[] = ["aptyp", "apname", "betrst", "bezeichnung", "hardware"];
+  public displayedColumns: string[] = ["aptyp", "apname", "betrst", "bezeichnung", "ip", "hardware", "menu"];
+
+  public expandedRow: Arbeitsplatz;
 
   // Filter
   public typFilter = new FormControl("");
   public nameFilter = new FormControl("");
   public bstFilter = new FormControl("");
   public bezFilter = new FormControl("");
+  public ipFilter = new FormControl("");
   public hwFilter = new FormControl("");
   // Inhalte aller Filter -> Profil | URL ??
   filterValues = {
@@ -35,6 +38,7 @@ export class ArbeitsplatzService {
     apname     : "",
     betrst     : "",
     bezeichnung: "",
+    ip         : "",
     hardware   : "",
   };
   public loading = false;
@@ -84,6 +88,13 @@ export class ArbeitsplatzService {
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
+    this.ipFilter.valueChanges
+        .subscribe(
+            text => {
+              this.filterValues.ip = text ? text.replace("-", "").toUpperCase() : "";
+              this.apDataSource.filter = JSON.stringify(this.filterValues);
+            }
+        );
     this.hwFilter.valueChanges
         .subscribe(
             text => {
@@ -130,6 +141,15 @@ export class ArbeitsplatzService {
             ap.hwStr = h.hersteller + " - " + h.bezeichnung + " [" + h.sernr + "]";
           }
         });
+        if (ap.vlan && ap.vlan[0]) {
+          ap.ipStr = this.getIpString(ap.vlan[0].vlan + ap.vlan[0].ip);
+          ap.macStr = this.getMacString(ap.vlan[0].mac);
+          ap.ipsearch = ap.ipStr + ap.vlan[0].mac;
+        } else {
+          ap.ipStr = "";
+          ap.macStr = "";
+          ap.ipsearch = "";
+        }
       });
     this.apDataSource.data = data;
       this.loading = false;
@@ -148,6 +168,8 @@ export class ArbeitsplatzService {
           return ap.oe.betriebsstelle.toLowerCase();
         case "bezeichnung":
           return ap.bezeichnung.toLowerCase();
+        case "ip":
+          return (ap.vlan && ap.vlan[0]) ? ap.vlan[0].vlan + ap.vlan[0].ip : 0;
         case "hardware":
           return ap.hwStr.toLowerCase();
         default:
@@ -164,12 +186,102 @@ export class ArbeitsplatzService {
           && ap.apname.toString().toLowerCase().indexOf(searchTerms.apname) !== -1
           && ap.oe.betriebsstelle.toLowerCase().indexOf(searchTerms.betrst) !== -1
           && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1
+          && ap.ipsearch.indexOf(searchTerms.ip) !== -1
           && ap.hwStr.toLowerCase().indexOf(searchTerms.hardware) !== -1;
     };
   }
 
-  public getBstData
+  public bstTooltip(ap: Arbeitsplatz): string {
+    return "OE: " + ap.oe.bstNr + "\n\n"
+        + (ap.oe.strasse ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n" : "")
+        + (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "")
+        + (ap.oe.oeff ? "\n" + ap.oe.oeff : "");
+  }
 
+  public testApMenu(ap: Arbeitsplatz) {
+    console.debug("DEBUG AP-Menue fuer " + ap.apname);
+  }
+
+  public getMacString(mac: string) {
+    // kein match => Eingabe-String
+    return mac.replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1-$2-$3-$4-$5-$6").toUpperCase();
+  }
+
+  public getIpString(ip: number) {
+    // tslint:disable:no-bitwise
+    const ip4 = ip & 0xff;
+    ip = ip >> 8;
+    const ip3 = ip & 0xff;
+    ip = ip >> 8;
+    const ip2 = ip & 0xff;
+    ip = ip >> 8;
+    const ip1 = ip & 0xff;
+
+    return "" + ip1 + "." + ip2 + "." + ip3 + "." + ip4;
+  }
+
+  /* IP-Addr in Java
+   public static String getIpString(long ip) {
+    long ip1,ip2,ip3,ip4;
+
+    ip4 = ip & 0xff;
+    ip = ip >> 8;
+    ip3 = ip & 0xff;
+    ip = ip >> 8;
+    ip2 = ip & 0xff;
+    ip = ip >> 8;
+    ip1 = ip & 0xff;
+
+    return "" + ip1 + "." + ip2 + "." + ip3 + "." + ip4;
+  }
+
+  public static long getIpValue(String ip) {
+    long ipv = 0;
+    String[] ips = ip.split("\\.");
+    long ip1,ip2,ip3,ip4;
+    ip1 = Long.parseLong(ips[0]);
+    ip2 = Long.parseLong(ips[1]);
+    ip3 = Long.parseLong(ips[2]);
+    ip4 = Long.parseLong(ips[3]);
+    if (ip1 < 0 || ip1 > 255 || ip2 < 0 || ip2 > 255 || ip3 < 0 || ip3 > 255 || ip4 < 0 || ip4 > 255)
+      throw new RuntimeException("Ungültige IP-Adresse");
+    ipv = (ip1 << 24) + (ip2 << 16) + (ip3 << 8) + ip4;
+    return ipv;
+  }
+
+  public static long getIpHost(long ip, long netmask) {
+    return ip - (ip & netmask);
+  }
+
+  public static long getIpSegment(long ip, long netmask) {
+    return ip & netmask;
+  }
+
+  public static long getNotNetmask(long netmask) {
+    return (~netmask) & 0xffffffffL;
+  }
+
+  public static long getLastOctet(long ip) {
+    return ip & 0xffL;
+  }
+
+  // byte hat Wertebereich -127 bis 128! das funktioniert nivht fuer IPs
+  public static int[] getIpBytes(long ip) {
+    int[] ret = new int[4];
+    ret[3] = (int)(ip & 0xff);
+    ip = ip >> 8;
+    ret[2] = (int)(ip & 0xff);
+    ip = ip >> 8;
+    ret[1] = (int)(ip & 0xff);
+    ip = ip >> 8;
+    ret[0] = (int)ip;
+    return ret;
+  }
+
+   */
+
+
+  /* TODO kann raus, wenn Tree definitiv draussen ist */
   public async getOeTree() {
     this.oeTree = await this.http.get<OeTreeItem[]>(this.oeTreeUrl).toPromise();
     this.dataSource.data = this.oeTree;
