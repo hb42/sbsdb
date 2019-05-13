@@ -80,8 +80,11 @@ table.mat-table {
   //min-width: 180px;
   //max-width: 180px;
 }
+
+/* Tooltip setzt user-select auf "none" */
 .mat-column-betrst {
   width: 30%;
+  -moz-user-select: auto !important;
 }
 .mat-column-bezeichnung {
   width: 30%;
@@ -122,16 +125,21 @@ table.mat-table {
 }
 .aptyp-tag {
   font-size: 12px;
+  margin-top: 3px;
 }
 
 .aptyp-btn {
   display: flex;
   flex-direction: row;
   align-items: baseline;
+  height: 34px;
 }
-
 .aptyp-btn mat-icon {
   font-size: 30px;
+}
+
+.aptyp-btn button {
+  text-align: left;
 }
 
 tr.ap-detail-row {

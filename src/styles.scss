@@ -150,7 +150,7 @@ body {
 
 /* ap.component */
 .bst-tooltip {
-  white-space: pre;
+  white-space: pre-wrap;
   font-family: monospace;
   font-size: 11px;
   max-width: 300px !important;
