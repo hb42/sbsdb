@@ -91,7 +91,7 @@ export class ArbeitsplatzService {
     this.ipFilter.valueChanges
         .subscribe(
             text => {
-              this.filterValues.ip = text ? text.replace("-", "").toUpperCase() : "";
+              this.filterValues.ip = text ? text.replace(/-/g, "").replace(/:/g, "").toUpperCase() : "";
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
