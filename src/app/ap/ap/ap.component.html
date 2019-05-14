@@ -38,19 +38,19 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="aptyp" sticky>
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">Typ</span>
-          <div class="select-filter">
+          <!--          <div class="select-filter">-->
             <mat-form-field floatLabel="never" class="filter-s">
               <!--              <mat-label>Filter</mat-label>-->
-              <mat-select [formControl]="apService.typFilter" multiple>
-                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>
-              </mat-select>
-              <!--          <input matInput [formControl]="apService.typFilter">-->
+              <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
+              <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
+              <!--              </mat-select>-->
+              <input matInput [formControl]="apService.typFilter">
+              <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
+                      class="select-filter-reset-btn">
+                <mat-icon class="select-filter-reset-icn">close</mat-icon>
+              </button>
             </mat-form-field>
-            <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
-                    class="select-filter-reset-btn">
-              <mat-icon class="select-filter-reset-icn">close</mat-icon>
-            </button>
-          </div>
+          <!--          </div>-->
         </th>
         <td mat-cell *matCellDef="let element" class="aptyp"
             (click)="apService.expandedRow = apService.expandedRow === element ? null : element; $event.stopPropagation();"
@@ -63,7 +63,7 @@ https://github.com/angular/components/issues/6178
           <!--            </button>-->
           <div class="md-primary-color">{{element.aptyp}}</div>
           <!--          </div>-->
-          <div class="aptyp-tag">{{element.typTagsStr}}</div>
+          <!--          <div class="aptyp-tag">{{element.typTagsStr}}</div>-->
         </td>
       </ng-container>
 

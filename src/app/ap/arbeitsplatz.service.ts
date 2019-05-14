@@ -36,7 +36,7 @@ export class ArbeitsplatzService {
   public hwFilter = new FormControl("");
   // Inhalte aller Filter -> Profil | URL ??
   filterValues = {
-    aptyp      : [],
+    aptyp      : "", // [],
     apname     : "",
     betrst     : "",
     bezeichnung: "",
@@ -63,9 +63,9 @@ export class ArbeitsplatzService {
     // Filter-Felder
     this.typFilter.valueChanges
         .subscribe(
-            arr => {
-              // this.filterValues.aptyp = text ? text.toLowerCase() : "";
-              this.filterValues.aptyp = arr ? arr : [];
+            text => {
+              this.filterValues.aptyp = text ? text.toLowerCase() : "";
+              // this.filterValues.aptyp = arr ? arr : [];
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
@@ -163,7 +163,7 @@ export class ArbeitsplatzService {
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
       switch (id) {
         case "aptyp":
-          return (ap.aptyp + ap.typTagsStr).toLowerCase();
+          return ap.aptyp.toLowerCase();
         case "apname":
           return ap.apname.toLowerCase();
         case "betrst":
@@ -182,9 +182,10 @@ export class ArbeitsplatzService {
     // eigner Filter
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
       const searchTerms = JSON.parse(filter);
-      return (searchTerms.aptyp.length === 0 ||
-              ap.tags.reduce((prev, cur) => prev || searchTerms.aptyp.indexOf(cur.tagId) !== -1, false)
-          )
+      return ap.aptyp.toLowerCase().indexOf(searchTerms.aptyp) !== -1
+          // (searchTerms.aptyp.length === 0 ||
+          //     ap.tags.reduce((prev, cur) => prev || searchTerms.aptyp.indexOf(cur.tagId) !== -1, false)
+          // )
           && ap.apname.toString().toLowerCase().indexOf(searchTerms.apname) !== -1
           && (ap.oe.bstNr + ap.oe.betriebsstelle.toLowerCase()).indexOf(searchTerms.betrst) !== -1
           && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1
