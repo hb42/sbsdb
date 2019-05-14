@@ -47,11 +47,14 @@ table.mat-table {
   //white-space: nowrap;
 }
 
-/* kein Zeilenumbruch in der Zelle TODO noetig, sinnvoll?*/
-.mat-cell > div {
+/* Zeilenumbruch in der Zelle Umschalten */
+table:not(.wrap-cell) .mat-cell > div {
   white-space: nowrap;
+}
+.mat-cell > div {
   overflow: hidden;
   text-overflow: ellipsis;
+  word-wrap: break-word;
 }
 
 .mat-table-sticky {

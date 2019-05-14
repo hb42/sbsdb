@@ -1,6 +1,6 @@
 export class TypTag {
   public id: number;
-  public apTyp: string;
+  public apkategorie: string;
   public tagTyp: string;
 
   // berechnete felder

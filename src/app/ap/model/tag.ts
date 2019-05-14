@@ -5,5 +5,5 @@ export class Tag {
   public bezeichnung: string;
   public param: string;
   public flag: number;
-  public aptypId: number;
+  public apkategorieId: number;
 }

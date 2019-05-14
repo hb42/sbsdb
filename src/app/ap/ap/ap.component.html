@@ -30,6 +30,7 @@ https://github.com/angular/components/issues/6178
     <table mat-table [dataSource]="apService.apDataSource"
            matSort
            multiTemplateDataRows
+           [class.wrap-cell]="apService.tableWrapCell"
     >
 
       <!--- Note that these columns can be defined in any order.
@@ -165,7 +166,9 @@ https://github.com/angular/components/issues/6178
 
       <ng-container matColumnDef="menu" stickyEnd>
         <th mat-header-cell *matHeaderCellDef>
-          <button mat-icon-button>
+          <button mat-icon-button
+                  [matMenuTriggerFor]="tableMenu"
+          >
             <mat-icon>menu</mat-icon>
           </button>
         </th>
@@ -240,6 +243,15 @@ https://github.com/angular/components/issues/6178
                  class="paginator"
                  color="primary"></mat-paginator>
 </div>
+
+<mat-menu #tableMenu="matMenu">
+  <ng-template matMenuContent>
+    <button mat-menu-item (click)="apService.tableWrapCell = !apService.tableWrapCell">
+      Zeilenumbruch
+      <mat-icon *ngIf="apService.tableWrapCell">done</mat-icon>
+    </button>
+  </ng-template>
+</mat-menu>
 
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">

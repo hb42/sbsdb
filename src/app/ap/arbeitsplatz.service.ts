@@ -25,6 +25,8 @@ export class ArbeitsplatzService {
 
   public expandedRow: Arbeitsplatz;
 
+  public tableWrapCell = false;
+
   // Filter
   public typFilter = new FormControl("");
   public nameFilter = new FormControl("");
@@ -113,7 +115,7 @@ export class ArbeitsplatzService {
     this.loading = true;
 
     this.typtagSelect = await this.http.get<TypTag[]>(this.typtagUrl).toPromise();
-    this.typtagSelect.forEach((t) => t.select = t.apTyp + ": " + t.tagTyp);
+    this.typtagSelect.forEach((t) => t.select = t.apkategorie + ": " + t.tagTyp);
 
     const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
 
@@ -184,7 +186,7 @@ export class ArbeitsplatzService {
               ap.tags.reduce((prev, cur) => prev || searchTerms.aptyp.indexOf(cur.tagId) !== -1, false)
           )
           && ap.apname.toString().toLowerCase().indexOf(searchTerms.apname) !== -1
-          && ap.oe.betriebsstelle.toLowerCase().indexOf(searchTerms.betrst) !== -1
+          && (ap.oe.bstNr + ap.oe.betriebsstelle.toLowerCase()).indexOf(searchTerms.betrst) !== -1
           && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1
           && ap.ipsearch.indexOf(searchTerms.ip) !== -1
           && ap.hwStr.toLowerCase().indexOf(searchTerms.hardware) !== -1;
@@ -204,7 +206,7 @@ export class ArbeitsplatzService {
 
   public getMacString(mac: string) {
     // kein match => Eingabe-String
-    return mac.replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1-$2-$3-$4-$5-$6").toUpperCase();
+    return mac.replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1:$2:$3:$4:$5:$6").toUpperCase();
   }
 
   public getIpString(ip: number) {
