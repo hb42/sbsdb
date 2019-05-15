@@ -167,6 +167,11 @@ tr.ap-row:not(.ap-detail-expanded):hover {
 tr.ap-row:not(.ap-detail-expanded):active {
   background: #efefef;
 }
+
+.ap-detail-expanded,
+.ap-detail-content-expanded {
+  background-color: #FFEBEE;
+}
 .ap-detail-expanded div {
   white-space: unset !important;
 }
@@ -189,12 +194,12 @@ tr.ap-row:not(.ap-detail-expanded):active {
 .ap-detail-content td,
 .ap-detail-content th {
   border: solid 1px #c0c0c0;
-  padding: 0 15px;
+  padding: 4px 15px;
 }
 
 .ap-detail-content th {
   font-weight: normal;
-  background-color: #f0f0f0;
+  background-color: #FFCDD2;
 }
 
 /* Paginator */
