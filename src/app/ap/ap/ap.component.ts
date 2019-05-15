@@ -29,7 +29,7 @@ export class ApComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private config: ConfigService,
-              private apService: ArbeitsplatzService
+              public apService: ArbeitsplatzService
   ) {
     console.debug("c'tor ApComponent");
   }

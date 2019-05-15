@@ -61,7 +61,7 @@ https://github.com/angular/components/issues/6178
           <!--              <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>-->
           <!--              <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>-->
           <!--            </button>-->
-          <div class="md-primary-color">{{element.aptyp}}</div>
+          <div>{{element.aptyp}}</div> <!-- class="md-primary-color" -->
           <!--          </div>-->
           <!--          <div class="aptyp-tag">{{element.typTagsStr}}</div>-->
         </td>
@@ -142,7 +142,9 @@ https://github.com/angular/components/issues/6178
         <td mat-cell *matCellDef="let element"
             (click)="apService.expandedRow = apService.expandedRow === element ? null : element; $event.stopPropagation();"
         >
-          <div>{{element.ipStr ? element.ipStr + ' &bull; ' : ''}}{{element.macStr}}</div>
+          <div>
+            <span class="ip-cell">{{element.ipStr}} </span><span>{{element.macStr}}</span>
+          </div>
         </td>
       </ng-container>
 
@@ -188,22 +190,52 @@ https://github.com/angular/components/issues/6178
         <td mat-cell *matCellDef="let element" [colSpan]="apService.displayedColumns.length">
           <div [@detailExpand]="element == apService.expandedRow ? 'expanded' : 'collapsed'"
                class="ap-detail-content">
-            <div style="flex-direction: row">
-              <div style="margin-right: 20px">
-                <div *ngFor="let hw of element.hw">
-                <span *ngIf="!hw.pri">
-                  {{hw.hersteller}} - {{hw.bezeichnung}} [{{hw.sernr}}]
-                </span>
-                </div>
-                <br>
+            <div style="display: flex; flex-direction: row">
+              <div style="margin-right: 20px;">Standort</div>
+              <div style="margin-right: 20px;">{{element.oe.bstNr}} - {{element.oe.betriebsstelle}}<br>
+                {{element.oe.strasse ? element.oe.strasse + " " : ""}}{{element.oe.hausnr ? element.oe.hausnr : ""}}<br>
+                {{element.oe.plz ? element.oe.plz + " " : ""}}{{element.oe.ort ? element.oe.ort : ""}}
               </div>
+              <div style="white-space: pre-wrap; font-family: monospace; margin-right: 20px;">Öffnungszeiten<br>{{element.oe.oeff}}</div>
               <div>
-                <div *ngFor="let vlan of element.vlan">
-                  {{vlan.mac}}
-                </div>
+                {{element.verantwOe ? "Verantwortliche OE " + element.verantwOe.bstNr + " - " + element.verantwOe.betriebsstelle : ""}}
               </div>
             </div>
-            <div>
+            <div style="display: flex; flex-direction: row">
+              <div style="margin-right: 20px;">
+                <table>
+                  <th colspan="2">Hardware</th>
+                  <tr *ngFor="let hw of element.hw">
+                    <!--                <td *ngIf="!hw.pri">-->
+                    <td>
+                      {{hw.hwtyp}}
+                    </td>
+                    <td>
+                      {{hw.hersteller}} - {{hw.bezeichnung}} [{{hw.sernr}}]
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div style="margin-right: 20px">
+                <table>
+                  <th colspan="2">IP</th>
+                  <tr *ngFor="let vlan of element.vlan">
+                    <td>{{apService.getIpString(vlan.vlan + vlan.ip)}}</td>
+                    <td>{{apService.getMacString(vlan.mac)}}</td>
+                  </tr>
+                </table>
+              </div>
+              <div>
+                <table>
+                  <th colspan="2">Sonstige Informationen</th>
+                  <tr *ngFor="let tag of element.tags">
+                    <td>{{tag.bezeichnung}}</td>
+                    <td>{{tag.text}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div style="white-space: pre-wrap;">
               {{element.bemerkung}}
             </div>
             <div class="fill"></div>

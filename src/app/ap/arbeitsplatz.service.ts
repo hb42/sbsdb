@@ -110,7 +110,7 @@ export class ArbeitsplatzService {
     }, 0)
   }
 
-  // APs aus der DB holen  TODO ist das hier richtig?
+  // APs aus der DB holen
   public async getAps() {
     this.loading = true;
 

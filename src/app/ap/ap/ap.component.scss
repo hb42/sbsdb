@@ -17,6 +17,7 @@ $listMinWidth: 100px;
   min-width: $listMinWidth;
 }
 
+/* mat-table head*/
 .sort-header {
   line-height: 3em;
 }
@@ -37,6 +38,7 @@ $listMinWidth: 100px;
   align-items: flex-start;
 }
 
+/* Standard fuer Tabelle/Zellen */
 td.mat-cell, td.mat-footer-cell, th.mat-header-cell {
   padding-right: 15px;
 }
@@ -47,7 +49,7 @@ table.mat-table {
   //white-space: nowrap;
 }
 
-/* Zeilenumbruch in der Zelle Umschalten */
+// Zeilenumbruch in der Zelle Umschalten
 table:not(.wrap-cell) .mat-cell > div {
   white-space: nowrap;
 }
@@ -57,10 +59,12 @@ table:not(.wrap-cell) .mat-cell > div {
   word-wrap: break-word;
 }
 
-.mat-table-sticky {
-  border-top: 1px solid #e0e0e0;
-}
+// so koennte der fixe Teil der Tabelle angesprochen werden
+//.mat-table-sticky {
+//  border-top: 1px solid #e0e0e0;
+//}
 
+/* Filter-Felder */
 .filter-xs {
   width: 80px
 }
@@ -73,6 +77,7 @@ table:not(.wrap-cell) .mat-cell > div {
   width: 200px;
 }
 
+/* Spalten */
 .mat-column-apname {
   width: 180px;
   //min-width: 180px;
@@ -84,7 +89,7 @@ table:not(.wrap-cell) .mat-cell > div {
   //max-width: 180px;
 }
 
-/* Tooltip setzt user-select auf "none" */
+// Tooltip setzt user-select auf "none"
 .mat-column-betrst {
   width: 30%;
   -moz-user-select: auto !important;
@@ -97,6 +102,10 @@ table:not(.wrap-cell) .mat-cell > div {
   width: 30%;
 }
 
+.ip-cell {
+  padding-right: 20px;
+}
+
 .mat-column-hardware {
   width: 20%;
 }
@@ -105,6 +114,7 @@ table:not(.wrap-cell) .mat-cell > div {
   width: 20px;
 }
 
+/* Filter mit select box */
 .select-filter {
   white-space: nowrap;
 }
@@ -122,6 +132,7 @@ table:not(.wrap-cell) .mat-cell > div {
   font-size: inherit;
 }
 
+/* AP-Typ */
 .aptyp {
   flex-direction: column;
   align-items: flex-start;
@@ -145,6 +156,7 @@ table:not(.wrap-cell) .mat-cell > div {
   text-align: left;
 }
 
+/* Detail-Anzeige */
 tr.ap-detail-row {
   height: 0;
 }
@@ -152,14 +164,11 @@ tr.ap-detail-row {
 tr.ap-row:not(.ap-detail-expanded):hover {
   background: #f4f4f4;
 }
-
 tr.ap-row:not(.ap-detail-expanded):active {
   background: #efefef;
 }
-
 .ap-detail-expanded div {
-  white-space: normal;
-  word-wrap: break-word;
+  white-space: unset !important;
 }
 
 .ap-row td {
@@ -173,6 +182,22 @@ tr.ap-row:not(.ap-detail-expanded):active {
   flex-direction: column;
 }
 
+.ap-detail-content table {
+  border-collapse: collapse;
+}
+
+.ap-detail-content td,
+.ap-detail-content th {
+  border: solid 1px #c0c0c0;
+  padding: 0 15px;
+}
+
+.ap-detail-content th {
+  font-weight: normal;
+  background-color: #f0f0f0;
+}
+
+/* Paginator */
 .paginator {
   height: 56px;
   background-color: #f9f9f9;
