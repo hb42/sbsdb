@@ -52,16 +52,31 @@ https://github.com/angular/components/issues/6178
             </mat-form-field>
           <!--          </div>-->
         </th>
-        <td mat-cell *matCellDef="let element" class="aptyp"
+        <td mat-cell *matCellDef="let element" class="aptyp highlight-when-expanded"
             (click)="apService.expandedRow = apService.expandedRow === element ? null : element; $event.stopPropagation();"
         >
+          <!--          <button mat-button class="highlight-when-expanded"-->
+          <!--                  (click)="apService.typFilter.setValue(element.aptyp); apService.typFilter.markAsDirty(); $event.stopPropagation()"-->
+          <!--                  color="primary"-->
+          <!--          >-->
+          <!--            {{element.aptyp}}-->
+          <!--          </button>-->
+          <div class="md-primary-color">
+            <span class="highlight-when-expanded pseudo-button"
+                  (click)="apService.typFilter.setValue(element.aptyp); apService.typFilter.markAsDirty(); $event.stopPropagation()"
+                  style="cursor: pointer; font-weight: 500"
+            >
+              {{element.aptyp}}
+            </span>
+          </div>
+
           <!--          <div class="aptyp-btn">-->
           <!--            <button mat-icon-button color="accent"-->
           <!--                    (click)="apService.expandedRow = apService.expandedRow === element ? null : element">-->
           <!--              <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>-->
           <!--              <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>-->
           <!--            </button>-->
-          <div>{{element.aptyp}}</div> <!-- class="md-primary-color" -->
+          <!-- <div>{{element.aptyp}}</div> --> <!-- class="md-primary-color" -->
           <!--          </div>-->
           <!--          <div class="aptyp-tag">{{element.typTagsStr}}</div>-->
         </td>
@@ -78,7 +93,7 @@ https://github.com/angular/components/issues/6178
             </button>
           </mat-form-field>
         </th>
-        <td mat-cell *matCellDef="let element"
+        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
             (click)="apService.expandedRow = apService.expandedRow === element ? null : element; $event.stopPropagation();"
         >
           <div>{{element.apname}}</div>
@@ -96,7 +111,7 @@ https://github.com/angular/components/issues/6178
             </button>
           </mat-form-field>
         </th>
-        <td mat-cell *matCellDef="let element"
+        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
             (click)="apService.expandedRow = apService.expandedRow === element ? null : element; $event.stopPropagation();"
         >
           <!--            [matTooltip]="apService.bstTooltip(element)"-->
@@ -104,8 +119,19 @@ https://github.com/angular/components/issues/6178
           <!--            matTooltipShowDelay="1500"-->
           <!--            matTooltipHideDelay="100"-->
           <!--            (click)="bstTooltip.show(0)"-->
-          <div>
+          <!--          <a mat-button class="highlight-when-expanded"-->
+          <!--                  (click)="apService.resetFilters(); apService.bstFilter.setValue(element.oe.betriebsstelle); apService.bstFilter.markAsDirty(); $event.stopPropagation()"-->
+          <!--                  color="primary"-->
+          <!--          >-->
+          <!--            {{element.oe.betriebsstelle}}-->
+          <!--          </a>-->
+          <div class="md-primary-color">
+            <span class="highlight-when-expanded pseudo-button"
+                  (click)="apService.resetFilters(); apService.bstFilter.setValue(element.oe.betriebsstelle); apService.bstFilter.markAsDirty(); $event.stopPropagation()"
+                  style="cursor: pointer; font-weight: 500"
+            >
             {{element.oe.betriebsstelle}}
+            </span>
           </div>
         </td>
       </ng-container>
@@ -121,7 +147,7 @@ https://github.com/angular/components/issues/6178
             </button>
           </mat-form-field>
         </th>
-        <td mat-cell *matCellDef="let element"
+        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
             (click)="apService.expandedRow = apService.expandedRow === element ? null : element; $event.stopPropagation();"
         >
           <div>{{element.bezeichnung}}</div>
@@ -190,20 +216,23 @@ https://github.com/angular/components/issues/6178
         <td mat-cell *matCellDef="let element" [colSpan]="apService.displayedColumns.length">
           <div [@detailExpand]="element == apService.expandedRow ? 'expanded' : 'collapsed'"
                class="ap-detail-content">
-            <div style="display: flex; flex-direction: row">
-              <div style="margin-right: 20px;">Standort</div>
-              <div style="margin-right: 30px;">{{element.oe.bstNr}} - {{element.oe.betriebsstelle}}<br>
+            <div style="display: flex; flex-direction: row; flex-wrap: wrap">
+              <div style="margin-top: 25px; margin-right: 20px; background-color: #ffcdd2; padding: 2px 10px;">Standort</div>
+              <div style="margin-top: 25px; margin-right: 30px;">OE {{element.oe.bstNr}}<br>
+                {{element.oe.betriebsstelle}}<br><br>
                 {{element.oe.strasse ? element.oe.strasse + " " : ""}}{{element.oe.hausnr ? element.oe.hausnr : ""}}<br>
                 {{element.oe.plz ? element.oe.plz + " " : ""}}{{element.oe.ort ? element.oe.ort : ""}}
               </div>
-              <div style="white-space: pre-wrap; font-family: 'Roboto Mono', monospace; font-size: 13px; margin-right: 30px;">Öffnungszeiten<br>{{element.oe.oeff}}
+              <div *ngIf="element.oe.oeff"
+                   style="white-space: pre-wrap; font-family: 'Roboto Mono', monospace; font-size: 13px; margin-top: 25px; margin-right: 30px;">
+                Öffnungszeiten<br>{{element.oe.oeff}}
               </div>
             </div>
             <div *ngIf="element.verantwOe" style="margin-top: 25px;">
-              Verantwortliche OE {{element.verantwOe.bstNr}} - {{element.verantwOe.betriebsstelle}}
+              <span>Verantwortliche OE</span> {{element.verantwOe.bstNr}} - {{element.verantwOe.betriebsstelle}}
               </div>
-            <div style="display: flex; flex-direction: row; margin-top: 25px;">
-              <div style="margin-right: 30px;">
+            <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+              <div style="margin-right: 30px; margin-top: 25px; ">
                 <table>
                   <th colspan="2">Hardware</th>
                   <tr *ngFor="let hw of element.hw">
@@ -217,7 +246,7 @@ https://github.com/angular/components/issues/6178
                   </tr>
                 </table>
               </div>
-              <div style="margin-right: 30px">
+              <div style="margin-right: 30px; margin-top: 25px; ">
                 <table>
                   <th colspan="2">IP</th>
                   <tr *ngFor="let vlan of element.vlan">
@@ -226,7 +255,7 @@ https://github.com/angular/components/issues/6178
                   </tr>
                 </table>
               </div>
-              <div>
+              <div style="margin-right: 30px; margin-top: 25px;">
                 <table>
                   <th colspan="2">Sonstige Informationen</th>
                   <tr *ngFor="let tag of element.tags">
@@ -236,12 +265,8 @@ https://github.com/angular/components/issues/6178
                 </table>
               </div>
             </div>
-            <div style="white-space: pre-wrap;">
+            <div style="white-space: pre-wrap; margin-top: 25px; margin-bottom: 25px">
               {{element.bemerkung}}
-            </div>
-            <div class="fill"></div>
-            <div>
-              <!--  rechtsbuendiger Text -->
             </div>
           </div>
         </td>
@@ -281,7 +306,12 @@ https://github.com/angular/components/issues/6178
 
 <mat-menu #tableMenu="matMenu">
   <ng-template matMenuContent>
+    <button mat-menu-item (click)="apService.resetFilters()">
+      <mat-icon>close</mat-icon>
+      Alle Filter löschen
+    </button>
     <button mat-menu-item (click)="apService.tableWrapCell = !apService.tableWrapCell">
+      <mat-icon>wrap_text</mat-icon>
       Zeilenumbruch
       <mat-icon *ngIf="apService.tableWrapCell">done</mat-icon>
     </button>

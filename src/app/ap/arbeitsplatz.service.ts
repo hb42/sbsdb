@@ -1,12 +1,12 @@
-import { NestedTreeControl } from "@angular/cdk/tree";
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { MatTableDataSource, MatTreeNestedDataSource } from "@angular/material";
-import { ConfigService } from "../shared/config/config.service";
-import { Arbeitsplatz } from "./model/arbeitsplatz";
-import { OeTreeItem } from "./model/oe.tree.item";
-import { TypTag } from "./model/typtag";
+import {NestedTreeControl} from "@angular/cdk/tree";
+import {HttpClient} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {FormControl} from "@angular/forms";
+import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
+import {ConfigService} from "../shared/config/config.service";
+import {Arbeitsplatz} from "./model/arbeitsplatz";
+import {OeTreeItem} from "./model/oe.tree.item";
+import {TypTag} from "./model/typtag";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -179,7 +179,7 @@ export class ArbeitsplatzService {
       }
     };
 
-    // eigner Filter
+    // eigener Filter
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
       const searchTerms = JSON.parse(filter);
       return ap.aptyp.toLowerCase().indexOf(searchTerms.aptyp) !== -1
@@ -192,6 +192,15 @@ export class ArbeitsplatzService {
           && ap.ipsearch.indexOf(searchTerms.ip) !== -1
           && ap.hwStr.toLowerCase().indexOf(searchTerms.hardware) !== -1;
     };
+  }
+
+  public resetFilters() {
+    this.typFilter.reset();
+    this.nameFilter.reset();
+    this.bstFilter.reset();
+    this.bezFilter.reset();
+    this.ipFilter.reset();
+    this.hwFilter.reset();
   }
 
   public bstTooltip(ap: Arbeitsplatz): string {

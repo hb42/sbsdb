@@ -53,7 +53,9 @@ table.mat-table {
 table:not(.wrap-cell) .mat-cell > div {
   white-space: nowrap;
 }
-.mat-cell > div {
+
+.mat-cell > div,
+.mat-cell > a {
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
@@ -176,6 +178,11 @@ tr.ap-row:not(.ap-detail-expanded):active {
   white-space: unset !important;
 }
 
+.ap-detail-expanded .highlight-when-expanded {
+  font-weight: bold !important;
+  color: rgba(0, 0, 0, .87);
+}
+
 .ap-row td {
   border-bottom-width: 0;
 }
@@ -183,7 +190,7 @@ tr.ap-row:not(.ap-detail-expanded):active {
 .ap-detail-content {
   overflow: hidden;
   display: flex;
-  padding: 10px 0;
+  //padding: 10px 0;
   flex-direction: column;
 }
 
