@@ -62,6 +62,11 @@ https://github.com/angular/components/issues/6178
           <!--            {{element.aptyp}}-->
           <!--          </button>-->
           <div class="md-primary-color">
+            <button mat-icon-button color="accent"
+                    (click)="apService.expandedRow = apService.expandedRow === element ? null : element; $event.stopPropagation();">
+              <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>
+              <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>
+            </button>
             <span class="highlight-when-expanded pseudo-button"
                   (click)="apService.typFilter.setValue(element.aptyp); apService.typFilter.markAsDirty(); $event.stopPropagation()"
                   style="cursor: pointer; font-weight: 500"
