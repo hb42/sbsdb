@@ -172,7 +172,7 @@ tr.ap-row:not(.ap-detail-expanded):active {
 
 .ap-detail-expanded,
 .ap-detail-content-expanded {
-  background-color: #FFEB1A; // Red50 #FFEBEE
+  background-color: hsl(0, 100%, 99%);
 }
 .ap-detail-expanded div {
   white-space: unset !important;
@@ -206,7 +206,7 @@ tr.ap-row:not(.ap-detail-expanded):active {
 
 .ap-detail-content th {
   font-weight: normal;
-  background-color: #FFCDD2;
+  background-color: hsl(0, 100%, 96%);
 }
 
 /* Paginator */
