@@ -183,6 +183,15 @@ tr.ap-row:not(.ap-detail-expanded):active {
   color: rgba(0, 0, 0, .87);
 }
 
+.pseudo-button {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ap-detail-expanded .pseudo-button {
+  cursor: auto;
+}
+
 .ap-row td {
   border-bottom-width: 0;
 }

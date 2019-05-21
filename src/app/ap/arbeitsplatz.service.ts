@@ -6,7 +6,6 @@ import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
 import {ConfigService} from "../shared/config/config.service";
 import {Arbeitsplatz} from "./model/arbeitsplatz";
 import {OeTreeItem} from "./model/oe.tree.item";
-import {TypTag} from "./model/typtag";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -25,7 +24,10 @@ export class ArbeitsplatzService {
 
   public expandedRow: Arbeitsplatz;
 
+  // Zeilenumbruch in den Tabellenzellen
   public tableWrapCell = false;
+  // Klick auf Zeile zeigt Details
+  public clickForDetails = true;
 
   // Filter
   public typFilter = new FormControl("");
@@ -44,13 +46,14 @@ export class ArbeitsplatzService {
     hardware   : "",
   };
   public loading = false;
-  public typtagSelect: TypTag[];
+  // public typtagSelect: TypTag[];
 
   // Web-API calls
   private readonly oeTreeUrl: string;
   private readonly allApsUrl: string;
   private readonly pageApsUrl: string;
   private readonly typtagUrl: string;
+  private readonly singleApUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
@@ -58,6 +61,7 @@ export class ArbeitsplatzService {
     this.pageApsUrl = this.configService.webservice + "/ap/page";
     this.pageApsUrl = this.configService.webservice + "/ap/page";
     this.typtagUrl = this.configService.webservice + "/ap/typtags";
+    this.singleApUrl = this.configService.webservice + "/ap/id/";
     // this.getOeTree();
 
     // Filter-Felder
@@ -114,33 +118,36 @@ export class ArbeitsplatzService {
   public async getAps() {
     this.loading = true;
 
-    this.typtagSelect = await this.http.get<TypTag[]>(this.typtagUrl).toPromise();
-    this.typtagSelect.forEach((t) => t.select = t.apkategorie + ": " + t.tagTyp);
+    // this.typtagSelect = await this.http.get<TypTag[]>(this.typtagUrl).toPromise();
+    // this.typtagSelect.forEach((t) => t.select = t.apkategorie + ": " + t.tagTyp);
 
     const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
 
-    // let data: Arbeitsplatz[];
-    // let page = 0;
-    // do {
-    //   data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + "/" + page++).toPromise();
     const data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
+    console.debug("prepare data");
       data.forEach((ap) => {
-        let typ = "";
-        let tag = "";
-        ap.tags.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
-        ap.tags.forEach((t) => {
-          if (t.flag === 1) {
-            typ += t.bezeichnung + " ";
+        ap.tags.sort((a, b) => {  // FIXME nur fuer full record
+          if (a.flag === b.flag) {
+            return a.bezeichnung.localeCompare(b.bezeichnung)
           } else {
-            tag += t.bezeichnung + "=" + t.text + " ";
+            return (a.flag === 1 ? -1 : 1);
           }
         });
-        ap.typTagsStr = typ;
-        ap.tagsStr = tag;
+        ap.hw.sort((a, b) => { // FIXME nur fuer full record
+          if (a.pri) {
+            return -1;
+          } else if (b.pri) {
+            return 1;
+          } else {
+            return (a.hwtyp + a.hersteller + a.bezeichnung + a.sernr).toLowerCase()
+                .localeCompare((b.hwtyp + b.hersteller + b.bezeichnung + b.sernr).toLowerCase());
+          }
+        });
         ap.hwStr = ""; // keine undef Felder!
         ap.hw.forEach((h) => {
           if (h.pri) {
-            ap.hwStr = h.hersteller + " - " + h.bezeichnung + " [" + h.sernr + "]";
+            ap.hwStr = h.hersteller + " - " + h.bezeichnung
+                + (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
           }
         });
         if (ap.vlan && ap.vlan[0]) {
@@ -154,10 +161,8 @@ export class ArbeitsplatzService {
         }
       });
     this.apDataSource.data = data;
+    console.debug("prepare data end");
       this.loading = false;
-    //   this.apDataSource.data = this.apDataSource.data.concat(data);
-    //   this.loading = false;
-    // } while (data.length);
 
     // liefert Daten fuer sort -> immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
@@ -201,6 +206,42 @@ export class ArbeitsplatzService {
     this.bezFilter.reset();
     this.ipFilter.reset();
     this.hwFilter.reset();
+  }
+
+  public async expandApRow(ap: Arbeitsplatz, event: Event) {
+    if (this.expandedRow === ap) {
+      this.expandedRow = null;
+    } else {
+      const apdata: Arbeitsplatz[] = await this.http.get<Arbeitsplatz[]>(this.singleApUrl + ap.apId).toPromise();
+      if (apdata && apdata.length === 1) {
+        ap.verantwOe = apdata[0].verantwOe;
+        ap.oe = apdata[0].oe;
+        ap.hw = apdata[0].hw;
+        ap.bezeichnung = apdata[0].bezeichnung;
+        ap.apname = apdata[0].apname;
+        ap.aptyp = apdata[0].aptyp;
+        ap.bemerkung = apdata[0].bemerkung;
+        ap.tags = apdata[0].tags;
+        ap.vlan = apdata[0].vlan;
+        // TODO hwStr etc. neu aufbauen
+      }
+      this.expandedRow = ap;
+    }
+    // this.expandedRow = this.expandedRow === ap ? null : ap;
+    event.stopPropagation();
+  }
+
+  public filterByAptyp(ap: Arbeitsplatz, event: Event) {
+    this.typFilter.setValue(ap.aptyp);
+    this.typFilter.markAsDirty();
+    event.stopPropagation()
+  }
+
+  public filterByBetrst(ap: Arbeitsplatz, event: Event) {
+    this.resetFilters();
+    this.bstFilter.setValue(ap.oe.betriebsstelle);
+    this.bstFilter.markAsDirty();
+    event.stopPropagation()
   }
 
   public bstTooltip(ap: Arbeitsplatz): string {
