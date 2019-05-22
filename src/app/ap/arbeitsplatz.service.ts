@@ -27,7 +27,10 @@ export class ArbeitsplatzService {
   // Zeilenumbruch in den Tabellenzellen
   public tableWrapCell = false;
   // Klick auf Zeile zeigt Details
-  public clickForDetails = true;
+  public clickForDetails = false;
+
+  // Text fuer Statuszeile
+  public statusText = "";
 
   // Filter
   public typFilter = new FormControl("");
@@ -124,45 +127,11 @@ export class ArbeitsplatzService {
     const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
 
     const data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
-    console.debug("prepare data");
-      data.forEach((ap) => {
-        ap.tags.sort((a, b) => {  // FIXME nur fuer full record
-          if (a.flag === b.flag) {
-            return a.bezeichnung.localeCompare(b.bezeichnung)
-          } else {
-            return (a.flag === 1 ? -1 : 1);
-          }
-        });
-        ap.hw.sort((a, b) => { // FIXME nur fuer full record
-          if (a.pri) {
-            return -1;
-          } else if (b.pri) {
-            return 1;
-          } else {
-            return (a.hwtyp + a.hersteller + a.bezeichnung + a.sernr).toLowerCase()
-                .localeCompare((b.hwtyp + b.hersteller + b.bezeichnung + b.sernr).toLowerCase());
-          }
-        });
-        ap.hwStr = ""; // keine undef Felder!
-        ap.hw.forEach((h) => {
-          if (h.pri) {
-            ap.hwStr = h.hersteller + " - " + h.bezeichnung
-                + (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
-          }
-        });
-        if (ap.vlan && ap.vlan[0]) {
-          ap.ipStr = this.getIpString(ap.vlan[0].vlan + ap.vlan[0].ip);
-          ap.macStr = this.getMacString(ap.vlan[0].mac);
-          ap.ipsearch = ap.ipStr + ap.vlan[0].mac;
-        } else {
-          ap.ipStr = "";
-          ap.macStr = "";
-          ap.ipsearch = "";
-        }
-      });
+    data.forEach((ap) => {
+      this.prepAP(ap);
+    });
     this.apDataSource.data = data;
-    console.debug("prepare data end");
-      this.loading = false;
+    this.loading = false;
 
     // liefert Daten fuer sort -> immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
@@ -212,20 +181,25 @@ export class ArbeitsplatzService {
     if (this.expandedRow === ap) {
       this.expandedRow = null;
     } else {
-      const apdata: Arbeitsplatz[] = await this.http.get<Arbeitsplatz[]>(this.singleApUrl + ap.apId).toPromise();
-      if (apdata && apdata.length === 1) {
-        ap.verantwOe = apdata[0].verantwOe;
-        ap.oe = apdata[0].oe;
-        ap.hw = apdata[0].hw;
-        ap.bezeichnung = apdata[0].bezeichnung;
-        ap.apname = apdata[0].apname;
-        ap.aptyp = apdata[0].aptyp;
-        ap.bemerkung = apdata[0].bemerkung;
-        ap.tags = apdata[0].tags;
-        ap.vlan = apdata[0].vlan;
-        // TODO hwStr etc. neu aufbauen
+      const apdata: Arbeitsplatz = await this.http.get<Arbeitsplatz>(this.singleApUrl + ap.apId).toPromise();
+      // const rec: Arbeitsplatz = this.apDataSource.data.find((a => a.apId === ap.apId));
+      // console.dir(rec);
+      if (apdata) {
+        ap.verantwOe = apdata.verantwOe;
+        ap.oe = apdata.oe;
+        ap.hw = apdata.hw;
+        ap.bezeichnung = apdata.bezeichnung;
+        ap.apname = apdata.apname;
+        ap.aptyp = apdata.aptyp;
+        ap.bemerkung = apdata.bemerkung;
+        ap.tags = apdata.tags;
+        ap.vlan = apdata.vlan;
+        this.sortAP(ap);
+        this.prepAP(ap);
+        this.expandedRow = ap;
+      } else {
+        console.error("Fehler beim Laden der Details fuer AP #" + ap.apId);
       }
-      this.expandedRow = ap;
     }
     // this.expandedRow = this.expandedRow === ap ? null : ap;
     event.stopPropagation();
@@ -333,6 +307,44 @@ export class ArbeitsplatzService {
 
    */
 
+  private sortAP(ap: Arbeitsplatz) {
+    ap.tags.sort((a, b) => {
+      if (a.flag === b.flag) {
+        return a.bezeichnung.localeCompare(b.bezeichnung)
+      } else {
+        return (a.flag === 1 ? -1 : 1);
+      }
+    });
+    ap.hw.sort((a, b) => {
+      if (a.pri) {
+        return -1;
+      } else if (b.pri) {
+        return 1;
+      } else {
+        return (a.hwtyp + a.hersteller + a.bezeichnung + a.sernr).toLowerCase()
+            .localeCompare((b.hwtyp + b.hersteller + b.bezeichnung + b.sernr).toLowerCase());
+      }
+    });
+  }
+
+  private prepAP(ap: Arbeitsplatz) {
+    ap.hwStr = ""; // keine undef Felder!
+    ap.hw.forEach((h) => {
+      if (h.pri) {
+        ap.hwStr = h.hersteller + " - " + h.bezeichnung
+            + (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
+      }
+    });
+    if (ap.vlan && ap.vlan[0]) {
+      ap.ipStr = this.getIpString(ap.vlan[0].vlan + ap.vlan[0].ip);
+      ap.macStr = this.getMacString(ap.vlan[0].mac);
+      ap.ipsearch = ap.ipStr + ap.vlan[0].mac;
+    } else {
+      ap.ipStr = "";
+      ap.macStr = "";
+      ap.ipsearch = "";
+    }
+  }
 
   /* TODO kann raus, wenn Tree definitiv draussen ist */
   public async getOeTree() {
