@@ -1,12 +1,12 @@
-import {NestedTreeControl} from "@angular/cdk/tree";
-import {HttpClient} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {FormControl} from "@angular/forms";
-import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
-import {ConfigService} from "../shared/config/config.service";
-import {Arbeitsplatz} from "./model/arbeitsplatz";
-import {OeTreeItem} from "./model/oe.tree.item";
-import {debounceTime} from "rxjs/operators";
+import { NestedTreeControl } from "@angular/cdk/tree";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { MatTableDataSource, MatTreeNestedDataSource } from "@angular/material";
+import { debounceTime } from "rxjs/operators";
+import { ConfigService } from "../shared/config/config.service";
+import { Arbeitsplatz } from "./model/arbeitsplatz";
+import { OeTreeItem } from "./model/oe.tree.item";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -29,6 +29,8 @@ export class ArbeitsplatzService {
   public tableWrapCell = false;
   // Klick auf Zeile zeigt Details
   public clickForDetails = false;
+  public linkcolor = "primary";
+  public linkcolor2 = true;
 
   // Text fuer Statuszeile
   public statusText = "";
@@ -73,7 +75,8 @@ export class ArbeitsplatzService {
     this.singleApUrl = this.configService.webservice + "/ap/id/";
     // this.getOeTree();
 
-    const keyDebounce = 250;
+    // Filtereingaben bremsen
+    const keyDebounce = 500;
     // Filter-Felder
     this.typFilter.valueChanges
         .pipe(debounceTime(keyDebounce))

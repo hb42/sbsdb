@@ -61,8 +61,9 @@ https://github.com/angular/components/issues/6178
           <!--          >-->
           <!--            {{element.aptyp}}-->
           <!--          </button>-->
-          <div class="md-primary-color">
-            <button mat-icon-button color="accent" *ngIf="!apService.clickForDetails"
+          <div [class.md-primary-color]="apService.linkcolor2"
+               [class.md-accent-color]="!apService.linkcolor2">
+            <button mat-icon-button [color]="apService.linkcolor" *ngIf="!apService.clickForDetails"
                     (click)="apService.expandApRow(element, $event)">
               <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>
               <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>
@@ -129,7 +130,8 @@ https://github.com/angular/components/issues/6178
           <!--          >-->
           <!--            {{element.oe.betriebsstelle}}-->
           <!--          </a>-->
-          <div class="md-primary-color">
+          <div [class.md-primary-color]="apService.linkcolor2"
+               [class.md-accent-color]="!apService.linkcolor2">
             <span class="highlight-when-expanded pseudo-button"
                   (click)="apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''"
             >
@@ -199,6 +201,7 @@ https://github.com/angular/components/issues/6178
         <th mat-header-cell *matHeaderCellDef>
           <button mat-icon-button
                   [matMenuTriggerFor]="tableMenu"
+                  [color]="apService.linkcolor"
           >
             <mat-icon>menu</mat-icon>
           </button>
@@ -207,7 +210,7 @@ https://github.com/angular/components/issues/6178
           <button mat-icon-button
                   [matMenuTriggerFor]="apMenu"
                   [matMenuTriggerData]="{ap: element}"
-                  color="accent">
+                  [color]="apService.linkcolor">
             <!--                  (click) = "$event.stopPropagation()"-->
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -325,6 +328,14 @@ https://github.com/angular/components/issues/6178
       <mat-icon>touch_app</mat-icon>
       Zeilenklick
       <mat-icon *ngIf="apService.clickForDetails">done</mat-icon>
+    </button>
+    <button mat-menu-item (click)="apService.linkcolor === 'primary' ? apService.linkcolor = 'accent' : apService.linkcolor = 'primary'">
+      <mat-icon>format_color_text</mat-icon>
+      toggle menu color
+    </button>
+    <button mat-menu-item (click)="apService.linkcolor2 = !apService.linkcolor2">
+      <mat-icon>format_color_text</mat-icon>
+      toggle link color
     </button>
   </ng-template>
 </mat-menu>
