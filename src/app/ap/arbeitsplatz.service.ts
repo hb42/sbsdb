@@ -6,6 +6,7 @@ import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
 import {ConfigService} from "../shared/config/config.service";
 import {Arbeitsplatz} from "./model/arbeitsplatz";
 import {OeTreeItem} from "./model/oe.tree.item";
+import {debounceTime} from "rxjs/operators";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -41,12 +42,12 @@ export class ArbeitsplatzService {
   public hwFilter = new FormControl("");
   // Inhalte aller Filter -> Profil | URL ??
   filterValues = {
-    aptyp      : "", // [],
-    apname     : "",
-    betrst     : "",
-    bezeichnung: "",
-    ip         : "",
-    hardware   : "",
+    aptyp      : "", inc_aptyp: true,
+    apname     : "", inc_apname: true,
+    betrst     : "", inc_betrst: true,
+    bezeichnung: "", inc_bezeichnung: true,
+    ip         : "", inc_ip: true,
+    hardware   : "", inc_hardware: true,
   };
   public loading = false;
   // public typtagSelect: TypTag[];
@@ -55,63 +56,91 @@ export class ArbeitsplatzService {
   private readonly oeTreeUrl: string;
   private readonly allApsUrl: string;
   private readonly pageApsUrl: string;
-  private readonly typtagUrl: string;
   private readonly singleApUrl: string;
+
+  // case insensitive alpha sort
+  // deutlich schneller als String.localeCompare()
+  //  -> result = this.collator.compare(a, b)
+  private collator = new Intl.Collator("de", {
+    numeric    : true,
+    sensitivity: "base"
+  });
 
   constructor(private http: HttpClient, private configService: ConfigService) {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
     this.pageApsUrl = this.configService.webservice + "/ap/page";
-    this.pageApsUrl = this.configService.webservice + "/ap/page";
-    this.typtagUrl = this.configService.webservice + "/ap/typtags";
     this.singleApUrl = this.configService.webservice + "/ap/id/";
     // this.getOeTree();
 
+    const keyDebounce = 250;
     // Filter-Felder
     this.typFilter.valueChanges
+        .pipe(debounceTime(keyDebounce))
         .subscribe(
             text => {
-              this.filterValues.aptyp = text ? text.toLowerCase() : "";
+              // const search = this.checkSearchString(text);
+              // this.filterValues.aptyp = search.t.toLowerCase();
+              // this.filterValues.inc_aptyp = search.i;
+              text = text ? text : "";
+              this.filterValues.aptyp = this.checkSearchString(text).toLowerCase();
+              this.filterValues.inc_aptyp = this.filterValues.aptyp.length === text.length;
               // this.filterValues.aptyp = arr ? arr : [];
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
     this.nameFilter.valueChanges
+        .pipe(debounceTime(keyDebounce))
         .subscribe(
             text => {
-              this.filterValues.apname = text ? text.toLowerCase() : "";
+              text = text ? text : "";
+              this.filterValues.apname = this.checkSearchString(text).toLowerCase();
+              this.filterValues.inc_apname = this.filterValues.apname.length === text.length;
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
     this.bstFilter.valueChanges
+        .pipe(debounceTime(keyDebounce))
         .subscribe(
             text => {
-              this.filterValues.betrst = text ? text.toLowerCase() : "";
+              text = text ? text : "";
+              this.filterValues.betrst = this.checkSearchString(text).toLowerCase();
+              this.filterValues.inc_betrst = this.filterValues.betrst.length === text.length;
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
     this.bezFilter.valueChanges
+        .pipe(debounceTime(keyDebounce))
         .subscribe(
             text => {
-              this.filterValues.bezeichnung = text ? text.toLowerCase() : "";
+              text = text ? text : "";
+              this.filterValues.bezeichnung = this.checkSearchString(text).toLowerCase();
+              this.filterValues.inc_bezeichnung = this.filterValues.bezeichnung.length === text.length;
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
     this.ipFilter.valueChanges
+        .pipe(debounceTime(keyDebounce))
         .subscribe(
             text => {
-              this.filterValues.ip = text ? text.replace(/-/g, "").replace(/:/g, "").toUpperCase() : "";
+              text = text ? text : "";
+              const t = this.checkSearchString(text);
+              this.filterValues.inc_ip = t.length === text.length;
+              this.filterValues.ip = t.replace(/-/g, "").replace(/:/g, "").toUpperCase();
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
     this.hwFilter.valueChanges
+        .pipe(debounceTime(keyDebounce))
         .subscribe(
             text => {
-              this.filterValues.hardware = text ? text.toLowerCase() : "";
+              text = text ? text : "";
+              this.filterValues.hardware = this.checkSearchString(text).toLowerCase();
+              this.filterValues.inc_hardware = this.filterValues.hardware.length === text.length;
               this.apDataSource.filter = JSON.stringify(this.filterValues);
             }
         );
-    // DEBUG
+
     setTimeout(() => {
       this.getAps();
     }, 0)
@@ -133,7 +162,7 @@ export class ArbeitsplatzService {
     this.apDataSource.data = data;
     this.loading = false;
 
-    // liefert Daten fuer sort -> immer lowercase vergleichen
+    // liefert Daten fuer internen sort in mat-table -> immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
       switch (id) {
         case "aptyp":
@@ -155,16 +184,17 @@ export class ArbeitsplatzService {
 
     // eigener Filter
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
-      const searchTerms = JSON.parse(filter);
-      return ap.aptyp.toLowerCase().indexOf(searchTerms.aptyp) !== -1
-          // (searchTerms.aptyp.length === 0 ||
-          //     ap.tags.reduce((prev, cur) => prev || searchTerms.aptyp.indexOf(cur.tagId) !== -1, false)
+      // const searchTerms = JSON.parse(filter);
+      return ap.aptyp.toLowerCase().includes(this.filterValues.aptyp) === this.filterValues.inc_aptyp
+          // return ap.aptyp.toLowerCase().includes(this.filterValues.aptyp) === this.filterValues.inc_aptyp
+          // (this.filterValues.aptyp.length === 0 ||
+          //     ap.tags.reduce((prev, cur) => prev || this.filterValues.aptyp.indexOf(cur.tagId) !== -1, false)
           // )
-          && ap.apname.toString().toLowerCase().indexOf(searchTerms.apname) !== -1
-          && (ap.oe.bstNr + ap.oe.betriebsstelle.toLowerCase()).indexOf(searchTerms.betrst) !== -1
-          && ap.bezeichnung.toLowerCase().indexOf(searchTerms.bezeichnung) !== -1
-          && ap.ipsearch.indexOf(searchTerms.ip) !== -1
-          && ap.hwStr.toLowerCase().indexOf(searchTerms.hardware) !== -1;
+          && ap.apname.toLowerCase().includes(this.filterValues.apname) === this.filterValues.inc_apname
+          && ap.oesarch.includes(this.filterValues.betrst) === this.filterValues.inc_betrst
+          && ap.bezeichnung.toLowerCase().includes(this.filterValues.bezeichnung) === this.filterValues.inc_bezeichnung
+          && ap.ipsearch.includes(this.filterValues.ip) === this.filterValues.inc_ip
+          && ap.hwStr.toLowerCase().includes(this.filterValues.hardware) === this.filterValues.inc_hardware;
     };
   }
 
@@ -307,10 +337,19 @@ export class ArbeitsplatzService {
 
    */
 
+  private checkSearchString(text: string): string {
+    // let str = text ? text : "";
+    if (text.startsWith("!")) {
+      return text.slice(1);
+      // inc = false
+    }
+    return text;
+    // return {t: str, i: inc};
+  }
   private sortAP(ap: Arbeitsplatz) {
     ap.tags.sort((a, b) => {
       if (a.flag === b.flag) {
-        return a.bezeichnung.localeCompare(b.bezeichnung)
+        return this.collator.compare(a.bezeichnung, b.bezeichnung)
       } else {
         return (a.flag === 1 ? -1 : 1);
       }
@@ -321,8 +360,8 @@ export class ArbeitsplatzService {
       } else if (b.pri) {
         return 1;
       } else {
-        return (a.hwtyp + a.hersteller + a.bezeichnung + a.sernr).toLowerCase()
-            .localeCompare((b.hwtyp + b.hersteller + b.bezeichnung + b.sernr).toLowerCase());
+        return this.collator.compare(a.hwtyp + a.hersteller + a.bezeichnung + a.sernr,
+                                     b.hwtyp + b.hersteller + b.bezeichnung + b.sernr);
       }
     });
   }
@@ -344,7 +383,9 @@ export class ArbeitsplatzService {
       ap.macStr = "";
       ap.ipsearch = "";
     }
+    ap.oesarch = ("00" + ap.oe.bstNr).slice(-3) + ap.oe.betriebsstelle.toLowerCase()
   }
+
 
   /* TODO kann raus, wenn Tree definitiv draussen ist */
   public async getOeTree() {
