@@ -223,3 +223,13 @@ tr.ap-row:not(.ap-detail-expanded):active {
   height: 56px;
   background-color: #f9f9f9;
 }
+
+/* Menue */
+.menue-entry {
+  display: flex;
+  align-items: center;
+}
+
+.menue-checkbox {
+  padding-left: 10px;
+}

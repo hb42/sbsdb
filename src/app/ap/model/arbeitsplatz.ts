@@ -23,4 +23,5 @@ export class Arbeitsplatz {
   public macStr = "";
   public ipsearch = "";
   public oesarch = "";
+  public voesarch = "";
 }

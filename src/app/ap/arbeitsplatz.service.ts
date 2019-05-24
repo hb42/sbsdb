@@ -1,12 +1,12 @@
-import { NestedTreeControl } from "@angular/cdk/tree";
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { MatTableDataSource, MatTreeNestedDataSource } from "@angular/material";
-import { debounceTime } from "rxjs/operators";
-import { ConfigService } from "../shared/config/config.service";
-import { Arbeitsplatz } from "./model/arbeitsplatz";
-import { OeTreeItem } from "./model/oe.tree.item";
+import {NestedTreeControl} from "@angular/cdk/tree";
+import {HttpClient} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {FormControl} from "@angular/forms";
+import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
+import {debounceTime} from "rxjs/operators";
+import {ConfigService} from "../shared/config/config.service";
+import {Arbeitsplatz} from "./model/arbeitsplatz";
+import {OeTreeItem} from "./model/oe.tree.item";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -29,6 +29,8 @@ export class ArbeitsplatzService {
   public tableWrapCell = false;
   // Klick auf Zeile zeigt Details
   public clickForDetails = false;
+  // Standort oder verantw. OE
+  public showStandort = true;
   public linkcolor = "primary";
   public linkcolor2 = true;
 
@@ -173,7 +175,7 @@ export class ArbeitsplatzService {
         case "apname":
           return ap.apname.toLowerCase();
         case "betrst":
-          return ap.oe.betriebsstelle.toLowerCase();
+          return this.getBetrst(ap).toLowerCase();  // FIXME standort
         case "bezeichnung":
           return ap.bezeichnung.toLowerCase();
         case "ip":
@@ -194,7 +196,9 @@ export class ArbeitsplatzService {
           //     ap.tags.reduce((prev, cur) => prev || this.filterValues.aptyp.indexOf(cur.tagId) !== -1, false)
           // )
           && ap.apname.toLowerCase().includes(this.filterValues.apname) === this.filterValues.inc_apname
-          && ap.oesarch.includes(this.filterValues.betrst) === this.filterValues.inc_betrst
+          && ((this.showStandort && ap.oesarch.includes(this.filterValues.betrst) === this.filterValues.inc_betrst)
+              || (!this.showStandort && ap.voesarch.includes(this.filterValues.betrst) === this.filterValues.inc_betrst)
+          ) // FIXME standort
           && ap.bezeichnung.toLowerCase().includes(this.filterValues.bezeichnung) === this.filterValues.inc_bezeichnung
           && ap.ipsearch.includes(this.filterValues.ip) === this.filterValues.inc_ip
           && ap.hwStr.toLowerCase().includes(this.filterValues.hardware) === this.filterValues.inc_hardware;
@@ -246,9 +250,23 @@ export class ArbeitsplatzService {
 
   public filterByBetrst(ap: Arbeitsplatz, event: Event) {
     this.resetFilters();
-    this.bstFilter.setValue(ap.oe.betriebsstelle);
+    this.bstFilter.setValue(this.getBetrst(ap)); // FIXME standort
     this.bstFilter.markAsDirty();
     event.stopPropagation()
+  }
+
+  // OE-Name abhaengig von gewaehlter Anzeige
+  // (Standort || verantwortliche OE)
+  public getBetrst(ap: Arbeitsplatz): string {
+    if (this.showStandort) {
+      return ap.oe.betriebsstelle;
+    } else {
+      if (ap.verantwOe) {
+        return ap.verantwOe.betriebsstelle;
+      } else {
+        return ap.oe.betriebsstelle;
+      }
+    }
   }
 
   public bstTooltip(ap: Arbeitsplatz): string {
@@ -386,7 +404,12 @@ export class ArbeitsplatzService {
       ap.macStr = "";
       ap.ipsearch = "";
     }
-    ap.oesarch = ("00" + ap.oe.bstNr).slice(-3) + ap.oe.betriebsstelle.toLowerCase()
+    ap.oesarch = ("00" + ap.oe.bstNr).slice(-3) + ap.oe.betriebsstelle.toLowerCase();
+    if (ap.verantwOe) {
+      ap.voesarch = ("00" + ap.verantwOe.bstNr).slice(-3) + ap.verantwOe.betriebsstelle.toLowerCase();
+    } else {
+      ap.voesarch = ap.oesarch;
+    }
   }
 
 

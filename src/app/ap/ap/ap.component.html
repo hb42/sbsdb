@@ -44,7 +44,7 @@ https://github.com/angular/components/issues/6178
               <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
               <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
               <!--              </mat-select>-->
-              <input matInput [formControl]="apService.typFilter">
+              <input matInput [formControl]="apService.typFilter" [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1">
               <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
                       class="select-filter-reset-btn">
                 <mat-icon class="select-filter-reset-icn">close</mat-icon>
@@ -92,7 +92,7 @@ https://github.com/angular/components/issues/6178
           <span mat-sort-header class="sort-header">AP-Name</span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.nameFilter">
+            <input matInput [formControl]="apService.nameFilter" [tabIndex]="apService.displayedColumns.indexOf('apname') + 1">
             <button mat-button [disabled]="!apService.nameFilter.dirty" matSuffix mat-icon-button (click)="apService.nameFilter.reset()">
               <mat-icon>close</mat-icon>
             </button>
@@ -107,10 +107,10 @@ https://github.com/angular/components/issues/6178
 
       <ng-container matColumnDef="betrst">
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">Standort</span>
+          <span mat-sort-header class="sort-header">{{apService.showStandort ? 'Standort' : 'Verantwortliche OE'}}</span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.bstFilter">
+            <input matInput [formControl]="apService.bstFilter" [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1">
             <button mat-button [disabled]="!apService.bstFilter.dirty" matSuffix mat-icon-button (click)="apService.bstFilter.reset()">
               <mat-icon>close</mat-icon>
             </button>
@@ -135,7 +135,7 @@ https://github.com/angular/components/issues/6178
             <span class="highlight-when-expanded pseudo-button"
                   (click)="apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''"
             >
-            {{element.oe.betriebsstelle}}
+            {{apService.getBetrst(element)}}
             </span>
           </div>
         </td>
@@ -146,7 +146,7 @@ https://github.com/angular/components/issues/6178
           <span mat-sort-header class="sort-header">Bezeichnung</span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.bezFilter">
+            <input matInput [formControl]="apService.bezFilter" [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1">
             <button mat-button [disabled]="!apService.bezFilter.dirty" matSuffix mat-icon-button (click)="apService.bezFilter.reset()">
               <mat-icon>close</mat-icon>
             </button>
@@ -164,7 +164,7 @@ https://github.com/angular/components/issues/6178
           <span mat-sort-header class="sort-header">IP</span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.ipFilter">
+            <input matInput [formControl]="apService.ipFilter" [tabIndex]="apService.displayedColumns.indexOf('ip') + 1">
             <button mat-button [disabled]="!apService.ipFilter.dirty" matSuffix mat-icon-button (click)="apService.ipFilter.reset()">
               <mat-icon>close</mat-icon>
             </button>
@@ -184,7 +184,7 @@ https://github.com/angular/components/issues/6178
           <span mat-sort-header class="sort-header">Hardware</span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.hwFilter">
+            <input matInput [formControl]="apService.hwFilter" [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1">
             <button mat-button [disabled]="!apService.hwFilter.dirty" matSuffix mat-icon-button (click)="apService.hwFilter.reset()">
               <mat-icon>close</mat-icon>
             </button>
@@ -315,25 +315,34 @@ https://github.com/angular/components/issues/6178
 
 <mat-menu #tableMenu="matMenu">
   <ng-template matMenuContent>
-    <button mat-menu-item (click)="apService.resetFilters()">
+    <button mat-menu-item class="menue-entry" (click)="apService.resetFilters()">
       <mat-icon>close</mat-icon>
       Alle Filter löschen
     </button>
-    <button mat-menu-item (click)="apService.tableWrapCell = !apService.tableWrapCell">
+    <button mat-menu-item class="menue-entry" (click)="apService.showStandort = !apService.showStandort; apService.bstFilter.reset()">
+      <mat-icon>home</mat-icon>
+      Standort anzeigen
+      <div class="fill"></div>
+      <mat-icon class="menue-checkbox">{{apService.showStandort ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+    </button>
+    <button mat-menu-item class="menue-entry" (click)="apService.tableWrapCell = !apService.tableWrapCell">
       <mat-icon>wrap_text</mat-icon>
       Zeilenumbruch
-      <mat-icon *ngIf="apService.tableWrapCell">done</mat-icon>
+      <div class="fill"></div>
+      <mat-icon class="menue-checkbox">{{apService.tableWrapCell ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
     </button>
-    <button mat-menu-item (click)="apService.clickForDetails = !apService.clickForDetails">
+    <button mat-menu-item class="menue-entry" (click)="apService.clickForDetails = !apService.clickForDetails">
       <mat-icon>touch_app</mat-icon>
       Zeilenklick
-      <mat-icon *ngIf="apService.clickForDetails">done</mat-icon>
+      <div class="fill"></div>
+      <mat-icon class="menue-checkbox">{{apService.clickForDetails ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
     </button>
-    <button mat-menu-item (click)="apService.linkcolor === 'primary' ? apService.linkcolor = 'accent' : apService.linkcolor = 'primary'">
+    <button mat-menu-item class="menue-entry"
+            (click)="apService.linkcolor === 'primary' ? apService.linkcolor = 'accent' : apService.linkcolor = 'primary'">
       <mat-icon>format_color_text</mat-icon>
       toggle menu color
     </button>
-    <button mat-menu-item (click)="apService.linkcolor2 = !apService.linkcolor2">
+    <button mat-menu-item class="menue-entry" (click)="apService.linkcolor2 = !apService.linkcolor2">
       <mat-icon>format_color_text</mat-icon>
       toggle link color
     </button>
