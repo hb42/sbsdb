@@ -44,7 +44,7 @@ https://github.com/angular/components/issues/6178
               <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
               <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
               <!--              </mat-select>-->
-              <input matInput [formControl]="apService.typFilter" [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1">
+              <input matInput [formControl]="apService.typFilter" [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1" #firstfilter>
               <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
                       class="select-filter-reset-btn">
                 <mat-icon class="select-filter-reset-icn">close</mat-icon>
