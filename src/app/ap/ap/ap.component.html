@@ -44,7 +44,8 @@ https://github.com/angular/components/issues/6178
               <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
               <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
               <!--              </mat-select>-->
-              <input matInput [formControl]="apService.typFilter" [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1" #firstfilter>
+              <input matInput [formControl]="apService.typFilter" [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1"
+                     #firstfilter (keydown.shift.tab)="focusLastFilter(); $event.preventDefault(); $event.stopPropagation();">
               <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
                       class="select-filter-reset-btn">
                 <mat-icon class="select-filter-reset-icn">close</mat-icon>
@@ -184,7 +185,8 @@ https://github.com/angular/components/issues/6178
           <span mat-sort-header class="sort-header">Hardware</span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.hwFilter" [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1">
+            <input matInput [formControl]="apService.hwFilter" [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"
+                   #lastfilter (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation();">
             <button mat-button [disabled]="!apService.hwFilter.dirty" matSuffix mat-icon-button (click)="apService.hwFilter.reset()">
               <mat-icon>close</mat-icon>
             </button>

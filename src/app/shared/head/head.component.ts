@@ -1,8 +1,8 @@
-import { Component, HostBinding, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";
-import { ConfigService } from "../config/config.service";
-import { NavigationService } from "../navigation.service";
+import {Component, HostBinding, OnInit} from "@angular/core";
+import {Router} from "@angular/router";
+import {ArbeitsplatzService} from "../../ap/arbeitsplatz.service";
+import {ConfigService} from "../config/config.service";
+import {NavigationService} from "../navigation.service";
 
 @Component({
              selector   : "sbsdb-head",
@@ -27,7 +27,13 @@ export class HeadComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    document.addEventListener("keydown", (event) => {
+      if (event.altKey && event.key === "a") {
+        console.debug("KEYBOARD EVENT altA");
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    });
   }
 
   public navigate(target: string) {

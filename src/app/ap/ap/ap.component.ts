@@ -1,10 +1,10 @@
-import { animate, state, style, transition, trigger } from "@angular/animations";
-import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { MatPaginator, MatSort } from "@angular/material";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs";
-import { ConfigService } from "../../shared/config/config.service";
-import { ArbeitsplatzService } from "../arbeitsplatz.service";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {AfterViewInit, Component, HostBinding, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {MatPaginator, MatSort} from "@angular/material";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Subscription} from "rxjs";
+import {ConfigService} from "../../shared/config/config.service";
+import {ArbeitsplatzService} from "../arbeitsplatz.service";
 
 @Component({
              selector   : "sbsdb-ap",
@@ -18,11 +18,13 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
                ])
              ],
            })
-export class ApComponent implements OnInit, OnDestroy {
+export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild("firstfilter") firstFilter;
+  @ViewChild("lastfilter") lastFilter;
 
   public subscription: Subscription;
 
@@ -72,11 +74,27 @@ export class ApComponent implements OnInit, OnDestroy {
 
   }
 
+  public ngAfterViewInit(): void {
+    // 1. das Input-Element ist fruehestens in afterViewInit sichtbar
+    // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
+    setTimeout(() => {
+      this.focusFirstFilter();
+    }, 0);
+  }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       console.debug("ApComponent - subscription.unsubscribe");
       this.subscription.unsubscribe();
     }
+  }
+
+  public focusFirstFilter() {
+    this.firstFilter.nativeElement.focus();
+  }
+
+  public focusLastFilter() {
+    this.lastFilter.nativeElement.focus();
   }
 
   public sortData(event) {
