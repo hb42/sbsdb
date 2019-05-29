@@ -1,5 +1,5 @@
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {AfterViewInit, Component, HostBinding, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {MatPaginator, MatSort} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
@@ -20,6 +20,13 @@ import {ArbeitsplatzService} from "../arbeitsplatz.service";
            })
 export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
+
+  @HostListener("document:keydown.alt.f", ["$event"])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    this.focusFirstFilter();
+    event.preventDefault();
+    event.stopPropagation();
+  }
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;

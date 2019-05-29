@@ -45,7 +45,8 @@ https://github.com/angular/components/issues/6178
               <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
               <!--              </mat-select>-->
               <input matInput [formControl]="apService.typFilter" [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1"
-                     #firstfilter (keydown.shift.tab)="focusLastFilter(); $event.preventDefault(); $event.stopPropagation();">
+                     #firstfilter (keydown.shift.tab)="focusLastFilter(); $event.preventDefault(); $event.stopPropagation();"
+                     title="Filter (Alt+F)">
               <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
                       class="select-filter-reset-btn">
                 <mat-icon class="select-filter-reset-icn">close</mat-icon>

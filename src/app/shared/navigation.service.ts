@@ -1,9 +1,9 @@
-import { Location } from "@angular/common";
-import { Injectable } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { ErrorService } from "@hb42/lib-client";
-import { filter } from "rxjs/operators";
-import { ConfigService } from "./config/config.service";
+import {Location} from "@angular/common";
+import {Injectable} from "@angular/core";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {ErrorService} from "@hb42/lib-client";
+import {filter} from "rxjs/operators";
+import {ConfigService} from "./config/config.service";
 
 @Injectable({providedIn: "root"})
 export class NavigationService {
@@ -69,7 +69,11 @@ export class NavigationService {
     if (goto == null || goto === "") {
       goto = "/";
     }
-    this.router.navigateByUrl(this.router.parseUrl(goto))
+    this.navigate(goto);
+  }
+
+  public navigate(url: string) {
+    this.router.navigateByUrl(this.router.parseUrl(url))
         .then((nav) => {
           if (!nav) {  // canActivate liefert false, also zur Startseite
             this.router.navigate(["/"]);
@@ -82,7 +86,6 @@ export class NavigationService {
           this.configService.getUser().path = "";
           this.router.navigate(["/"]);
         });
-
   }
 
   public resetApp() {

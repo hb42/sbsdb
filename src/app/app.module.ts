@@ -24,6 +24,7 @@ import {FootComponent} from "./shared/foot/foot.component";
 import {HeadComponent} from "./shared/head/head.component";
 import {MatPaginatorIntlDe} from "./shared/mat.paginator.intl.de";
 import {StatusComponent} from "./shared/status/status.component";
+import {AcceleratorStringComponent} from "./shared/accelerator-string/accelerator-string.component";
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -57,7 +58,8 @@ export function initConf(configService: ConfigService) {
         HwComponent,
         ErrorComponent,
         AdminComponent,
-        StatusComponent
+        StatusComponent,
+        AcceleratorStringComponent,
       ],
       imports     : [
         BrowserModule,

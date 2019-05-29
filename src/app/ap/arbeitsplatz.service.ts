@@ -1,12 +1,13 @@
-import { NestedTreeControl } from "@angular/cdk/tree";
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { MatTableDataSource, MatTreeNestedDataSource } from "@angular/material";
-import { debounceTime } from "rxjs/operators";
-import { ConfigService } from "../shared/config/config.service";
-import { Arbeitsplatz } from "./model/arbeitsplatz";
-import { OeTreeItem } from "./model/oe.tree.item";
+import {NestedTreeControl} from "@angular/cdk/tree";
+import {HttpClient} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {FormControl} from "@angular/forms";
+import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
+import {debounceTime} from "rxjs/operators";
+import {ConfigService} from "../shared/config/config.service";
+import {Arbeitsplatz} from "./model/arbeitsplatz";
+import {OeTreeItem} from "./model/oe.tree.item";
+import {KeyboardService} from "../shared/keyboard.service";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -70,7 +71,7 @@ export class ArbeitsplatzService {
     sensitivity: "base"
   });
 
-  constructor(private http: HttpClient, private configService: ConfigService) {
+  constructor(private http: HttpClient, private configService: ConfigService, private keyboardService: KeyboardService) {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
     this.pageApsUrl = this.configService.webservice + "/ap/page";

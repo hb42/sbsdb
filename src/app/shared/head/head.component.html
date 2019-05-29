@@ -17,20 +17,48 @@
   <div *ngFor="let link of navLinks">
     <button mat-button *ngIf="!navigationService.currentPath.startsWith(link.path)"
             [routerLink]="link.path">
-      {{link.label}}
+      <sbsdb-accelerator-string [text]="link.label"></sbsdb-accelerator-string>
       <mat-icon></mat-icon>
     </button>
     <button mat-flat-button *ngIf="navigationService.currentPath.startsWith(link.path)"
-            [matMenuTriggerFor]="menu">
-      {{link.label}}
+            [matMenuTriggerFor]="link.menu" #menubtn>
+      <sbsdb-accelerator-string [text]="link.label"></sbsdb-accelerator-string>
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <span class="spacer2"></span>
   </div>
-  <mat-menu #menu="matMenu">
+  <mat-menu #apmenu="matMenu">
     <button mat-menu-item>
       <mat-icon>dialpad</mat-icon>
       <span>Neuer Arbeitsplatz</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Test</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Ausgabe als CSV</span>
+    </button>
+  </mat-menu>
+  <mat-menu #hwmenu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Neue Hardware</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Test</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Ausgabe als CSV</span>
+    </button>
+  </mat-menu>
+  <mat-menu #admenu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Admin</span>
     </button>
     <button mat-menu-item disabled>
       <mat-icon>voicemail</mat-icon>
