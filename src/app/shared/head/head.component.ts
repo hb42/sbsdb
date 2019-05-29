@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, HostBinding, HostListener, OnInit, ViewChild} from "@angular/core";
-import {Router} from "@angular/router";
-import {ArbeitsplatzService} from "../../ap/arbeitsplatz.service";
-import {ConfigService} from "../config/config.service";
-import {NavigationService} from "../navigation.service";
+import { AfterViewInit, Component, HostBinding, HostListener, OnInit, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
+import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";
+import { ConfigService } from "../config/config.service";
+import { NavigationService } from "../navigation.service";
 
 @Component({
              selector   : "sbsdb-head",
@@ -12,7 +12,7 @@ import {NavigationService} from "../navigation.service";
 export class HeadComponent implements OnInit, AfterViewInit {
   @HostBinding("attr.class") cssClass = "flex-panel";
 
-  @ViewChild("menubtn") menuBtn;
+  @ViewChild("menubtn", {static: false}) menuBtn;
 
   @HostListener("document:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -35,9 +35,9 @@ export class HeadComponent implements OnInit, AfterViewInit {
     }
   }
 
-  @ViewChild("apmenu") apmenu;
-  @ViewChild("hwmenu") hwmenu;
-  @ViewChild("admenu") admenu;
+  @ViewChild("apmenu", {static: true}) apmenu;
+  @ViewChild("hwmenu", {static: true}) hwmenu;
+  @ViewChild("admenu", {static: true}) admenu;
   public navLinks = [
     {path: "/ap", label: "&Arbeitsplätze", key: "a", menu: null},
     {path: "/hw", label: "&Hardware", key: "h", menu: null},

@@ -1,10 +1,10 @@
-import {animate, state, style, transition, trigger} from "@angular/animations";
-import {AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {MatPaginator, MatSort} from "@angular/material";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Subscription} from "rxjs";
-import {ConfigService} from "../../shared/config/config.service";
-import {ArbeitsplatzService} from "../arbeitsplatz.service";
+import { animate, state, style, transition, trigger } from "@angular/animations";
+import { AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { MatPaginator, MatSort } from "@angular/material";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subscription } from "rxjs";
+import { ConfigService } from "../../shared/config/config.service";
+import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
              selector   : "sbsdb-ap",
@@ -28,10 +28,10 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     event.stopPropagation();
   }
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild("firstfilter") firstFilter;
-  @ViewChild("lastfilter") lastFilter;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild("firstfilter", {static: false}) firstFilter;
+  @ViewChild("lastfilter", {static: false}) lastFilter;
 
   public subscription: Subscription;
 
