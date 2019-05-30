@@ -1,13 +1,14 @@
-import {NestedTreeControl} from "@angular/cdk/tree";
-import {HttpClient} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {FormControl} from "@angular/forms";
-import {MatTableDataSource, MatTreeNestedDataSource} from "@angular/material";
-import {debounceTime} from "rxjs/operators";
-import {ConfigService} from "../shared/config/config.service";
-import {Arbeitsplatz} from "./model/arbeitsplatz";
-import {OeTreeItem} from "./model/oe.tree.item";
-import {KeyboardService} from "../shared/keyboard.service";
+import { NestedTreeControl } from "@angular/cdk/tree";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatTreeNestedDataSource } from "@angular/material/tree";
+import { debounceTime } from "rxjs/operators";
+import { ConfigService } from "../shared/config/config.service";
+import { KeyboardService } from "../shared/keyboard.service";
+import { Arbeitsplatz } from "./model/arbeitsplatz";
+import { OeTreeItem } from "./model/oe.tree.item";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {

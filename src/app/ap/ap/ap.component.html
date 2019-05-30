@@ -37,7 +37,9 @@ https://github.com/angular/components/issues/6178
             The actual rendered columns are set as a property on the row definition" -->
       <ng-container matColumnDef="aptyp" sticky>
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">Typ</span>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="&Typ"></sbsdb-accelerator-string>
+          </span>
           <!--          <div class="select-filter">-->
             <mat-form-field floatLabel="never" class="filter-s">
               <!--              <mat-label>Filter</mat-label>-->
@@ -91,7 +93,9 @@ https://github.com/angular/components/issues/6178
 
       <ng-container matColumnDef="apname" sticky>
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">AP-Name</span>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="A&P-Name"></sbsdb-accelerator-string>
+          </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
             <input matInput [formControl]="apService.nameFilter" [tabIndex]="apService.displayedColumns.indexOf('apname') + 1">
@@ -109,7 +113,10 @@ https://github.com/angular/components/issues/6178
 
       <ng-container matColumnDef="betrst">
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">{{apService.showStandort ? 'Standort' : 'Verantwortliche OE'}}</span>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="Stand&ort" *ngIf="apService.showStandort"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string text="Verantwortliche &OE" *ngIf="!apService.showStandort"></sbsdb-accelerator-string>
+          </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
             <input matInput [formControl]="apService.bstFilter" [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1">
@@ -145,7 +152,9 @@ https://github.com/angular/components/issues/6178
 
       <ng-container matColumnDef="bezeichnung">
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">Bezeichnung</span>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="&Bezeichnung"></sbsdb-accelerator-string>
+          </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
             <input matInput [formControl]="apService.bezFilter" [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1">
@@ -163,7 +172,9 @@ https://github.com/angular/components/issues/6178
 
       <ng-container matColumnDef="ip">
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">IP</span>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="&IP"></sbsdb-accelerator-string>
+          </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
             <input matInput [formControl]="apService.ipFilter" [tabIndex]="apService.displayedColumns.indexOf('ip') + 1">
@@ -183,7 +194,9 @@ https://github.com/angular/components/issues/6178
 
       <ng-container matColumnDef="hardware">
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">Hardware</span>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="Hard&ware"></sbsdb-accelerator-string>
+          </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
             <input matInput [formControl]="apService.hwFilter" [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"

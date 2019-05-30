@@ -1,6 +1,7 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { MatPaginator, MatSort } from "@angular/material";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
@@ -24,6 +25,58 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener("document:keydown.alt.f", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
     this.focusFirstFilter();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener("document:keydown.alt.t", ["$event"])
+  handleTypSort(event: KeyboardEvent) {
+    // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
+    //       das funktioniert z.Zt. nur ueber einen Hack (-> _handleClick())
+    //       -> https://github.com/angular/components/issues/10242
+    // this.sort.sort(this.sort.sortables.get("aptyp"));
+    const sortHeader = this.sort.sortables.get("aptyp") as MatSortHeader;
+    sortHeader._handleClick();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener("document:keydown.alt.p", ["$event"])
+  handleNameSort(event: KeyboardEvent) {
+    const sortHeader = this.sort.sortables.get("apname") as MatSortHeader;
+    sortHeader._handleClick();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener("document:keydown.alt.o", ["$event"])
+  handleBetrstSort(event: KeyboardEvent) {
+    const sortHeader = this.sort.sortables.get("betrst") as MatSortHeader;
+    sortHeader._handleClick();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener("document:keydown.alt.b", ["$event"])
+  handleBezSort(event: KeyboardEvent) {
+    const sortHeader = this.sort.sortables.get("bezeichnung") as MatSortHeader;
+    sortHeader._handleClick();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener("document:keydown.alt.i", ["$event"])
+  handleIpSort(event: KeyboardEvent) {
+    const sortHeader = this.sort.sortables.get("ip") as MatSortHeader;
+    sortHeader._handleClick();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener("document:keydown.alt.w", ["$event"])
+  handleHwSort(event: KeyboardEvent) {
+    const sortHeader = this.sort.sortables.get("hardware") as MatSortHeader;
+    sortHeader._handleClick();
     event.preventDefault();
     event.stopPropagation();
   }
