@@ -1,11 +1,11 @@
-import { animate, state, style, transition, trigger } from "@angular/animations";
-import { AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { MatPaginator } from "@angular/material/paginator";
-import { MatSort, MatSortHeader } from "@angular/material/sort";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs";
-import { ConfigService } from "../../shared/config/config.service";
-import { ArbeitsplatzService } from "../arbeitsplatz.service";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort, MatSortHeader, SortDirection} from "@angular/material/sort";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Subscription} from "rxjs";
+import {ConfigService} from "../../shared/config/config.service";
+import {ArbeitsplatzService} from "../arbeitsplatz.service";
 
 @Component({
              selector   : "sbsdb-ap",
@@ -22,6 +22,7 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
 export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
+  // focus first filter
   @HostListener("document:keydown.alt.f", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
     this.focusFirstFilter();
@@ -29,56 +30,31 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     event.stopPropagation();
   }
 
+  // sort via shortcut
   @HostListener("document:keydown.alt.t", ["$event"])
   handleTypSort(event: KeyboardEvent) {
-    // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
-    //       das funktioniert z.Zt. nur ueber einen Hack (-> _handleClick())
-    //       -> https://github.com/angular/components/issues/10242
-    // this.sort.sort(this.sort.sortables.get("aptyp"));
-    const sortHeader = this.sort.sortables.get("aptyp") as MatSortHeader;
-    sortHeader._handleClick();
-    event.preventDefault();
-    event.stopPropagation();
+    this.sortColumn("aptyp", event);
   }
 
-  @HostListener("document:keydown.alt.p", ["$event"])
+  @HostListener("document:keydown.alt.n", ["$event"])
   handleNameSort(event: KeyboardEvent) {
-    const sortHeader = this.sort.sortables.get("apname") as MatSortHeader;
-    sortHeader._handleClick();
-    event.preventDefault();
-    event.stopPropagation();
+    this.sortColumn("apname", event);
   }
-
   @HostListener("document:keydown.alt.o", ["$event"])
   handleBetrstSort(event: KeyboardEvent) {
-    const sortHeader = this.sort.sortables.get("betrst") as MatSortHeader;
-    sortHeader._handleClick();
-    event.preventDefault();
-    event.stopPropagation();
+    this.sortColumn("betrst", event);
   }
-
   @HostListener("document:keydown.alt.b", ["$event"])
   handleBezSort(event: KeyboardEvent) {
-    const sortHeader = this.sort.sortables.get("bezeichnung") as MatSortHeader;
-    sortHeader._handleClick();
-    event.preventDefault();
-    event.stopPropagation();
+    this.sortColumn("bezeichnung", event);
   }
-
   @HostListener("document:keydown.alt.i", ["$event"])
   handleIpSort(event: KeyboardEvent) {
-    const sortHeader = this.sort.sortables.get("ip") as MatSortHeader;
-    sortHeader._handleClick();
-    event.preventDefault();
-    event.stopPropagation();
+    this.sortColumn("ip", event);
   }
-
   @HostListener("document:keydown.alt.w", ["$event"])
   handleHwSort(event: KeyboardEvent) {
-    const sortHeader = this.sort.sortables.get("hardware") as MatSortHeader;
-    sortHeader._handleClick();
-    event.preventDefault();
-    event.stopPropagation();
+    this.sortColumn("hardware", event);
   }
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -126,18 +102,25 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     this.apService.apDataSource.sort = this.sort;
     this.apService.apDataSource.paginator = this.paginator;
 
-    if (this.config.getUser()) {
-      console.debug("onInit UserSession path=" + this.config.getUser().path);
-    } else {
-      console.debug("onInit UserSession is undefined");
+    this.paginator.pageSize = this.apService.userSettings.apPageSize;
+    if (this.apService.userSettings.apSortColumn) {
+      this.sort.active = this.apService.userSettings.apSortColumn;
+      this.sort.direction = this.apService.userSettings.apSortDirection as SortDirection;
     }
-
   }
 
   public ngAfterViewInit(): void {
     // 1. das Input-Element ist fruehestens in afterViewInit sichtbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     setTimeout(() => {
+      // if column && direct
+      // s = sort.sortable.get(column)
+      // s.start = dirct
+      // sort(s)
+      this.sort.sort({id    : this.apService.userSettings.apSortColumn,
+                       start: this.apService.userSettings.apSortDirection as "asc" | "desc"
+                     });
+      this.apService.initializeFilters();
       this.focusFirstFilter();
     }, 0);
   }
@@ -157,8 +140,15 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastFilter.nativeElement.focus();
   }
 
-  public sortData(event) {
-    console.debug("SORT");
-    console.dir(event);
+  private sortColumn(col: string, event: KeyboardEvent) {
+    // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
+    //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
+    //       -> https://github.com/angular/components/issues/10242
+    // this.sort.sort(this.sort.sortables.get(col));
+    const sortHeader = this.sort.sortables.get(col) as MatSortHeader;
+    sortHeader._handleClick();
+    event.preventDefault();
+    event.stopPropagation();
   }
+
 }

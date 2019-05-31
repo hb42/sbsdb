@@ -30,6 +30,7 @@ https://github.com/angular/components/issues/6178
     <table mat-table [dataSource]="apService.apDataSource"
            matSort
            multiTemplateDataRows
+           (matSortChange)="apService.onSort($event)"
            [class.wrap-cell]="apService.tableWrapCell"
     >
 
@@ -94,7 +95,7 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="apname" sticky>
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string text="A&P-Name"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string text="AP-&Name"></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
@@ -114,8 +115,8 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="betrst">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string text="Stand&ort" *ngIf="apService.showStandort"></sbsdb-accelerator-string>
-            <sbsdb-accelerator-string text="Verantwortliche &OE" *ngIf="!apService.showStandort"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string text="Stand&ort" *ngIf="apService.userSettings.showStandort"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string text="Verantwortliche &OE" *ngIf="!apService.userSettings.showStandort"></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
@@ -323,6 +324,7 @@ https://github.com/angular/components/issues/6178
                         <!-- ?? background: linear-gradient(to top, #fd3232 0%, #ce0000 100%); -->
   <mat-paginator [pageSizeOptions]="[100, 250, 500, 1000]"
                  showFirstLastButtons
+                 (page)="apService.onPage($event)"
                  class="paginator"
                  color="primary"></mat-paginator>
 </div>
@@ -335,11 +337,12 @@ https://github.com/angular/components/issues/6178
       <mat-icon>close</mat-icon>
       Alle Filter löschen
     </button>
-    <button mat-menu-item class="menue-entry" (click)="apService.showStandort = !apService.showStandort; apService.bstFilter.reset()">
+    <button mat-menu-item class="menue-entry"
+            (click)="apService.userSettings.showStandort = !apService.userSettings.showStandort; apService.bstFilter.reset()">
       <mat-icon>home</mat-icon>
       Standort anzeigen
       <div class="fill"></div>
-      <mat-icon class="menue-checkbox">{{apService.showStandort ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+      <mat-icon class="menue-checkbox">{{apService.userSettings.showStandort ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
     </button>
     <button mat-menu-item class="menue-entry" (click)="apService.tableWrapCell = !apService.tableWrapCell">
       <mat-icon>wrap_text</mat-icon>
