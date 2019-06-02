@@ -1,16 +1,17 @@
-import {NestedTreeControl} from "@angular/cdk/tree";
-import {HttpClient} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {FormControl} from "@angular/forms";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatTreeNestedDataSource} from "@angular/material/tree";
-import {debounceTime} from "rxjs/operators";
-import {ConfigService} from "../shared/config/config.service";
-import {KeyboardService} from "../shared/keyboard.service";
-import {Arbeitsplatz} from "./model/arbeitsplatz";
-import {OeTreeItem} from "./model/oe.tree.item";
-import {ColumnFilter} from "../shared/config/column-filter";
-import {UserSession} from "../shared/config/user.session";
+import { NestedTreeControl } from "@angular/cdk/tree";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { MatSortHeader } from "@angular/material";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatTreeNestedDataSource } from "@angular/material/tree";
+import { debounceTime } from "rxjs/operators";
+import { ColumnFilter } from "../shared/config/column-filter";
+import { ConfigService } from "../shared/config/config.service";
+import { UserSession } from "../shared/config/user.session";
+import { KeyboardService } from "../shared/keyboard.service";
+import { Arbeitsplatz } from "./model/arbeitsplatz";
+import { OeTreeItem } from "./model/oe.tree.item";
 
 @Injectable({providedIn: "root"})
 export class ArbeitsplatzService {
@@ -93,6 +94,7 @@ export class ArbeitsplatzService {
         .pipe(debounceTime(keyDebounce))
         .subscribe(
             text => {
+              console.debug("typFilter text=" + text);
               this.userSettings.aptypFilter = this.checkSearchString(text);
               // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
               // this.apDataSource.filter = JSON.stringify(this.userSettings);
@@ -203,6 +205,27 @@ export class ArbeitsplatzService {
               && ap.ipsearch.includes(this.userSettings.ipFilter.text) === this.userSettings.ipFilter.inc
               && ap.hwStr.toLowerCase().includes(this.userSettings.hwFilter.text) === this.userSettings.hwFilter.inc;
         };
+
+    this.applyUserSettings();
+  }
+
+  public applyUserSettings() {
+    // Nur ausfuehren, wenn AP-Daten schon geladen (= nur AP-Component wurde neu erstellt)
+    // Beim Start des Service wird diese fn in getAps() aufgerufen, weil die Component evtl.
+    // schon fertig ist bevor alle Daten geladen wurden, dann wird der Aufruf aus der Component
+    // ignoriert.
+    if (this.apDataSource.data) {
+      this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
+      if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
+        this.apDataSource.sort.active = this.userSettings.apSortColumn;
+        this.apDataSource.sort.direction = this.userSettings.apSortDirection === "asc" ? "" : "asc";
+        const sortheader = this.apDataSource.sort.sortables.get(this.userSettings.apSortColumn) as MatSortHeader;
+        // this.sort.sort(sortheader);
+        sortheader._handleClick();
+      }
+      this.initializeFilters();
+    }
+
   }
 
   public initializeFilters() {

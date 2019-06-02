@@ -1,11 +1,11 @@
-import {animate, state, style, transition, trigger} from "@angular/animations";
-import {AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort, MatSortHeader, SortDirection} from "@angular/material/sort";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Subscription} from "rxjs";
-import {ConfigService} from "../../shared/config/config.service";
-import {ArbeitsplatzService} from "../arbeitsplatz.service";
+import { animate, state, style, transition, trigger } from "@angular/animations";
+import { AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort, MatSortHeader } from "@angular/material/sort";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subscription } from "rxjs";
+import { ConfigService } from "../../shared/config/config.service";
+import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
              selector   : "sbsdb-ap",
@@ -102,25 +102,15 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     this.apService.apDataSource.sort = this.sort;
     this.apService.apDataSource.paginator = this.paginator;
 
-    this.paginator.pageSize = this.apService.userSettings.apPageSize;
-    if (this.apService.userSettings.apSortColumn) {
-      this.sort.active = this.apService.userSettings.apSortColumn;
-      this.sort.direction = this.apService.userSettings.apSortDirection as SortDirection;
-    }
   }
 
   public ngAfterViewInit(): void {
-    // 1. das Input-Element ist fruehestens in afterViewInit sichtbar
+    // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     setTimeout(() => {
-      // if column && direct
-      // s = sort.sortable.get(column)
-      // s.start = dirct
-      // sort(s)
-      this.sort.sort({id    : this.apService.userSettings.apSortColumn,
-                       start: this.apService.userSettings.apSortDirection as "asc" | "desc"
-                     });
-      this.apService.initializeFilters();
+      // Benutzereinstellungen setzen
+      this.apService.applyUserSettings();
+
       this.focusFirstFilter();
     }, 0);
   }
