@@ -1,22 +1,383 @@
-<div class="flex-row" >
-  <div class="flex-panel treePanel">
-    <sbsdb-ap-tree></sbsdb-ap-tree>
-  </div>
-  <div fb-splitter ></div>
-  <div class="flex-panel flex-max listPanel">
-    <!--    <sbsdb-ap-list></sbsdb-ap-list>-->
+<!--<div class="flex-row" >-->
+<!--  <div class="flex-panel treePanel">-->
+<!--    <sbsdb-ap-tree></sbsdb-ap-tree>-->
+<!--  </div>-->
+<!--  <div fb-splitter ></div>-->
+<!--  <div class="flex-panel flex-max listPanel">-->
+<!--    <sbsdb-ap-list></sbsdb-ap-list>-->
+<!--  </div>-->
+<!--</div>-->
 
-    <a [routerLink]="['/ap', { id: 1, tree: 'oes' }]">1-oes</a><br>
-    <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">11-bst</a><br>
-    <a [routerLink]="['/ap', { id: 42, tree: 'vlan' }]">42-vlan</a><br>
-    <a [routerLink]="['/ap', { id: 123, tree: 'oes', test: 1 }]">123-oes</a><br>
-    <ul>
-      <li *ngFor="let par of urlParams ">
-        <!--      <a [routerLink]="['/hero', hero.id]">-->
-        <span>{{ par }}</span>
-        <!--      </a>-->
-      </li>
-    </ul>
-    <p>{{urlParams}}</p>
+<!--<mat-sidenav-container id="container" >-->
+<!--  <mat-sidenav mode="side" opened id="sidenav">-->
+<!--    <sbsdb-ap-tree></sbsdb-ap-tree>-->
+<!--  </mat-sidenav>-->
+<!--  <mat-sidenav-content>Main content</mat-sidenav-content>-->
+<!--</mat-sidenav-container>-->
+
+<!-- custom filter:
+https://stackoverflow.com/questions/48276404/filtering-specific-column-in-angular-material-table-in-angular-5
+table:
+https://blog.angular-university.io/angular-material-data-table/
+https://github.com/angular/components/issues/6178
+-->
+<div class="flex-col">  <!-- table + paginator -->
+  <div class="flex-content">  <!-- table -->
+    <div class="spinner-container" *ngIf="apService.loading">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <table mat-table [dataSource]="apService.apDataSource"
+           matSort
+           multiTemplateDataRows
+           (matSortChange)="apService.onSort($event)"
+           [class.wrap-cell]="apService.tableWrapCell"
+    >
+
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+      <ng-container matColumnDef="aptyp" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="&Typ"></sbsdb-accelerator-string>
+          </span>
+          <!--          <div class="select-filter">-->
+            <mat-form-field floatLabel="never" class="filter-s">
+              <!--              <mat-label>Filter</mat-label>-->
+              <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
+              <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
+              <!--              </mat-select>-->
+              <input matInput [formControl]="apService.typFilter" [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1"
+                     #firstfilter (keydown.shift.tab)="focusLastFilter(); $event.preventDefault(); $event.stopPropagation();"
+                     title="Filter (Alt+F)">
+              <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
+                      class="select-filter-reset-btn">
+                <mat-icon class="select-filter-reset-icn">close</mat-icon>
+              </button>
+            </mat-form-field>
+          <!--          </div>-->
+        </th>
+        <td mat-cell *matCellDef="let element" class="aptyp highlight-when-expanded"
+            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        >
+          <!--          <button mat-button class="highlight-when-expanded"-->
+          <!--                  (click)="apService.typFilter.setValue(element.aptyp); apService.typFilter.markAsDirty(); $event.stopPropagation()"-->
+          <!--                  color="primary"-->
+          <!--          >-->
+          <!--            {{element.aptyp}}-->
+          <!--          </button>-->
+          <div [class.md-primary-color]="apService.linkcolor2"
+               [class.md-accent-color]="!apService.linkcolor2">
+            <button mat-icon-button [color]="apService.linkcolor" *ngIf="!apService.clickForDetails"
+                    (click)="apService.expandApRow(element, $event)">
+              <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>
+              <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>
+            </button>
+            <span class="highlight-when-expanded pseudo-button"
+                  (click)="apService.expandedRow !== element ? apService.filterByAptyp(element, $event) : ''"
+            >
+              {{element.aptyp}}
+            </span>
+          </div>
+
+          <!--          <div class="aptyp-btn">-->
+          <!--            <button mat-icon-button color="accent"-->
+          <!--                    (click)="apService.expandedRow = apService.expandedRow === element ? null : element">-->
+          <!--              <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>-->
+          <!--              <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>-->
+          <!--            </button>-->
+          <!-- <div>{{element.aptyp}}</div> --> <!-- class="md-primary-color" -->
+          <!--          </div>-->
+          <!--          <div class="aptyp-tag">{{element.typTagsStr}}</div>-->
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="apname" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="AP-&Name"></sbsdb-accelerator-string>
+          </span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.nameFilter" [tabIndex]="apService.displayedColumns.indexOf('apname') + 1">
+            <button mat-button [disabled]="!apService.nameFilter.dirty" matSuffix mat-icon-button (click)="apService.nameFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
+            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        >
+          <div>{{element.apname}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="betrst">
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="Stand&ort" *ngIf="apService.userSettings.showStandort"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string text="Verantwortliche &OE" *ngIf="!apService.userSettings.showStandort"></sbsdb-accelerator-string>
+          </span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.bstFilter" [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1">
+            <button mat-button [disabled]="!apService.bstFilter.dirty" matSuffix mat-icon-button (click)="apService.bstFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
+            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        >
+          <!--            [matTooltip]="apService.bstTooltip(element)"-->
+          <!--            matTooltipClass="bst-tooltip"-->
+          <!--            matTooltipShowDelay="1500"-->
+          <!--            matTooltipHideDelay="100"-->
+          <!--            (click)="bstTooltip.show(0)"-->
+          <!--          <a mat-button class="highlight-when-expanded"-->
+          <!--                  (click)="apService.resetFilters(); apService.bstFilter.setValue(element.oe.betriebsstelle); apService.bstFilter.markAsDirty(); $event.stopPropagation()"-->
+          <!--                  color="primary"-->
+          <!--          >-->
+          <!--            {{element.oe.betriebsstelle}}-->
+          <!--          </a>-->
+          <div [class.md-primary-color]="apService.linkcolor2"
+               [class.md-accent-color]="!apService.linkcolor2">
+            <span class="highlight-when-expanded pseudo-button"
+                  (click)="apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''"
+            >
+            {{apService.getBetrst(element)}}
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="bezeichnung">
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="&Bezeichnung"></sbsdb-accelerator-string>
+          </span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.bezFilter" [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1">
+            <button mat-button [disabled]="!apService.bezFilter.dirty" matSuffix mat-icon-button (click)="apService.bezFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
+            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        >
+          <div>{{element.bezeichnung}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ip">
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="&IP"></sbsdb-accelerator-string>
+          </span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.ipFilter" [tabIndex]="apService.displayedColumns.indexOf('ip') + 1">
+            <button mat-button [disabled]="!apService.ipFilter.dirty" matSuffix mat-icon-button (click)="apService.ipFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element"
+            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        >
+          <div>
+            <span class="ip-cell">{{element.ipStr}} </span><span>{{element.macStr}}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="hardware">
+        <th mat-header-cell *matHeaderCellDef>
+          <span mat-sort-header class="sort-header">
+            <sbsdb-accelerator-string text="Hard&ware"></sbsdb-accelerator-string>
+          </span>
+          <mat-form-field floatLabel="never" class="filter-s">
+            <!--            <mat-label>Filter</mat-label>-->
+            <input matInput [formControl]="apService.hwFilter" [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"
+                   #lastfilter (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation();">
+            <button mat-button [disabled]="!apService.hwFilter.dirty" matSuffix mat-icon-button (click)="apService.hwFilter.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </th>
+        <td mat-cell *matCellDef="let element"
+            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        >
+          <div>{{element.hwStr}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="menu" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>
+          <button mat-icon-button
+                  [matMenuTriggerFor]="tableMenu"
+                  [color]="apService.linkcolor"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button
+                  [matMenuTriggerFor]="apMenu"
+                  [matMenuTriggerData]="{ap: element}"
+                  [color]="apService.linkcolor">
+            <!--                  (click) = "$event.stopPropagation()"-->
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- details template -->
+      <ng-container matColumnDef="apdetails">
+        <td mat-cell *matCellDef="let element" [colSpan]="apService.displayedColumns.length">
+          <div *ngIf="apService.expandedRow === element"
+               [@detailExpand]="'expanded'"
+               class="ap-detail-content">
+            <div style="display: flex; flex-direction: row; flex-wrap: wrap">
+              <div style="margin-top: 25px; margin-right: 20px; background-color: hsl(0, 100%, 96%); padding: 2px 10px; border-left: solid 1px #c0c0c0; border-bottom: solid 1px #c0c0c0">
+                Standort
+              </div>
+              <div style="margin-top: 25px; margin-right: 30px;">OE {{element.oe.bstNr}}<br>
+                {{element.oe.betriebsstelle}}<br><br>
+                {{element.oe.strasse ? element.oe.strasse + " " : ""}}{{element.oe.hausnr ? element.oe.hausnr : ""}}<br>
+                {{element.oe.plz ? element.oe.plz + " " : ""}}{{element.oe.ort ? element.oe.ort : ""}}
+              </div>
+              <div *ngIf="element.oe.oeff"
+                   style="white-space: pre-wrap; font-family: 'Roboto Mono', monospace; font-size: 13px; margin-top: 25px; margin-right: 30px;">
+                Öffnungszeiten<br>{{element.oe.oeff}}
+              </div>
+            </div>
+            <div *ngIf="element.verantwOe" style="margin-top: 25px;">
+              <span>Verantwortliche OE</span> {{element.verantwOe.bstNr}} - {{element.verantwOe.betriebsstelle}}
+              </div>
+            <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+              <div style="margin-right: 30px; margin-top: 25px; ">
+                <table>
+                  <th colspan="2">Hardware</th>
+                  <tr *ngFor="let hw of element.hw">
+                    <!--                <td *ngIf="!hw.pri">-->
+                    <td>
+                      {{hw.hwtyp}}
+                    </td>
+                    <td>
+                      {{hw.hwtypFlag !== 1 ? hw.hersteller + ' - ' + hw.bezeichnung + ' [' + hw.sernr + ']' : ''}}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div style="margin-right: 30px; margin-top: 25px; ">
+                <table>
+                  <th colspan="2">IP</th>
+                  <tr *ngFor="let vlan of element.vlan">
+                    <td>{{vlan.bezeichnung}}: {{apService.getIpString(vlan.vlan + vlan.ip)}}</td>
+                    <td>{{apService.getMacString(vlan.mac)}}</td>
+                  </tr>
+                </table>
+              </div>
+              <div style="margin-right: 30px; margin-top: 25px;">
+                <table>
+                  <th colspan="2">Sonstige Informationen</th>
+                  <tr *ngFor="let tag of element.tags">
+                    <td>{{tag.bezeichnung}}</td>
+                    <td>{{tag.flag === 1 ? '' : tag.text}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div style="white-space: pre-wrap; margin-top: 25px; margin-bottom: 25px">{{element.bemerkung}}</div>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- footer template -->
+      <ng-container matColumnDef="footer">
+        <td mat-footer-cell *matFooterCellDef [colSpan]="apService.displayedColumns.length">
+          <div>
+            {{apService.apDataSource.filteredData.length}} APs von {{apService.apDataSource.data.length}}
+          </div>
+          <div class="fill"></div>
+          <div style="font-size: 10px">
+            <!--  rechtsbuendiger Text -->
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="apService.displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let element; columns: apService.displayedColumns;"
+          class="ap-row"
+          [class.ap-detail-expanded]="apService.expandedRow === element"
+      ></tr>
+      <tr mat-row *matRowDef="let element; columns: ['apdetails']" class="ap-detail-row"
+          [class.ap-detail-content-expanded]="apService.expandedRow === element"
+      ></tr>
+      <!--      <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true" ></tr>-->
+    </table>
   </div>
+
+                        <!-- ?? background: linear-gradient(to top, #fd3232 0%, #ce0000 100%); -->
+  <mat-paginator [pageSizeOptions]="[100, 250, 500, 1000]"
+                 showFirstLastButtons
+                 (page)="apService.onPage($event)"
+                 class="paginator"
+                 color="primary"></mat-paginator>
 </div>
+
+<sbsdb-status [bottom]="20" [left]="20" [text]="apService.statusText"></sbsdb-status>
+
+<mat-menu #tableMenu="matMenu">
+  <ng-template matMenuContent>
+    <button mat-menu-item class="menue-entry" (click)="apService.resetFilters()">
+      <mat-icon>close</mat-icon>
+      Alle Filter löschen
+    </button>
+    <button mat-menu-item class="menue-entry"
+            (click)="apService.userSettings.showStandort = !apService.userSettings.showStandort; apService.bstFilter.reset()">
+      <mat-icon>home</mat-icon>
+      Standort anzeigen
+      <div class="fill"></div>
+      <mat-icon class="menue-checkbox">{{apService.userSettings.showStandort ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+    </button>
+    <button mat-menu-item class="menue-entry" (click)="apService.tableWrapCell = !apService.tableWrapCell">
+      <mat-icon>wrap_text</mat-icon>
+      Zeilenumbruch
+      <div class="fill"></div>
+      <mat-icon class="menue-checkbox">{{apService.tableWrapCell ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+    </button>
+    <button mat-menu-item class="menue-entry" (click)="apService.clickForDetails = !apService.clickForDetails">
+      <mat-icon>touch_app</mat-icon>
+      Zeilenklick
+      <div class="fill"></div>
+      <mat-icon class="menue-checkbox">{{apService.clickForDetails ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+    </button>
+    <button mat-menu-item class="menue-entry"
+            (click)="apService.linkcolor === 'primary' ? apService.linkcolor = 'accent' : apService.linkcolor = 'primary'">
+      <mat-icon>format_color_text</mat-icon>
+      toggle menu color
+    </button>
+    <button mat-menu-item class="menue-entry" (click)="apService.linkcolor2 = !apService.linkcolor2">
+      <mat-icon>format_color_text</mat-icon>
+      toggle link color
+    </button>
+  </ng-template>
+</mat-menu>
+
+<mat-menu #apMenu="matMenu">
+  <ng-template matMenuContent let-ap="ap">
+    <button mat-menu-item (click)="apService.testApMenu(ap)">
+      Test1
+    </button>
+    <button mat-menu-item>
+      Test2
+    </button>
+    <button mat-menu-item *ngIf="ap.aptyp.indexOf('Thin') !== -1">
+      Test3 TC
+    </button>
+  </ng-template>
+</mat-menu>

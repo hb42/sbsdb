@@ -1,19 +1,23 @@
 import { Location } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
-import { VersionService } from "@hb42/lib-client";
+import {Version, VersionService} from "@hb42/lib-client";
 import { environment } from "../../../environments/environment";
 import { UserSession } from "./user.session";
 
 @Injectable({providedIn: "root"})
 export class ConfigService {
 
-  private _webservice: string;
+  // Name in der Config-DB
+  public static AP_PAGE_SIZE = "ap.pagesize";
 
+  private _webservice: string;
   // Pfad zur Web-API
   public get webservice(): string {
     return this._webservice;
   }
+
+  public version: Version;
 
   // Web-API calls
   private readonly getConf: string;
@@ -28,7 +32,7 @@ export class ConfigService {
   private timer: any;
 
   constructor(private http: HttpClient, private location: Location,
-              private version: VersionService) {
+              private versionService: VersionService) {
     console.debug("c'tor ConfigService");
     // Adresse der Web-API
     this._webservice = location.prepareExternalUrl(environment.webservice);
@@ -89,13 +93,14 @@ export class ConfigService {
         // Versionen
         .then((rc) => {
           console.debug(">>> getting app meta data");
-          return this.version.init(this.getVersion).then((ver) => {
+          return this.versionService.init(this.getVersion).then((ver) => {
             console.debug(">>> meta data done");
             console.info(ver.displayname + " v" + ver.version + " " + ver.copyright + " (" + ver.githash + ")");
             console.dir(ver.versions);
-            const server = this.version.serverVer;
+            const server = this.versionService.serverVer;
             console.info(server.displayname + " v" + server.version + " " + server.copyright + " (" + server.githash + ")");
             console.dir(server.versions);
+            this.version = ver;
           });
         });
     // what's new holen

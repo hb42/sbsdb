@@ -6,6 +6,44 @@ body {
   height: 100%;
 }
 
+/* fill space between items */
+.fill {
+  flex: 1;
+}
+
+$headerHeight: 64px;
+$footerHeight: 30px;
+
+/* sidenav test */
+#container {
+  position: absolute;
+  top: $headerHeight;
+  bottom: $footerHeight;
+  left: 0;
+  right: 0;
+}
+
+#sidenav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //width: 200px;
+}
+
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
 /* flex layout */
 
 /* Komplette Seite belegen */
@@ -69,15 +107,51 @@ body {
   overflow: hidden;
 }
 
+sbsdb-head {
+  height: $headerHeight;
+  width: 100%;
+  overflow: hidden;
+}
+
+sbsdb-foot {
+  height: $footerHeight;
+  width: 100%;
+  overflow: hidden;
+}
+.footer {
+  height: $footerHeight !important;
+  min-height: $footerHeight !important;
+}
+
+.header {
+  height: $headerHeight !important;
+  min-height: $headerHeight !important;
+}
+
 .fullsize {
   height: 100%;
   width: 100%;
 }
 
-/* kein Rahmen um ausgewaehlte Buttons */
-a:focus,
-button:focus {
-  outline: 0 !important;
-  box-shadow: none !important;;
-  -webkit-appearance: none !important;
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Styles, die in den Component-Stylesheets nicht funktionieren
+   (waere auch mit "encapsulation: ViewEncapsulation.None" zu loesen,
+    dann sind aber alle Component-Styles global)
+ */
+
+/* ap.component */
+.bst-tooltip {
+  white-space: pre-wrap;
+  font-family: "Roboto Mono";
+  font-size: 11px;
+  max-width: 300px !important;
 }

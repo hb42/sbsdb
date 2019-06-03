@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostBinding, OnInit } from "@angular/core";
+import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
              selector   : "sbsdb-ap-list",
@@ -6,8 +7,9 @@ import { Component, OnInit } from "@angular/core";
              styleUrls  : ["./ap-list.component.scss"]
            })
 export class ApListComponent implements OnInit {
+  @HostBinding("attr.class") cssClass = "flex-content";
 
-  constructor() {
+  constructor(public apService: ArbeitsplatzService) {
   }
 
   ngOnInit() {

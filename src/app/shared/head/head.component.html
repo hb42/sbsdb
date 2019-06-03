@@ -1,51 +1,118 @@
+<mat-toolbar color="primary" class="head-spk header">
+  <!--  <button mat-button (click)="navigationService.resetApp()">-->
+  <!--    <img src="./resource/sbs32-grey.png" title="{{configService.version.displayname}} {{configService.version.version}}"/>-->
+  <!--  </button>-->
+  <!--  <span class="spacer"></span>-->
 
-<p-toolbar>
-  <div class="ui-toolbar-group-left">
-    <button type="button" pButton icon="pi pi-chevron-circle-left"
-            class="ui-button-secondary nav-btn" title="zurück"
-            (click)="backBtn()"
-    ></button>
-    <button type="button" pButton icon="pi pi-chevron-circle-right"
-            class="ui-button-secondary spacer2 nav-btn" title="vorwärts"
-            (click)="forwardBtn()"
-    ></button>
+  <!--  <nav mat-tab-nav-bar backgroundColor="primary">-->
+  <!--    <a mat-tab-link-->
+  <!--       *ngFor="let link of navLinks"-->
+  <!--       [routerLink]="link.path"-->
+  <!--       routerLinkActive #rla="routerLinkActive"-->
+  <!--       [active]="rla.isActive">-->
+  <!--      {{link.label}}-->
+  <!--    </a>-->
+  <!--  </nav>-->
 
-    <span class="spacer page-btn">
-      <button *ngIf="!navigationService.isPage('/ap')"
-              label="Arbeitsplätze" icon="pi pi-user"
-              type="button" pButton (click)="navigate('/ap')"></button>
-      <p-splitButton *ngIf="navigationService.isPage('/ap')"
-                     label="Arbeitsplätze" icon="pi pi-user" styleClass="ui-button-warning"
-                     [model]="items" [appendTo]="'body'"></p-splitButton>
-    </span>
-    <span class="spacer page-btn">
-      <button *ngIf="!navigationService.isPage('/hw')"
-              label="Hardware" icon="pi pi-print"
-              type="button" pButton (click)="navigate('/hw')"></button>
-      <p-splitButton *ngIf="navigationService.isPage('/hw')"
-                     label="Hardware" icon="pi pi-print" styleClass="ui-button-warning"
-                     [model]="items" [appendTo]="'body'"></p-splitButton>
-    </span>
-    <span class="spacer page-btn">
-      <button *ngIf="!navigationService.isPage('/admin')"
-              label="Admin" icon="pi pi-unlock"
-              type="button" pButton (click)="navigate('/admin')"></button>
-      <p-splitButton *ngIf="navigationService.isPage('/admin')"
-                     label="Admin" icon="pi pi-unlock" styleClass="ui-button-warning"
-                     [model]="items" [appendTo]="'body'"></p-splitButton>
-    </span>
-
-    <label>
-      <input type="text" pInputText placeholder="Suche" class="spacer">
-      <button pButton type="button" label="Suche" icon="fa fa-search" class="ui-button-warning spacer"></button>
-      <button pButton type="button" label="Erweiterte Suche" icon="fa fa-search-plus" class="ui-button-warning"></button>
-    </label>
+  <div *ngFor="let link of navLinks">
+    <button mat-button *ngIf="!navigationService.currentPath.startsWith(link.path)"
+            [routerLink]="link.path">
+      <sbsdb-accelerator-string [text]="link.label"></sbsdb-accelerator-string>
+      <mat-icon></mat-icon>
+    </button>
+    <button mat-flat-button *ngIf="navigationService.currentPath.startsWith(link.path)"
+            [matMenuTriggerFor]="link.menu" #menubtn>
+      <sbsdb-accelerator-string [text]="link.label"></sbsdb-accelerator-string>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <span class="spacer2"></span>
   </div>
-  <div class="ui-toolbar-group-right">
-    <p-slideMenu #menu [model]="mainmenu" [popup]="true" [appendTo]="'body'"
-                 backLabel="zurück" [viewportHeight]="mainmenuheight"></p-slideMenu>
-    <button type="button" pButton icon="pi pi-bars" (click)="menu.toggle($event)" class="ui-button-secondary"></button>
+  <mat-menu #apmenu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Neuer Arbeitsplatz</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Test</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Ausgabe als CSV</span>
+    </button>
+  </mat-menu>
+  <mat-menu #hwmenu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Neue Hardware</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Test</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Ausgabe als CSV</span>
+    </button>
+  </mat-menu>
+  <mat-menu #admenu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Admin</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Test</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Ausgabe als CSV</span>
+    </button>
+  </mat-menu>
+  <span class="spacer"></span>
 
-  </div>
-</p-toolbar>
+  <button mat-icon-button (click)="backBtn()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <button mat-icon-button (click)="forwardBtn()">
+    <mat-icon>arrow_forward</mat-icon>
+  </button>
+  <span class="spacer"></span>
+  <!--  <button mat-button (click)="navigate('/ap')">Arbeitsplätze</button>-->
+  <!--  <button mat-button (click)="navigate('/hw')">Hardware</button>-->
+  <!--  <button mat-button (click)="navigate('/admin')">Admin</button>-->
 
+  <!--  <mat-form-field style="font-size: 14px">-->
+  <!--    <input matInput type="search" placeholder="Suche" [(ngModel)]="search">-->
+  <!--    <button mat-button [disabled]="!search" matSuffix mat-icon-button (click)="search=''">-->
+  <!--      <mat-icon>close</mat-icon>-->
+  <!--    </button>-->
+  <!--  </mat-form-field>-->
+
+  <!--  <button mat-button color="accent"-->
+  <!--          (click)="apService.apDataSource.filter = search">Suche-->
+  <!--  </button>-->
+  <!--  <button mat-button color="accent">Erweiterte Suche</button>-->
+
+  <div class="fill"></div>
+  <!--  style="font-size: 11px"-->
+  <button mat-button style="font-size: 11px"
+          [mat-menu-trigger-for]="mainmenu"
+  > {{configService.version.displayname}} {{configService.version.version}}</button>
+  <!--  <span class="spacer"></span>-->
+  <!--  <button mat-icon-button [mat-menu-trigger-for]="mainmenu">-->
+  <!--    <mat-icon>menu</mat-icon>-->
+  <!--  </button>-->
+
+  <mat-menu #mainmenu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>info</mat-icon>
+      <span>Über</span>
+    </button>
+    <button mat-menu-item (click)="navigationService.resetApp()">
+      <mat-icon>power_settings_new</mat-icon>
+      <span>Reset</span>
+    </button>
+
+  </mat-menu>
+</mat-toolbar>

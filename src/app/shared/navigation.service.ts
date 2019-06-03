@@ -1,12 +1,14 @@
-import { Location } from "@angular/common";
-import { Injectable } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { ErrorService } from "@hb42/lib-client";
-import { filter } from "rxjs/operators";
-import { ConfigService } from "./config/config.service";
+import {Location} from "@angular/common";
+import {Injectable} from "@angular/core";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {ErrorService} from "@hb42/lib-client";
+import {filter} from "rxjs/operators";
+import {ConfigService} from "./config/config.service";
 
 @Injectable({providedIn: "root"})
 export class NavigationService {
+
+  public currentPath = "";
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -28,6 +30,7 @@ export class NavigationService {
           //   this.router.navigateByUrl(this.router.parseUrl("/ap;id=42;tree=vlan"))
           if (last && !last.endsWith(ErrorService.errorPage)) {
             this.configService.getUser().path = last;
+            this.currentPath = last;
           }
         });
 
@@ -66,7 +69,11 @@ export class NavigationService {
     if (goto == null || goto === "") {
       goto = "/";
     }
-    this.router.navigateByUrl(this.router.parseUrl(goto))
+    this.navigate(goto);
+  }
+
+  public navigate(url: string) {
+    this.router.navigateByUrl(this.router.parseUrl(url))
         .then((nav) => {
           if (!nav) {  // canActivate liefert false, also zur Startseite
             this.router.navigate(["/"]);
@@ -79,7 +86,10 @@ export class NavigationService {
           this.configService.getUser().path = "";
           this.router.navigate(["/"]);
         });
+  }
 
+  public resetApp() {
+    window.location.href = this.location.prepareExternalUrl("/");
   }
 
 

@@ -1,3 +1,4 @@
+
 // Dimensionen fuer Baum und Liste
 $treeWidth: 350px;
 $treeMinWidth: 100px;
@@ -14,4 +15,221 @@ $listMinWidth: 100px;
 .listPanel {
   width: $listWidth;
   min-width: $listMinWidth;
+}
+
+/* mat-table head*/
+.sort-header {
+  line-height: 3em;
+}
+
+.spinner-container {
+  height: 36px;
+  width: 39px;
+  margin-left: 300px;
+  position: fixed;
+}
+
+.spinner-container mat-spinner {
+  margin: 130px auto 0 auto;
+}
+
+.mat-header-cell {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Standard fuer Tabelle/Zellen */
+td.mat-cell, td.mat-footer-cell, th.mat-header-cell {
+  padding-right: 15px;
+}
+
+table.mat-table {
+  table-layout: fixed;
+  width: 100%;
+  //white-space: nowrap;
+}
+
+// Zeilenumbruch in der Zelle Umschalten
+table:not(.wrap-cell) .mat-cell > div {
+  white-space: nowrap;
+}
+
+.mat-cell > div,
+.mat-cell > a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+// so koennte der fixe Teil der Tabelle angesprochen werden
+//.mat-table-sticky {
+//  border-top: 1px solid #e0e0e0;
+//}
+
+/* Filter-Felder */
+.filter-xs {
+  width: 80px
+}
+
+.filter-s {
+  width: 160px;
+}
+
+.filter-m {
+  width: 200px;
+}
+
+/* Spalten */
+.mat-column-apname {
+  width: 180px;
+  //min-width: 180px;
+  //max-width: 180px;
+}
+.mat-column-aptyp {
+  width: 180px;
+  //min-width: 180px;
+  //max-width: 180px;
+}
+
+// Tooltip setzt user-select auf "none"
+.mat-column-betrst {
+  width: 30%;
+  -moz-user-select: auto !important;
+}
+.mat-column-bezeichnung {
+  width: 30%;
+}
+
+.mat-column-ip {
+  width: 30%;
+}
+
+.ip-cell {
+  padding-right: 20px;
+}
+
+.mat-column-hardware {
+  width: 20%;
+}
+
+.mat-column-menu {
+  width: 20px;
+}
+
+/* Filter mit select box */
+.select-filter {
+  white-space: nowrap;
+}
+
+.select-filter-reset-btn {
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.125em;
+}
+
+.select-filter-reset-icn {
+  height: 1.125em;
+  width: 1.125em;
+  line-height: 1.125;
+  font-size: inherit;
+}
+
+/* AP-Typ */
+.aptyp {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.aptyp-tag {
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.aptyp-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  height: 34px;
+}
+.aptyp-btn mat-icon {
+  font-size: 30px;
+}
+
+.aptyp-btn button {
+  text-align: left;
+}
+
+/* Detail-Anzeige */
+tr.ap-detail-row {
+  height: 0;
+}
+
+tr.ap-row:not(.ap-detail-expanded):hover {
+  background: #f4f4f4;
+}
+tr.ap-row:not(.ap-detail-expanded):active {
+  background: #efefef;
+}
+
+.ap-detail-expanded,
+.ap-detail-content-expanded {
+  background-color: hsl(0, 100%, 99%);
+}
+.ap-detail-expanded div {
+  white-space: unset !important;
+}
+
+.ap-detail-expanded .highlight-when-expanded {
+  font-weight: bold !important;
+  color: rgba(0, 0, 0, .87);
+}
+
+.pseudo-button {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ap-detail-expanded .pseudo-button {
+  cursor: auto;
+}
+
+.ap-row td {
+  border-bottom-width: 0;
+}
+
+.ap-detail-content {
+  overflow: hidden;
+  display: flex;
+  //padding: 10px 0;
+  flex-direction: column;
+}
+
+.ap-detail-content table {
+  border-collapse: collapse;
+}
+
+.ap-detail-content td,
+.ap-detail-content th {
+  border: solid 1px #c0c0c0;
+  padding: 4px 15px;
+}
+
+.ap-detail-content th {
+  font-weight: normal;
+  background-color: hsl(0, 100%, 96%);
+}
+
+/* Paginator */
+.paginator {
+  height: 56px;
+  background-color: #f9f9f9;
+}
+
+/* Menue */
+.menue-entry {
+  display: flex;
+  align-items: center;
+}
+
+.menue-checkbox {
+  padding-left: 10px;
 }
