@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
              selector   : "sbsdb-accelerator-string",
@@ -7,7 +7,7 @@ import {Component, Input, OnInit} from "@angular/core";
            })
 export class AcceleratorStringComponent implements OnInit {
 
-  // '&' markiert das Zeichen, das unterstirchen werden soll
+  // '&' markiert das Zeichen, das unterstrichen werden soll
   @Input() text: string;
 
   public pre = "";

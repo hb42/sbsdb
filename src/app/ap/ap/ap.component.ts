@@ -30,33 +30,54 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     event.stopPropagation();
   }
 
-  // sort via shortcut
-  @HostListener("document:keydown.alt.t", ["$event"])
-  handleTypSort(event: KeyboardEvent) {
-    this.sortColumn("aptyp", event);
+  // TODO das Folgende bringt den Fehler "TypeError : meta is undefined", ausser es wird mit --aot compiliert
+  //      -> https://github.com/angular/angular-cli/issues/14910
+  //         https://github.com/angular/angular-cli/issues/14888
+  // Spalten via Keyboard sortieren
+  @HostListener("document:keydown", ["$event"])
+  handleSort(event: KeyboardEvent) {
+    if (event.altKey && !event.shiftKey && !event.ctrlKey) {
+      const colIdx = this.apService.columns.findIndex((c) => c.sort && c.sort.key && c.sort.key === event.key);
+      if (colIdx >= 0) {
+        // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
+        //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
+        //       -> https://github.com/angular/components/issues/10242
+        // this.sort.sort(this.sort.sortables.get(this.apService.columns[colIdx].name));
+        const sortHeader = this.sort.sortables.get(this.apService.columns[colIdx].name) as MatSortHeader;
+        sortHeader._handleClick();
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }
   }
 
-  @HostListener("document:keydown.alt.n", ["$event"])
-  handleNameSort(event: KeyboardEvent) {
-    this.sortColumn("apname", event);
-  }
-  @HostListener("document:keydown.alt.o", ["$event"])
-  handleBetrstSort(event: KeyboardEvent) {
-    this.sortColumn("betrst", event);
-  }
-  @HostListener("document:keydown.alt.b", ["$event"])
-  handleBezSort(event: KeyboardEvent) {
-    this.sortColumn("bezeichnung", event);
-  }
-  @HostListener("document:keydown.alt.i", ["$event"])
-  handleIpSort(event: KeyboardEvent) {
-    this.sortColumn("ip", event);
-  }
-  @HostListener("document:keydown.alt.w", ["$event"])
-  handleHwSort(event: KeyboardEvent) {
-    this.sortColumn("hardware", event);
-  }
-
+  /*
+    // sort via shortcut
+    @HostListener("document:keydown.alt.t", ["$event"])
+    handleTypSort(event: KeyboardEvent) {
+      this.sortColumn("aptyp", event);
+    }
+    @HostListener("document:keydown.alt.n", ["$event"])
+    handleNameSort(event: KeyboardEvent) {
+      this.sortColumn("apname", event);
+    }
+    @HostListener("document:keydown.alt.o", ["$event"])
+    handleBetrstSort(event: KeyboardEvent) {
+      this.sortColumn("betrst", event);
+    }
+    @HostListener("document:keydown.alt.b", ["$event"])
+    handleBezSort(event: KeyboardEvent) {
+      this.sortColumn("bezeichnung", event);
+    }
+    @HostListener("document:keydown.alt.i", ["$event"])
+    handleIpSort(event: KeyboardEvent) {
+      this.sortColumn("ip", event);
+    }
+    @HostListener("document:keydown.alt.w", ["$event"])
+    handleHwSort(event: KeyboardEvent) {
+      this.sortColumn("hardware", event);
+    }
+  */
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild("firstfilter", {static: false}) firstFilter;
@@ -130,6 +151,16 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastFilter.nativeElement.focus();
   }
 
+  public textForSort(column: string): string {
+    const col = this.apService.getColumn(column);
+    if (col) {
+      return col.sort.text;
+    } else {
+      return "";
+    }
+  }
+
+  /*
   private sortColumn(col: string, event: KeyboardEvent) {
     // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
     //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
@@ -140,5 +171,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
   }
+*/
 
 }

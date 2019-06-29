@@ -10,6 +10,7 @@ import { ColumnFilter } from "../shared/config/column-filter";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { KeyboardService } from "../shared/keyboard.service";
+import { ApColumn } from "./ap-column";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
 
@@ -24,9 +25,116 @@ export class ArbeitsplatzService {
   public selected: OeTreeItem;
   public urlParams: any;
 
-  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>(); // Arbeitsplatz[] =
-                                                                                                  // [];
-  public displayedColumns: string[] = ["aptyp", "apname", "betrst", "bezeichnung", "ip", "hardware", "menu"];
+  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
+
+  public columns: ApColumn[] = [
+    {
+      name  : "aptyp",
+      sort  : {
+        text      : "&Typ",
+        key       : "t",
+        sortString: (ap: Arbeitsplatz) => ap.aptyp.toLowerCase(),
+      },
+      filter: {
+        filter     : new FormControl(""),
+        valueChange: (text: string) => this.checkSearchString(text),
+        predicate  : (ap: Arbeitsplatz) => {
+          const filter = this.userSettings.getApFilter(0);
+          return ap.aptyp.toLowerCase().includes(filter.text) === filter.inc;
+        },
+      },
+    },
+    {
+      name  : "apname",
+      sort  : {
+        text      : "AP-&Name",
+        key       : "n",
+        sortString: (ap: Arbeitsplatz) => ap.apname.toLowerCase(),
+      },
+      filter: {
+        filter     : new FormControl(""),
+        valueChange: (text: string) => this.checkSearchString(text),
+        predicate  : (ap: Arbeitsplatz) => {
+          const filter = this.userSettings.getApFilter(1);
+          return ap.apname.toLowerCase().includes(filter.text) === filter.inc;
+        },
+      },
+    },
+    {
+      name  : "betrst",
+      sort  : {
+        text      : "Stand&ort", // TODO Wechsel "Verantw. OE" ???
+        key       : "o",
+        sortString: (ap: Arbeitsplatz) => this.getBetrst(ap).toLowerCase(),
+      },
+      filter: {
+        filter     : new FormControl(""),
+        valueChange: (text: string) => this.checkSearchString(text),
+        predicate  : (ap: Arbeitsplatz) => {
+          const filter = this.userSettings.getApFilter(2);
+          return ((this.userSettings.showStandort
+                  && ap.oesarch.includes(filter.text) === filter.inc)
+              || (!this.userSettings.showStandort
+                  && ap.voesarch.includes(filter.text) === filter.inc)
+          );
+        },
+      },
+    },
+    {
+      name  : "bezeichnung",
+      sort  : {
+        text      : "&Bezeichnung",
+        key       : "b",
+        sortString: (ap: Arbeitsplatz) => ap.bezeichnung.toLowerCase(),
+      },
+      filter: {
+        filter     : new FormControl(""),
+        valueChange: (text: string) => this.checkSearchString(text),
+        predicate  : (ap: Arbeitsplatz) => {
+          const filter = this.userSettings.getApFilter(3);
+          return ap.bezeichnung.toLowerCase().includes(filter.text) === filter.inc;
+        },
+      },
+    },
+    {
+      name  : "ip",
+      sort  : {
+        text      : "&IP",
+        key       : "i",
+        sortString: (ap: Arbeitsplatz) => (ap.vlan && ap.vlan[0]) ? ap.vlan[0].vlan + ap.vlan[0].ip : 0,
+      },
+      filter: {
+        filter     : new FormControl(""),
+        valueChange: (text: string) => {
+          const t = this.checkSearchString(text);
+          t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
+          return t;
+        },
+        predicate  : (ap: Arbeitsplatz) => {
+          const filter = this.userSettings.getApFilter(4);
+          return ap.ipsearch.toLowerCase().includes(filter.text) === filter.inc;
+        },
+      },
+    },
+    {
+      name  : "hardware",
+      sort  : {
+        text      : "Hard&ware",
+        key       : "w",
+        sortString: (ap: Arbeitsplatz) => ap.hwStr.toLowerCase(),
+      },
+      filter: {
+        filter     : new FormControl(""),
+        valueChange: (text: string) => this.checkSearchString(text),
+        predicate  : (ap: Arbeitsplatz) => {
+          const filter = this.userSettings.getApFilter(5);
+          return ap.hwStr.toLowerCase().includes(filter.text) === filter.inc;
+        },
+      },
+    },
+    {name: "menu"}
+  ];
+  public displayedColumns: string[] = this.columns.map((c) => c.name);
 
   public expandedRow: Arbeitsplatz;
 
@@ -43,25 +151,14 @@ export class ArbeitsplatzService {
   public statusText = "";
 
   // Filter
-  public typFilter = new FormControl("");
-  public nameFilter = new FormControl("");
-  public bstFilter = new FormControl("");
-  public bezFilter = new FormControl("");
-  public ipFilter = new FormControl("");
-  public hwFilter = new FormControl("");
-  // TODO rename -> interface -> add to user-profile -> set at start
-  // Inhalte aller Filter -> Profil | URL ??
-  // inc_* == false -> exclude filter-text (!*)
+  // public typFilter = new FormControl("");
+  // public nameFilter = new FormControl("");
+  // public bstFilter = new FormControl("");
+  // public bezFilter = new FormControl("");
+  // public ipFilter = new FormControl("");
+  // public hwFilter = new FormControl("");
+
   public userSettings: UserSession;
-  // userSettings = {
-  //   aptyp      : "", inc_aptyp: true,
-  //   apname     : "", inc_apname: true,
-  //   betrst     : "", inc_betrst: true,
-  //   bezeichnung: "", inc_bezeichnung: true,
-  //   ip         : "", inc_ip: true,
-  //   hardware   : "", inc_hardware: true,
-  //   sortColumn : "", sortDirection: ""
-  // };
   public loading = false;
   // public typtagSelect: TypTag[];
 
@@ -89,6 +186,22 @@ export class ArbeitsplatzService {
 
     // Filtereingaben bremsen
     const keyDebounce = 500;
+
+    // Aenderung an Filter-Feldern in den Benutzereinstellungen speichern
+    // und Filter triggern
+    this.columns.forEach((c, idx) => {
+      if (c.filter) {
+        c.filter.filter.valueChanges
+            .pipe(debounceTime(keyDebounce))
+            .subscribe((text) => {
+              this.userSettings.setApFilter(idx, c.filter.valueChange(text));
+              // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
+              // this.apDataSource.filter = JSON.stringify(this.userSettings);
+              this.apDataSource.filter = this.filterString();
+            });
+      }
+    });
+    /*
     // Filter-Felder
     this.typFilter.valueChanges
         .pipe(debounceTime(keyDebounce))
@@ -143,7 +256,8 @@ export class ArbeitsplatzService {
               this.apDataSource.filter = this.filterString();
             }
         );
-
+*/
+    // AP-Daten vom Server holen
     setTimeout(() => {
       this.getAps();
     }, 0)
@@ -170,40 +284,41 @@ export class ArbeitsplatzService {
     this.apDataSource.data = data;
     this.loading = false;
 
-    // liefert Daten fuer internen sort in mat-table -> immer lowercase vergleichen
+    // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
-      switch (id) {
-        case "aptyp":
-          return ap.aptyp.toLowerCase();
-        case "apname":
-          return ap.apname.toLowerCase();
-        case "betrst":
-          return this.getBetrst(ap).toLowerCase();
-        case "bezeichnung":
-          return ap.bezeichnung.toLowerCase();
-        case "ip":
-          return (ap.vlan && ap.vlan[0]) ? ap.vlan[0].vlan + ap.vlan[0].ip : 0;
-        case "hardware":
-          return ap.hwStr.toLowerCase();
-        default:
-          return 0;
+      const col = this.getColumn(id);
+      if (col) {
+        return col.sort.sortString(ap);
+      } else {
+        return "";
       }
     };
 
     // eigener Filter
     this.apDataSource.filterPredicate =
         (ap: Arbeitsplatz, filter: string) => {
-          // const searchTerms = JSON.parse(filter);
-          return ap.aptyp.toLowerCase().includes(this.userSettings.aptypFilter.text) === this.userSettings.aptypFilter.inc
-              && ap.apname.toLowerCase().includes(this.userSettings.apnameFilter.text) === this.userSettings.apnameFilter.inc
-              && ((this.userSettings.showStandort
-                      && ap.oesarch.includes(this.userSettings.betrstFilter.text) === this.userSettings.betrstFilter.inc)
-                  || (!this.userSettings.showStandort
-                      && ap.voesarch.includes(this.userSettings.betrstFilter.text) === this.userSettings.betrstFilter.inc)
-              )
-              && ap.bezeichnung.toLowerCase().includes(this.userSettings.bezFilter.text) === this.userSettings.bezFilter.inc
-              && ap.ipsearch.includes(this.userSettings.ipFilter.text) === this.userSettings.ipFilter.inc
-              && ap.hwStr.toLowerCase().includes(this.userSettings.hwFilter.text) === this.userSettings.hwFilter.inc;
+          return this.columns.reduce((prev: boolean, cur: ApColumn) => {
+            if (prev) {
+              if (cur.filter) {
+                return cur.filter.predicate(ap);
+              } else {
+                return true;
+              }
+            } else {  // ein Filter ist bereits false -> Rest ueberspringen
+              return false;
+            }
+          }, true);
+          // // const searchTerms = JSON.parse(filter);
+          // return ap.aptyp.toLowerCase().includes(this.userSettings.aptypFilter.text) === this.userSettings.aptypFilter.inc
+          //     && ap.apname.toLowerCase().includes(this.userSettings.apnameFilter.text) === this.userSettings.apnameFilter.inc
+          //     && ((this.userSettings.showStandort
+          //             && ap.oesarch.includes(this.userSettings.betrstFilter.text) === this.userSettings.betrstFilter.inc)
+          //         || (!this.userSettings.showStandort
+          //             && ap.voesarch.includes(this.userSettings.betrstFilter.text) === this.userSettings.betrstFilter.inc)
+          //     )
+          //     && ap.bezeichnung.toLowerCase().includes(this.userSettings.bezFilter.text) === this.userSettings.bezFilter.inc
+          //     && ap.ipsearch.includes(this.userSettings.ipFilter.text) === this.userSettings.ipFilter.inc
+          //     && ap.hwStr.toLowerCase().includes(this.userSettings.hwFilter.text) === this.userSettings.hwFilter.inc;
         };
 
     this.applyUserSettings();
@@ -221,46 +336,63 @@ export class ArbeitsplatzService {
         this.apDataSource.sort.direction = this.userSettings.apSortDirection === "asc" ? "" : "asc";
         const sortheader = this.apDataSource.sort.sortables.get(this.userSettings.apSortColumn) as MatSortHeader;
         // this.sort.sort(sortheader);
+        // FIXME Hack -> ApComponent#handleSort
         sortheader._handleClick();
       }
+      this.changeBetrst();
       this.initializeFilters();
+
     }
 
   }
 
   public initializeFilters() {
-    if (this.userSettings.aptypFilter.text) {
-      this.typFilter.setValue((this.userSettings.aptypFilter.inc ? "" : "!") + this.userSettings.aptypFilter.text);
-      this.typFilter.markAsDirty()
-    }
-    if (this.userSettings.apnameFilter.text) {
-      this.nameFilter.setValue((this.userSettings.apnameFilter.inc ? "" : "!") + this.userSettings.apnameFilter.text);
-      this.nameFilter.markAsDirty()
-    }
-    if (this.userSettings.betrstFilter.text) {
-      this.bstFilter.setValue((this.userSettings.betrstFilter.inc ? "" : "!") + this.userSettings.betrstFilter.text);
-      this.bstFilter.markAsDirty()
-    }
-    if (this.userSettings.bezFilter.text) {
-      this.bezFilter.setValue((this.userSettings.bezFilter.inc ? "" : "!") + this.userSettings.bezFilter.text);
-      this.bezFilter.markAsDirty()
-    }
-    if (this.userSettings.ipFilter.text) {
-      this.ipFilter.setValue((this.userSettings.ipFilter.inc ? "" : "!") + this.userSettings.ipFilter.text);
-      this.ipFilter.markAsDirty()
-    }
-    if (this.userSettings.hwFilter.text) {
-      this.hwFilter.setValue((this.userSettings.hwFilter.inc ? "" : "!") + this.userSettings.hwFilter.text);
-      this.hwFilter.markAsDirty()
-    }
+    this.columns.forEach((c, idx) => {
+      if (c.filter) {
+        const filt = this.userSettings.getApFilter(idx);
+        if (filt.text) {
+          c.filter.filter.setValue((filt.inc ? "" : "!") + filt.text);
+          c.filter.filter.markAsDirty();
+        }
+      }
+    });
+    // if (this.userSettings.aptypFilter.text) {
+    //   this.typFilter.setValue((this.userSettings.aptypFilter.inc ? "" : "!") + this.userSettings.aptypFilter.text);
+    //   this.typFilter.markAsDirty()
+    // }
+    // if (this.userSettings.apnameFilter.text) {
+    //   this.nameFilter.setValue((this.userSettings.apnameFilter.inc ? "" : "!") + this.userSettings.apnameFilter.text);
+    //   this.nameFilter.markAsDirty()
+    // }
+    // if (this.userSettings.betrstFilter.text) {
+    //   this.bstFilter.setValue((this.userSettings.betrstFilter.inc ? "" : "!") + this.userSettings.betrstFilter.text);
+    //   this.bstFilter.markAsDirty()
+    // }
+    // if (this.userSettings.bezFilter.text) {
+    //   this.bezFilter.setValue((this.userSettings.bezFilter.inc ? "" : "!") + this.userSettings.bezFilter.text);
+    //   this.bezFilter.markAsDirty()
+    // }
+    // if (this.userSettings.ipFilter.text) {
+    //   this.ipFilter.setValue((this.userSettings.ipFilter.inc ? "" : "!") + this.userSettings.ipFilter.text);
+    //   this.ipFilter.markAsDirty()
+    // }
+    // if (this.userSettings.hwFilter.text) {
+    //   this.hwFilter.setValue((this.userSettings.hwFilter.inc ? "" : "!") + this.userSettings.hwFilter.text);
+    //   this.hwFilter.markAsDirty()
+    // }
   }
   public resetFilters() {
-    this.typFilter.reset();
-    this.nameFilter.reset();
-    this.bstFilter.reset();
-    this.bezFilter.reset();
-    this.ipFilter.reset();
-    this.hwFilter.reset();
+    this.columns.forEach((c, idx) => {
+      if (c.filter) {
+        c.filter.filter.reset();
+      }
+    });
+    // this.typFilter.reset();
+    // this.nameFilter.reset();
+    // this.bstFilter.reset();
+    // this.bezFilter.reset();
+    // this.ipFilter.reset();
+    // this.hwFilter.reset();
   }
 
   public onSort(event) {
@@ -303,16 +435,35 @@ export class ArbeitsplatzService {
   }
 
   public filterByAptyp(ap: Arbeitsplatz, event: Event) {
-    this.typFilter.setValue(ap.aptyp);
-    this.typFilter.markAsDirty();
+    const col = this.getColumn("aptyp");
+    col.filter.filter.setValue(ap.aptyp);
+    col.filter.filter.markAsDirty();
+    // this.typFilter.setValue(ap.aptyp);
+    // this.typFilter.markAsDirty();
     event.stopPropagation()
   }
 
   public filterByBetrst(ap: Arbeitsplatz, event: Event) {
+    const col = this.getColumn("betrst");
     this.resetFilters();
-    this.bstFilter.setValue(this.getBetrst(ap));
-    this.bstFilter.markAsDirty();
+    col.filter.filter.setValue(this.getBetrst(ap));
+    col.filter.filter.markAsDirty();
+    // this.bstFilter.setValue(this.getBetrst(ap));
+    // this.bstFilter.markAsDirty();
     event.stopPropagation()
+  }
+
+  public getColumnIndex(name: string): number {
+    return this.columns.findIndex((c) => c.name && c.name === name);
+  }
+
+  public getColumn(name: string): ApColumn {
+    const idx = this.getColumnIndex(name);
+    if (idx >= 0) {
+      return this.columns[idx];
+    } else {
+      return null;
+    }
   }
 
   // OE-Name abhaengig von gewaehlter Anzeige
@@ -327,6 +478,17 @@ export class ArbeitsplatzService {
         return ap.oe.betriebsstelle;
       }
     }
+  }
+
+  // Wechsel Standort <-> verantw. OE
+  public changeBetrst() {
+    const bstcol = this.getColumn("betrst");
+    if (this.userSettings.showStandort) {
+      bstcol.sort.text = "Stand&ort";
+    } else {
+      bstcol.sort.text = "Verantwortliche &OE";
+    }
+    this.getColumn("betrst").filter.filter.reset();
   }
 
   public bstTooltip(ap: Arbeitsplatz): string {
@@ -436,13 +598,20 @@ export class ArbeitsplatzService {
     return {text: str, inc: inc};
   }
 
+  // eindeutiger String fuer alle Filter -> apDataSource.filter
   private filterString(): string {
-    return this.userSettings.aptypFilter.text + this.userSettings.aptypFilter.inc +
-        this.userSettings.hwFilter.text + this.userSettings.hwFilter.inc +
-        this.userSettings.ipFilter.text + this.userSettings.ipFilter.inc +
-        this.userSettings.bezFilter.text + this.userSettings.bezFilter.inc +
-        this.userSettings.betrstFilter.text + this.userSettings.betrstFilter.inc +
-        this.userSettings.apnameFilter.text + this.userSettings.apnameFilter.inc;
+    let s;
+    for (let i = 0; i < this.userSettings.apFiltersCount(); i++) {
+      const filt = this.userSettings.getApFilter(i);
+      s += filt.text + filt.inc;
+    }
+    return s;
+    // return this.userSettings.aptypFilter.text + this.userSettings.aptypFilter.inc +
+    //     this.userSettings.hwFilter.text + this.userSettings.hwFilter.inc +
+    //     this.userSettings.ipFilter.text + this.userSettings.ipFilter.inc +
+    //     this.userSettings.bezFilter.text + this.userSettings.bezFilter.inc +
+    //     this.userSettings.betrstFilter.text + this.userSettings.betrstFilter.inc +
+    //     this.userSettings.apnameFilter.text + this.userSettings.apnameFilter.inc;
   }
 
   private sortAP(ap: Arbeitsplatz) {

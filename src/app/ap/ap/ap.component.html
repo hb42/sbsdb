@@ -39,7 +39,7 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="aptyp" sticky>
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string text="&Typ"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string [text]="textForSort('aptyp')"></sbsdb-accelerator-string>
           </span>
           <!--          <div class="select-filter">-->
             <mat-form-field floatLabel="never" class="filter-s">
@@ -47,10 +47,12 @@ https://github.com/angular/components/issues/6178
               <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
               <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
               <!--              </mat-select>-->
-              <input matInput [formControl]="apService.typFilter" [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1"
+              <input matInput [formControl]="apService.getColumn('aptyp').filter.filter"
+                     [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1"
                      #firstfilter (keydown.shift.tab)="focusLastFilter(); $event.preventDefault(); $event.stopPropagation();"
                      title="Filter (Alt+F)">
-              <button mat-button [disabled]="!apService.typFilter.dirty" matSuffix mat-icon-button (click)="apService.typFilter.reset()"
+              <button mat-button [disabled]="!apService.getColumn('aptyp').filter.filter.dirty" matSuffix mat-icon-button
+                      (click)="apService.getColumn('aptyp').filter.filter.reset()"
                       class="select-filter-reset-btn">
                 <mat-icon class="select-filter-reset-icn">close</mat-icon>
               </button>
@@ -95,12 +97,14 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="apname" sticky>
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string text="AP-&Name"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string [text]="textForSort('apname')"></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.nameFilter" [tabIndex]="apService.displayedColumns.indexOf('apname') + 1">
-            <button mat-button [disabled]="!apService.nameFilter.dirty" matSuffix mat-icon-button (click)="apService.nameFilter.reset()">
+            <input matInput [formControl]="apService.getColumn('apname').filter.filter"
+                   [tabIndex]="apService.displayedColumns.indexOf('apname') + 1">
+            <button mat-button [disabled]="!apService.getColumn('apname').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.getColumn('apname').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -115,13 +119,17 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="betrst">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string text="Stand&ort" *ngIf="apService.userSettings.showStandort"></sbsdb-accelerator-string>
-            <sbsdb-accelerator-string text="Verantwortliche &OE" *ngIf="!apService.userSettings.showStandort"></sbsdb-accelerator-string>
+<!--            <sbsdb-accelerator-string [text]="textForSort('betrst')"></sbsdb-accelerator-string>-->
+            <sbsdb-accelerator-string [text]="textForSort('betrst')" *ngIf="apService.userSettings.showStandort"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string [text]="textForSort('betrst')"
+                                      *ngIf="!apService.userSettings.showStandort"></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.bstFilter" [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1">
-            <button mat-button [disabled]="!apService.bstFilter.dirty" matSuffix mat-icon-button (click)="apService.bstFilter.reset()">
+            <input matInput [formControl]="apService.getColumn('betrst').filter.filter"
+                   [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1">
+            <button mat-button [disabled]="!apService.getColumn('betrst').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.getColumn('betrst').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -154,12 +162,14 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="bezeichnung">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string text="&Bezeichnung"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string [text]="textForSort('bezeichnung')"></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.bezFilter" [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1">
-            <button mat-button [disabled]="!apService.bezFilter.dirty" matSuffix mat-icon-button (click)="apService.bezFilter.reset()">
+            <input matInput [formControl]="apService.getColumn('bezeichnung').filter.filter"
+                   [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1">
+            <button mat-button [disabled]="!apService.getColumn('bezeichnung').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.getColumn('bezeichnung').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -174,12 +184,14 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="ip">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string text="&IP"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string [text]="textForSort('ip')"></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.ipFilter" [tabIndex]="apService.displayedColumns.indexOf('ip') + 1">
-            <button mat-button [disabled]="!apService.ipFilter.dirty" matSuffix mat-icon-button (click)="apService.ipFilter.reset()">
+            <input matInput [formControl]="apService.getColumn('ip').filter.filter"
+                   [tabIndex]="apService.displayedColumns.indexOf('ip') + 1">
+            <button mat-button [disabled]="!apService.getColumn('ip').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.getColumn('ip').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -196,13 +208,15 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="hardware">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string text="Hard&ware"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string [text]="textForSort('hardware')"></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.hwFilter" [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"
+            <input matInput [formControl]="apService.getColumn('hardware').filter.filter"
+                   [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"
                    #lastfilter (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation();">
-            <button mat-button [disabled]="!apService.hwFilter.dirty" matSuffix mat-icon-button (click)="apService.hwFilter.reset()">
+            <button mat-button [disabled]="!apService.getColumn('hardware').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.getColumn('hardware').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -338,7 +352,7 @@ https://github.com/angular/components/issues/6178
       Alle Filter löschen
     </button>
     <button mat-menu-item class="menue-entry"
-            (click)="apService.userSettings.showStandort = !apService.userSettings.showStandort; apService.bstFilter.reset()">
+            (click)="apService.userSettings.showStandort = !apService.userSettings.showStandort; apService.changeBetrst()">
       <mat-icon>home</mat-icon>
       Standort anzeigen
       <div class="fill"></div>

@@ -1,5 +1,5 @@
-import {EventEmitter} from "@angular/core";
-import {ColumnFilter} from "./column-filter";
+import { EventEmitter } from "@angular/core";
+import { ColumnFilter } from "./column-filter";
 
 // dieser Datentyp wird in der DB gespeichert
 // -> hb.SbsdbServer.Model.ViewModel.UserSession
@@ -13,12 +13,13 @@ class User {
 
   // AP-Page
   showStandort: boolean;
-  aptypFilter: ColumnFilter;
-  apnameFilter: ColumnFilter;
-  betrstFilter: ColumnFilter;
-  bezFilter: ColumnFilter;
-  ipFilter: ColumnFilter;
-  hwFilter: ColumnFilter;
+  apFilters: ColumnFilter[];
+  // aptypFilter: ColumnFilter;
+  // apnameFilter: ColumnFilter;
+  // betrstFilter: ColumnFilter;
+  // bezFilter: ColumnFilter;
+  // ipFilter: ColumnFilter;
+  // hwFilter: ColumnFilter;
   apSortColumn: string;
   apSortDirection: string;
   apPageSize: number;
@@ -48,12 +49,13 @@ export class UserSession {
       path: data && data.path ? data.path : "",
 
       showStandort   : data && data.showStandort ? data.showStandort : true,
-      apnameFilter   : data && data.apnameFilter ? data.apnameFilter : {text: "", inc: true},
-      aptypFilter    : data && data.aptypFilter ? data.aptypFilter : {text: "", inc: true},
-      betrstFilter   : data && data.betrstFilter ? data.betrstFilter : {text: "", inc: true},
-      bezFilter      : data && data.bezFilter ? data.bezFilter : {text: "", inc: true},
-      ipFilter       : data && data.ipFilter ? data.ipFilter : {text: "", inc: true},
-      hwFilter       : data && data.hwFilter ? data.hwFilter : {text: "", inc: true},
+      apFilters      : data && data.apFilters ? data.apFilters : [],
+      // apnameFilter   : data && data.apnameFilter ? data.apnameFilter : {text: "", inc: true},
+      // aptypFilter    : data && data.aptypFilter ? data.aptypFilter : {text: "", inc: true},
+      // betrstFilter   : data && data.betrstFilter ? data.betrstFilter : {text: "", inc: true},
+      // bezFilter      : data && data.bezFilter ? data.bezFilter : {text: "", inc: true},
+      // ipFilter       : data && data.ipFilter ? data.ipFilter : {text: "", inc: true},
+      // hwFilter       : data && data.hwFilter ? data.hwFilter : {text: "", inc: true},
       apSortColumn   : data && data.apSortColumn ? data.apSortColumn : "",
       apSortDirection: data && data.apSortDirection ? data.apSortDirection : "",
       apPageSize     : data && data.apPageSize ? data.apPageSize : 100,
@@ -90,59 +92,59 @@ export class UserSession {
     this.changeEvent.emit(this.user);
   }
 
-  public get apnameFilter(): ColumnFilter {
-    return this.user.apnameFilter;
-  }
-
-  public set apnameFilter(filt: ColumnFilter) {
-    this.user.apnameFilter = filt;
-    this.changeEvent.emit(this.user);
-  }
-
-  public get aptypFilter(): ColumnFilter {
-    return this.user.aptypFilter;
-  }
-
-  public set aptypFilter(filt: ColumnFilter) {
-    this.user.aptypFilter = filt;
-    this.changeEvent.emit(this.user);
-  }
-
-  public get betrstFilter(): ColumnFilter {
-    return this.user.betrstFilter;
-  }
-
-  public set betrstFilter(filt: ColumnFilter) {
-    this.user.betrstFilter = filt;
-    this.changeEvent.emit(this.user);
-  }
-
-  public get bezFilter(): ColumnFilter {
-    return this.user.bezFilter;
-  }
-
-  public set bezFilter(filt: ColumnFilter) {
-    this.user.bezFilter = filt;
-    this.changeEvent.emit(this.user);
-  }
-
-  public get ipFilter(): ColumnFilter {
-    return this.user.ipFilter;
-  }
-
-  public set ipFilter(filt: ColumnFilter) {
-    this.user.ipFilter = filt;
-    this.changeEvent.emit(this.user);
-  }
-
-  public get hwFilter(): ColumnFilter {
-    return this.user.hwFilter;
-  }
-
-  public set hwFilter(filt: ColumnFilter) {
-    this.user.hwFilter = filt;
-    this.changeEvent.emit(this.user);
-  }
+  // public get apnameFilter(): ColumnFilter {
+  //   return this.user.apnameFilter;
+  // }
+  //
+  // public set apnameFilter(filt: ColumnFilter) {
+  //   this.user.apnameFilter = filt;
+  //   this.changeEvent.emit(this.user);
+  // }
+  //
+  // public get aptypFilter(): ColumnFilter {
+  //   return this.user.aptypFilter;
+  // }
+  //
+  // public set aptypFilter(filt: ColumnFilter) {
+  //   this.user.aptypFilter = filt;
+  //   this.changeEvent.emit(this.user);
+  // }
+  //
+  // public get betrstFilter(): ColumnFilter {
+  //   return this.user.betrstFilter;
+  // }
+  //
+  // public set betrstFilter(filt: ColumnFilter) {
+  //   this.user.betrstFilter = filt;
+  //   this.changeEvent.emit(this.user);
+  // }
+  //
+  // public get bezFilter(): ColumnFilter {
+  //   return this.user.bezFilter;
+  // }
+  //
+  // public set bezFilter(filt: ColumnFilter) {
+  //   this.user.bezFilter = filt;
+  //   this.changeEvent.emit(this.user);
+  // }
+  //
+  // public get ipFilter(): ColumnFilter {
+  //   return this.user.ipFilter;
+  // }
+  //
+  // public set ipFilter(filt: ColumnFilter) {
+  //   this.user.ipFilter = filt;
+  //   this.changeEvent.emit(this.user);
+  // }
+  //
+  // public get hwFilter(): ColumnFilter {
+  //   return this.user.hwFilter;
+  // }
+  //
+  // public set hwFilter(filt: ColumnFilter) {
+  //   this.user.hwFilter = filt;
+  //   this.changeEvent.emit(this.user);
+  // }
 
   public get apSortColumn(): string {
     return this.user.apSortColumn;
@@ -168,6 +170,28 @@ export class UserSession {
 
   public set apPageSize(pg: number) {
     this.user.apPageSize = pg;
+    this.changeEvent.emit(this.user);
+  }
+
+  // AP Filter
+  public apFiltersCount(): number {
+    return this.user.apFilters.length;
+  }
+
+  public getApFilter(nr: number): ColumnFilter {
+    if (nr >= this.user.apFilters.length) {
+      return {text: "", inc: true};
+    }
+    return this.user.apFilters[nr] ? this.user.apFilters[nr] : {text: "", inc: true};
+  }
+
+  public setApFilter(nr: number, filt: ColumnFilter) {
+    if (nr >= this.user.apFilters.length) {
+      for (let i = this.user.apFilters.length; i <= nr; i++) {
+        this.user.apFilters.push({text: "", inc: true});
+      }
+    }
+    this.user.apFilters[nr] = filt;
     this.changeEvent.emit(this.user);
   }
 
