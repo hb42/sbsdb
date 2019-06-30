@@ -51,33 +51,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  /*
-    // sort via shortcut
-    @HostListener("document:keydown.alt.t", ["$event"])
-    handleTypSort(event: KeyboardEvent) {
-      this.sortColumn("aptyp", event);
-    }
-    @HostListener("document:keydown.alt.n", ["$event"])
-    handleNameSort(event: KeyboardEvent) {
-      this.sortColumn("apname", event);
-    }
-    @HostListener("document:keydown.alt.o", ["$event"])
-    handleBetrstSort(event: KeyboardEvent) {
-      this.sortColumn("betrst", event);
-    }
-    @HostListener("document:keydown.alt.b", ["$event"])
-    handleBezSort(event: KeyboardEvent) {
-      this.sortColumn("bezeichnung", event);
-    }
-    @HostListener("document:keydown.alt.i", ["$event"])
-    handleIpSort(event: KeyboardEvent) {
-      this.sortColumn("ip", event);
-    }
-    @HostListener("document:keydown.alt.w", ["$event"])
-    handleHwSort(event: KeyboardEvent) {
-      this.sortColumn("hardware", event);
-    }
-  */
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild("firstfilter", {static: false}) firstFilter;
@@ -159,18 +132,5 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       return "";
     }
   }
-
-  /*
-  private sortColumn(col: string, event: KeyboardEvent) {
-    // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
-    //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
-    //       -> https://github.com/angular/components/issues/10242
-    // this.sort.sort(this.sort.sortables.get(col));
-    const sortHeader = this.sort.sortables.get(col) as MatSortHeader;
-    sortHeader._handleClick();
-    event.preventDefault();
-    event.stopPropagation();
-  }
-*/
 
 }

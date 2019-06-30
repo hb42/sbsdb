@@ -150,14 +150,6 @@ export class ArbeitsplatzService {
   // Text fuer Statuszeile
   public statusText = "";
 
-  // Filter
-  // public typFilter = new FormControl("");
-  // public nameFilter = new FormControl("");
-  // public bstFilter = new FormControl("");
-  // public bezFilter = new FormControl("");
-  // public ipFilter = new FormControl("");
-  // public hwFilter = new FormControl("");
-
   public userSettings: UserSession;
   public loading = false;
   // public typtagSelect: TypTag[];
@@ -201,62 +193,7 @@ export class ArbeitsplatzService {
             });
       }
     });
-    /*
-    // Filter-Felder
-    this.typFilter.valueChanges
-        .pipe(debounceTime(keyDebounce))
-        .subscribe(
-            text => {
-              console.debug("typFilter text=" + text);
-              this.userSettings.aptypFilter = this.checkSearchString(text);
-              // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
-              // this.apDataSource.filter = JSON.stringify(this.userSettings);
-              this.apDataSource.filter = this.filterString();
-            }
-        );
-    this.nameFilter.valueChanges
-        .pipe(debounceTime(keyDebounce))
-        .subscribe(
-            text => {
-              this.userSettings.apnameFilter = this.checkSearchString(text);
-              this.apDataSource.filter = this.filterString();
-            }
-        );
-    this.bstFilter.valueChanges
-        .pipe(debounceTime(keyDebounce))
-        .subscribe(
-            text => {
-              this.userSettings.betrstFilter = this.checkSearchString(text);
-              this.apDataSource.filter = this.filterString();
-            }
-        );
-    this.bezFilter.valueChanges
-        .pipe(debounceTime(keyDebounce))
-        .subscribe(
-            text => {
-              this.userSettings.bezFilter = this.checkSearchString(text);
-              this.apDataSource.filter = this.filterString();
-            }
-        );
-    this.ipFilter.valueChanges
-        .pipe(debounceTime(keyDebounce))
-        .subscribe(
-            text => {
-              const t = this.checkSearchString(text);
-              t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
-              this.userSettings.ipFilter = t;
-              this.apDataSource.filter = this.filterString();
-            }
-        );
-    this.hwFilter.valueChanges
-        .pipe(debounceTime(keyDebounce))
-        .subscribe(
-            text => {
-              this.userSettings.hwFilter = this.checkSearchString(text);
-              this.apDataSource.filter = this.filterString();
-            }
-        );
-*/
+
     // AP-Daten vom Server holen
     setTimeout(() => {
       this.getAps();
@@ -297,6 +234,7 @@ export class ArbeitsplatzService {
     // eigener Filter
     this.apDataSource.filterPredicate =
         (ap: Arbeitsplatz, filter: string) => {
+          // // const searchTerms = JSON.parse(filter);
           return this.columns.reduce((prev: boolean, cur: ApColumn) => {
             if (prev) {
               if (cur.filter) {
@@ -308,17 +246,6 @@ export class ArbeitsplatzService {
               return false;
             }
           }, true);
-          // // const searchTerms = JSON.parse(filter);
-          // return ap.aptyp.toLowerCase().includes(this.userSettings.aptypFilter.text) === this.userSettings.aptypFilter.inc
-          //     && ap.apname.toLowerCase().includes(this.userSettings.apnameFilter.text) === this.userSettings.apnameFilter.inc
-          //     && ((this.userSettings.showStandort
-          //             && ap.oesarch.includes(this.userSettings.betrstFilter.text) === this.userSettings.betrstFilter.inc)
-          //         || (!this.userSettings.showStandort
-          //             && ap.voesarch.includes(this.userSettings.betrstFilter.text) === this.userSettings.betrstFilter.inc)
-          //     )
-          //     && ap.bezeichnung.toLowerCase().includes(this.userSettings.bezFilter.text) === this.userSettings.bezFilter.inc
-          //     && ap.ipsearch.includes(this.userSettings.ipFilter.text) === this.userSettings.ipFilter.inc
-          //     && ap.hwStr.toLowerCase().includes(this.userSettings.hwFilter.text) === this.userSettings.hwFilter.inc;
         };
 
     this.applyUserSettings();
@@ -356,30 +283,6 @@ export class ArbeitsplatzService {
         }
       }
     });
-    // if (this.userSettings.aptypFilter.text) {
-    //   this.typFilter.setValue((this.userSettings.aptypFilter.inc ? "" : "!") + this.userSettings.aptypFilter.text);
-    //   this.typFilter.markAsDirty()
-    // }
-    // if (this.userSettings.apnameFilter.text) {
-    //   this.nameFilter.setValue((this.userSettings.apnameFilter.inc ? "" : "!") + this.userSettings.apnameFilter.text);
-    //   this.nameFilter.markAsDirty()
-    // }
-    // if (this.userSettings.betrstFilter.text) {
-    //   this.bstFilter.setValue((this.userSettings.betrstFilter.inc ? "" : "!") + this.userSettings.betrstFilter.text);
-    //   this.bstFilter.markAsDirty()
-    // }
-    // if (this.userSettings.bezFilter.text) {
-    //   this.bezFilter.setValue((this.userSettings.bezFilter.inc ? "" : "!") + this.userSettings.bezFilter.text);
-    //   this.bezFilter.markAsDirty()
-    // }
-    // if (this.userSettings.ipFilter.text) {
-    //   this.ipFilter.setValue((this.userSettings.ipFilter.inc ? "" : "!") + this.userSettings.ipFilter.text);
-    //   this.ipFilter.markAsDirty()
-    // }
-    // if (this.userSettings.hwFilter.text) {
-    //   this.hwFilter.setValue((this.userSettings.hwFilter.inc ? "" : "!") + this.userSettings.hwFilter.text);
-    //   this.hwFilter.markAsDirty()
-    // }
   }
   public resetFilters() {
     this.columns.forEach((c, idx) => {
@@ -387,12 +290,6 @@ export class ArbeitsplatzService {
         c.filter.filter.reset();
       }
     });
-    // this.typFilter.reset();
-    // this.nameFilter.reset();
-    // this.bstFilter.reset();
-    // this.bezFilter.reset();
-    // this.ipFilter.reset();
-    // this.hwFilter.reset();
   }
 
   public onSort(event) {
@@ -438,8 +335,6 @@ export class ArbeitsplatzService {
     const col = this.getColumn("aptyp");
     col.filter.filter.setValue(ap.aptyp);
     col.filter.filter.markAsDirty();
-    // this.typFilter.setValue(ap.aptyp);
-    // this.typFilter.markAsDirty();
     event.stopPropagation()
   }
 
@@ -448,8 +343,6 @@ export class ArbeitsplatzService {
     this.resetFilters();
     col.filter.filter.setValue(this.getBetrst(ap));
     col.filter.filter.markAsDirty();
-    // this.bstFilter.setValue(this.getBetrst(ap));
-    // this.bstFilter.markAsDirty();
     event.stopPropagation()
   }
 
@@ -606,12 +499,6 @@ export class ArbeitsplatzService {
       s += filt.text + filt.inc;
     }
     return s;
-    // return this.userSettings.aptypFilter.text + this.userSettings.aptypFilter.inc +
-    //     this.userSettings.hwFilter.text + this.userSettings.hwFilter.inc +
-    //     this.userSettings.ipFilter.text + this.userSettings.ipFilter.inc +
-    //     this.userSettings.bezFilter.text + this.userSettings.bezFilter.inc +
-    //     this.userSettings.betrstFilter.text + this.userSettings.betrstFilter.inc +
-    //     this.userSettings.apnameFilter.text + this.userSettings.apnameFilter.inc;
   }
 
   private sortAP(ap: Arbeitsplatz) {
