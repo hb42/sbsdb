@@ -63,7 +63,7 @@ export class ArbeitsplatzService {
     {
       name  : "betrst",
       sort  : {
-        text      : "Stand&ort", // TODO Wechsel "Verantw. OE" ???
+        text      : "Stand&ort",
         key       : "o",
         sortString: (ap: Arbeitsplatz) => this.getBetrst(ap).toLowerCase(),
       },

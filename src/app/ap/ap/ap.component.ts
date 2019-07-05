@@ -30,9 +30,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     event.stopPropagation();
   }
 
-  // TODO das Folgende bringt den Fehler "TypeError : meta is undefined", ausser es wird mit --aot compiliert
-  //      -> https://github.com/angular/angular-cli/issues/14910
-  //         https://github.com/angular/angular-cli/issues/14888
   // Spalten via Keyboard sortieren
   @HostListener("document:keydown", ["$event"])
   handleSort(event: KeyboardEvent) {

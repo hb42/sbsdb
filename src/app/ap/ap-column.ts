@@ -12,6 +12,6 @@ export interface ApColumn {
   filter?: {
     filter: FormControl;  // Filter-Feld
     valueChange(text: string): ColumnFilter;  // Filter in UserSession speichern
-    predicate(ap: Arbeitsplatz): boolean;  // Vergleich fuer den Filter
+    predicate(ap: Arbeitsplatz): boolean;  // Vergleich-Funktion fuer den Filter
   };
 }

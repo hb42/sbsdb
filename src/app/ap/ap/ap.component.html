@@ -120,7 +120,9 @@ https://github.com/angular/components/issues/6178
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
 <!--            <sbsdb-accelerator-string [text]="textForSort('betrst')"></sbsdb-accelerator-string>-->
-            <sbsdb-accelerator-string [text]="textForSort('betrst')" *ngIf="apService.userSettings.showStandort"></sbsdb-accelerator-string>
+<!-- die ngIf-Bedingung ist noetig, damit eine Aenderung am Text erkannt wird -->
+            <sbsdb-accelerator-string [text]="textForSort('betrst')"
+                                      *ngIf="apService.userSettings.showStandort"></sbsdb-accelerator-string>
             <sbsdb-accelerator-string [text]="textForSort('betrst')"
                                       *ngIf="!apService.userSettings.showStandort"></sbsdb-accelerator-string>
           </span>
