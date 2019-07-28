@@ -138,12 +138,11 @@ export class ArbeitsplatzService {
 
   public expandedRow: Arbeitsplatz;
 
-  // Zeilenumbruch in den Tabellenzellen
+  // DEBUG Zeilenumbruch in den Tabellenzellen (drin lassen??)
   public tableWrapCell = false;
-  // Klick auf Zeile zeigt Details
+  // DEBUG Klick auf Zeile zeigt Details (nach Entscheidung festnageln und var raus)
   public clickForDetails = false;
-  // Standort oder verantw. OE
-//  public showStandort = true;
+  // DEBUG Linkfarben (nach Entscheidung festnageln und vars raus)
   public linkcolor = "primary";
   public linkcolor2 = true;
 
