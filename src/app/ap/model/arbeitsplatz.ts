@@ -1,7 +1,7 @@
-import {Betrst} from "./betrst";
-import {Hardware} from "./hardware";
-import {Netzwerk} from "./netzwerk";
-import {Tag} from "./tag";
+import { Betrst } from "./betrst";
+import { Hardware } from "./hardware";
+import { Netzwerk } from "./netzwerk";
+import { Tag } from "./tag";
 
 export class Arbeitsplatz {
   public apId: number;
@@ -15,10 +15,11 @@ export class Arbeitsplatz {
   public hw: Hardware[];
   public vlan: Netzwerk[];
 
-  // interne Felder fuer die Darstellung
+  // interne Felder fuer die Darstellung/Suche
   // public typTagsStr: string;
   // public tagsStr: string;  // wird das gebraucht??
   public hwStr = "";
+  public sonstHwStr = "";
   public ipStr = "";
   public macStr = "";
   public ipsearch = "";

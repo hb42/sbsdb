@@ -13,16 +13,12 @@ class User {
 
   // AP-Page
   showStandort: boolean;
-  apFilters: ColumnFilter[];
-  // aptypFilter: ColumnFilter;
-  // apnameFilter: ColumnFilter;
-  // betrstFilter: ColumnFilter;
-  // bezFilter: ColumnFilter;
-  // ipFilter: ColumnFilter;
-  // hwFilter: ColumnFilter;
+  apColumnFilters: ColumnFilter[];
+  apExtFilter: string;
   apSortColumn: string;
   apSortDirection: string;
   apPageSize: number;
+  searchSonstHw: boolean;
 }
 
 /**
@@ -49,16 +45,12 @@ export class UserSession {
       path: data && data.path ? data.path : "",
 
       showStandort   : data && data.showStandort ? data.showStandort : true,
-      apFilters      : data && data.apFilters ? data.apFilters : [],
-      // apnameFilter   : data && data.apnameFilter ? data.apnameFilter : {text: "", inc: true},
-      // aptypFilter    : data && data.aptypFilter ? data.aptypFilter : {text: "", inc: true},
-      // betrstFilter   : data && data.betrstFilter ? data.betrstFilter : {text: "", inc: true},
-      // bezFilter      : data && data.bezFilter ? data.bezFilter : {text: "", inc: true},
-      // ipFilter       : data && data.ipFilter ? data.ipFilter : {text: "", inc: true},
-      // hwFilter       : data && data.hwFilter ? data.hwFilter : {text: "", inc: true},
+      apColumnFilters: data && data.apColumnFilters ? data.apColumnFilters : [],
+      apExtFilter    : data && data.apExtFilter ? data.apExtFilter : "",
       apSortColumn   : data && data.apSortColumn ? data.apSortColumn : "",
       apSortDirection: data && data.apSortDirection ? data.apSortDirection : "",
       apPageSize     : data && data.apPageSize ? data.apPageSize : 100,
+      searchSonstHw  : data && data.searchSonstHw ? data.searchSonstHw : false,
     };
   }
 
@@ -92,60 +84,6 @@ export class UserSession {
     this.changeEvent.emit(this.user);
   }
 
-  // public get apnameFilter(): ColumnFilter {
-  //   return this.user.apnameFilter;
-  // }
-  //
-  // public set apnameFilter(filt: ColumnFilter) {
-  //   this.user.apnameFilter = filt;
-  //   this.changeEvent.emit(this.user);
-  // }
-  //
-  // public get aptypFilter(): ColumnFilter {
-  //   return this.user.aptypFilter;
-  // }
-  //
-  // public set aptypFilter(filt: ColumnFilter) {
-  //   this.user.aptypFilter = filt;
-  //   this.changeEvent.emit(this.user);
-  // }
-  //
-  // public get betrstFilter(): ColumnFilter {
-  //   return this.user.betrstFilter;
-  // }
-  //
-  // public set betrstFilter(filt: ColumnFilter) {
-  //   this.user.betrstFilter = filt;
-  //   this.changeEvent.emit(this.user);
-  // }
-  //
-  // public get bezFilter(): ColumnFilter {
-  //   return this.user.bezFilter;
-  // }
-  //
-  // public set bezFilter(filt: ColumnFilter) {
-  //   this.user.bezFilter = filt;
-  //   this.changeEvent.emit(this.user);
-  // }
-  //
-  // public get ipFilter(): ColumnFilter {
-  //   return this.user.ipFilter;
-  // }
-  //
-  // public set ipFilter(filt: ColumnFilter) {
-  //   this.user.ipFilter = filt;
-  //   this.changeEvent.emit(this.user);
-  // }
-  //
-  // public get hwFilter(): ColumnFilter {
-  //   return this.user.hwFilter;
-  // }
-  //
-  // public set hwFilter(filt: ColumnFilter) {
-  //   this.user.hwFilter = filt;
-  //   this.changeEvent.emit(this.user);
-  // }
-
   public get apSortColumn(): string {
     return this.user.apSortColumn;
   }
@@ -175,23 +113,41 @@ export class UserSession {
 
   // AP Filter
   public apFiltersCount(): number {
-    return this.user.apFilters.length;
+    return this.user.apColumnFilters.length;
   }
 
   public getApFilter(nr: number): ColumnFilter {
-    if (nr >= this.user.apFilters.length) {
+    if (nr >= this.user.apColumnFilters.length) {
       return {text: "", inc: true};
     }
-    return this.user.apFilters[nr] ? this.user.apFilters[nr] : {text: "", inc: true};
+    return this.user.apColumnFilters[nr] ? this.user.apColumnFilters[nr] : {text: "", inc: true};
   }
 
   public setApFilter(nr: number, filt: ColumnFilter) {
-    if (nr >= this.user.apFilters.length) {
-      for (let i = this.user.apFilters.length; i <= nr; i++) {
-        this.user.apFilters.push({text: "", inc: true});
+    if (nr >= this.user.apColumnFilters.length) {
+      for (let i = this.user.apColumnFilters.length; i <= nr; i++) {
+        this.user.apColumnFilters.push({text: "", inc: true});
       }
     }
-    this.user.apFilters[nr] = filt;
+    this.user.apColumnFilters[nr] = filt;
+    this.changeEvent.emit(this.user);
+  }
+
+  public get apExtFilter(): string {
+    return this.user.apExtFilter;
+  }
+
+  public set apExtFilter(filt: string) {
+    this.user.apExtFilter = filt;
+    this.changeEvent.emit(this.user);
+  }
+
+  public get searchSonstHw(): boolean {
+    return this.user.searchSonstHw;
+  }
+
+  public set searchSonstHw(sh: boolean) {
+    this.user.searchSonstHw = sh;
     this.changeEvent.emit(this.user);
   }
 

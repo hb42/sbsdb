@@ -10,8 +10,8 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$sbsdb-app-primary: mat-palette($mat-red);
-$sbsdb-app-accent: mat-palette($mat-indigo, A200, A100, A400); // 700, 500, 900);
+$sbsdb-app-primary: mat-palette($mat-red); // red
+$sbsdb-app-accent: mat-palette($mat-indigo, A200, A100, A400); // 700, 500, 900);  // indigo
 
 // The warn palette is optional (defaults to red).
 $sbsdb-app-warn: mat-palette($mat-deep-orange);
@@ -45,6 +45,22 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   }
   .md-background-color-hover {
     background-color: mat-color($background, hover);
+  }
+  // Angular und SCSS
+  // mixins und SCSS-Variablen ($...) die hier definiert werden, sind in den .scss-Dateien der Komponenten nur verwendbar,
+  // wenn jeweils diese Datei per @import eingebunden wird. Dadurch wuerde aber das hier generierte CSS x-fach im Code
+  // auftauchen und das ist ja nicht der Sinn der Sache (partial imports wuerden noch ein weiteres Fass aufmachen, bringt
+  // also auch nichts).
+  // Die Loesung ist, alles, was nicht als CSS-class definiert werden kann, hier als CSS-Variable zu deklarieren. Nicht
+  // sehr elegant, dafuer funktioniert's mit wenig Overhead und die Farben koennen an einer Stelle verwaltet werden.
+  :root {
+    // red = 0; blue = 240 / google-material #500: indigo = 230; orange = 35; deep orange = 14; cyan = 186; blue = 206; red = 4
+    --md-details-background-color: hsl(4, 100%, 99%); // sehr helle Hintergrundfarbe passend zu $primary
+    --md-details-background-color-highlight: hsl(4, 100%, 96%); // helle Hintergrundfarbe passend zu $primary
+    --md-details-border-color: #c0c0c0;
+    --md-light-gray-background-color: #f9f9f9; // hellgrauer Hintergrund
+    --md-row-active-background-color: #efefef; // grauer Hintergrund f. :hover-Effekt
+    --md-row-hover-background-color: #f4f4f4; // grauer Hintergrund f. :active-Effekt
   }
 
 }

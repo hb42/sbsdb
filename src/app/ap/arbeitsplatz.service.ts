@@ -128,7 +128,8 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(5);
-          return ap.hwStr.toLowerCase().includes(filter.text) === filter.inc;
+          return ap.hwStr.toLowerCase().includes(filter.text) === filter.inc
+              || (this.userSettings.searchSonstHw && ap.sonstHwStr.toLowerCase().includes(filter.text) === filter.inc);
         },
       },
     },
@@ -167,10 +168,19 @@ export class ArbeitsplatzService {
     sensitivity: "base"
   });
 
+  /* TODO AP-TABLE-LOAD
+   Fuer erweiterte Filter muessen alle Daten in der gesamten Tabelle vorliegen.
+   Das wird dann aber wieder langsam beim Laden. Moeglicher Ausweg:
+   Liste in Teilen laden (analog Paging), dann ist zumindest schon mal was zu sehen.
+   Zu testen (u.a.): Wie sieht's bei vorhandenem Filter/Sort aus.
+   Wenn's klappt koennte evtl. der Standard-Filter fuer HW auf die gesamte HW-Liste
+   ausgedehnt werden.
+ */
+
   constructor(private http: HttpClient, private configService: ConfigService, private keyboardService: KeyboardService) {
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
-    this.pageApsUrl = this.configService.webservice + "/ap/page";
+    this.pageApsUrl = this.configService.webservice + "/ap/page/";
     this.singleApUrl = this.configService.webservice + "/ap/id/";
     // this.getOeTree();
     this.userSettings = configService.getUser();
@@ -212,8 +222,12 @@ export class ArbeitsplatzService {
     // this.typtagSelect.forEach((t) => t.select = t.apkategorie + ": " + t.tagTyp);
 
     const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
+    const defaultpagesize = 100;
+    let page = 0;
 
-    const data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();
+    // TODO AP-TABLE-LOAD
+    // const data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();  // alle, aber nicht alle Daten
+    const data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise(); // 1. Teil, vollstaendiger record
     data.forEach((ap) => {
       this.prepAP(ap);
     });
@@ -248,6 +262,25 @@ export class ArbeitsplatzService {
         };
 
     this.applyUserSettings();
+
+    // TODO AP-TABLE-LOAD
+    this.fetchPage(++page, pagesize || defaultpagesize);  // Rest holen
+  }
+
+  // TODO AP-TABLE-LOAD
+  private fetchPage(page: number, size: number) {
+    console.debug("load page " + page + ", size " + size);
+    this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise()
+        .then((dat) => {
+          dat.forEach((ap) => {
+            this.prepAP(ap);
+          });
+          this.apDataSource.data = [...this.apDataSource.data, ...dat];
+          if (dat.length === size) {
+            this.fetchPage(++page, size); // recursion!
+          }
+        });
+
   }
 
   public applyUserSettings() {
@@ -306,25 +339,26 @@ export class ArbeitsplatzService {
     if (this.expandedRow === ap) {
       this.expandedRow = null;
     } else {
-      const apdata: Arbeitsplatz = await this.http.get<Arbeitsplatz>(this.singleApUrl + ap.apId).toPromise();
-      // const rec: Arbeitsplatz = this.apDataSource.data.find((a => a.apId === ap.apId));
-      // console.dir(rec);
-      if (apdata) {
-        ap.verantwOe = apdata.verantwOe;
-        ap.oe = apdata.oe;
-        ap.hw = apdata.hw;
-        ap.bezeichnung = apdata.bezeichnung;
-        ap.apname = apdata.apname;
-        ap.aptyp = apdata.aptyp;
-        ap.bemerkung = apdata.bemerkung;
-        ap.tags = apdata.tags;
-        ap.vlan = apdata.vlan;
-        this.sortAP(ap);
-        this.prepAP(ap);
+      // TODO AP-TABLE-LOAD
+      // const apdata: Arbeitsplatz = await this.http.get<Arbeitsplatz>(this.singleApUrl + ap.apId).toPromise();
+      // // const rec: Arbeitsplatz = this.apDataSource.data.find((a => a.apId === ap.apId));
+      // // console.dir(rec);
+      // if (apdata) {
+      //   ap.verantwOe = apdata.verantwOe;
+      //   ap.oe = apdata.oe;
+      //   ap.hw = apdata.hw;
+      //   ap.bezeichnung = apdata.bezeichnung;
+      //   ap.apname = apdata.apname;
+      //   ap.aptyp = apdata.aptyp;
+      //   ap.bemerkung = apdata.bemerkung;
+      //   ap.tags = apdata.tags;
+      //   ap.vlan = apdata.vlan;
+      //   this.sortAP(ap);
+      //   this.prepAP(ap);
         this.expandedRow = ap;
-      } else {
-        console.error("Fehler beim Laden der Details fuer AP #" + ap.apId);
-      }
+      // } else {
+      //   console.error("Fehler beim Laden der Details fuer AP #" + ap.apId);
+      // }
     }
     // this.expandedRow = this.expandedRow === ap ? null : ap;
     event.stopPropagation();
@@ -522,16 +556,21 @@ export class ArbeitsplatzService {
 
   private prepAP(ap: Arbeitsplatz) {
     ap.hwStr = ""; // keine undef Felder!
+    ap.sonstHwStr = ""; // keine undef Felder!
     ap.hw.forEach((h) => {
       if (h.pri) {
         ap.hwStr = h.hersteller + " - " + h.bezeichnung
             + (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
+      } else {
+        // fuer die Suche
+        ap.sonstHwStr = ap.sonstHwStr + " " + h.hersteller + " " + h.bezeichnung
+            + (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
       }
     });
     if (ap.vlan && ap.vlan[0]) {
       ap.ipStr = this.getIpString(ap.vlan[0].vlan + ap.vlan[0].ip);
       ap.macStr = this.getMacString(ap.vlan[0].mac);
-      ap.ipsearch = ap.ipStr + ap.vlan[0].mac;
+      ap.ipsearch = ap.ipStr + " " + ap.vlan[0].mac;
     } else {
       ap.ipStr = "";
       ap.macStr = "";

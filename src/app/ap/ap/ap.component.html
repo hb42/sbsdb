@@ -202,7 +202,9 @@ https://github.com/angular/components/issues/6178
             (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
           <div>
-            <span class="ip-cell">{{element.ipStr}} </span><span>{{element.macStr}}</span>
+            <span class="ip-cell">{{element.ipStr}} </span>
+            <!-- MAC nur bei aktivem Filter anzeigen (nicht ueber isDirty pruefen wg. backspace) -->
+            <span *ngIf="apService.getColumn('ip').filter.filter.value">{{element.macStr}}</span>
           </div>
         </td>
       </ng-container>
@@ -256,25 +258,26 @@ https://github.com/angular/components/issues/6178
           <div *ngIf="apService.expandedRow === element"
                [@detailExpand]="'expanded'"
                class="ap-detail-content">
-            <div style="display: flex; flex-direction: row; flex-wrap: wrap">
-              <div style="margin-top: 25px; margin-right: 20px; background-color: hsl(0, 100%, 96%); padding: 2px 10px; border-left: solid 1px #c0c0c0; border-bottom: solid 1px #c0c0c0">
+            <div class="ap-detail-content-row">
+              <div class="ap-detail-margin ap-detail-standort-text">
                 Standort
               </div>
-              <div style="margin-top: 25px; margin-right: 30px;">OE {{element.oe.bstNr}}<br>
+              <div class="ap-detail-margin">OE {{element.oe.bstNr}}<br>
                 {{element.oe.betriebsstelle}}<br><br>
                 {{element.oe.strasse ? element.oe.strasse + " " : ""}}{{element.oe.hausnr ? element.oe.hausnr : ""}}<br>
                 {{element.oe.plz ? element.oe.plz + " " : ""}}{{element.oe.ort ? element.oe.ort : ""}}
               </div>
+              <div class="ap-detail-margin"></div>
               <div *ngIf="element.oe.oeff"
-                   style="white-space: pre-wrap; font-family: 'Roboto Mono', monospace; font-size: 13px; margin-top: 25px; margin-right: 30px;">
+                   class="ap-detail-margin ap-detail-oeff">
                 Öffnungszeiten<br>{{element.oe.oeff}}
               </div>
             </div>
-            <div *ngIf="element.verantwOe" style="margin-top: 25px;">
-              <span>Verantwortliche OE</span> {{element.verantwOe.bstNr}} - {{element.verantwOe.betriebsstelle}}
-              </div>
-            <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
-              <div style="margin-right: 30px; margin-top: 25px; ">
+            <div *ngIf="element.verantwOe" class="ap-detail-margin">
+              <span>Verantwortliche OE:</span> {{element.verantwOe.bstNr}} - {{element.verantwOe.betriebsstelle}}
+            </div>
+            <div class="ap-detail-content-row">
+              <div class="ap-detail-margin">
                 <table>
                   <th colspan="2">Hardware</th>
                   <tr *ngFor="let hw of element.hw">
@@ -288,7 +291,7 @@ https://github.com/angular/components/issues/6178
                   </tr>
                 </table>
               </div>
-              <div style="margin-right: 30px; margin-top: 25px; ">
+              <div class="ap-detail-margin">
                 <table>
                   <th colspan="2">IP</th>
                   <tr *ngFor="let vlan of element.vlan">
@@ -297,17 +300,18 @@ https://github.com/angular/components/issues/6178
                   </tr>
                 </table>
               </div>
-              <div style="margin-right: 30px; margin-top: 25px;">
+              <div class="ap-detail-margin">
                 <table>
                   <th colspan="2">Sonstige Informationen</th>
                   <tr *ngFor="let tag of element.tags">
-                    <td>{{tag.bezeichnung}}</td>
-                    <td>{{tag.flag === 1 ? '' : tag.text}}</td>
+                    <td [colSpan]="tag.flag === 1 ? 2 : 1">{{tag.bezeichnung}}</td>
+                    <td *ngIf="tag.flag !== 1">{{tag.text}}</td>
+                    <!--                    <td>{{tag.flag === 1 ? '' : tag.text}}</td>-->
                   </tr>
                 </table>
               </div>
             </div>
-            <div style="white-space: pre-wrap; margin-top: 25px; margin-bottom: 25px">{{element.bemerkung}}</div>
+            <div class="ap-detail-bemerk">{{element.bemerkung}}</div>
           </div>
         </td>
       </ng-container>
@@ -359,6 +363,13 @@ https://github.com/angular/components/issues/6178
       Standort anzeigen
       <div class="fill"></div>
       <mat-icon class="menue-checkbox">{{apService.userSettings.showStandort ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+    </button>
+    <button mat-menu-item class="menue-entry"
+            (click)="apService.userSettings.searchSonstHw = !apService.userSettings.searchSonstHw;">
+      <mat-icon>devices</mat-icon>
+      Suche in sonstiger HW
+      <div class="fill"></div>
+      <mat-icon class="menue-checkbox">{{apService.userSettings.searchSonstHw ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
     </button>
     <button mat-menu-item class="menue-entry" (click)="apService.tableWrapCell = !apService.tableWrapCell">
       <mat-icon>wrap_text</mat-icon>
