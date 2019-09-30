@@ -209,9 +209,13 @@ export class ArbeitsplatzService {
     }, 0)
   }
 
-  public test(evt) {
-    console.debug("keyup");
-    console.dir(evt);
+  public tooltipOnEllipsis(evt) {
+    // console.debug("mouseenter");
+    // console.dir(evt);
+    // console.debug("innerText=" + evt.target.innerText)
+    if (evt.target.offsetWidth < evt.target.scrollWidth && !evt.target.title) {
+      evt.target.title = evt.target.innerText;
+    }
   }
 
   // APs aus der DB holen
@@ -336,31 +340,31 @@ export class ArbeitsplatzService {
   }
 
   public async expandApRow(ap: Arbeitsplatz, event: Event) {
-    if (this.expandedRow === ap) {
-      this.expandedRow = null;
-    } else {
       // TODO AP-TABLE-LOAD
-      // const apdata: Arbeitsplatz = await this.http.get<Arbeitsplatz>(this.singleApUrl + ap.apId).toPromise();
-      // // const rec: Arbeitsplatz = this.apDataSource.data.find((a => a.apId === ap.apId));
-      // // console.dir(rec);
-      // if (apdata) {
-      //   ap.verantwOe = apdata.verantwOe;
-      //   ap.oe = apdata.oe;
-      //   ap.hw = apdata.hw;
-      //   ap.bezeichnung = apdata.bezeichnung;
-      //   ap.apname = apdata.apname;
-      //   ap.aptyp = apdata.aptyp;
-      //   ap.bemerkung = apdata.bemerkung;
-      //   ap.tags = apdata.tags;
-      //   ap.vlan = apdata.vlan;
-      //   this.sortAP(ap);
-      //   this.prepAP(ap);
-        this.expandedRow = ap;
-      // } else {
-      //   console.error("Fehler beim Laden der Details fuer AP #" + ap.apId);
-      // }
-    }
-    // this.expandedRow = this.expandedRow === ap ? null : ap;
+    // if (this.expandedRow === ap) {
+    //   this.expandedRow = null;
+    // } else {
+    //   const apdata: Arbeitsplatz = await this.http.get<Arbeitsplatz>(this.singleApUrl + ap.apId).toPromise();
+    //   // const rec: Arbeitsplatz = this.apDataSource.data.find((a => a.apId === ap.apId));
+    //   // console.dir(rec);
+    //   if (apdata) {
+    //     ap.verantwOe = apdata.verantwOe;
+    //     ap.oe = apdata.oe;
+    //     ap.hw = apdata.hw;
+    //     ap.bezeichnung = apdata.bezeichnung;
+    //     ap.apname = apdata.apname;
+    //     ap.aptyp = apdata.aptyp;
+    //     ap.bemerkung = apdata.bemerkung;
+    //     ap.tags = apdata.tags;
+    //     ap.vlan = apdata.vlan;
+    //     this.sortAP(ap);
+    //     this.prepAP(ap);
+    //     this.expandedRow = ap;
+    //   } else {
+    //     console.error("Fehler beim Laden der Details fuer AP #" + ap.apId);
+    //   }
+    // }
+    this.expandedRow = this.expandedRow === ap ? null : ap;
     event.stopPropagation();
   }
 
