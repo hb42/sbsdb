@@ -77,7 +77,6 @@ https://github.com/angular/components/issues/6178
             </button>
             <span class="highlight-when-expanded pseudo-button"
                   (click)="apService.expandedRow !== element ? apService.filterByAptyp(element, $event) : ''"
-                  (mouseenter)="apService.tooltipOnEllipsis($event);"
             >
               {{element.aptyp}}
             </span>
@@ -152,13 +151,12 @@ https://github.com/angular/components/issues/6178
           <!--            {{element.oe.betriebsstelle}}-->
           <!--          </a>-->
           <div [class.md-primary-color]="apService.linkcolor2"
-               [class.md-accent-color]="!apService.linkcolor2">
-            <span class="highlight-when-expanded pseudo-button"
-                  (click)="apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''"
-                  (mouseenter)="apService.tooltipOnEllipsis($event);"
-            >
+               [class.md-accent-color]="!apService.linkcolor2"
+               class="highlight-when-expanded pseudo-button"
+               (click)="apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''"
+               (mouseenter)="apService.tooltipOnEllipsis($event);"
+          >
             {{apService.getBetrst(element)}}
-            </span>
           </div>
         </td>
       </ng-container>

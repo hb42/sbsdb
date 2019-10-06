@@ -1,5 +1,6 @@
 import { FormControl } from "@angular/forms";
 import { ColumnFilter } from "../shared/config/column-filter";
+import { ApRelationalExpression } from "./filter/ap-relational-expression";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 
 export interface ApColumn {
@@ -12,6 +13,7 @@ export interface ApColumn {
   filter?: {
     filter: FormControl;  // Filter-Feld
     valueChange(text: string): ColumnFilter;  // Filter in UserSession speichern
-    predicate(ap: Arbeitsplatz): boolean;  // Vergleich-Funktion fuer den Filter
+    // predicate(ap: Arbeitsplatz): boolean;  // Vergleich-Funktion fuer den Filter
+    predicate(ap: Arbeitsplatz): ApRelationalExpression;  // Vergleich-Funktion fuer den Filter
   };
 }

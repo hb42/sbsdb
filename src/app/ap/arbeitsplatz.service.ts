@@ -11,6 +11,12 @@ import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { KeyboardService } from "../shared/keyboard.service";
 import { ApColumn } from "./ap-column";
+import { ApLogicalExpression } from "./filter/ap-logical-expression";
+import { ApRelationalExpression } from "./filter/ap-relational-expression";
+import { LogicalAnd } from "./filter/logical-and";
+import { LogicalExpressionRight } from "./filter/logical-expression-right";
+import { RelationalLike } from "./filter/relational-like";
+import { RelationalNotLike } from "./filter/relational-not-like";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
 
@@ -40,7 +46,25 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(0);
-          return ap.aptyp.toLowerCase().includes(filter.text) === filter.inc;
+          // return ap.aptyp.toLowerCase().includes(filter.text) === filter.inc;
+          return this.getFilterExpression(
+              "Typ",
+              "aptyp",
+              filter);
+          // if (filter.text) {
+          //   const expr = new ApRelationalExpression();
+          //   expr.display = "Typ";
+          //   expr.left = "aptyp";
+          //   expr.right = filter.text;
+          //   if (filter.inc) {
+          //     expr.op = new RelationalLike();
+          //   } else {
+          //     expr.op = new RelationalNotLike();
+          //   }
+          //   return expr;
+          // } else {
+          //   return null;
+          // }
         },
       },
     },
@@ -56,7 +80,25 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(1);
-          return ap.apname.toLowerCase().includes(filter.text) === filter.inc;
+          // return ap.apname.toLowerCase().includes(filter.text) === filter.inc;
+          return this.getFilterExpression(
+              "AP-Name",
+              "apname",
+              filter);
+          // if (filter.text) {
+          //   const expr = new ApRelationalExpression();
+          //   expr.display = "AP-Name";
+          //   expr.left = "apname";
+          //   expr.right = filter.text;
+          //   if (filter.inc) {
+          //     expr.op = new RelationalLike();
+          //   } else {
+          //     expr.op = new RelationalNotLike();
+          //   }
+          //   return expr;
+          // } else {
+          //   return null;
+          // }
         },
       },
     },
@@ -72,11 +114,29 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(2);
-          return ((this.userSettings.showStandort
-                  && ap.oesarch.includes(filter.text) === filter.inc)
-              || (!this.userSettings.showStandort
-                  && ap.voesarch.includes(filter.text) === filter.inc)
-          );
+          // return ((this.userSettings.showStandort
+          //         && ap.oesarch.includes(filter.text) === filter.inc)
+          //     || (!this.userSettings.showStandort
+          //         && ap.voesarch.includes(filter.text) === filter.inc)
+          // );
+          return this.getFilterExpression(
+              this.userSettings.showStandort ? "Standort" : "Verantw. OE",
+              this.userSettings.showStandort ? "oesearch" : "voesearch",
+              filter);
+          // if (filter.text) {
+          //   const expr = new ApRelationalExpression();
+          //   expr.display = this.userSettings.showStandort ? "Standort" : "Verantw. OE";
+          //   expr.left = this.userSettings.showStandort ? "oesearch" : "voesearch";
+          //   expr.right = filter.text;
+          //   if (filter.inc) {
+          //     expr.op = new RelationalLike();
+          //   } else {
+          //     expr.op = new RelationalNotLike();
+          //   }
+          //   return expr;
+          // } else {
+          //   return null;
+          // }
         },
       },
     },
@@ -92,7 +152,25 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(3);
-          return ap.bezeichnung.toLowerCase().includes(filter.text) === filter.inc;
+          // return ap.bezeichnung.toLowerCase().includes(filter.text) === filter.inc;
+          return this.getFilterExpression(
+              "Bezeichnung",
+              "bezeichnung",
+              filter);
+          // if (filter.text) {
+          //   const expr = new ApRelationalExpression();
+          //   expr.display = "Bezeichnung";
+          //   expr.left = "bezeichnung";
+          //   expr.right = filter.text;
+          //   if (filter.inc) {
+          //     expr.op = new RelationalLike();
+          //   } else {
+          //     expr.op = new RelationalNotLike();
+          //   }
+          //   return expr;
+          // } else {
+          //   return null;
+          // }
         },
       },
     },
@@ -112,7 +190,25 @@ export class ArbeitsplatzService {
         },
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(4);
-          return ap.ipsearch.toLowerCase().includes(filter.text) === filter.inc;
+          // return ap.ipsearch.toLowerCase().includes(filter.text) === filter.inc;
+          return this.getFilterExpression(
+              "IP/MAC",
+              "ipsearch",
+              filter);
+          // if (filter.text) {
+          //   const expr = new ApRelationalExpression();
+          //   expr.display = "IP/MAC";
+          //   expr.left = "ipsearch";
+          //   expr.right = filter.text;
+          //   if (filter.inc) {
+          //     expr.op = new RelationalLike();
+          //   } else {
+          //     expr.op = new RelationalNotLike();
+          //   }
+          //   return expr;
+          // } else {
+          //   return null;
+          // }
         },
       },
     },
@@ -128,14 +224,33 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(5);
-          return ap.hwStr.toLowerCase().includes(filter.text) === filter.inc
-              || (this.userSettings.searchSonstHw && ap.sonstHwStr.toLowerCase().includes(filter.text) === filter.inc);
+          // return ap.hwStr.toLowerCase().includes(filter.text) === filter.inc
+          //     || (this.userSettings.searchSonstHw && ap.sonstHwStr.toLowerCase().includes(filter.text) === filter.inc);
+          return this.getFilterExpression(
+              "Hardware",
+              this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr",
+              filter);
+          // if (filter.text) {
+          //   const expr = new ApRelationalExpression();
+          //   expr.display = "Hardware";
+          //   expr.left = "hwStr";
+          //   expr.right = filter.text;
+          //   if (filter.inc) {
+          //     expr.op = new RelationalLike();
+          //   } else {
+          //     expr.op = new RelationalNotLike();
+          //   }
+          //   return expr;
+          // } else {
+          //   return null;
+          // }
         },
       },
     },
     {name: "menu"}
   ];
   public displayedColumns: string[] = this.columns.map((c) => c.name);
+  private filterExpression = new ApLogicalExpression();
 
   public expandedRow: Arbeitsplatz;
 
@@ -198,6 +313,25 @@ export class ArbeitsplatzService {
               this.userSettings.setApFilter(idx, c.filter.valueChange(text));
               // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
               // this.apDataSource.filter = JSON.stringify(this.userSettings);
+              // const top = new ApLogicalExpression();
+              this.filterExpression.left = null;
+              this.filterExpression.right = [];
+              this.columns.forEach((col) => {
+                if (col.filter) {
+                  const colExpr = col.filter.predicate(null);
+                  if (colExpr) {
+                    if (this.filterExpression.left) {
+                      const expr = new LogicalExpressionRight();
+                      expr.expr = colExpr;
+                      expr.op = new LogicalAnd();
+                      this.filterExpression.right.push(expr);
+                    } else {
+                      this.filterExpression.left = colExpr;
+                    }
+                  }
+                }
+              });
+              console.dir(this.filterExpression);
               this.apDataSource.filter = this.filterString();
             });
       }
@@ -209,10 +343,16 @@ export class ArbeitsplatzService {
     }, 0)
   }
 
+  /**
+   * Tooltip mit dem vollstaendigen Text anzeigen, wenn der Text
+   * mittels ellipsis abgeschnitten ist.
+   * (scheint mit <span> nicht zu funktionieren)
+   * -> https://stackoverflow.com/questions/5474871/html-how-can-i-show-tooltip-only-when-ellipsis-is-activated
+   *
+   * @param evt - Mouseevent
+   */
   public tooltipOnEllipsis(evt) {
-    // console.debug("mouseenter");
-    // console.dir(evt);
-    // console.debug("innerText=" + evt.target.innerText)
+    // fkt. nicht mit span
     if (evt.target.offsetWidth < evt.target.scrollWidth && !evt.target.title) {
       evt.target.title = evt.target.innerText;
     }
@@ -251,18 +391,36 @@ export class ArbeitsplatzService {
     // eigener Filter
     this.apDataSource.filterPredicate =
         (ap: Arbeitsplatz, filter: string) => {
-          // // const searchTerms = JSON.parse(filter);
-          return this.columns.reduce((prev: boolean, cur: ApColumn) => {
-            if (prev) {
-              if (cur.filter) {
-                return cur.filter.predicate(ap);
-              } else {
-                return true;
-              }
-            } else {  // ein Filter ist bereits false -> Rest ueberspringen
-              return false;
-            }
-          }, true);
+          // const top = new ApLogicalExpression();
+          // top.right = [];
+          // this.columns.forEach((col) => {
+          //   if (col.filter) {
+          //     if (top.left) {
+          //       const expr = new LogicalExpressionRight();
+          //       expr.expr = col.filter.predicate(ap);
+          //       expr.op = new LogicalAnd();
+          //       top.right.push(expr);
+          //     } else {
+          //       top.left = col.filter.predicate(ap);
+          //     }
+          //   }
+          // });
+          // return top.runExpression(ap);
+          return this.filterExpression.runExpression(ap);
+
+
+          // // // const searchTerms = JSON.parse(filter);
+          // return this.columns.reduce((prev: boolean, cur: ApColumn) => {
+          //   if (prev) {
+          //     if (cur.filter) {
+          //       return cur.filter.predicate(ap);
+          //     } else {
+          //       return true;
+          //     }
+          //   } else {  // ein Filter ist bereits false -> Rest ueberspringen
+          //     return false;
+          //   }
+          // }, true);
         };
 
     this.applyUserSettings();
@@ -326,6 +484,23 @@ export class ArbeitsplatzService {
         c.filter.filter.reset();
       }
     });
+  }
+
+  private getFilterExpression(display: string, field: string, filter: ColumnFilter): ApRelationalExpression {
+    if (filter.text) {
+      const expr = new ApRelationalExpression();
+      expr.display = display;
+      expr.left = field;
+      expr.right = filter.text;
+      if (filter.inc) {
+        expr.op = new RelationalLike();
+      } else {
+        expr.op = new RelationalNotLike();
+      }
+      return expr;
+    } else {
+      return null;
+    }
   }
 
   public onSort(event) {
@@ -565,12 +740,12 @@ export class ArbeitsplatzService {
       if (h.pri) {
         ap.hwStr = h.hersteller + " - " + h.bezeichnung
             + (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
-      } else {
-        // fuer die Suche
-        ap.sonstHwStr = ap.sonstHwStr + " " + h.hersteller + " " + h.bezeichnung
-            + (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
       }
+      // fuer die Suche
+      ap.sonstHwStr = ap.sonstHwStr + " " + h.hersteller + " " + h.bezeichnung
+            + (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
     });
+
     if (ap.vlan && ap.vlan[0]) {
       ap.ipStr = this.getIpString(ap.vlan[0].vlan + ap.vlan[0].ip);
       ap.macStr = this.getMacString(ap.vlan[0].mac);
@@ -580,11 +755,11 @@ export class ArbeitsplatzService {
       ap.macStr = "";
       ap.ipsearch = "";
     }
-    ap.oesarch = ("00" + ap.oe.bstNr).slice(-3) + ap.oe.betriebsstelle.toLowerCase();
+    ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + ap.oe.betriebsstelle.toLowerCase();
     if (ap.verantwOe) {
-      ap.voesarch = ("00" + ap.verantwOe.bstNr).slice(-3) + ap.verantwOe.betriebsstelle.toLowerCase();
+      ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + ap.verantwOe.betriebsstelle.toLowerCase();
     } else {
-      ap.voesarch = ap.oesarch;
+      ap.voesearch = ap.oesearch;
     }
   }
 
