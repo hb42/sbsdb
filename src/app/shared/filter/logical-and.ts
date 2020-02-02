@@ -1,9 +1,13 @@
 import { LogicalOperator } from "./logical-operator";
 
 export class LogicalAnd implements LogicalOperator {
-  display = "AND";
 
-  run(left: boolean, right: boolean): boolean {
+  public display(): string {
+    return "UND";
+  }
+
+  public execute(left: boolean, right: boolean): boolean {
     return left && right;
   }
+
 }

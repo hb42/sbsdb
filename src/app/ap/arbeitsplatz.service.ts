@@ -6,17 +6,19 @@ import { MatSortHeader } from "@angular/material";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { debounceTime } from "rxjs/operators";
+
 import { ColumnFilter } from "../shared/config/column-filter";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
+import { Bracket } from "../shared/filter/bracket";
+import { Expression } from "../shared/filter/expression";
+import { Field } from "../shared/filter/field";
+import { LogicalAnd } from "../shared/filter/logical-and";
+import { RelationalLike } from "../shared/filter/relational-like";
+import { RelationalNotLike } from "../shared/filter/relational-not-like";
+import { RelationalOperator } from "../shared/filter/relational-operator";
 import { KeyboardService } from "../shared/keyboard.service";
 import { ApColumn } from "./ap-column";
-import { ApLogicalExpression } from "./filter/ap-logical-expression";
-import { ApRelationalExpression } from "./filter/ap-relational-expression";
-import { LogicalAnd } from "./filter/logical-and";
-import { LogicalExpressionRight } from "./filter/logical-expression-right";
-import { RelationalLike } from "./filter/relational-like";
-import { RelationalNotLike } from "./filter/relational-not-like";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
 
@@ -46,25 +48,10 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(0);
-          // return ap.aptyp.toLowerCase().includes(filter.text) === filter.inc;
           return this.getFilterExpression(
               "Typ",
               "aptyp",
               filter);
-          // if (filter.text) {
-          //   const expr = new ApRelationalExpression();
-          //   expr.display = "Typ";
-          //   expr.left = "aptyp";
-          //   expr.right = filter.text;
-          //   if (filter.inc) {
-          //     expr.op = new RelationalLike();
-          //   } else {
-          //     expr.op = new RelationalNotLike();
-          //   }
-          //   return expr;
-          // } else {
-          //   return null;
-          // }
         },
       },
     },
@@ -80,25 +67,10 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(1);
-          // return ap.apname.toLowerCase().includes(filter.text) === filter.inc;
           return this.getFilterExpression(
               "AP-Name",
               "apname",
               filter);
-          // if (filter.text) {
-          //   const expr = new ApRelationalExpression();
-          //   expr.display = "AP-Name";
-          //   expr.left = "apname";
-          //   expr.right = filter.text;
-          //   if (filter.inc) {
-          //     expr.op = new RelationalLike();
-          //   } else {
-          //     expr.op = new RelationalNotLike();
-          //   }
-          //   return expr;
-          // } else {
-          //   return null;
-          // }
         },
       },
     },
@@ -114,29 +86,10 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(2);
-          // return ((this.userSettings.showStandort
-          //         && ap.oesarch.includes(filter.text) === filter.inc)
-          //     || (!this.userSettings.showStandort
-          //         && ap.voesarch.includes(filter.text) === filter.inc)
-          // );
           return this.getFilterExpression(
               this.userSettings.showStandort ? "Standort" : "Verantw. OE",
               this.userSettings.showStandort ? "oesearch" : "voesearch",
               filter);
-          // if (filter.text) {
-          //   const expr = new ApRelationalExpression();
-          //   expr.display = this.userSettings.showStandort ? "Standort" : "Verantw. OE";
-          //   expr.left = this.userSettings.showStandort ? "oesearch" : "voesearch";
-          //   expr.right = filter.text;
-          //   if (filter.inc) {
-          //     expr.op = new RelationalLike();
-          //   } else {
-          //     expr.op = new RelationalNotLike();
-          //   }
-          //   return expr;
-          // } else {
-          //   return null;
-          // }
         },
       },
     },
@@ -152,25 +105,10 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(3);
-          // return ap.bezeichnung.toLowerCase().includes(filter.text) === filter.inc;
           return this.getFilterExpression(
               "Bezeichnung",
               "bezeichnung",
               filter);
-          // if (filter.text) {
-          //   const expr = new ApRelationalExpression();
-          //   expr.display = "Bezeichnung";
-          //   expr.left = "bezeichnung";
-          //   expr.right = filter.text;
-          //   if (filter.inc) {
-          //     expr.op = new RelationalLike();
-          //   } else {
-          //     expr.op = new RelationalNotLike();
-          //   }
-          //   return expr;
-          // } else {
-          //   return null;
-          // }
         },
       },
     },
@@ -190,25 +128,10 @@ export class ArbeitsplatzService {
         },
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(4);
-          // return ap.ipsearch.toLowerCase().includes(filter.text) === filter.inc;
           return this.getFilterExpression(
               "IP/MAC",
               "ipsearch",
               filter);
-          // if (filter.text) {
-          //   const expr = new ApRelationalExpression();
-          //   expr.display = "IP/MAC";
-          //   expr.left = "ipsearch";
-          //   expr.right = filter.text;
-          //   if (filter.inc) {
-          //     expr.op = new RelationalLike();
-          //   } else {
-          //     expr.op = new RelationalNotLike();
-          //   }
-          //   return expr;
-          // } else {
-          //   return null;
-          // }
         },
       },
     },
@@ -224,33 +147,17 @@ export class ArbeitsplatzService {
         valueChange: (text: string) => this.checkSearchString(text),
         predicate  : (ap: Arbeitsplatz) => {
           const filter = this.userSettings.getApFilter(5);
-          // return ap.hwStr.toLowerCase().includes(filter.text) === filter.inc
-          //     || (this.userSettings.searchSonstHw && ap.sonstHwStr.toLowerCase().includes(filter.text) === filter.inc);
           return this.getFilterExpression(
               "Hardware",
               this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr",
               filter);
-          // if (filter.text) {
-          //   const expr = new ApRelationalExpression();
-          //   expr.display = "Hardware";
-          //   expr.left = "hwStr";
-          //   expr.right = filter.text;
-          //   if (filter.inc) {
-          //     expr.op = new RelationalLike();
-          //   } else {
-          //     expr.op = new RelationalNotLike();
-          //   }
-          //   return expr;
-          // } else {
-          //   return null;
-          // }
         },
       },
     },
     {name: "menu"}
   ];
   public displayedColumns: string[] = this.columns.map((c) => c.name);
-  private filterExpression = new ApLogicalExpression();
+  private filterExpression = new Bracket(null);
 
   public expandedRow: Arbeitsplatz;
 
@@ -313,25 +220,18 @@ export class ArbeitsplatzService {
               this.userSettings.setApFilter(idx, c.filter.valueChange(text));
               // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
               // this.apDataSource.filter = JSON.stringify(this.userSettings);
-              // const top = new ApLogicalExpression();
-              this.filterExpression.left = null;
-              this.filterExpression.right = [];
+              this.filterExpression.reset();
+              const and = new LogicalAnd();
               this.columns.forEach((col) => {
                 if (col.filter) {
                   const colExpr = col.filter.predicate(null);
                   if (colExpr) {
-                    if (this.filterExpression.left) {
-                      const expr = new LogicalExpressionRight();
-                      expr.expr = colExpr;
-                      expr.op = new LogicalAnd();
-                      this.filterExpression.right.push(expr);
-                    } else {
-                      this.filterExpression.left = colExpr;
-                    }
+                    this.filterExpression.addElement(and, colExpr);
                   }
                 }
               });
               console.dir(this.filterExpression);
+              console.debug(this.filterExpression.display());
               this.apDataSource.filter = this.filterString();
             });
       }
@@ -391,36 +291,7 @@ export class ArbeitsplatzService {
     // eigener Filter
     this.apDataSource.filterPredicate =
         (ap: Arbeitsplatz, filter: string) => {
-          // const top = new ApLogicalExpression();
-          // top.right = [];
-          // this.columns.forEach((col) => {
-          //   if (col.filter) {
-          //     if (top.left) {
-          //       const expr = new LogicalExpressionRight();
-          //       expr.expr = col.filter.predicate(ap);
-          //       expr.op = new LogicalAnd();
-          //       top.right.push(expr);
-          //     } else {
-          //       top.left = col.filter.predicate(ap);
-          //     }
-          //   }
-          // });
-          // return top.runExpression(ap);
-          return this.filterExpression.runExpression(ap);
-
-
-          // // // const searchTerms = JSON.parse(filter);
-          // return this.columns.reduce((prev: boolean, cur: ApColumn) => {
-          //   if (prev) {
-          //     if (cur.filter) {
-          //       return cur.filter.predicate(ap);
-          //     } else {
-          //       return true;
-          //     }
-          //   } else {  // ein Filter ist bereits false -> Rest ueberspringen
-          //     return false;
-          //   }
-          // }, true);
+          return this.filterExpression.validate(ap);
         };
 
     this.applyUserSettings();
@@ -486,17 +357,17 @@ export class ArbeitsplatzService {
     });
   }
 
-  private getFilterExpression(display: string, field: string, filter: ColumnFilter): ApRelationalExpression {
+  private getFilterExpression(display: string, field: string, filter: ColumnFilter): Expression {
     if (filter.text) {
-      const expr = new ApRelationalExpression();
-      expr.display = display;
-      expr.left = field;
-      expr.right = filter.text;
+      let op: RelationalOperator;
       if (filter.inc) {
-        expr.op = new RelationalLike();
+        op = new RelationalLike();
       } else {
-        expr.op = new RelationalNotLike();
+        op = new RelationalNotLike();
       }
+      const f: Field = new Field(field, display);
+      const expr = new Expression(f, op, filter.text);
+      console.debug(expr.display());
       return expr;
     } else {
       return null;
