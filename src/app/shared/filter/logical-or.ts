@@ -2,7 +2,7 @@ import { LogicalOperator } from "./logical-operator";
 
 export class LogicalOr implements LogicalOperator {
 
-  public display(): string {
+  public toString(): string {
     return "ODER";
   }
 

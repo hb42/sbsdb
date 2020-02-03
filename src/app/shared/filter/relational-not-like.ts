@@ -2,7 +2,7 @@ import { RelationalOperator } from "./relational-operator";
 
 export class RelationalNotLike implements RelationalOperator {
 
-  public display(): string {
+  public toString(): string {
     return "ENTHÄLT_NICHT";
   }
 

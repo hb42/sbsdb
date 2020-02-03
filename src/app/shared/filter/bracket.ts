@@ -22,10 +22,10 @@ export class Bracket implements Term {
     }
   }
 
-  public display(): string {
+  public toString(): string {
     const rc = this.elements.reduce((prev, curr) => {
-      return curr.operator ? prev + " " + curr.operator.display() + " " + curr.term.display()
-          : prev + " " + curr.term.display();
+      return curr.operator ? prev + " " + curr.operator.toString() + " " + curr.term.toString() + "#" + curr.count + "#"
+          : prev + " " + curr.term.toString() + "#" + curr.count + "#";
     }, this.brLeft);
     return rc + this.brRight;
   }
@@ -64,6 +64,10 @@ export class Bracket implements Term {
     //      vermutlich muss ueber Term gesucht werden, ausserdem ist offen ob auch rekursiv
     //      gesucht werden muesste und ob ein Vergleich elements[i].term == term funktioniert
     this.elements.splice(this.elements.indexOf(el), 1);
+  }
+
+  isBracket(): boolean {
+    return true;
   }
 
 }

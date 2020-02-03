@@ -2,7 +2,7 @@ import { LogicalOperator } from "./logical-operator";
 
 export class LogicalAnd implements LogicalOperator {
 
-  public display(): string {
+  public toString(): string {
     return "UND";
   }
 

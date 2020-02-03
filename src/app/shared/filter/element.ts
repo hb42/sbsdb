@@ -9,7 +9,15 @@ import { Term } from "./term";
  */
 export class Element {
 
-  constructor(public operator: LogicalOperator | null, public term: Term) {
-    // noop
+  private static counter: number;
+  private _count: number;
+
+  public get count(): number {
+    return this._count;
   }
+
+  constructor(public operator: LogicalOperator | null, public term: Term) {
+    this._count = Element.counter++;
+  }
+
 }

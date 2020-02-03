@@ -2,7 +2,7 @@ import { RelationalOperator } from "./relational-operator";
 
 export class RelationalLike implements RelationalOperator {
 
-  public display(): string {
+  public toString(): string {
     return "ENTHÄLT";
   }
 

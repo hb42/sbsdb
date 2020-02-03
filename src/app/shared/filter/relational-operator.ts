@@ -7,5 +7,5 @@ export interface RelationalOperator {
   execute(fieldContent: string, compare: string): boolean;
 
   // Textausgabe
-  display(): string;
+  toString(): string;
 }

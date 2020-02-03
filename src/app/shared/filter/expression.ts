@@ -18,14 +18,18 @@ export class Expression implements Term {
     // noop
   }
 
-  display(): string {
-    return "(" + this.field.displayName + " " + this.operator.display() + " \"" + this.compare + "\")";
+  toString(): string {
+    return "[" + this.field.displayName + " " + this.operator.toString() + " \"" + this.compare + "\"]";
   }
 
   validate(record: Object): boolean {
     if (record && record.hasOwnProperty(this.field.fieldName)) {
       return this.operator.execute(record[this.field.fieldName], this.compare);
     }
+    return false;
+  }
+
+  isBracket(): boolean {
     return false;
   }
 }

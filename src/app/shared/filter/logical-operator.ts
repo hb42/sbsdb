@@ -7,5 +7,5 @@ export interface LogicalOperator {
   execute(left: boolean, right: boolean): boolean;
 
   // Textausgabe
-  display(): string;
+  toString(): string;
 }

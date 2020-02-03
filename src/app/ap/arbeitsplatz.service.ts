@@ -231,7 +231,7 @@ export class ArbeitsplatzService {
                 }
               });
               console.dir(this.filterExpression);
-              console.debug(this.filterExpression.display());
+              console.debug(this.filterExpression.toString());
               this.apDataSource.filter = this.filterString();
             });
       }
@@ -367,7 +367,7 @@ export class ArbeitsplatzService {
       }
       const f: Field = new Field(field, display);
       const expr = new Expression(f, op, filter.text);
-      console.debug(expr.display());
+      console.debug(expr.toString());
       return expr;
     } else {
       return null;
