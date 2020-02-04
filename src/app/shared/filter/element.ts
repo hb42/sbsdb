@@ -1,5 +1,5 @@
-import { LogicalOperator } from "./logical-operator";
-import { Term } from "./term";
+import {LogicalOperator} from "./logical-operator";
+import {Term} from "./term";
 
 /**
  * Teil ein eines Filter-Ausdrucks
@@ -9,7 +9,7 @@ import { Term } from "./term";
  */
 export class Element {
 
-  private static counter: number;
+  private static counter = 0;
   private _count: number;
 
   public get count(): number {
