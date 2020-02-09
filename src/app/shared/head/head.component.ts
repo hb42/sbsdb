@@ -12,7 +12,7 @@ import { NavigationService } from "../navigation.service";
 export class HeadComponent implements OnInit, AfterViewInit {
   @HostBinding("attr.class") cssClass = "flex-panel";
 
-  @ViewChild("menubtn", {static: false}) menuBtn;
+  @ViewChild("menubtn") menuBtn;
 
   @HostListener("document:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {

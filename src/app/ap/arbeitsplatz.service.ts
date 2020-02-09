@@ -2,7 +2,7 @@ import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { MatSortHeader } from "@angular/material";
+import { MatSortHeader } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { debounceTime } from "rxjs/operators";
@@ -157,7 +157,7 @@ export class ArbeitsplatzService {
     {name: "menu"}
   ];
   public displayedColumns: string[] = this.columns.map((c) => c.name);
-  private filterExpression = new Bracket(null);
+  public filterExpression = new Bracket(null);
 
   public expandedRow: Arbeitsplatz;
 
@@ -230,7 +230,6 @@ export class ArbeitsplatzService {
                   }
                 }
               });
-              console.dir(this.filterExpression);
               console.debug(this.filterExpression.toString());
               this.apDataSource.filter = this.filterString();
             });
@@ -367,7 +366,6 @@ export class ArbeitsplatzService {
       }
       const f: Field = new Field(field, display);
       const expr = new Expression(f, op, filter.text);
-      console.debug(expr.toString());
       return expr;
     } else {
       return null;

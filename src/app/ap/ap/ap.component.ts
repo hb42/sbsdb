@@ -50,8 +50,8 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild("firstfilter", {static: false}) firstFilter;
-  @ViewChild("lastfilter", {static: false}) lastFilter;
+  @ViewChild("firstfilter") firstFilter;
+  @ViewChild("lastfilter") lastFilter;
 
   public subscription: Subscription;
 

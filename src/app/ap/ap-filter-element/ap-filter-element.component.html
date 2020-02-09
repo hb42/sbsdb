@@ -1,0 +1,11 @@
+<button mat-button [matMenuTriggerFor]="emenu" [matMenuTriggerData]="{el: element}">
+  {{element.operator ? element.operator + " " : ""}}{{element.term ? element.term.toString() : ""}}
+</button>
+
+
+<mat-menu #emenu="matMenu">
+  <ng-template matMenuContent let-el="el">
+    <button mat-menu-item (click)="edit(el)">Ausdruck bearbeiten</button>
+    <button mat-menu-item>Ausdruck löschen</button>
+  </ng-template>
+</mat-menu>

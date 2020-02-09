@@ -1,0 +1,28 @@
+<span [class.menu-open]="menuopen">
+<button mat-button [matMenuTriggerFor]="bmenu" [matMenuTriggerData]="{b: bracket}" (menuOpened)="menuOpen()" (menuClosed)="menuClose()">  <!-- TODO hier muss ein Element rein -> Top-Bracket? -->
+  {{operator ? operator.toString() + " " : ""}}(
+</button>
+  <span *ngFor="let el of bracket.getElements()">
+      <span *ngIf="el.term.isBracket()">
+        <sbsdb-ap-filter-bracket [operator]="el.operator" [bracket]="el.term" [title]="el.count"></sbsdb-ap-filter-bracket>
+        <!--        {{el.operator ? el.operator.toString() + " " : ""}}(-->
+        <!--        <span *ngFor="let el2 of getBracketElements(el.term)">-->
+        <!--          <sbsdb-ap-filter-element [element]="el2" [title]="el2.count"></sbsdb-ap-filter-element>-->
+        <!--        </span>-->
+        <!--        )-->
+      </span>
+      <span *ngIf="!el.term.isBracket()">
+        <sbsdb-ap-filter-element [element]="el" [title]="el.count"></sbsdb-ap-filter-element>
+      </span>
+    </span>
+<button mat-button [matMenuTriggerFor]="bmenu" [matMenuTriggerData]="{b: bracket}">
+  )
+</button>
+</span>
+
+<mat-menu #bmenu="matMenu">
+  <ng-template matMenuContent let-b="b">
+    <button mat-menu-item (click)="insert(b)">Ausdruck einfügen</button>
+    <button mat-menu-item>Klammer löschen</button>
+  </ng-template>
+</mat-menu>
