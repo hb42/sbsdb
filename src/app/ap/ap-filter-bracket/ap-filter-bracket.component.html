@@ -1,5 +1,5 @@
-<span [class.menu-open]="menuopen">
-<button mat-button [matMenuTriggerFor]="bmenu" [matMenuTriggerData]="{b: bracket}" (menuOpened)="menuOpen()" (menuClosed)="menuClose()">  <!-- TODO hier muss ein Element rein -> Top-Bracket? -->
+<span [class.menu-open]="menuopen" style="display: inline-block">
+<button mat-button color="accent" class="mat-button-filter" [matMenuTriggerFor]="bmenu" [matMenuTriggerData]="{b: bracket}" (menuOpened)="menuOpen()" (menuClosed)="menuClose()">
   {{operator ? operator.toString() + " " : ""}}(
 </button>
   <span *ngFor="let el of bracket.getElements()">
@@ -15,7 +15,7 @@
         <sbsdb-ap-filter-element [element]="el" [title]="el.count"></sbsdb-ap-filter-element>
       </span>
     </span>
-<button mat-button [matMenuTriggerFor]="bmenu" [matMenuTriggerData]="{b: bracket}">
+<button mat-button color="accent" class="mat-button-filter" [matMenuTriggerFor]="bmenu" [matMenuTriggerData]="{b: bracket}" (menuOpened)="menuOpen()" (menuClosed)="menuClose()">
   )
 </button>
 </span>

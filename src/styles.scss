@@ -155,3 +155,9 @@ body {
   font-size: 11px;
   max-width: 300px !important;
 }
+
+/* extended filter */
+.mat-button-filter {
+  min-width: 0 !important;
+  padding: 0 8px !important;
+}

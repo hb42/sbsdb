@@ -214,12 +214,10 @@ export class ArbeitsplatzService {
     // und Filter triggern
     this.columns.forEach((c, idx) => {
       if (c.filter) {
-        c.filter.filter.valueChanges
+        c.filter.filter.valueChanges  // FormControl
             .pipe(debounceTime(keyDebounce))
             .subscribe((text) => {
               this.userSettings.setApFilter(idx, c.filter.valueChange(text));
-              // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
-              // this.apDataSource.filter = JSON.stringify(this.userSettings);
               this.filterExpression.reset();
               const and = new LogicalAnd();
               this.columns.forEach((col) => {
@@ -231,6 +229,8 @@ export class ArbeitsplatzService {
                 }
               });
               console.debug(this.filterExpression.toString());
+              // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
+              // this.apDataSource.filter = JSON.stringify(this.userSettings);
               this.apDataSource.filter = this.filterString();
             });
       }
@@ -356,7 +356,8 @@ export class ArbeitsplatzService {
     });
   }
 
-  private getFilterExpression(display: string, field: string, filter: ColumnFilter): Expression {
+  // private getFilterExpression(display: string, field: string, filter: ColumnFilter): Expression { // FIXME Bracket nur fuer Tests
+  private getFilterExpression(display: string, field: string, filter: ColumnFilter): Bracket {
     if (filter.text) {
       let op: RelationalOperator;
       if (filter.inc) {
@@ -366,7 +367,10 @@ export class ArbeitsplatzService {
       }
       const f: Field = new Field(field, display);
       const expr = new Expression(f, op, filter.text);
-      return expr;
+      // return expr;  // FIXME nach Test wieder Expressin + folgende drei Zeilen raus
+      const br = new Bracket(this.filterExpression);
+      br.addElement(null, expr);
+      return br;
     } else {
       return null;
     }

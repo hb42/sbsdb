@@ -1,4 +1,4 @@
-<button mat-button [matMenuTriggerFor]="emenu" [matMenuTriggerData]="{el: element}">
+<button mat-button color="accent" class="mat-button-filter" [matMenuTriggerFor]="emenu" [matMenuTriggerData]="{el: element}">
   {{element.operator ? element.operator + " " : ""}}{{element.term ? element.term.toString() : ""}}
 </button>
 
