@@ -22,8 +22,8 @@ https://blog.angular-university.io/angular-material-data-table/
 https://github.com/angular/components/issues/6178
 -->
 <div class="flex-col">  <!-- table + paginator -->
-  <sbsdb-ap-filter> <!-- DEBUG -->
-  </sbsdb-ap-filter>
+                        <!--  <sbsdb-ap-filter> &lt;!&ndash; DEBUG &ndash;&gt;-->
+                        <!--  </sbsdb-ap-filter>-->
   <div class="flex-content">  <!-- table -->
     <div class="spinner-container" *ngIf="apService.loading">
       <mat-spinner></mat-spinner>
@@ -357,6 +357,10 @@ https://github.com/angular/components/issues/6178
 
 <mat-menu #tableMenu="matMenu">
   <ng-template matMenuContent>
+    <button mat-menu-item class="menue-entry" (click)="extendedFilter()">
+      <mat-icon>find_in_page</mat-icon>
+      Erweiterte Suche
+    </button>
     <button mat-menu-item class="menue-entry" (click)="apService.resetFilters()">
       <mat-icon>close</mat-icon>
       Alle Filter löschen

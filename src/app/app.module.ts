@@ -49,7 +49,7 @@ export function initConf(configService: ConfigService) {
 
 @NgModule(
     {
-      declarations: [
+      declarations   : [
         AppComponent,
         HeadComponent,
         FootComponent,
@@ -67,7 +67,7 @@ export function initConf(configService: ConfigService) {
         ApFilterElementComponent,
         ApFilterBracketComponent,
       ],
-      imports     : [
+      imports        : [
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
@@ -82,7 +82,11 @@ export function initConf(configService: ConfigService) {
         LibClientModule,
 
       ],
-      providers   : [
+      // f. mat-dialog
+      entryComponents: [
+        ApFilterComponent,
+      ],
+      providers      : [
         {provide: LOCALE_ID, useValue: "de"},  // registerLocaleData() s.o.
         // -- eigene
         // app startet erst, wenn das Promise aus initConf aufgeloest ist

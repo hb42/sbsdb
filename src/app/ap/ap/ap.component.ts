@@ -1,10 +1,12 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
+import { ApFilterComponent } from "../ap-filter/ap-filter.component";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
@@ -58,7 +60,8 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private config: ConfigService,
-              public apService: ArbeitsplatzService
+              public apService: ArbeitsplatzService,
+              public dialog: MatDialog
   ) {
     console.debug("c'tor ApComponent");
   }
@@ -128,6 +131,24 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       return "";
     }
+  }
+
+  public extendedFilter() {
+    const dialogRef = this.dialog.open(ApFilterComponent, {
+      // height: "300px",
+      // width: "500px",
+      // maxWidth: "600px",
+      disableClose: true,
+      data        : this.apService.filterExpression,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.debug("The dialog was closed");
+        console.dir(result);
+      }
+    });
+
   }
 
 }

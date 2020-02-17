@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Bracket } from "../../shared/filter/bracket";
 import { Element } from "../../shared/filter/element";
 import { Term } from "../../shared/filter/term";
@@ -10,9 +11,11 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
              styleUrls  : ["./ap-filter.component.scss"]
            })
 export class ApFilterComponent implements OnInit {
-  // @HostBinding("attr.class") cssClass = "flex-panel";
 
-  constructor(public apService: ArbeitsplatzService) {
+  constructor(public apService: ArbeitsplatzService,
+              public dialogRef: MatDialogRef<ApFilterComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: Bracket) {
+
     console.debug("c'tor ApFilterComponent");
   }
 
