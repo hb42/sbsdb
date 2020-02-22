@@ -49,12 +49,12 @@ https://github.com/angular/components/issues/6178
               <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
               <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
               <!--              </mat-select>-->
-              <input matInput [formControl]="apService.getColumn('aptyp').filter.filter"
-                     [tabIndex]="apService.displayedColumns.indexOf('aptyp') + 1"
+              <input matInput [formControl]="apService.filterService.getColumn('aptyp').filter.filter"
+                     [tabIndex]="apService.filterService.displayedColumns.indexOf('aptyp') + 1"
                      #firstfilter (keydown.shift.tab)="focusLastFilter(); $event.preventDefault(); $event.stopPropagation();"
                      title="Filter (Alt+F)">
-              <button mat-button [disabled]="!apService.getColumn('aptyp').filter.filter.dirty" matSuffix mat-icon-button
-                      (click)="apService.getColumn('aptyp').filter.filter.reset()"
+              <button mat-button [disabled]="!apService.filterService.getColumn('aptyp').filter.filter.dirty" matSuffix mat-icon-button
+                      (click)="apService.filterService.getColumn('aptyp').filter.filter.reset()"
                       class="select-filter-reset-btn">
                 <mat-icon class="select-filter-reset-icn">close</mat-icon>
               </button>
@@ -78,7 +78,7 @@ https://github.com/angular/components/issues/6178
               <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>
             </button>
             <span class="highlight-when-expanded pseudo-button"
-                  (click)="apService.expandedRow !== element ? apService.filterByAptyp(element, $event) : ''"
+                  (click)="apService.expandedRow !== element ? apService.filterService.filterByAptyp(element, $event) : ''"
             >
               {{element.aptyp}}
             </span>
@@ -103,10 +103,10 @@ https://github.com/angular/components/issues/6178
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('apname').filter.filter"
-                   [tabIndex]="apService.displayedColumns.indexOf('apname') + 1">
-            <button mat-button [disabled]="!apService.getColumn('apname').filter.filter.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('apname').filter.filter.reset()">
+            <input matInput [formControl]="apService.filterService.getColumn('apname').filter.filter"
+                   [tabIndex]="apService.filterService.displayedColumns.indexOf('apname') + 1">
+            <button mat-button [disabled]="!apService.filterService.getColumn('apname').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.filterService.getColumn('apname').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -130,10 +130,10 @@ https://github.com/angular/components/issues/6178
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('betrst').filter.filter"
-                   [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1">
-            <button mat-button [disabled]="!apService.getColumn('betrst').filter.filter.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('betrst').filter.filter.reset()">
+            <input matInput [formControl]="apService.filterService.getColumn('betrst').filter.filter"
+                   [tabIndex]="apService.filterService.displayedColumns.indexOf('betrst') + 1">
+            <button mat-button [disabled]="!apService.filterService.getColumn('betrst').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.filterService.getColumn('betrst').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -155,10 +155,10 @@ https://github.com/angular/components/issues/6178
           <div [class.md-primary-color]="apService.linkcolor2"
                [class.md-accent-color]="!apService.linkcolor2"
                class="highlight-when-expanded pseudo-button"
-               (click)="apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''"
+               (click)="apService.expandedRow !== element ? apService.filterService.filterByBetrst(element, $event) : ''"
                (mouseenter)="apService.tooltipOnEllipsis($event);"
           >
-            {{apService.getBetrst(element)}}
+            {{apService.filterService.getBetrst(element)}}
           </div>
         </td>
       </ng-container>
@@ -170,10 +170,10 @@ https://github.com/angular/components/issues/6178
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('bezeichnung').filter.filter"
-                   [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1">
-            <button mat-button [disabled]="!apService.getColumn('bezeichnung').filter.filter.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('bezeichnung').filter.filter.reset()">
+            <input matInput [formControl]="apService.filterService.getColumn('bezeichnung').filter.filter"
+                   [tabIndex]="apService.filterService.displayedColumns.indexOf('bezeichnung') + 1">
+            <button mat-button [disabled]="!apService.filterService.getColumn('bezeichnung').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.filterService.getColumn('bezeichnung').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -192,10 +192,10 @@ https://github.com/angular/components/issues/6178
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('ip').filter.filter"
-                   [tabIndex]="apService.displayedColumns.indexOf('ip') + 1">
-            <button mat-button [disabled]="!apService.getColumn('ip').filter.filter.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('ip').filter.filter.reset()">
+            <input matInput [formControl]="apService.filterService.getColumn('ip').filter.filter"
+                   [tabIndex]="apService.filterService.displayedColumns.indexOf('ip') + 1">
+            <button mat-button [disabled]="!apService.filterService.getColumn('ip').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.filterService.getColumn('ip').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -207,7 +207,7 @@ https://github.com/angular/components/issues/6178
           <div>
             <span class="ip-cell">{{element.ipStr}} </span>
             <!-- MAC nur bei aktivem Filter anzeigen (nicht ueber isDirty pruefen wg. backspace) -->
-            <span *ngIf="apService.getColumn('ip').filter.filter.value">{{element.macStr}}</span>
+            <span *ngIf="apService.filterService.getColumn('ip').filter.filter.value">{{element.macStr}}</span>
           </div>
         </td>
       </ng-container>
@@ -219,11 +219,11 @@ https://github.com/angular/components/issues/6178
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('hardware').filter.filter"
-                   [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"
+            <input matInput [formControl]="apService.filterService.getColumn('hardware').filter.filter"
+                   [tabIndex]="apService.filterService.displayedColumns.indexOf('hardware') + 1"
                    #lastfilter (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation();">
-            <button mat-button [disabled]="!apService.getColumn('hardware').filter.filter.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('hardware').filter.filter.reset()">
+            <button mat-button [disabled]="!apService.filterService.getColumn('hardware').filter.filter.dirty" matSuffix mat-icon-button
+                    (click)="apService.filterService.getColumn('hardware').filter.filter.reset()">
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
@@ -258,7 +258,7 @@ https://github.com/angular/components/issues/6178
 
       <!-- details template -->
       <ng-container matColumnDef="apdetails">
-        <td mat-cell *matCellDef="let element" [colSpan]="apService.displayedColumns.length">
+        <td mat-cell *matCellDef="let element" [colSpan]="apService.filterService.displayedColumns.length">
           <div *ngIf="apService.expandedRow === element"
                [@detailExpand]="'expanded'"
                class="ap-detail-content">
@@ -322,7 +322,7 @@ https://github.com/angular/components/issues/6178
 
       <!-- footer template -->
       <ng-container matColumnDef="footer">
-        <td mat-footer-cell *matFooterCellDef [colSpan]="apService.displayedColumns.length">
+        <td mat-footer-cell *matFooterCellDef [colSpan]="apService.filterService.displayedColumns.length">
           <div>
             {{apService.apDataSource.filteredData.length}} APs von {{apService.apDataSource.data.length}}
           </div>
@@ -333,8 +333,8 @@ https://github.com/angular/components/issues/6178
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="apService.displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let element; columns: apService.displayedColumns;"
+      <tr mat-header-row *matHeaderRowDef="apService.filterService.displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let element; columns: apService.filterService.displayedColumns;"
           class="ap-row"
           [class.ap-detail-expanded]="apService.expandedRow === element"
       ></tr>
@@ -361,7 +361,7 @@ https://github.com/angular/components/issues/6178
       <mat-icon>find_in_page</mat-icon>
       Erweiterte Suche
     </button>
-    <button mat-menu-item class="menue-entry" (click)="apService.resetFilters()">
+    <button mat-menu-item class="menue-entry" (click)="apService.filterService.resetFilters()">
       <mat-icon>close</mat-icon>
       Alle Filter löschen
     </button>
