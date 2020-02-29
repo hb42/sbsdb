@@ -12,9 +12,9 @@ import { Term } from "./term";
  */
 export class Expression implements Term {
 
-  constructor(private field: Field,
-              private operator: RelationalOperator,
-              private compare: string) {
+  constructor(public readonly field: Field,
+              public readonly operator: RelationalOperator,
+              public readonly compare: string) {
     // noop
   }
 

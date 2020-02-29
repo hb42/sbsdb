@@ -18,8 +18,9 @@ export class Arbeitsplatz {
   // interne Felder fuer die Darstellung/Suche
   // public typTagsStr: string;
   // public tagsStr: string;  // wird das gebraucht??
-  public hwStr = "";
-  public sonstHwStr = "";
+  public hwTypStr = "";   // pri HW ohne SerNr
+  public hwStr = "";      //        mit SerNr
+  public sonstHwStr = "";  // ges. HW fuer die Suche
   public ipStr = "";
   public macStr = "";
   public ipsearch = "";

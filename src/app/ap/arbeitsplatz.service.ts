@@ -21,7 +21,11 @@ export class ArbeitsplatzService {
   public selected: OeTreeItem;
   public urlParams: any;
 
-  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
+  // TODO das gehoert eigentlich nicht in den FilteService, wird aber dort auch gebraucht
+  //      wg. dropdown in ext Filter
+  //      -> die Trennung der beiden Services muss wohl nochmal ueberarbeitet werden
+  public apDataSource: MatTableDataSource<Arbeitsplatz> = this.filterService.apDataSource;
+  // public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
   public expandedRow: Arbeitsplatz;
 
@@ -239,6 +243,11 @@ export class ArbeitsplatzService {
 
   public testApMenu(ap: Arbeitsplatz) {
     console.debug("DEBUG AP-Menue fuer " + ap.apname);
+    const uniq1 = [...new Set(this.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr))].sort();
+    const uniq2 = [...new Set(this.apDataSource.data.map((a) => a.oesearch))].sort();
+    console.debug("DEBUG end uniq hw+oe");
+    console.dir(uniq1);
+    console.dir(uniq2);
   }
 
   public getMacString(mac: string) {
@@ -344,8 +353,10 @@ export class ArbeitsplatzService {
     ap.sonstHwStr = ""; // keine undef Felder!
     ap.hw.forEach((h) => {
       if (h.pri) {
-        ap.hwStr = h.hersteller + " - " + h.bezeichnung
-            + (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
+        if (h.hwtypFlag !== 1) {
+          ap.hwTypStr = h.hersteller + " - " + h.bezeichnung;
+        }
+        ap.hwStr = h.hersteller + " - " + h.bezeichnung + (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
       }
       // fuer die Suche
       ap.sonstHwStr = ap.sonstHwStr + " " + h.hersteller + " " + h.bezeichnung
@@ -361,9 +372,9 @@ export class ArbeitsplatzService {
       ap.macStr = "";
       ap.ipsearch = "";
     }
-    ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + ap.oe.betriebsstelle.toLowerCase();
+    ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
     if (ap.verantwOe) {
-      ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + ap.verantwOe.betriebsstelle.toLowerCase();
+      ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
     } else {
       ap.voesearch = ap.oesearch;
     }

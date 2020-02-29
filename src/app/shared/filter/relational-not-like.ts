@@ -1,6 +1,4 @@
-import { RelationalOperator } from "./relational-operator";
-
-export class RelationalNotLike implements RelationalOperator {
+export class RelationalNotLike /*implements RelationalOperator*/ {
 
   public toString(): string {
     return "ENTHÄLT_NICHT";

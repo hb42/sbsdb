@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
+import { MatTableDataSource } from "@angular/material/table";
 import { debounceTime } from "rxjs/operators";
 import { ColumnFilter } from "../shared/config/column-filter";
 import { ConfigService } from "../shared/config/config.service";
@@ -8,8 +9,7 @@ import { Bracket } from "../shared/filter/bracket";
 import { Expression } from "../shared/filter/expression";
 import { Field } from "../shared/filter/field";
 import { LogicalAnd } from "../shared/filter/logical-and";
-import { RelationalLike } from "../shared/filter/relational-like";
-import { RelationalNotLike } from "../shared/filter/relational-not-like";
+import { RelOp } from "../shared/filter/rel-op.enum";
 import { RelationalOperator } from "../shared/filter/relational-operator";
 import { ApColumn } from "./ap-column";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
@@ -18,6 +18,12 @@ import { Arbeitsplatz } from "./model/arbeitsplatz";
               providedIn: "root"
             })
 export class ApFilterService {
+
+  // TODO das gehoert eigentlich in ArbeitsplatzService, wird aber hier auch gebraucht
+  //      wg. dropdown in ext Filter
+  //      -> die Trennung der beiden Services muss wohl nochmal ueberarbeitet werden
+  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
+
   public userSettings: UserSession;
   public filterExpression = new Bracket(null);
   public filterChange: EventEmitter<string> = new EventEmitter();
@@ -25,6 +31,7 @@ export class ApFilterService {
   public columns: ApColumn[] = [
     {
       name  : "aptyp",
+      show  : true,
       sort  : {
         text      : "&Typ",
         key       : "t",
@@ -44,6 +51,7 @@ export class ApFilterService {
     },
     {
       name  : "apname",
+      show  : true,
       sort  : {
         text      : "AP-&Name",
         key       : "n",
@@ -63,6 +71,7 @@ export class ApFilterService {
     },
     {
       name  : "betrst",
+      show  : true,
       sort  : {
         text      : "Stand&ort",
         key       : "o",
@@ -82,6 +91,7 @@ export class ApFilterService {
     },
     {
       name  : "bezeichnung",
+      show  : true,
       sort  : {
         text      : "&Bezeichnung",
         key       : "b",
@@ -101,6 +111,7 @@ export class ApFilterService {
     },
     {
       name  : "ip",
+      show  : true,
       sort  : {
         text      : "&IP",
         key       : "i",
@@ -124,6 +135,7 @@ export class ApFilterService {
     },
     {
       name  : "hardware",
+      show  : true,
       sort  : {
         text      : "Hard&ware",
         key       : "w",
@@ -141,10 +153,31 @@ export class ApFilterService {
         },
       },
     },
-    {name: "menu"}
+    {
+      name: "menu",
+      show: true
+    }
   ];
 
-  public displayedColumns: string[] = this.columns.map((c) => c.name);
+  // Felder f. extended filter -> class
+  // private filterColumns = [
+  //   { displayName: string = "",  // fuer die Anzeige
+  //     fieldName: string = "",    // Feldname fuer den Zugriff
+  //     operators: RelOp[] = [],   // erlaubte Verknuepfungen
+  //     selectList: string[] = null | () => string[],  // soweit sinnvoll: no dup list fuer das Feld
+  //     compareStr: (input: string) => string,  // Eingabe fuer den Vergleich aufbereiten (z.B. toLower)
+  //   },
+  // ];
+  /* fuer select list: Liste ohne Duplikate fuer ein Feld (nicht bei allen sinnvoll -> aptyp, oe, voe, tags, hwtyp, vlan(?))
+     new Set() -> nur eindeutige - ... -> zu Array
+     -> https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array#9229932
+     die beiden folgenden Arrays brauchen ca. 0.005 - 0.008 Sekunden => Listen bei Bedarf erzeugen
+  const uniq1 = [ ...new Set(this.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr)) ].sort();
+  const uniq2 = [ ...new Set(this.apDataSource.data.map((a) => a.oesearch)) ].sort();
+   */
+
+
+  public displayedColumns: string[] = this.columns.filter((c) => c.show).map((col) => col.name);
 
   constructor(private configService: ConfigService) {
     this.userSettings = configService.getUser();
@@ -200,21 +233,22 @@ export class ApFilterService {
     });
   }
 
-  // private getFilterExpression(display: string, field: string, filter: ColumnFilter): Expression { // FIXME Bracket nur fuer Tests
-  private getFilterExpression(display: string, field: string, filter: ColumnFilter): Bracket {
+  private getFilterExpression(display: string, field: string, filter: ColumnFilter): Expression {
     if (filter.text) {
       let op: RelationalOperator;
       if (filter.inc) {
-        op = new RelationalLike();
+        op = new RelationalOperator(RelOp.like);
+        // op = new RelationalLike();
       } else {
-        op = new RelationalNotLike();
+        op = new RelationalOperator(RelOp.notlike);
+        // op = new RelationalNotLike();
       }
       const f: Field = new Field(field, display);
       const expr = new Expression(f, op, filter.text);
-      // return expr;  // FIXME nach Test wieder Expressin + folgende drei Zeilen raus
-      const br = new Bracket(this.filterExpression);
-      br.addElement(null, expr);
-      return br;
+      return expr;
+      // const br = new Bracket(this.filterExpression);  // mit Bracket statt Expression
+      // br.addElement(null, expr);
+      // return br;
     } else {
       return null;
     }
@@ -241,7 +275,7 @@ export class ApFilterService {
 
   public getColumn(name: string): ApColumn {
     const idx = this.getColumnIndex(name);
-    if (idx >= 0) {
+    if (idx >= 0 && idx < this.columns.length) {
       return this.columns[idx];
     } else {
       return null;
@@ -265,7 +299,7 @@ export class ApFilterService {
   /**
    * Filter-String
    *
-   * Fuehrendes ! negiert den Filter (=enthaelt nicht).
+   * Fuehrendes ! negiert den Filter (enthaelt nicht).
    * Filtertext wird als lowerCase geliefert.
    *
    * @param text

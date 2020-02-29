@@ -1,6 +1,4 @@
-import { RelationalOperator } from "./relational-operator";
-
-export class RelationalLike implements RelationalOperator {
+export class RelationalLike /*implements RelationalOperator*/ {
 
   public toString(): string {
     return "ENTHÄLT";
