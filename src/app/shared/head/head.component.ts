@@ -39,9 +39,9 @@ export class HeadComponent implements OnInit, AfterViewInit {
   @ViewChild("hwmenu", {static: true}) hwmenu;
   @ViewChild("admenu", {static: true}) admenu;
   public navLinks = [
-    {path: "/ap", label: "&Arbeitsplätze", key: "a", menu: null},
-    {path: "/hw", label: "&Hardware", key: "h", menu: null},
-    {path: "/admin", label: "A&dmin", key: "d", menu: null},
+    {path: "/ap", label: "Arbeitsplätze", key: "a", menu: null},
+    {path: "/hw", label: "Hardware", key: "h", menu: null},
+    {path: "/admin", label: "Admin", key: "d", menu: null},
   ];
 
   public search: string;

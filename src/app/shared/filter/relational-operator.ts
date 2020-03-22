@@ -27,6 +27,30 @@ export class RelationalOperator {
         this.execute = RelationalOperator.notlike;
         this.name = op;
         break;
+      case RelOp.equal :
+        this.execute = RelationalOperator.equal;
+        this.name = op;
+        break;
+      case RelOp.notequal :
+        this.execute = RelationalOperator.notequal;
+        this.name = op;
+        break;
+      case RelOp.startswith :
+        this.execute = RelationalOperator.startsWith;
+        this.name = op;
+        break;
+      case RelOp.endswith :
+        this.execute = RelationalOperator.endsWith;
+        this.name = op;
+        break;
+      case RelOp.inlist :
+        this.execute = RelationalOperator.equal;
+        this.name = op;
+        break;
+      case RelOp.notinlist :
+        this.execute = RelationalOperator.notequal;
+        this.name = op;
+        break;
       default :
         this.execute = RelationalOperator.noop;
         this.name = RelOp.nop;
@@ -53,5 +77,29 @@ export class RelationalOperator {
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return !fieldContent.includes(compare);
+  }
+
+  private static equal(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent === compare;
+  }
+
+  private static notequal(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent !== compare;
+  }
+
+  private static startsWith(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent.startsWith(compare);
+  }
+
+  private static endsWith(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent.endsWith(compare);
   }
 }

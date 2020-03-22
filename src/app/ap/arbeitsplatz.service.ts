@@ -4,10 +4,15 @@ import { Injectable } from "@angular/core";
 import { MatSortHeader } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
+import { debounceTime } from "rxjs/operators";
+import { ColumnFilter } from "../shared/config/column-filter";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
+import { Bracket } from "../shared/filter/bracket";
+import { LogicalAnd } from "../shared/filter/logical-and";
+import { RelOp } from "../shared/filter/rel-op.enum";
 import { KeyboardService } from "../shared/keyboard.service";
-import { ApFilterService } from "./ap-filter.service";
+import { ApColumn } from "./ap-column";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
 
@@ -21,11 +26,9 @@ export class ArbeitsplatzService {
   public selected: OeTreeItem;
   public urlParams: any;
 
-  // TODO das gehoert eigentlich nicht in den FilteService, wird aber dort auch gebraucht
-  //      wg. dropdown in ext Filter
-  //      -> die Trennung der beiden Services muss wohl nochmal ueberarbeitet werden
-  public apDataSource: MatTableDataSource<Arbeitsplatz> = this.filterService.apDataSource;
-  // public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
+  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
+
+  public filterExpression = new Bracket(null);
 
   public expandedRow: Arbeitsplatz;
 
@@ -43,6 +46,123 @@ export class ArbeitsplatzService {
   public userSettings: UserSession;
   public loading = false;
   // public typtagSelect: TypTag[];
+
+  /* fuer select list: Liste ohne Duplikate fuer ein Feld (nicht bei allen sinnvoll -> aptyp, oe, voe, tags, hwtyp, vlan(?))
+    new Set() -> nur eindeutige - ... -> zu Array
+    -> https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array#9229932
+    die beiden folgenden Arrays brauchen ca. 0.005 - 0.008 Sekunden => Listen bei Bedarf erzeugen
+ const uniq1 = [ ...new Set(this.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr)) ].sort();
+ const uniq2 = [ ...new Set(this.apDataSource.data.map((a) => a.oesearch)) ].sort();
+  */
+
+  public columns: ApColumn[] = [];
+  public displayedColumns: string[];
+  public extFilterColumns: ApColumn[];
+
+  private buildColumns() {
+    this.columns.push(new ApColumn(this,  // hat typ [dropdown], hat typ nicht [dropdown]
+                                   "aptyp",
+                                   () => "Typ",
+                                   () => "aptyp",
+                                   () => "aptyp",
+                                   "t", true,
+                                   ApColumn.LCASE,
+                                   [RelOp.inlist, RelOp.notinlist],
+                                   () => [...new Set(this.apDataSource.data.map((a) => a.aptyp))].sort(),
+    ));
+    this.columns.push(new ApColumn(this,  // beginnt, endet, enthaelt, enthaelt nicht
+                                   "apname",
+                                   () => "AP-Name",
+                                   () => "apname",
+                                   () => "apname",
+                                   "n",
+                                   true,
+                                   ApColumn.LCASE,
+                                   [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
+                                   null,
+    ));
+    this.columns.push(new ApColumn(this,  // BST extra? / string beginnt, endet, enthaelt, enthaelt nicht / dropdown?
+                                   "betrst",
+                                   () => this.userSettings.showStandort ? "Standort" : "Verantw. OE",
+                                   () => this.userSettings.showStandort ? "oesearch" : "voesearch",
+                                   () => this.userSettings.showStandort ? "oesort" : "voesort",
+                                   "o",
+                                   true,
+                                   ApColumn.LCASE,
+                                   [RelOp.inlist, RelOp.notinlist, RelOp.like, RelOp.notlike],
+                                   () => [...new Set(this.apDataSource.data.map(
+                                       (a) => this.userSettings.showStandort
+                                           ? a.verantwOe.betriebsstelle
+                                           : a.oe.betriebsstelle)
+                                   )
+                                   ].sort(),
+    ));
+    this.columns.push(new ApColumn(this,  // enthaelt, enthaelt nicht
+                                   "bezeichnung",
+                                   () => "Bezeichnung",
+                                   () => "bezeichnung",
+                                   () => "bezeichnung",
+                                   "b",
+                                   true,
+                                   ApColumn.LCASE,
+                                   null,
+                                   null,
+    ));
+    this.columns.push(new ApColumn(this,  // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
+                                   // dropdown VLAN?
+                                   "ip",
+                                   () => "IP/MAC",
+                                   () => "ipsearch",
+                                   () => "vlan",
+                                   "i",
+                                   true,
+                                   ApColumn.IP,
+                                   null,
+                                   null,
+    ));
+    this.columns.push(new ApColumn(this,  // enthaelt, enthaelt nicht/ Hersteller|Typenbezeichnung|SerNr enthaelt, enthaelt nicht, start,end
+                                   // hersteller + bezeichnung evtl dropdown
+                                   "hardware",
+                                   () => "Hardware",
+                                   () => this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr",
+                                   () => "hwStr",
+                                   "w",
+                                   true,
+                                   ApColumn.LCASE,
+                                   null,
+                                   null,
+    ));
+    this.columns.push(new ApColumn(this,
+                                   "menu",
+                                   () => null,
+                                   () => null,
+                                   null,
+                                   "",
+                                   true,
+                                   -1,
+                                   null,
+                                   null,
+    ));
+    // + cols bemerkung -> enthaelt
+    //        tags -> hat tag [dropdown], hat tag nicht [dropdown], enthaelt (text aller tags)
+
+    this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
+    this.extFilterColumns = this.columns.filter((c) => c.operators);
+  }
+
+  public getColumnIndex(name: string): number {
+    return this.columns.findIndex((c) => c.columnName === name);
+  }
+
+  public getColumn(name: string): ApColumn {
+    const idx = this.getColumnIndex(name);
+    if (idx >= 0 && idx < this.columns.length) {
+      return this.columns[idx];
+    } else {
+      return null;
+    }
+  }
+
 
   // Web-API calls
   private readonly oeTreeUrl: string;
@@ -67,19 +187,41 @@ export class ArbeitsplatzService {
    ausgedehnt werden.
  */
 
-  constructor(public filterService: ApFilterService,
-              private configService: ConfigService,
+  constructor(private configService: ConfigService,
               private http: HttpClient,
               private keyboardService: KeyboardService) {
+    console.debug("c'tor ArbeitsplatzService");
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
     this.pageApsUrl = this.configService.webservice + "/ap/page/";
     this.singleApUrl = this.configService.webservice + "/ap/id/";
     // this.getOeTree();
     this.userSettings = configService.getUser();
+    this.buildColumns();
+    // Filtereingaben bremsen
+    const keyDebounce = 500;
 
-    this.filterService.filterChange.subscribe((filt) => {
-      this.apDataSource.filter = filt;
+    // Aenderung an Filter-Feldern in den Benutzereinstellungen speichern
+    // und Filter triggern
+
+    this.columns.forEach((c, idx) => {
+      if (c.filterControl) {
+        c.filterControl.valueChanges  // FormControl
+            .pipe(debounceTime(keyDebounce))
+            .subscribe((text) => {
+              const filtervalue: ColumnFilter = c.valueChange(text);
+              // FIXME speichern der Filter ist vom Index der Spalte abhaengig, das koennte
+              //       noch Aerger machen (ausserdem ist noch zu klären, wie ext.Filter in den
+              //       userSettings gespeichert wird)
+              this.userSettings.setApFilter(idx, filtervalue);
+              this.filterExpression.reset();
+              this.buildFilterExpression();
+              console.debug(this.filterExpression.toString());
+              // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
+              // this.apDataSource.filter = JSON.stringify(this.userSettings);
+              this.apDataSource.filter = this.getFilterString();
+            });
+      }
     });
 
     // AP-Daten vom Server holen
@@ -106,6 +248,7 @@ export class ArbeitsplatzService {
   // APs aus der DB holen
   public async getAps() {
     this.loading = true;
+    console.debug("### getAps() 1 - " + this.userSettings.showStandort);
 
     // this.typtagSelect = await this.http.get<TypTag[]>(this.typtagUrl).toPromise();
     // this.typtagSelect.forEach((t) => t.select = t.apkategorie + ": " + t.tagTyp);
@@ -125,9 +268,9 @@ export class ArbeitsplatzService {
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
-      const col = this.filterService.getColumn(id);
+      const col = this.getColumn(id);
       if (col) {
-        return col.sort.sortString(ap);
+        return col.sortString(ap);
       } else {
         return "";
       }
@@ -136,7 +279,7 @@ export class ArbeitsplatzService {
     // eigener Filter
     this.apDataSource.filterPredicate =
         (ap: Arbeitsplatz, filter: string) => {
-          return this.filterService.filterExpression.validate(ap);
+          return this.filterExpression.validate(ap);
         };
 
     this.applyUserSettings();
@@ -176,8 +319,9 @@ export class ArbeitsplatzService {
         // FIXME Hack -> ApComponent#handleSort
         sortheader._handleClick();
       }
-      this.changeBetrst();
-      this.filterService.initializeFilters();
+      // this.changeBetrst();
+      // this.changeHw();
+      this.initializeFilters();
 
     }
 
@@ -223,16 +367,17 @@ export class ArbeitsplatzService {
     event.stopPropagation();
   }
 
-  // Wechsel Standort <-> verantw. OE
-  public changeBetrst() {
-    const bstcol = this.filterService.getColumn("betrst");
-    if (this.userSettings.showStandort) {
-      bstcol.sort.text = "Stand&ort";
-    } else {
-      bstcol.sort.text = "Verantwortliche &OE";
-    }
-    this.filterService.getColumn("betrst").filter.filter.reset();
-  }
+  // // Wechsel Standort <-> verantw. OE
+  // public changeBetrst() {
+  //   const col = this.getColumn("betrst");
+  //   col.displayName = this.bstDisplayName();
+  //   col.fieldName = this.bstFieldName();
+  // }
+  // // Wechsel search pri HW <-> all HW
+  // public changeHw() {
+  //   const col = this.getColumn("hardware");
+  //   col.fieldName = this.hwFieldName();
+  // }
 
   public bstTooltip(ap: Arbeitsplatz): string {
     return "OE: " + ap.oe.bstNr + "\n\n"
@@ -242,13 +387,100 @@ export class ArbeitsplatzService {
   }
 
   public testApMenu(ap: Arbeitsplatz) {
-    console.debug("DEBUG AP-Menue fuer " + ap.apname);
-    const uniq1 = [...new Set(this.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr))].sort();
-    const uniq2 = [...new Set(this.apDataSource.data.map((a) => a.oesearch))].sort();
-    console.debug("DEBUG end uniq hw+oe");
-    console.dir(uniq1);
-    console.dir(uniq2);
+    // console.debug("DEBUG AP-Menue fuer " + ap.apname);
+    // const uniq1 = [...new Set(this.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr))].sort();
+    // const uniq2 = [...new Set(this.apDataSource.data.map((a) => a.oesearch))].sort();
+    // console.debug("DEBUG end uniq hw+oe");
+    // console.dir(uniq1);
+    // console.dir(uniq2);
+    console.debug("### DEBUG filter columns");
+    this.extFilterColumns.forEach((col) => {
+      console.debug("Filter-Column: " + col.displayName);
+      console.dir(col.selectList);
+    });
   }
+
+  // --- filter ---
+
+  public initializeFilters() {
+    this.columns.forEach((c, idx) => {
+      if (c.filterControl) {
+        const filt = this.userSettings.getApFilter(idx);
+        if (filt.text) {
+          c.filterControl.setValue((filt.inc ? "" : "!") + filt.text);
+          c.filterControl.markAsDirty();
+        }
+      }
+    });
+  }
+
+  public resetFilters() {
+    this.columns.forEach((c, idx) => {
+      if (c.filterControl) {
+        c.filterControl.reset();
+      }
+    });
+  }
+
+  private buildFilterExpression() {
+    const and = new LogicalAnd();
+    this.columns.forEach((col, idx) => {
+      if (col.filterControl) {
+        const filtervalue: ColumnFilter = this.userSettings.getApFilter(idx);
+        const colExpr = col.getFilterExpression(filtervalue);
+        if (colExpr) {
+          this.filterExpression.addElement(and, colExpr);
+        }
+      }
+    });
+  }
+
+  public filterByAptyp(ap: Arbeitsplatz, event: Event) {
+    const col = this.getColumn("aptyp");
+    col.filterControl.setValue(ap.aptyp);
+    col.filterControl.markAsDirty();
+    event.stopPropagation();
+  }
+
+  public filterByBetrst(ap: Arbeitsplatz, event: Event) {
+    const col = this.getColumn("betrst");
+    col.filterControl.setValue(ap[col.sortFieldName]);
+    col.filterControl.markAsDirty();
+    event.stopPropagation();
+  }
+
+  /*
+     static fn kann nicht in template verwendet werden, deshalb der accessor
+   */
+  // public getColumn(name: string): ApColumn {
+  //   return this.getColumn(name);
+  // }
+
+  // // OE-Name abhaengig von gewaehlter Anzeige
+  // // (Standort || verantwortliche OE)
+  // public getBetrst(ap: Arbeitsplatz): string {
+  //   if (this.userSettings.showStandort) {
+  //     return ap.oe.betriebsstelle;
+  //   } else {
+  //     if (ap.verantwOe) {
+  //       return ap.verantwOe.betriebsstelle;
+  //     } else {
+  //       return ap.oe.betriebsstelle;
+  //     }
+  //   }
+  // }
+
+  // eindeutiger String fuer alle Filter -> apDataSource.filter
+  private getFilterString(): string {
+    let s;
+    for (let i = 0; i < this.userSettings.apFiltersCount(); i++) {
+      const filt = this.userSettings.getApFilter(i);
+      s += filt.text + filt.inc;
+    }
+    return s;
+  }
+
+  // --- ---
 
   public getMacString(mac: string) {
     // kein match => Eingabe-String
@@ -372,12 +604,19 @@ export class ArbeitsplatzService {
       ap.macStr = "";
       ap.ipsearch = "";
     }
-    ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
-    if (ap.verantwOe) {
-      ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
-    } else {
-      ap.voesearch = ap.oesearch;
+    // das spart den null-check
+    if (!ap.verantwOe) {
+      ap.verantwOe = ap.oe;
     }
+    ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
+    ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
+    // if (ap.verantwOe) {
+    ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
+    ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
+    // } else {
+    //   ap.voesearch = ap.oesearch;
+    //   ap.voesort = ap.oesort;
+    // }
   }
 
 

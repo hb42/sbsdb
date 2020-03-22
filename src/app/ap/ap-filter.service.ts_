@@ -28,7 +28,57 @@ export class ApFilterService {
   public filterExpression = new Bracket(null);
   public filterChange: EventEmitter<string> = new EventEmitter();
 
-  public columns: ApColumn[] = [
+  public displayedColumns: string[];
+
+  private buildColumns() {
+
+    ApColumn.add(new ApColumn("aptyp",
+                    "Typ",
+                    "aptyp",
+                    "t",
+                    true,
+                     ApColumn.LCASE));
+    ApColumn.add(new ApColumn("apname",
+                     "AP-Name",
+                     "apname",
+                     "n",
+                     true,
+                     ApColumn.LCASE));
+    ApColumn.add(new ApColumn("betrst",
+                     this.userSettings.showStandort ? "Standort" : "Verantw. OE",
+                     this.userSettings.showStandort ? "oesearch" : "voesearch",
+                     "o",
+                     true,
+                     ApColumn.LCASE));
+    ApColumn.add(new ApColumn("bezeichnung",
+                     "Bezeichnung",
+                     "bezeichnung",
+                     "b",
+                     true,
+                     ApColumn.LCASE));
+    ApColumn.add(new ApColumn("ip",
+                     "IP/MAC",
+                     "ipsearch",
+                     "i",
+                     true,
+                     ApColumn.IP));
+    ApColumn.add(new ApColumn("hardware",
+                     "Hardware",
+                     this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr",
+                     "w",
+                     true,
+                     ApColumn.LCASE));
+    ApColumn.add(new ApColumn("menu",
+                     null,
+                     null,
+                     "",
+                     true,
+                     -1));
+
+    this.displayedColumns = ApColumn.columns.filter((c) => c.show).map((col) => col.columnName);
+
+  }
+    /*
     {
       name  : "aptyp",
       show  : true,
@@ -157,7 +207,22 @@ export class ApFilterService {
       name: "menu",
       show: true
     }
-  ];
+
+     */
+
+  /*
+    ApColumn
+
+    c'tor ( col_name: string,
+            displayname: string | (boolean) => string,
+            fieldname: string | (boolean) => string,
+            sortkey: string => insert '&' before sortkey -> sorttitle
+            show: boolean,
+            typeKey: int/CONST => fn sortString () case typeKey -> tolower|ip|...
+                                  fn valueChange ()
+          )
+          fn predicate() -> generisch konstruieren?
+   */
 
   // Felder f. extended filter -> class
   // private filterColumns = [
@@ -177,32 +242,28 @@ export class ApFilterService {
    */
 
 
-  public displayedColumns: string[] = this.columns.filter((c) => c.show).map((col) => col.name);
-
   constructor(private configService: ConfigService) {
+    console.debug("c'tor ApFilter");
     this.userSettings = configService.getUser();
+    this.buildColumns();
 
     // Filtereingaben bremsen
     const keyDebounce = 500;
 
     // Aenderung an Filter-Feldern in den Benutzereinstellungen speichern
     // und Filter triggern
-    this.columns.forEach((c, idx) => {
-      if (c.filter) {
-        c.filter.filter.valueChanges  // FormControl
+    ApColumn.columns.forEach((c, idx) => {
+      if (c.filterControl) {
+        c.filterControl.valueChanges  // FormControl
             .pipe(debounceTime(keyDebounce))
             .subscribe((text) => {
-              this.userSettings.setApFilter(idx, c.filter.valueChange(text));
+              const filtervalue: ColumnFilter = c.valueChange(text);
+              // FIXME speichern der Filter ist vom Index der Spalte abhaengig, das koennte
+              //       noch Aerger machen (ausserdem ist noch zu klären, wie ext.Filter in den
+              //       userSettings gespeichert wird)
+              this.userSettings.setApFilter(idx, filtervalue);
               this.filterExpression.reset();
-              const and = new LogicalAnd();
-              this.columns.forEach((col) => {
-                if (col.filter) {
-                  const colExpr = col.filter.predicate(null);
-                  if (colExpr) {
-                    this.filterExpression.addElement(and, colExpr);
-                  }
-                }
-              });
+              this.buildFilterExpression();
               console.debug(this.filterExpression.toString());
               // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
               // this.apDataSource.filter = JSON.stringify(this.userSettings);
@@ -214,25 +275,39 @@ export class ApFilterService {
   }
 
   public initializeFilters() {
-    this.columns.forEach((c, idx) => {
-      if (c.filter) {
+    ApColumn.columns.forEach((c, idx) => {
+      if (c.filterControl) {
         const filt = this.userSettings.getApFilter(idx);
         if (filt.text) {
-          c.filter.filter.setValue((filt.inc ? "" : "!") + filt.text);
-          c.filter.filter.markAsDirty();
+          c.filterControl.setValue((filt.inc ? "" : "!") + filt.text);
+          c.filterControl.markAsDirty();
         }
       }
     });
   }
 
   public resetFilters() {
-    this.columns.forEach((c, idx) => {
-      if (c.filter) {
-        c.filter.filter.reset();
+    ApColumn.columns.forEach((c, idx) => {
+      if (c.filterControl) {
+        c.filterControl.reset();
       }
     });
   }
 
+  private buildFilterExpression() {
+    const and = new LogicalAnd();
+    ApColumn.columns.forEach((col, idx) => {
+      if (col.filterControl) {
+        const filtervalue: ColumnFilter = this.userSettings.getApFilter(idx);
+        const colExpr = col.getFilterExpression(filtervalue);
+        if (colExpr) {
+          this.filterExpression.addElement(and, colExpr);
+        }
+      }
+    });
+  }
+
+  /*
   private getFilterExpression(display: string, field: string, filter: ColumnFilter): Expression {
     if (filter.text) {
       let op: RelationalOperator;
@@ -253,34 +328,40 @@ export class ApFilterService {
       return null;
     }
   }
-
+*/
   public filterByAptyp(ap: Arbeitsplatz, event: Event) {
-    const col = this.getColumn("aptyp");
-    col.filter.filter.setValue(ap.aptyp);
-    col.filter.filter.markAsDirty();
+    const col = ApColumn.getColumn("aptyp");
+    col.filterControl.setValue(ap.aptyp);
+    col.filterControl.markAsDirty();
     event.stopPropagation();
   }
 
   public filterByBetrst(ap: Arbeitsplatz, event: Event) {
-    const col = this.getColumn("betrst");
+    const col = ApColumn.getColumn("betrst");
     this.resetFilters();
-    col.filter.filter.setValue(this.getBetrst(ap));
-    col.filter.filter.markAsDirty();
+    col.filterControl.setValue(this.getBetrst(ap));
+    col.filterControl.markAsDirty();
     event.stopPropagation();
   }
 
-  public getColumnIndex(name: string): number {
-    return this.columns.findIndex((c) => c.name && c.name === name);
-  }
-
+  /*
+     static fn kann nicht in template verwendet werden, deshalb der accessor
+   */
   public getColumn(name: string): ApColumn {
-    const idx = this.getColumnIndex(name);
-    if (idx >= 0 && idx < this.columns.length) {
-      return this.columns[idx];
-    } else {
-      return null;
-    }
+    return ApColumn.getColumn(name);
   }
+  // public getColumnIndex(name: string): number {
+  //   return this.columns.findIndex((c) => c.columnName === name);
+  // }
+  //
+  // public getColumn(name: string): ApColumn {
+  //   const idx = this.getColumnIndex(name);
+  //   if (idx >= 0 && idx < this.columns.length) {
+  //     return this.columns[idx];
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   // OE-Name abhaengig von gewaehlter Anzeige
   // (Standort || verantwortliche OE)
@@ -304,7 +385,7 @@ export class ApFilterService {
    *
    * @param text
    */
-  private checkSearchString(text: string): ColumnFilter {
+ /* private checkSearchString(text: string): ColumnFilter {
     let str = text ? text.toLowerCase() : "";
     let inc = true;
     if (str.startsWith("!")) {
@@ -313,7 +394,7 @@ export class ApFilterService {
     }
     return {text: str, inc: inc};
   }
-
+*/
   // eindeutiger String fuer alle Filter -> apDataSource.filter
   private getFilterString(): string {
     let s;

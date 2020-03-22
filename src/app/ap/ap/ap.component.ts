@@ -36,13 +36,13 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener("document:keydown", ["$event"])
   handleSort(event: KeyboardEvent) {
     if (event.altKey && !event.shiftKey && !event.ctrlKey) {
-      const colIdx = this.apService.filterService.columns.findIndex((c) => c.sort && c.sort.key && c.sort.key === event.key);
+      const colIdx = this.apService.columns.findIndex((c) => c.accelerator && c.accelerator === event.key);
       if (colIdx >= 0) {
         // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
         //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
         //       -> https://github.com/angular/components/issues/10242
         // this.sort.sort(this.sort.sortables.get(this.apService.columns[colIdx].name));
-        const sortHeader = this.sort.sortables.get(this.apService.filterService.columns[colIdx].name) as MatSortHeader;
+        const sortHeader = this.sort.sortables.get(this.apService.columns[colIdx].columnName) as MatSortHeader;
         sortHeader._handleClick();
         event.preventDefault();
         event.stopPropagation();
@@ -124,10 +124,19 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastFilter.nativeElement.focus();
   }
 
-  public textForSort(column: string): string {
-    const col = this.apService.filterService.getColumn(column);
+  public sortHeading(column: string): string {
+    const col = this.apService.getColumn(column);
     if (col) {
-      return col.sort.text;
+      return col.displayName;
+    } else {
+      return "";
+    }
+  }
+
+  public sortAccel(column: string): string {
+    const col = this.apService.getColumn(column);
+    if (col) {
+      return col.accelerator;
     } else {
       return "";
     }
@@ -139,7 +148,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       // width: "500px",
       // maxWidth: "600px",
       disableClose: true,
-      data        : this.apService.filterService.filterExpression,
+      data        : this.apService.filterExpression,
     });
 
     dialogRef.afterClosed().subscribe(result => {

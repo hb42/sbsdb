@@ -38,19 +38,19 @@ export class UserSession {
     // defaults
     this.user = {
       uid       : data && data.uid ? data.uid : "",
-      isAdmin   : data && data.isAdmin ? data.isAdmin : false,
-      isReadonly: data && data.isReadonly ? data.isReadonly : false,
-      isHotline : data && data.isHotline ? data.isHotline : false,
+      isAdmin   : data ? !!data.isAdmin : false,
+      isReadonly: data ? !!data.isReadonly : false,
+      isHotline : data ? !!data.isHotline : false,
 
       path: data && data.path ? data.path : "",
 
-      showStandort   : data && data.showStandort ? data.showStandort : true,
+      showStandort   : data ? !!data.showStandort : true,
       apColumnFilters: data && data.apColumnFilters ? data.apColumnFilters : [],
       apExtFilter    : data && data.apExtFilter ? data.apExtFilter : "",
       apSortColumn   : data && data.apSortColumn ? data.apSortColumn : "",
       apSortDirection: data && data.apSortDirection ? data.apSortDirection : "",
       apPageSize     : data && data.apPageSize ? data.apPageSize : 100,
-      searchSonstHw  : data && data.searchSonstHw ? data.searchSonstHw : false,
+      searchSonstHw  : data ? !!data.searchSonstHw : false,
     };
   }
 

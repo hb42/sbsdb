@@ -7,8 +7,9 @@ import { Component, Input, OnInit } from "@angular/core";
            })
 export class AcceleratorStringComponent implements OnInit {
 
-  // '&' markiert das Zeichen, das unterstrichen werden soll
+  // accel ist das Zeichen in text, das unterstrichen werden soll
   @Input() text: string;
+  @Input() accel: string;
 
   public pre = "";
   public acc = "";
@@ -18,20 +19,18 @@ export class AcceleratorStringComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.text.indexOf("&") === -1) {
-      this.pre = this.text;  // kein '&'
+    const pos = this.text.toLowerCase().indexOf(this.accel.toLowerCase());
+    if (pos === -1) {
+      this.pre = this.text;  // key nicht gefunden
     } else {
-      const parts = this.text.split("&");
-      if (parts.length === 1) {  // '&' als erstes Zeichen
+      if (pos === 0) {  // erstes Zeichen
         this.pre = "";
-        this.acc = parts[0].charAt(0);
-        this.post = parts[0].slice(1);
-      } else if (parts.length === 2) {
-        this.pre = parts[0];
-        this.acc = parts[1].charAt(0);
-        this.post = parts[1].slice(1);
-      } else {  // mehr als 1 '&' -> alle ignorieren
-        this.pre = parts.join();
+        this.acc = this.text.charAt(0);
+        this.post = this.text.slice(1);
+      } else {
+        this.pre = this.text.slice(0, pos);
+        this.acc = this.text.charAt(pos);
+        this.post = this.text.slice(pos + 1);
       }
     }
   }

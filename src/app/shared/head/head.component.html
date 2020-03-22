@@ -17,12 +17,12 @@
   <div *ngFor="let link of navLinks">
     <button mat-button *ngIf="!navigationService.currentPath.startsWith(link.path)"
             [routerLink]="link.path">
-      <sbsdb-accelerator-string [text]="link.label"></sbsdb-accelerator-string>
+      <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
       <mat-icon></mat-icon>
     </button>
     <button mat-flat-button *ngIf="navigationService.currentPath.startsWith(link.path)"
             [matMenuTriggerFor]="link.menu" #menubtn>
-      <sbsdb-accelerator-string [text]="link.label"></sbsdb-accelerator-string>
+      <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <span class="spacer2"></span>
