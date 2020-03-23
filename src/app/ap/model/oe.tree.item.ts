@@ -1,5 +1,4 @@
 export class OeTreeItem {
-
   public children: OeTreeItem[];
 
   public id: number;
@@ -17,5 +16,4 @@ export class OeTreeItem {
   public strasse?: string;
 
   public leaf: boolean;
-
 }

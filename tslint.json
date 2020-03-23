@@ -2,7 +2,9 @@
   "rulesDirectory": [
     "node_modules/codelyzer"
   ],
+  "extends": ["tslint-plugin-prettier", "tslint-config-prettier"],
   "rules": {
+    "prettier": true,
     "callable-types": true,
     "class-name": true,
     "comment-format": [

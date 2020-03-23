@@ -18,29 +18,25 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatTreeModule } from "@angular/material/tree";
 
 @NgModule({
-            declarations: [],
-            imports     : [
-              CommonModule
-            ],
-            exports     : [
-              MatButtonModule,
-              MatDialogModule,
-              MatFormFieldModule,
-              MatIconModule,
-              MatInputModule,
-              MatMenuModule,
-              MatPaginatorModule,
-              MatProgressSpinnerModule,
-              MatSelectModule,
-              MatSidenavModule,
-              MatSortModule,
-              MatTableModule,
-              MatTabsModule,
-              MatToolbarModule,
-              MatTooltipModule,
-              MatTreeModule,
-
-            ]
-          })
-export class AppMaterialModule {
-}
+  declarations: [],
+  imports: [CommonModule],
+  exports: [
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSortModule,
+    MatTableModule,
+    MatTabsModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatTreeModule,
+  ],
+})
+export class AppMaterialModule {}

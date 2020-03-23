@@ -2,7 +2,8 @@ import { enableProdMode } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import { AppModule } from "./app/app.module";
 import { environment } from "./environments/environment";
-// import "hammerjs"; // HammerJS provides gesture recognition capabilities required by some components
+// import "hammerjs"; // HammerJS provides gesture recognition capabilities required by some
+// components
 // (mat-slide-toggle, mat-slider, matToolTip).
 // -> wahrscheinlich nicht noetig
 
@@ -16,8 +17,9 @@ if (environment.production) {
 
 // AppConfig.load(environment.configFile).then(() => {
 // angular
-platformBrowserDynamic().bootstrapModule(AppModule)
-    .catch((err) => {
-      console.info("Runtime-ERROR " + err);
-    });
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .catch((err) => {
+    console.info("Runtime-ERROR " + err);
+  });
 // });

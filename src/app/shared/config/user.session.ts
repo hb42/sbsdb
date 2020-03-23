@@ -29,7 +29,6 @@ class User {
  * anstoesst.
  */
 export class UserSession {
-
   private user: User;
   private changeEvent: EventEmitter<User>;
 
@@ -37,20 +36,20 @@ export class UserSession {
     this.changeEvent = event;
     // defaults
     this.user = {
-      uid       : data && data.uid ? data.uid : "",
-      isAdmin   : data ? !!data.isAdmin : false,
+      uid: data && data.uid ? data.uid : "",
+      isAdmin: data ? !!data.isAdmin : false,
       isReadonly: data ? !!data.isReadonly : false,
-      isHotline : data ? !!data.isHotline : false,
+      isHotline: data ? !!data.isHotline : false,
 
       path: data && data.path ? data.path : "",
 
-      showStandort   : data ? !!data.showStandort : true,
+      showStandort: data ? !!data.showStandort : true,
       apColumnFilters: data && data.apColumnFilters ? data.apColumnFilters : [],
-      apExtFilter    : data && data.apExtFilter ? data.apExtFilter : "",
-      apSortColumn   : data && data.apSortColumn ? data.apSortColumn : "",
+      apExtFilter: data && data.apExtFilter ? data.apExtFilter : "",
+      apSortColumn: data && data.apSortColumn ? data.apSortColumn : "",
       apSortDirection: data && data.apSortDirection ? data.apSortDirection : "",
-      apPageSize     : data && data.apPageSize ? data.apPageSize : 100,
-      searchSonstHw  : data ? !!data.searchSonstHw : false,
+      apPageSize: data && data.apPageSize ? data.apPageSize : 100,
+      searchSonstHw: data ? !!data.searchSonstHw : false,
     };
   }
 
@@ -118,15 +117,17 @@ export class UserSession {
 
   public getApFilter(nr: number): ColumnFilter {
     if (nr >= this.user.apColumnFilters.length) {
-      return {text: "", inc: true};
+      return { text: "", inc: true };
     }
-    return this.user.apColumnFilters[nr] ? this.user.apColumnFilters[nr] : {text: "", inc: true};
+    return this.user.apColumnFilters[nr]
+      ? this.user.apColumnFilters[nr]
+      : { text: "", inc: true };
   }
 
   public setApFilter(nr: number, filt: ColumnFilter) {
     if (nr >= this.user.apColumnFilters.length) {
       for (let i = this.user.apColumnFilters.length; i <= nr; i++) {
-        this.user.apColumnFilters.push({text: "", inc: true});
+        this.user.apColumnFilters.push({ text: "", inc: true });
       }
     }
     this.user.apColumnFilters[nr] = filt;
@@ -150,5 +151,4 @@ export class UserSession {
     this.user.searchSonstHw = sh;
     this.changeEvent.emit(this.user);
   }
-
 }

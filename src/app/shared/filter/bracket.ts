@@ -24,16 +24,25 @@ export class Bracket implements Term {
 
   public toString(): string {
     const rc = this.elements.reduce((prev, curr) => {
-      return curr.operator ? prev + " " + curr.operator.toString() + " " + curr.term.toString() + "#" + curr.count + "#"
-          : prev + " " + curr.term.toString() + "#" + curr.count + "#";
+      return curr.operator
+        ? prev +
+            " " +
+            curr.operator.toString() +
+            " " +
+            curr.term.toString() +
+            "#" +
+            curr.count +
+            "#"
+        : prev + " " + curr.term.toString() + "#" + curr.count + "#";
     }, this.brLeft);
     return rc + this.brRight;
   }
 
   public validate(record: Object): boolean {
     return this.elements.reduce((prev, curr) => {
-      return curr.operator ? curr.operator.execute(prev, curr.term.validate(record))
-          : curr.term.validate(record);
+      return curr.operator
+        ? curr.operator.execute(prev, curr.term.validate(record))
+        : curr.term.validate(record);
     }, true);
   }
 
@@ -69,5 +78,4 @@ export class Bracket implements Term {
   isBracket(): boolean {
     return true;
   }
-
 }

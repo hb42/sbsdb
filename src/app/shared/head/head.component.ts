@@ -1,14 +1,21 @@
-import { AfterViewInit, Component, HostBinding, HostListener, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  HostBinding,
+  HostListener,
+  OnInit,
+  ViewChild
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";
 import { ConfigService } from "../config/config.service";
 import { NavigationService } from "../navigation.service";
 
 @Component({
-             selector   : "sbsdb-head",
-             templateUrl: "./head.component.html",
-             styleUrls  : ["./head.component.scss"]
-           })
+  selector: "sbsdb-head",
+  templateUrl: "./head.component.html",
+  styleUrls: ["./head.component.scss"],
+})
 export class HeadComponent implements OnInit, AfterViewInit {
   @HostBinding("attr.class") cssClass = "flex-panel";
 
@@ -31,29 +38,29 @@ export class HeadComponent implements OnInit, AfterViewInit {
           event.preventDefault();
           event.stopPropagation();
         }
-      })
+      });
     }
   }
 
-  @ViewChild("apmenu", {static: true}) apmenu;
-  @ViewChild("hwmenu", {static: true}) hwmenu;
-  @ViewChild("admenu", {static: true}) admenu;
+  @ViewChild("apmenu", { static: true }) apmenu;
+  @ViewChild("hwmenu", { static: true }) hwmenu;
+  @ViewChild("admenu", { static: true }) admenu;
   public navLinks = [
-    {path: "/ap", label: "Arbeitsplätze", key: "a", menu: null},
-    {path: "/hw", label: "Hardware", key: "h", menu: null},
-    {path: "/admin", label: "Admin", key: "d", menu: null},
+    { path: "/ap", label: "Arbeitsplätze", key: "a", menu: null },
+    { path: "/hw", label: "Hardware", key: "h", menu: null },
+    { path: "/admin", label: "Admin", key: "d", menu: null },
   ];
 
   public search: string;
 
-  constructor(private router: Router, public navigationService: NavigationService,
-              public configService: ConfigService,
-              public apService: ArbeitsplatzService
-  ) {
-  }
+  constructor(
+    private router: Router,
+    public navigationService: NavigationService,
+    public configService: ConfigService,
+    public apService: ArbeitsplatzService
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   public ngAfterViewInit(): void {
     this.navLinks[0].menu = this.apmenu;
@@ -74,5 +81,4 @@ export class HeadComponent implements OnInit, AfterViewInit {
   public forwardBtn() {
     history.forward();
   }
-
 }

@@ -1,13 +1,12 @@
 import { Location } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
-import {Version, VersionService} from "@hb42/lib-client";
+import { Version, VersionService } from "@hb42/lib-client";
 import { environment } from "../../../environments/environment";
 import { UserSession } from "./user.session";
 
-@Injectable({providedIn: "root"})
+@Injectable({ providedIn: "root" })
 export class ConfigService {
-
   // Name in der Config-DB
   public static AP_PAGE_SIZE = "ap.pagesize";
 
@@ -31,8 +30,11 @@ export class ConfigService {
   private userSession: UserSession;
   private timer: any;
 
-  constructor(private http: HttpClient, private location: Location,
-              private versionService: VersionService) {
+  constructor(
+    private http: HttpClient,
+    private location: Location,
+    private versionService: VersionService
+  ) {
     console.debug("c'tor ConfigService");
     // Adresse der Web-API
     this._webservice = location.prepareExternalUrl(environment.webservice);
@@ -83,8 +85,11 @@ export class ConfigService {
     // Benutzerdaten holen
     // Jeder Benutzer wird authorisiert, was er dann sehen darf muss in der
     // Oberflaeche entschiweden werden.
-    return this.http.get<any>(this.getUserConf).toPromise()
-        .then(data => {
+    return (
+      this.http
+        .get<any>(this.getUserConf)
+        .toPromise()
+        .then((data) => {
           this.userSession = new UserSession(this.userDataChange, data);
           console.debug(">>> user config done");
           console.dir(data);
@@ -95,14 +100,33 @@ export class ConfigService {
           console.debug(">>> getting app meta data");
           return this.versionService.init(this.getVersion).then((ver) => {
             console.debug(">>> meta data done");
-            console.info(ver.displayname + " v" + ver.version + " " + ver.copyright + " (" + ver.githash + ")");
+            console.info(
+              ver.displayname +
+                " v" +
+                ver.version +
+                " " +
+                ver.copyright +
+                " (" +
+                ver.githash +
+                ")"
+            );
             console.dir(ver.versions);
             const server = this.versionService.serverVer;
-            console.info(server.displayname + " v" + server.version + " " + server.copyright + " (" + server.githash + ")");
+            console.info(
+              server.displayname +
+                " v" +
+                server.version +
+                " " +
+                server.copyright +
+                " (" +
+                server.githash +
+                ")"
+            );
             console.dir(server.versions);
             this.version = ver;
           });
-        });
+        })
+    );
     // what's new holen
     // .then()
   }
@@ -110,10 +134,13 @@ export class ConfigService {
   // --- config in der Server-DB ---
 
   public getConfig(confName: string): Promise<any> {
-    return this.http.get<string>(this.getConf + "/" + confName).toPromise().then((val) => {
-      // return JSON.parse(val);
-      return val;
-    });
+    return this.http
+      .get<string>(this.getConf + "/" + confName)
+      .toPromise()
+      .then((val) => {
+        // return JSON.parse(val);
+        return val;
+      });
   }
 
   public saveConfig(confName: string, value: any): Promise<any> {
@@ -124,15 +151,21 @@ export class ConfigService {
       return this.deleteConfig(confName);
     }
     const val: string = JSON.stringify(value);
-    return this.http.post(this.setConf + "/" + confName, val).toPromise().then((rc) => {
-      return rc;
-    });
+    return this.http
+      .post(this.setConf + "/" + confName, val)
+      .toPromise()
+      .then((rc) => {
+        return rc;
+      });
   }
 
   public deleteConfig(confName: string): Promise<any> {
-    return this.http.delete(this.delConf + "/" + confName).toPromise().then((rc) => {
-      return rc;
-    });
+    return this.http
+      .delete(this.delConf + "/" + confName)
+      .toPromise()
+      .then((rc) => {
+        return rc;
+      });
   }
 
   // --- Benutzer-Config ---
@@ -157,7 +190,5 @@ export class ConfigService {
         console.dir(user);
       });
     }, 3000);
-
   }
-
 }

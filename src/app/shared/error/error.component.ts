@@ -4,17 +4,19 @@ import { ErrorService } from "@hb42/lib-client";
 import { ConfigService } from "../config/config.service";
 
 @Component({
-             selector   : "sbsdb-error",
-             templateUrl: "./error.component.html",
-             styleUrls  : ["./error.component.scss"]
-           })
+  selector: "sbsdb-error",
+  templateUrl: "./error.component.html",
+  styleUrls: ["./error.component.scss"],
+})
 export class ErrorComponent implements OnInit {
   public status: string;
   public message: string;
 
-  constructor(private route: ActivatedRoute,
-              public errorService: ErrorService,
-              private configService: ConfigService) {
+  constructor(
+    private route: ActivatedRoute,
+    public errorService: ErrorService,
+    private configService: ConfigService
+  ) {
     console.debug("c'tor ErrorComponent");
   }
 
@@ -24,7 +26,6 @@ export class ErrorComponent implements OnInit {
     this.message = latest["message"];
     console.debug("Error:");
     console.dir(latest);
-
   }
 
   /**
@@ -35,5 +36,4 @@ export class ErrorComponent implements OnInit {
     this.configService.getUser().path = "/";
     this.errorService.resetApp();
   }
-
 }

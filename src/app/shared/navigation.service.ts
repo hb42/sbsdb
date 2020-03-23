@@ -1,39 +1,38 @@
-import {Location} from "@angular/common";
-import {Injectable} from "@angular/core";
-import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {ErrorService} from "@hb42/lib-client";
-import {filter} from "rxjs/operators";
-import {ConfigService} from "./config/config.service";
+import { Location } from "@angular/common";
+import { Injectable } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ErrorService } from "@hb42/lib-client";
+import { filter } from "rxjs/operators";
+import { ConfigService } from "./config/config.service";
 
-@Injectable({providedIn: "root"})
+@Injectable({ providedIn: "root" })
 export class NavigationService {
-
   public currentPath = "";
 
-  constructor(private router: Router,
-              private route: ActivatedRoute,
-              private location: Location,
-              public configService: ConfigService) {
-
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private location: Location,
+    public configService: ConfigService
+  ) {
     console.debug("c'tor NavigationService");
 
     // aktuelle Navigation im Benutzerprofil speichern
-    this.router.events.pipe(
-        filter((event) => event instanceof NavigationEnd))
-        .subscribe((evt: NavigationEnd) => {
-          const last: string = evt.urlAfterRedirects;
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((evt: NavigationEnd) => {
+        const last: string = evt.urlAfterRedirects;
 
-          console.debug("## NavigationService " + last);
-          console.dir(evt);
-          // last enthaelt alle param: z.B. "/ap;id=42;tree=vlan"
-          // Navigation zu diesem String:
-          //   this.router.navigateByUrl(this.router.parseUrl("/ap;id=42;tree=vlan"))
-          if (last && !last.endsWith(ErrorService.errorPage)) {
-            this.configService.getUser().path = last;
-            this.currentPath = last;
-          }
-        });
-
+        console.debug("## NavigationService " + last);
+        console.dir(evt);
+        // last enthaelt alle param: z.B. "/ap;id=42;tree=vlan"
+        // Navigation zu diesem String:
+        //   this.router.navigateByUrl(this.router.parseUrl("/ap;id=42;tree=vlan"))
+        if (last && !last.endsWith(ErrorService.errorPage)) {
+          this.configService.getUser().path = last;
+          this.currentPath = last;
+        }
+      });
   }
 
   public isPage(check: string): boolean {
@@ -73,24 +72,24 @@ export class NavigationService {
   }
 
   public navigate(url: string) {
-    this.router.navigateByUrl(this.router.parseUrl(url))
-        .then((nav) => {
-          if (!nav) {  // canActivate liefert false, also zur Startseite
-            this.router.navigate(["/"]);
-          }
-        })
-        .catch((err) => {
-          console.debug("user navigation error " + err);
-          // womoeglich ungueltige Daten im User-Profil, also noch ein Versuch
-          // mit der Startseite
-          this.configService.getUser().path = "";
+    this.router
+      .navigateByUrl(this.router.parseUrl(url))
+      .then((nav) => {
+        if (!nav) {
+          // canActivate liefert false, also zur Startseite
           this.router.navigate(["/"]);
-        });
+        }
+      })
+      .catch((err) => {
+        console.debug("user navigation error " + err);
+        // womoeglich ungueltige Daten im User-Profil, also noch ein Versuch
+        // mit der Startseite
+        this.configService.getUser().path = "";
+        this.router.navigate(["/"]);
+      });
   }
 
   public resetApp() {
     window.location.href = this.location.prepareExternalUrl("/");
   }
-
-
 }

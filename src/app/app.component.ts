@@ -1,12 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationService } from "./shared/navigation.service";
 
-@Component(
-    {
-      selector   : "sbsdb-root",
-      templateUrl: "./app.component.html",
-      styleUrls  : ["./app.component.scss"]
-    })
+@Component({
+  selector: "sbsdb-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
+})
 export class AppComponent implements OnInit {
   constructor(private nav: NavigationService) {
     console.debug("c'tor AppComponent");
@@ -16,6 +15,4 @@ export class AppComponent implements OnInit {
     // zur letzten gespeicherten Seite des Users
     this.nav.gotoUserPath();
   }
-
-
 }

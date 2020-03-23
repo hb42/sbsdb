@@ -3,22 +3,19 @@ import { Bracket } from "../../shared/filter/bracket";
 import { LogicalOperator } from "../../shared/filter/logical-operator";
 
 @Component({
-             selector   : "sbsdb-ap-filter-bracket",
-             templateUrl: "./ap-filter-bracket.component.html",
-             styleUrls  : ["./ap-filter-bracket.component.scss"]
-           })
+  selector: "sbsdb-ap-filter-bracket",
+  templateUrl: "./ap-filter-bracket.component.html",
+  styleUrls: ["./ap-filter-bracket.component.scss"],
+})
 export class ApFilterBracketComponent implements OnInit {
   @Input() bracket: Bracket;
   @Input() operator: LogicalOperator;
 
   public menuopen = false;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 
   public insert(b: Bracket) {
     console.debug("INSERT " + b.toString());

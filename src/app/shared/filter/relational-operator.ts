@@ -13,50 +13,48 @@ import { RelOp } from "./rel-op.enum";
 // }
 
 export class RelationalOperator {
-
   public execute: (fieldContent: string, compare: string) => boolean;
   private name: string;
 
   constructor(public readonly op: RelOp) {
     switch (op) {
-      case RelOp.like :
+      case RelOp.like:
         this.execute = RelationalOperator.like;
         this.name = op;
         break;
-      case RelOp.notlike :
+      case RelOp.notlike:
         this.execute = RelationalOperator.notlike;
         this.name = op;
         break;
-      case RelOp.equal :
+      case RelOp.equal:
         this.execute = RelationalOperator.equal;
         this.name = op;
         break;
-      case RelOp.notequal :
+      case RelOp.notequal:
         this.execute = RelationalOperator.notequal;
         this.name = op;
         break;
-      case RelOp.startswith :
+      case RelOp.startswith:
         this.execute = RelationalOperator.startsWith;
         this.name = op;
         break;
-      case RelOp.endswith :
+      case RelOp.endswith:
         this.execute = RelationalOperator.endsWith;
         this.name = op;
         break;
-      case RelOp.inlist :
+      case RelOp.inlist:
         this.execute = RelationalOperator.equal;
         this.name = op;
         break;
-      case RelOp.notinlist :
+      case RelOp.notinlist:
         this.execute = RelationalOperator.notequal;
         this.name = op;
         break;
-      default :
+      default:
         this.execute = RelationalOperator.noop;
         this.name = RelOp.nop;
         break;
     }
-
   }
 
   public toString(): string {

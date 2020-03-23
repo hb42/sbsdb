@@ -1,7 +1,6 @@
 import { LogicalOperator } from "./logical-operator";
 
 export class LogicalAnd implements LogicalOperator {
-
   public toString(): string {
     return "UND";
   }
@@ -9,5 +8,4 @@ export class LogicalAnd implements LogicalOperator {
   public execute(left: boolean, right: boolean): boolean {
     return left && right;
   }
-
 }

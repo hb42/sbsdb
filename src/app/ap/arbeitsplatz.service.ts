@@ -16,17 +16,20 @@ import { ApColumn } from "./ap-column";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
 
-@Injectable({providedIn: "root"})
+@Injectable({ providedIn: "root" })
 export class ArbeitsplatzService {
-
-  public treeControl = new NestedTreeControl<OeTreeItem>(node => node.children);
+  public treeControl = new NestedTreeControl<OeTreeItem>(
+    (node) => node.children
+  );
   public dataSource = new MatTreeNestedDataSource<OeTreeItem>();
 
   private oeTree: OeTreeItem[];
   public selected: OeTreeItem;
   public urlParams: any;
 
-  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
+  public apDataSource: MatTableDataSource<
+    Arbeitsplatz
+  > = new MatTableDataSource<Arbeitsplatz>();
 
   public filterExpression = new Bracket(null);
 
@@ -60,93 +63,121 @@ export class ArbeitsplatzService {
   public extFilterColumns: ApColumn[];
 
   private buildColumns() {
-    this.columns.push(new ApColumn(this,  // hat typ [dropdown], hat typ nicht [dropdown]
-                                   "aptyp",
-                                   () => "Typ",
-                                   () => "aptyp",
-                                   () => "aptyp",
-                                   "t", true,
-                                   ApColumn.LCASE,
-                                   [RelOp.inlist, RelOp.notinlist],
-                                   () => [...new Set(this.apDataSource.data.map((a) => a.aptyp))].sort(),
-    ));
-    this.columns.push(new ApColumn(this,  // beginnt, endet, enthaelt, enthaelt nicht
-                                   "apname",
-                                   () => "AP-Name",
-                                   () => "apname",
-                                   () => "apname",
-                                   "n",
-                                   true,
-                                   ApColumn.LCASE,
-                                   [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-                                   null,
-    ));
-    this.columns.push(new ApColumn(this,  // BST extra? / string beginnt, endet, enthaelt, enthaelt nicht / dropdown?
-                                   "betrst",
-                                   () => this.userSettings.showStandort ? "Standort" : "Verantw. OE",
-                                   () => this.userSettings.showStandort ? "oesearch" : "voesearch",
-                                   () => this.userSettings.showStandort ? "oesort" : "voesort",
-                                   "o",
-                                   true,
-                                   ApColumn.LCASE,
-                                   [RelOp.inlist, RelOp.notinlist, RelOp.like, RelOp.notlike],
-                                   () => [...new Set(this.apDataSource.data.map(
-                                       (a) => this.userSettings.showStandort
-                                           ? a.verantwOe.betriebsstelle
-                                           : a.oe.betriebsstelle)
-                                   )
-                                   ].sort(),
-    ));
-    this.columns.push(new ApColumn(this,  // enthaelt, enthaelt nicht
-                                   "bezeichnung",
-                                   () => "Bezeichnung",
-                                   () => "bezeichnung",
-                                   () => "bezeichnung",
-                                   "b",
-                                   true,
-                                   ApColumn.LCASE,
-                                   null,
-                                   null,
-    ));
-    this.columns.push(new ApColumn(this,  // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
-                                   // dropdown VLAN?
-                                   "ip",
-                                   () => "IP/MAC",
-                                   () => "ipsearch",
-                                   () => "vlan",
-                                   "i",
-                                   true,
-                                   ApColumn.IP,
-                                   null,
-                                   null,
-    ));
-    this.columns.push(new ApColumn(this,  // enthaelt, enthaelt nicht/ Hersteller|Typenbezeichnung|SerNr enthaelt, enthaelt nicht, start,end
-                                   // hersteller + bezeichnung evtl dropdown
-                                   "hardware",
-                                   () => "Hardware",
-                                   () => this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr",
-                                   () => "hwStr",
-                                   "w",
-                                   true,
-                                   ApColumn.LCASE,
-                                   null,
-                                   null,
-    ));
-    this.columns.push(new ApColumn(this,
-                                   "menu",
-                                   () => null,
-                                   () => null,
-                                   null,
-                                   "",
-                                   true,
-                                   -1,
-                                   null,
-                                   null,
-    ));
+    this.columns.push(
+      new ApColumn(
+        this, // hat typ [dropdown], hat typ nicht [dropdown]
+        "aptyp",
+        () => "Typ",
+        () => "aptyp",
+        () => "aptyp",
+        "t",
+        true,
+        ApColumn.LCASE,
+        [RelOp.inlist, RelOp.notinlist],
+        () => [...new Set(this.apDataSource.data.map((a) => a.aptyp))].sort()
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // beginnt, endet, enthaelt, enthaelt nicht
+        "apname",
+        () => "AP-Name",
+        () => "apname",
+        () => "apname",
+        "n",
+        true,
+        ApColumn.LCASE,
+        [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // BST extra? / string beginnt, endet, enthaelt, enthaelt nicht / dropdown?
+        "betrst",
+        () => (this.userSettings.showStandort ? "Standort" : "Verantw. OE"),
+        () => (this.userSettings.showStandort ? "oesearch" : "voesearch"),
+        () => (this.userSettings.showStandort ? "oesort" : "voesort"),
+        "o",
+        true,
+        ApColumn.LCASE,
+        [RelOp.inlist, RelOp.notinlist, RelOp.like, RelOp.notlike],
+        () =>
+          [
+            ...new Set(
+              this.apDataSource.data.map((a) =>
+                this.userSettings.showStandort
+                  ? a.verantwOe.betriebsstelle
+                  : a.oe.betriebsstelle
+              )
+            ),
+          ].sort()
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // enthaelt, enthaelt nicht
+        "bezeichnung",
+        () => "Bezeichnung",
+        () => "bezeichnung",
+        () => "bezeichnung",
+        "b",
+        true,
+        ApColumn.LCASE,
+        null,
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
+        // dropdown VLAN?
+        "ip",
+        () => "IP/MAC",
+        () => "ipsearch",
+        () => "vlan",
+        "i",
+        true,
+        ApColumn.IP,
+        null,
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // enthaelt, enthaelt nicht/ Hersteller|Typenbezeichnung|SerNr enthaelt, enthaelt nicht, start,end
+        // hersteller + bezeichnung evtl dropdown
+        "hardware",
+        () => "Hardware",
+        () => (this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr"),
+        () => "hwStr",
+        "w",
+        true,
+        ApColumn.LCASE,
+        null,
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this,
+        "menu",
+        () => null,
+        () => null,
+        null,
+        "",
+        true,
+        -1,
+        null,
+        null
+      )
+    );
     // + cols bemerkung -> enthaelt
     //        tags -> hat tag [dropdown], hat tag nicht [dropdown], enthaelt (text aller tags)
 
-    this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
+    this.displayedColumns = this.columns
+      .filter((c) => c.show)
+      .map((col) => col.columnName);
     this.extFilterColumns = this.columns.filter((c) => c.operators);
   }
 
@@ -163,7 +194,6 @@ export class ArbeitsplatzService {
     }
   }
 
-
   // Web-API calls
   private readonly oeTreeUrl: string;
   private readonly allApsUrl: string;
@@ -174,8 +204,8 @@ export class ArbeitsplatzService {
   // deutlich schneller als String.localeCompare()
   //  -> result = this.collator.compare(a, b)
   private collator = new Intl.Collator("de", {
-    numeric    : true,
-    sensitivity: "base"
+    numeric: true,
+    sensitivity: "base",
   });
 
   /* TODO AP-TABLE-LOAD
@@ -187,9 +217,11 @@ export class ArbeitsplatzService {
    ausgedehnt werden.
  */
 
-  constructor(private configService: ConfigService,
-              private http: HttpClient,
-              private keyboardService: KeyboardService) {
+  constructor(
+    private configService: ConfigService,
+    private http: HttpClient,
+    private keyboardService: KeyboardService
+  ) {
     console.debug("c'tor ArbeitsplatzService");
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
@@ -206,21 +238,21 @@ export class ArbeitsplatzService {
 
     this.columns.forEach((c, idx) => {
       if (c.filterControl) {
-        c.filterControl.valueChanges  // FormControl
-            .pipe(debounceTime(keyDebounce))
-            .subscribe((text) => {
-              const filtervalue: ColumnFilter = c.valueChange(text);
-              // FIXME speichern der Filter ist vom Index der Spalte abhaengig, das koennte
-              //       noch Aerger machen (ausserdem ist noch zu klären, wie ext.Filter in den
-              //       userSettings gespeichert wird)
-              this.userSettings.setApFilter(idx, filtervalue);
-              this.filterExpression.reset();
-              this.buildFilterExpression();
-              console.debug(this.filterExpression.toString());
-              // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
-              // this.apDataSource.filter = JSON.stringify(this.userSettings);
-              this.apDataSource.filter = this.getFilterString();
-            });
+        c.filterControl.valueChanges // FormControl
+          .pipe(debounceTime(keyDebounce))
+          .subscribe((text) => {
+            const filtervalue: ColumnFilter = c.valueChange(text);
+            // FIXME speichern der Filter ist vom Index der Spalte abhaengig, das koennte
+            //       noch Aerger machen (ausserdem ist noch zu klären, wie ext.Filter in den
+            //       userSettings gespeichert wird)
+            this.userSettings.setApFilter(idx, filtervalue);
+            this.filterExpression.reset();
+            this.buildFilterExpression();
+            console.debug(this.filterExpression.toString());
+            // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
+            // this.apDataSource.filter = JSON.stringify(this.userSettings);
+            this.apDataSource.filter = this.getFilterString();
+          });
       }
     });
 
@@ -234,7 +266,8 @@ export class ArbeitsplatzService {
    * Tooltip mit dem vollstaendigen Text anzeigen, wenn der Text
    * mittels ellipsis abgeschnitten ist.
    * (scheint mit <span> nicht zu funktionieren)
-   * -> https://stackoverflow.com/questions/5474871/html-how-can-i-show-tooltip-only-when-ellipsis-is-activated
+   * ->
+   * https://stackoverflow.com/questions/5474871/html-how-can-i-show-tooltip-only-when-ellipsis-is-activated
    *
    * @param evt - Mouseevent
    */
@@ -253,13 +286,17 @@ export class ArbeitsplatzService {
     // this.typtagSelect = await this.http.get<TypTag[]>(this.typtagUrl).toPromise();
     // this.typtagSelect.forEach((t) => t.select = t.apkategorie + ": " + t.tagTyp);
 
-    const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
+    const pagesize: number = await this.configService.getConfig(
+      ConfigService.AP_PAGE_SIZE
+    );
     const defaultpagesize = 100;
     let page = 0;
 
     // TODO AP-TABLE-LOAD
     // const data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();  // alle, aber nicht alle Daten
-    const data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise(); // 1. Teil, vollstaendiger record
+    const data = await this.http
+      .get<Arbeitsplatz[]>(this.pageApsUrl + page)
+      .toPromise(); // 1. Teil, vollstaendiger record
     data.forEach((ap) => {
       this.prepAP(ap);
     });
@@ -277,31 +314,31 @@ export class ArbeitsplatzService {
     };
 
     // eigener Filter
-    this.apDataSource.filterPredicate =
-        (ap: Arbeitsplatz, filter: string) => {
-          return this.filterExpression.validate(ap);
-        };
+    this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
+      return this.filterExpression.validate(ap);
+    };
 
     this.applyUserSettings();
 
     // TODO AP-TABLE-LOAD
-    this.fetchPage(++page, pagesize || defaultpagesize);  // Rest holen
+    this.fetchPage(++page, pagesize || defaultpagesize); // Rest holen
   }
 
   // TODO AP-TABLE-LOAD
   private fetchPage(page: number, size: number) {
     console.debug("load page " + page + ", size " + size);
-    this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise()
-        .then((dat) => {
-          dat.forEach((ap) => {
-            this.prepAP(ap);
-          });
-          this.apDataSource.data = [...this.apDataSource.data, ...dat];
-          if (dat.length === size) {
-            this.fetchPage(++page, size); // recursion!
-          }
+    this.http
+      .get<Arbeitsplatz[]>(this.pageApsUrl + page)
+      .toPromise()
+      .then((dat) => {
+        dat.forEach((ap) => {
+          this.prepAP(ap);
         });
-
+        this.apDataSource.data = [...this.apDataSource.data, ...dat];
+        if (dat.length === size) {
+          this.fetchPage(++page, size); // recursion!
+        }
+      });
   }
 
   public applyUserSettings() {
@@ -313,8 +350,11 @@ export class ArbeitsplatzService {
       this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
       if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
         this.apDataSource.sort.active = this.userSettings.apSortColumn;
-        this.apDataSource.sort.direction = this.userSettings.apSortDirection === "asc" ? "" : "asc";
-        const sortheader = this.apDataSource.sort.sortables.get(this.userSettings.apSortColumn) as MatSortHeader;
+        this.apDataSource.sort.direction =
+          this.userSettings.apSortDirection === "asc" ? "" : "asc";
+        const sortheader = this.apDataSource.sort.sortables.get(
+          this.userSettings.apSortColumn
+        ) as MatSortHeader;
         // this.sort.sort(sortheader);
         // FIXME Hack -> ApComponent#handleSort
         sortheader._handleClick();
@@ -322,9 +362,7 @@ export class ArbeitsplatzService {
       // this.changeBetrst();
       // this.changeHw();
       this.initializeFilters();
-
     }
-
   }
 
   public onSort(event) {
@@ -339,7 +377,7 @@ export class ArbeitsplatzService {
   }
 
   public async expandApRow(ap: Arbeitsplatz, event: Event) {
-      // TODO AP-TABLE-LOAD
+    // TODO AP-TABLE-LOAD
     // if (this.expandedRow === ap) {
     //   this.expandedRow = null;
     // } else {
@@ -380,10 +418,16 @@ export class ArbeitsplatzService {
   // }
 
   public bstTooltip(ap: Arbeitsplatz): string {
-    return "OE: " + ap.oe.bstNr + "\n\n"
-        + (ap.oe.strasse ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n" : "")
-        + (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "")
-        + (ap.oe.oeff ? "\n" + ap.oe.oeff : "");
+    return (
+      "OE: " +
+      ap.oe.bstNr +
+      "\n\n" +
+      (ap.oe.strasse
+        ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n"
+        : "") +
+      (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "") +
+      (ap.oe.oeff ? "\n" + ap.oe.oeff : "")
+    );
   }
 
   public testApMenu(ap: Arbeitsplatz) {
@@ -484,7 +528,9 @@ export class ArbeitsplatzService {
 
   public getMacString(mac: string) {
     // kein match => Eingabe-String
-    return mac.replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1:$2:$3:$4:$5:$6").toUpperCase();
+    return mac
+      .replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1:$2:$3:$4:$5:$6")
+      .toUpperCase();
   }
 
   public getIpString(ip: number) {
@@ -563,9 +609,9 @@ export class ArbeitsplatzService {
   private sortAP(ap: Arbeitsplatz) {
     ap.tags.sort((a, b) => {
       if (a.flag === b.flag) {
-        return this.collator.compare(a.bezeichnung, b.bezeichnung)
+        return this.collator.compare(a.bezeichnung, b.bezeichnung);
       } else {
-        return (a.flag === 1 ? -1 : 1);
+        return a.flag === 1 ? -1 : 1;
       }
     });
     ap.hw.sort((a, b) => {
@@ -574,8 +620,10 @@ export class ArbeitsplatzService {
       } else if (b.pri) {
         return 1;
       } else {
-        return this.collator.compare(a.hwtyp + a.hersteller + a.bezeichnung + a.sernr,
-                                     b.hwtyp + b.hersteller + b.bezeichnung + b.sernr);
+        return this.collator.compare(
+          a.hwtyp + a.hersteller + a.bezeichnung + a.sernr,
+          b.hwtyp + b.hersteller + b.bezeichnung + b.sernr
+        );
       }
     });
   }
@@ -588,11 +636,20 @@ export class ArbeitsplatzService {
         if (h.hwtypFlag !== 1) {
           ap.hwTypStr = h.hersteller + " - " + h.bezeichnung;
         }
-        ap.hwStr = h.hersteller + " - " + h.bezeichnung + (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
+        ap.hwStr =
+          h.hersteller +
+          " - " +
+          h.bezeichnung +
+          (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
       }
       // fuer die Suche
-      ap.sonstHwStr = ap.sonstHwStr + " " + h.hersteller + " " + h.bezeichnung
-            + (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
+      ap.sonstHwStr =
+        ap.sonstHwStr +
+        " " +
+        h.hersteller +
+        " " +
+        h.bezeichnung +
+        (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
     });
 
     if (ap.vlan && ap.vlan[0]) {
@@ -611,14 +668,14 @@ export class ArbeitsplatzService {
     ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
     ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
     // if (ap.verantwOe) {
-    ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
+    ap.voesearch =
+      ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
     ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
     // } else {
     //   ap.voesearch = ap.oesearch;
     //   ap.voesort = ap.oesort;
     // }
   }
-
 
   /* TODO kann raus, wenn Tree definitiv draussen ist */
   public async getOeTree() {
@@ -662,5 +719,4 @@ export class ArbeitsplatzService {
       return false;
     }
   }
-
 }

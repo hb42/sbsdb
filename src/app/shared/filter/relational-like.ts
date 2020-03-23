@@ -1,5 +1,4 @@
 export class RelationalLike /*implements RelationalOperator*/ {
-
   public toString(): string {
     return "ENTHÄLT";
   }

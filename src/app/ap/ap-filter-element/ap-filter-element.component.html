@@ -1,7 +1,13 @@
-<button mat-button color="accent" class="mat-button-filter" [matMenuTriggerFor]="emenu" [matMenuTriggerData]="{el: element}">
-  {{element.operator ? element.operator + " " : ""}}{{element.term ? element.term.toString() : ""}}
+<button
+  mat-button
+  color="accent"
+  class="mat-button-filter"
+  [matMenuTriggerFor]="emenu"
+  [matMenuTriggerData]="{ el: element }"
+>
+  {{ element.operator ? element.operator + " " : ""
+  }}{{ element.term ? element.term.toString() : "" }}
 </button>
-
 
 <mat-menu #emenu="matMenu">
   <ng-template matMenuContent let-el="el">

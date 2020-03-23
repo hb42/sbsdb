@@ -7,7 +7,7 @@ export interface Term {
 
   // fuer die schnelle Unterscheidung
   isBracket(): boolean;
-  
+
   // Textausgabe des Ausdrucks
   toString(): string;
 }

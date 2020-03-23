@@ -1,5 +1,5 @@
 // -> https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -55,14 +55,21 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   // sehr elegant, dafuer funktioniert's mit wenig Overhead und die Farben koennen an einer Stelle verwaltet werden.
   :root {
     // red = 0; blue = 240 / google-material #500: indigo = 230; orange = 35; deep orange = 14; cyan = 186; blue = 206; red = 4
-    --md-details-background-color: hsl(4, 100%, 99%); // sehr helle Hintergrundfarbe passend zu $primary
-    --md-details-background-color-highlight: hsl(4, 100%, 96%); // helle Hintergrundfarbe passend zu $primary
+    --md-details-background-color: hsl(
+      4,
+      100%,
+      99%
+    ); // sehr helle Hintergrundfarbe passend zu $primary
+    --md-details-background-color-highlight: hsl(
+      4,
+      100%,
+      96%
+    ); // helle Hintergrundfarbe passend zu $primary
     --md-details-border-color: #c0c0c0;
     --md-light-gray-background-color: #f9f9f9; // hellgrauer Hintergrund
     --md-row-active-background-color: #efefef; // grauer Hintergrund f. :hover-Effekt
     --md-row-hover-background-color: #f4f4f4; // grauer Hintergrund f. :active-Effekt
   }
-
 }
 @include material-colors($sbsdb-app-theme);
 

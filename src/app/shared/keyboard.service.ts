@@ -1,9 +1,8 @@
-import {Inject, Injectable} from "@angular/core";
-import {DOCUMENT} from "@angular/common";
+import { DOCUMENT } from "@angular/common";
+import { Inject, Injectable } from "@angular/core";
 
-@Injectable({providedIn: "root"})
+@Injectable({ providedIn: "root" })
 export class KeyboardService {
-
   constructor(@Inject(DOCUMENT) doc: any) {
     // doc.addEventListener("keydown", (event) => {
     //   if (event.altKey && event.key === "a") {
@@ -13,5 +12,4 @@ export class KeyboardService {
     //   }
     // });
   }
-
 }

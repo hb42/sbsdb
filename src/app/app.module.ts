@@ -33,11 +33,11 @@ import { StatusComponent } from "./shared/status/status.component";
 //       (oder farc auf IIS/.NET Core umstellen)
 export function logonOptionsFactory(): LogonParameter {
   return {
-    logon: "NO"
+    logon: "NO",
   };
 }
 
-registerLocaleData(localeDe);  // + provider, s.u.
+registerLocaleData(localeDe); // + provider, s.u.
 
 // Damit ConfigService so frueh, wie moeglich geladen wird und die Config-Daten
 // (u.a. Benutzer-Session) fuer alle anderen Services verfuegbar sind.
@@ -47,67 +47,61 @@ export function initConf(configService: ConfigService) {
   return () => configService.init();
 }
 
-@NgModule(
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeadComponent,
+    FootComponent,
+    ApTreeComponent,
+    ApListComponent,
+    HwListComponent,
+    HwTreeComponent,
+    ApComponent,
+    HwComponent,
+    ErrorComponent,
+    AdminComponent,
+    StatusComponent,
+    AcceleratorStringComponent,
+    ApFilterComponent,
+    ApFilterElementComponent,
+    ApFilterBracketComponent,
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+
+    // -- Angular Material
+    AppMaterialModule,
+
+    // -- eigene
+    LibClientModule,
+  ],
+  // f. mat-dialog
+  entryComponents: [ApFilterComponent],
+  providers: [
+    { provide: LOCALE_ID, useValue: "de" }, // registerLocaleData() s.o.
+    // -- eigene
+    // app startet erst, wenn das Promise aus initConf aufgeloest ist
+    // -> login, config holen, usw.
     {
-      declarations   : [
-        AppComponent,
-        HeadComponent,
-        FootComponent,
-        ApTreeComponent,
-        ApListComponent,
-        HwListComponent,
-        HwTreeComponent,
-        ApComponent,
-        HwComponent,
-        ErrorComponent,
-        AdminComponent,
-        StatusComponent,
-        AcceleratorStringComponent,
-        ApFilterComponent,
-        ApFilterElementComponent,
-        ApFilterBracketComponent,
-      ],
-      imports        : [
-        BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
-        HttpClientModule,
-        FormsModule,
-        ReactiveFormsModule,
+      provide: APP_INITIALIZER,
+      useFactory: initConf,
+      deps: [ConfigService], // f. IE11-Prob. + Injector
+      multi: true,
+    },
+    // paginator uebersetzen
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlDe },
 
-        // -- Angular Material
-        AppMaterialModule,
-
-        // -- eigene
-        LibClientModule,
-
-      ],
-      // f. mat-dialog
-      entryComponents: [
-        ApFilterComponent,
-      ],
-      providers      : [
-        {provide: LOCALE_ID, useValue: "de"},  // registerLocaleData() s.o.
-        // -- eigene
-        // app startet erst, wenn das Promise aus initConf aufgeloest ist
-        // -> login, config holen, usw.
-        {
-          provide   : APP_INITIALIZER,
-          useFactory: initConf,
-          deps      : [ConfigService],  // f. IE11-Prob. + Injector
-          multi     : true
-        },
-        // paginator uebersetzen
-        {provide: MatPaginatorIntl, useClass: MatPaginatorIntlDe},
-
-        // Konfig fuer Autologon TODO Altschuld, entfernen, sobald lib-client umgebaut
-        {
-          provide   : LOGON_OPTIONS,
-          useFactory: logonOptionsFactory
-        },
-
-      ],
-      bootstrap   : [AppComponent]
-    })
-export class AppModule {
-}
+    // Konfig fuer Autologon TODO Altschuld, entfernen, sobald lib-client umgebaut
+    {
+      provide: LOGON_OPTIONS,
+      useFactory: logonOptionsFactory,
+    },
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}

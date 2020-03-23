@@ -33,22 +33,22 @@ export class ApColumn {
   /**
    * Sammlung der Spalten
    */
-         // public static columns: ApColumn[] = [];
-         //
-         // public static add(col: ApColumn) {
-         //   this.columns.push(col);
-         // }
-         // public static getColumnIndex(name: string): number {
-         //   return this.columns.findIndex((c) => c.columnName === name);
-         // }
-         // public static getColumn(name: string): ApColumn {
-         //   const idx = this.getColumnIndex(name);
-         //   if (idx >= 0 && idx < this.columns.length) {
-         //     return this.columns[idx];
-         //   } else {
-         //     return null;
-         //   }
-         // }
+  // public static columns: ApColumn[] = [];
+  //
+  // public static add(col: ApColumn) {
+  //   this.columns.push(col);
+  // }
+  // public static getColumnIndex(name: string): number {
+  //   return this.columns.findIndex((c) => c.columnName === name);
+  // }
+  // public static getColumn(name: string): ApColumn {
+  //   const idx = this.getColumnIndex(name);
+  //   if (idx >= 0 && idx < this.columns.length) {
+  //     return this.columns[idx];
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   private filter_control: FormControl = null;
 
@@ -65,7 +65,9 @@ export class ApColumn {
   }
 
   public get sortFieldName(): string | null {
-    return this.sort_field_name ? this.callback(this.sort_field_name, this.apService) : null;
+    return this.sort_field_name
+      ? this.callback(this.sort_field_name, this.apService)
+      : null;
   }
 
   public get accelerator(): string {
@@ -85,20 +87,22 @@ export class ApColumn {
   }
 
   public get selectList(): string[] | null {
-    return this.select_list ? this.callback(this.select_list, this.apService) : null;
+    return this.select_list
+      ? this.callback(this.select_list, this.apService)
+      : null;
   }
 
-  constructor(private apService: ArbeitsplatzService,
-              private col_name: string,
-              private display_name: () => string,
-              private field_name: () => string,
-              private sort_field_name: (() => string) | null,  // falls soert_field != field_name sonst null
-              private accel: string, //
-              private show_col: boolean,
-              private type_key: number,
-              private op: RelOp[] | null,   // erlaubte Verknuepfungen
-              private select_list: (() => string[]) | null,  // soweit sinnvoll: no dup list fuer das Feld
-              //     compareStr: (input: string) => string,  // Eingabe fuer den Vergleich aufbereiten (z.B. toLower) -> valueChange()
+  constructor(
+    private apService: ArbeitsplatzService,
+    private col_name: string,
+    private display_name: () => string,
+    private field_name: () => string,
+    private sort_field_name: (() => string) | null, // falls soert_field != field_name sonst null
+    private accel: string, //
+    private show_col: boolean,
+    private type_key: number,
+    private op: RelOp[] | null, // erlaubte Verknuepfungen
+    private select_list: (() => string[]) | null // soweit sinnvoll: no dup list fuer das Feld
   ) {
     if (this.fieldName) {
       this.filter_control = new FormControl("");
@@ -111,14 +115,16 @@ export class ApColumn {
    * @param ap
    */
   public sortString(ap: Arbeitsplatz) {
-    const field = this.sort_field_name ? ap[this.sortFieldName] : ap[this.fieldName];
+    const field = this.sort_field_name
+      ? ap[this.sortFieldName]
+      : ap[this.fieldName];
     switch (this.type_key) {
       case ApColumn.LCASE:
         const s = <string>field;
         return s.toLowerCase();
       case ApColumn.IP:
         const v = <Netzwerk>field;
-        return (v && v[0]) ? v[0].vlan + v[0].ip : 0;
+        return v && v[0] ? v[0].vlan + v[0].ip : 0;
     }
   }
 
@@ -171,7 +177,7 @@ export class ApColumn {
       str = str.slice(1);
       inc = false;
     }
-    return {text: str, inc: inc};
+    return { text: str, inc: inc };
   }
 
   /**

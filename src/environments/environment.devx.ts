@@ -5,7 +5,7 @@
 // ng build --devx
 
 export const environment = {
-  env       : "DevelopmentX",
+  env: "DevelopmentX",
   production: false,
   // configFile: "./resource/config.devx.json",
   webservice: "/ws",

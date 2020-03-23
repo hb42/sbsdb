@@ -21,28 +21,33 @@ table:
 https://blog.angular-university.io/angular-material-data-table/
 https://github.com/angular/components/issues/6178
 -->
-<div class="flex-col">  <!-- table + paginator -->
-                        <!--  <sbsdb-ap-filter> &lt;!&ndash; DEBUG &ndash;&gt;-->
-                        <!--  </sbsdb-ap-filter>-->
-  <div class="flex-content">  <!-- table -->
+<div class="flex-col">
+  <!-- table + paginator -->
+  <!--  <sbsdb-ap-filter> &lt;!&ndash; DEBUG &ndash;&gt;-->
+  <!--  </sbsdb-ap-filter>-->
+  <div class="flex-content">
+    <!-- table -->
     <div class="spinner-container" *ngIf="apService.loading">
       <mat-spinner></mat-spinner>
     </div>
 
-    <table mat-table [dataSource]="apService.apDataSource"
-           matSort
-           multiTemplateDataRows
-           (matSortChange)="apService.onSort($event)"
-           [class.wrap-cell]="apService.tableWrapCell"
+    <table
+      mat-table
+      [dataSource]="apService.apDataSource"
+      matSort
+      multiTemplateDataRows
+      (matSortChange)="apService.onSort($event)"
+      [class.wrap-cell]="apService.tableWrapCell"
     >
-
       <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
       <ng-container matColumnDef="aptyp" sticky *ngIf="'aptyp'; let colname">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string [text]="apService.getColumn(colname).displayName"
-                                      [accel]="apService.getColumn(colname).accelerator"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string
+              [text]="apService.getColumn(colname).displayName"
+              [accel]="apService.getColumn(colname).accelerator"
+            ></sbsdb-accelerator-string>
           </span>
           <!--          <div class="select-filter">-->
           <mat-form-field floatLabel="never" class="filter-s">
@@ -50,20 +55,34 @@ https://github.com/angular/components/issues/6178
             <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
             <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
             <!--              </mat-select>-->
-            <input matInput [formControl]="apService.getColumn(colname).filterControl"
-                   [tabIndex]="apService.displayedColumns.indexOf(colname) + 1"
-                   #firstfilter (keydown.shift.tab)="focusLastFilter(); $event.preventDefault(); $event.stopPropagation();"
-                   title="Filter (Alt+F)">
-            <button mat-button [disabled]="!apService.getColumn(colname).filterControl.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn(colname).filterControl.reset()"
-                    class="select-filter-reset-btn">
+            <input
+              matInput
+              [formControl]="apService.getColumn(colname).filterControl"
+              [tabIndex]="apService.displayedColumns.indexOf(colname) + 1"
+              #firstfilter
+              (keydown.shift.tab)="
+                focusLastFilter(); $event.preventDefault(); $event.stopPropagation()
+              "
+              title="Filter (Alt+F)"
+            />
+            <button
+              mat-button
+              [disabled]="!apService.getColumn(colname).filterControl.dirty"
+              matSuffix
+              mat-icon-button
+              (click)="apService.getColumn(colname).filterControl.reset()"
+              class="select-filter-reset-btn"
+            >
               <mat-icon class="select-filter-reset-icn">close</mat-icon>
             </button>
           </mat-form-field>
           <!--          </div>-->
         </th>
-        <td mat-cell *matCellDef="let element" class="aptyp highlight-when-expanded"
-            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        <td
+          mat-cell
+          *matCellDef="let element"
+          class="aptyp highlight-when-expanded"
+          (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
           <!--          <button mat-button class="highlight-when-expanded"-->
           <!--                  (click)="apService.typFilter.setValue(element.aptyp); apService.typFilter.markAsDirty(); $event.stopPropagation()"-->
@@ -71,17 +90,26 @@ https://github.com/angular/components/issues/6178
           <!--          >-->
           <!--            {{element.aptyp}}-->
           <!--          </button>-->
-          <div [class.md-primary-color]="apService.linkcolor2"
-               [class.md-accent-color]="!apService.linkcolor2">
-            <button mat-icon-button [color]="apService.linkcolor" *ngIf="!apService.clickForDetails"
-                    (click)="apService.expandApRow(element, $event)">
+          <div
+            [class.md-primary-color]="apService.linkcolor2"
+            [class.md-accent-color]="!apService.linkcolor2"
+          >
+            <button
+              mat-icon-button
+              [color]="apService.linkcolor"
+              *ngIf="!apService.clickForDetails"
+              (click)="apService.expandApRow(element, $event)"
+            >
               <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>
               <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>
             </button>
-            <span class="highlight-when-expanded pseudo-button"
-                  (click)="apService.expandedRow !== element ? apService.filterByAptyp(element, $event) : ''"
+            <span
+              class="highlight-when-expanded pseudo-button"
+              (click)="
+                apService.expandedRow !== element ? apService.filterByAptyp(element, $event) : ''
+              "
             >
-              {{element.aptyp}}
+              {{ element.aptyp }}
             </span>
           </div>
 
@@ -91,7 +119,8 @@ https://github.com/angular/components/issues/6178
           <!--              <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>-->
           <!--              <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>-->
           <!--            </button>-->
-          <!-- <div>{{element.aptyp}}</div> --> <!-- class="md-primary-color" -->
+          <!-- <div>{{element.aptyp}}</div> -->
+          <!-- class="md-primary-color" -->
           <!--          </div>-->
           <!--          <div class="aptyp-tag">{{element.typTagsStr}}</div>-->
         </td>
@@ -100,47 +129,78 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="apname" sticky>
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string [text]="sortHeading('apname')" [accel]="sortAccel('apname')"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string
+              [text]="sortHeading('apname')"
+              [accel]="sortAccel('apname')"
+            ></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('apname').filterControl"
-                   [tabIndex]="apService.displayedColumns.indexOf('apname') + 1">
-            <button mat-button [disabled]="!apService.getColumn('apname').filterControl.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('apname').filterControl.reset()">
+            <input
+              matInput
+              [formControl]="apService.getColumn('apname').filterControl"
+              [tabIndex]="apService.displayedColumns.indexOf('apname') + 1"
+            />
+            <button
+              mat-button
+              [disabled]="!apService.getColumn('apname').filterControl.dirty"
+              matSuffix
+              mat-icon-button
+              (click)="apService.getColumn('apname').filterControl.reset()"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
         </th>
-        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
-            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        <td
+          mat-cell
+          *matCellDef="let element"
+          class="highlight-when-expanded"
+          (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
-          <div (mouseenter)="apService.tooltipOnEllipsis($event);">{{element.apname}}</div>
+          <div (mouseenter)="apService.tooltipOnEllipsis($event)">{{ element.apname }}</div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="betrst" *ngIf="'betrst'; let colname">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-<!--            <sbsdb-accelerator-string [text]="apService.getColumn(colname).displayName" [accel]="apService.getColumn(colname).accelerator"></sbsdb-accelerator-string>-->
-<!-- die ngIf-Bedingung ist noetig, damit eine Aenderung am Text erkannt wird -->
-            <sbsdb-accelerator-string [text]="apService.getColumn(colname).displayName" [accel]="apService.getColumn(colname).accelerator"
-                                      *ngIf="apService.userSettings.showStandort"></sbsdb-accelerator-string>
-            <sbsdb-accelerator-string [text]="apService.getColumn(colname).displayName" [accel]="apService.getColumn(colname).accelerator"
-                                      *ngIf="!apService.userSettings.showStandort"></sbsdb-accelerator-string>
+            <!--            <sbsdb-accelerator-string [text]="apService.getColumn(colname).displayName" [accel]="apService.getColumn(colname).accelerator"></sbsdb-accelerator-string>-->
+            <!-- die ngIf-Bedingung ist noetig, damit eine Aenderung am Text erkannt wird -->
+            <sbsdb-accelerator-string
+              [text]="apService.getColumn(colname).displayName"
+              [accel]="apService.getColumn(colname).accelerator"
+              *ngIf="apService.userSettings.showStandort"
+            ></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string
+              [text]="apService.getColumn(colname).displayName"
+              [accel]="apService.getColumn(colname).accelerator"
+              *ngIf="!apService.userSettings.showStandort"
+            ></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('betrst').filterControl"
-                   [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1">
-            <button mat-button [disabled]="!apService.getColumn('betrst').filterControl.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('betrst').filterControl.reset()">
+            <input
+              matInput
+              [formControl]="apService.getColumn('betrst').filterControl"
+              [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1"
+            />
+            <button
+              mat-button
+              [disabled]="!apService.getColumn('betrst').filterControl.dirty"
+              matSuffix
+              mat-icon-button
+              (click)="apService.getColumn('betrst').filterControl.reset()"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
         </th>
-        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
-            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        <td
+          mat-cell
+          *matCellDef="let element"
+          class="highlight-when-expanded"
+          (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
           <!--            [matTooltip]="apService.bstTooltip(element)"-->
           <!--            matTooltipClass="bst-tooltip"-->
@@ -153,14 +213,19 @@ https://github.com/angular/components/issues/6178
           <!--          >-->
           <!--            {{element.oe.betriebsstelle}}-->
           <!--          </a>-->
-          <div [class.md-primary-color]="apService.linkcolor2"
-               [class.md-accent-color]="!apService.linkcolor2"
-               class="highlight-when-expanded pseudo-button"
-               (click)="apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''"
-               (mouseenter)="apService.tooltipOnEllipsis($event);"
+          <div
+            [class.md-primary-color]="apService.linkcolor2"
+            [class.md-accent-color]="!apService.linkcolor2"
+            class="highlight-when-expanded pseudo-button"
+            (click)="
+              apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''
+            "
+            (mouseenter)="apService.tooltipOnEllipsis($event)"
           >
-            <span *ngIf="apService.userSettings.showStandort">{{element.oe.betriebsstelle}}</span>
-            <span *ngIf="!apService.userSettings.showStandort">{{element.verantwOe.betriebsstelle}}</span>
+            <span *ngIf="apService.userSettings.showStandort">{{ element.oe.betriebsstelle }}</span>
+            <span *ngIf="!apService.userSettings.showStandort">{{
+              element.verantwOe.betriebsstelle
+            }}</span>
           </div>
         </td>
       </ng-container>
@@ -168,48 +233,75 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="bezeichnung">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string [text]="sortHeading('bezeichnung')" [accel]="sortAccel('bezeichnung')"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string
+              [text]="sortHeading('bezeichnung')"
+              [accel]="sortAccel('bezeichnung')"
+            ></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('bezeichnung').filterControl"
-                   [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1">
-            <button mat-button [disabled]="!apService.getColumn('bezeichnung').filterControl.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('bezeichnung').filterControl.reset()">
+            <input
+              matInput
+              [formControl]="apService.getColumn('bezeichnung').filterControl"
+              [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1"
+            />
+            <button
+              mat-button
+              [disabled]="!apService.getColumn('bezeichnung').filterControl.dirty"
+              matSuffix
+              mat-icon-button
+              (click)="apService.getColumn('bezeichnung').filterControl.reset()"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
         </th>
-        <td mat-cell *matCellDef="let element" class="highlight-when-expanded"
-            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        <td
+          mat-cell
+          *matCellDef="let element"
+          class="highlight-when-expanded"
+          (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
-          <div (mouseenter)="apService.tooltipOnEllipsis($event);">{{element.bezeichnung}}</div>
+          <div (mouseenter)="apService.tooltipOnEllipsis($event)">{{ element.bezeichnung }}</div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="ip">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string [text]="sortHeading('ip')" [accel]="sortAccel('ip')"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string
+              [text]="sortHeading('ip')"
+              [accel]="sortAccel('ip')"
+            ></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('ip').filterControl"
-                   [tabIndex]="apService.displayedColumns.indexOf('ip') + 1">
-            <button mat-button [disabled]="!apService.getColumn('ip').filterControl.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('ip').filterControl.reset()">
+            <input
+              matInput
+              [formControl]="apService.getColumn('ip').filterControl"
+              [tabIndex]="apService.displayedColumns.indexOf('ip') + 1"
+            />
+            <button
+              mat-button
+              [disabled]="!apService.getColumn('ip').filterControl.dirty"
+              matSuffix
+              mat-icon-button
+              (click)="apService.getColumn('ip').filterControl.reset()"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
         </th>
-        <td mat-cell *matCellDef="let element"
-            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
-            title="{{element.macStr}}"
+        <td
+          mat-cell
+          *matCellDef="let element"
+          (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+          title="{{ element.macStr }}"
         >
           <div>
-            <span class="ip-cell">{{element.ipStr}} </span>
+            <span class="ip-cell">{{ element.ipStr }} </span>
             <!-- MAC nur bei aktivem Filter anzeigen (nicht ueber isDirty pruefen wg. backspace) -->
-            <span *ngIf="apService.getColumn('ip').filterControl.value">{{element.macStr}}</span>
+            <span *ngIf="apService.getColumn('ip').filterControl.value">{{ element.macStr }}</span>
           </div>
         </td>
       </ng-container>
@@ -217,41 +309,54 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="hardware">
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string [text]="sortHeading('hardware')" [accel]="sortAccel('hardware')"></sbsdb-accelerator-string>
+            <sbsdb-accelerator-string
+              [text]="sortHeading('hardware')"
+              [accel]="sortAccel('hardware')"
+            ></sbsdb-accelerator-string>
           </span>
           <mat-form-field floatLabel="never" class="filter-s">
             <!--            <mat-label>Filter</mat-label>-->
-            <input matInput [formControl]="apService.getColumn('hardware').filterControl"
-                   [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"
-                   #lastfilter (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation();">
-            <button mat-button [disabled]="!apService.getColumn('hardware').filterControl.dirty" matSuffix mat-icon-button
-                    (click)="apService.getColumn('hardware').filterControl.reset()">
+            <input
+              matInput
+              [formControl]="apService.getColumn('hardware').filterControl"
+              [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"
+              #lastfilter
+              (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation()"
+            />
+            <button
+              mat-button
+              [disabled]="!apService.getColumn('hardware').filterControl.dirty"
+              matSuffix
+              mat-icon-button
+              (click)="apService.getColumn('hardware').filterControl.reset()"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
         </th>
-        <td mat-cell *matCellDef="let element"
-            (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
+        <td
+          mat-cell
+          *matCellDef="let element"
+          (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
           <!--            title="{{element.hwStr}}"-->
-          <div (mouseenter)="apService.tooltipOnEllipsis($event);">{{element.hwStr}}</div>
+          <div (mouseenter)="apService.tooltipOnEllipsis($event)">{{ element.hwStr }}</div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="menu" stickyEnd>
         <th mat-header-cell *matHeaderCellDef>
-          <button mat-icon-button
-                  [matMenuTriggerFor]="tableMenu"
-                  [color]="apService.linkcolor"
-          >
+          <button mat-icon-button [matMenuTriggerFor]="tableMenu" [color]="apService.linkcolor">
             <mat-icon>menu</mat-icon>
           </button>
         </th>
         <td mat-cell *matCellDef="let element">
-          <button mat-icon-button
-                  [matMenuTriggerFor]="apMenu"
-                  [matMenuTriggerData]="{ap: element}"
-                  [color]="apService.linkcolor">
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="apMenu"
+            [matMenuTriggerData]="{ ap: element }"
+            [color]="apService.linkcolor"
+          >
             <!--                  (click) = "$event.stopPropagation()"-->
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -261,26 +366,31 @@ https://github.com/angular/components/issues/6178
       <!-- details template -->
       <ng-container matColumnDef="apdetails">
         <td mat-cell *matCellDef="let element" [colSpan]="apService.displayedColumns.length">
-          <div *ngIf="apService.expandedRow === element"
-               [@detailExpand]="'expanded'"
-               class="ap-detail-content">
+          <div
+            *ngIf="apService.expandedRow === element"
+            [@detailExpand]="'expanded'"
+            class="ap-detail-content"
+          >
             <div class="ap-detail-content-row">
               <div class="ap-detail-margin ap-detail-standort-text">
                 Standort
               </div>
-              <div class="ap-detail-margin">OE {{element.oe.bstNr}}<br>
-                {{element.oe.betriebsstelle}}<br><br>
-                {{element.oe.strasse ? element.oe.strasse + " " : ""}}{{element.oe.hausnr ? element.oe.hausnr : ""}}<br>
-                {{element.oe.plz ? element.oe.plz + " " : ""}}{{element.oe.ort ? element.oe.ort : ""}}
+              <div class="ap-detail-margin">
+                OE {{ element.oe.bstNr }}<br />
+                {{ element.oe.betriebsstelle }}<br /><br />
+                {{ element.oe.strasse ? element.oe.strasse + " " : ""
+                }}{{ element.oe.hausnr ? element.oe.hausnr : "" }}<br />
+                {{ element.oe.plz ? element.oe.plz + " " : ""
+                }}{{ element.oe.ort ? element.oe.ort : "" }}
               </div>
               <div class="ap-detail-margin"></div>
-              <div *ngIf="element.oe.oeff"
-                   class="ap-detail-margin ap-detail-oeff">
-                Öffnungszeiten<br>{{element.oe.oeff}}
+              <div *ngIf="element.oe.oeff" class="ap-detail-margin ap-detail-oeff">
+                Öffnungszeiten<br />{{ element.oe.oeff }}
               </div>
             </div>
             <div *ngIf="element.verantwOe" class="ap-detail-margin">
-              <span>Verantwortliche OE:</span> {{element.verantwOe.bstNr}} - {{element.verantwOe.betriebsstelle}}
+              <span>Verantwortliche OE:</span> {{ element.verantwOe.bstNr }} -
+              {{ element.verantwOe.betriebsstelle }}
             </div>
             <div class="ap-detail-content-row">
               <div class="ap-detail-margin">
@@ -289,10 +399,14 @@ https://github.com/angular/components/issues/6178
                   <tr *ngFor="let hw of element.hw">
                     <!--                <td *ngIf="!hw.pri">-->
                     <td>
-                      {{hw.hwtyp}}
+                      {{ hw.hwtyp }}
                     </td>
                     <td>
-                      {{hw.hwtypFlag !== 1 ? hw.hersteller + ' - ' + hw.bezeichnung + ' [' + hw.sernr + ']' : ''}}
+                      {{
+                        hw.hwtypFlag !== 1
+                          ? hw.hersteller + " - " + hw.bezeichnung + " [" + hw.sernr + "]"
+                          : ""
+                      }}
                     </td>
                   </tr>
                 </table>
@@ -301,8 +415,10 @@ https://github.com/angular/components/issues/6178
                 <table>
                   <th colspan="2">IP</th>
                   <tr *ngFor="let vlan of element.vlan">
-                    <td>{{vlan.bezeichnung}}: {{apService.getIpString(vlan.vlan + vlan.ip)}}</td>
-                    <td>{{apService.getMacString(vlan.mac)}}</td>
+                    <td>
+                      {{ vlan.bezeichnung }}: {{ apService.getIpString(vlan.vlan + vlan.ip) }}
+                    </td>
+                    <td>{{ apService.getMacString(vlan.mac) }}</td>
                   </tr>
                 </table>
               </div>
@@ -310,14 +426,14 @@ https://github.com/angular/components/issues/6178
                 <table>
                   <th colspan="2">Sonstige Informationen</th>
                   <tr *ngFor="let tag of element.tags">
-                    <td [colSpan]="tag.flag === 1 ? 2 : 1">{{tag.bezeichnung}}</td>
-                    <td *ngIf="tag.flag !== 1">{{tag.text}}</td>
+                    <td [colSpan]="tag.flag === 1 ? 2 : 1">{{ tag.bezeichnung }}</td>
+                    <td *ngIf="tag.flag !== 1">{{ tag.text }}</td>
                     <!--                    <td>{{tag.flag === 1 ? '' : tag.text}}</td>-->
                   </tr>
                 </table>
               </div>
             </div>
-            <div class="ap-detail-bemerk">{{element.bemerkung}}</div>
+            <div class="ap-detail-bemerk">{{ element.bemerkung }}</div>
           </div>
         </td>
       </ng-container>
@@ -326,33 +442,41 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="footer">
         <td mat-footer-cell *matFooterCellDef [colSpan]="apService.displayedColumns.length">
           <div>
-            {{apService.apDataSource.filteredData.length}} APs von {{apService.apDataSource.data.length}}
+            {{ apService.apDataSource.filteredData.length }} APs von
+            {{ apService.apDataSource.data.length }}
           </div>
           <div class="fill"></div>
-          <div style="font-size: 10px">
+          <div style="font-size: 10px;">
             <!--  rechtsbuendiger Text -->
           </div>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="apService.displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let element; columns: apService.displayedColumns;"
-          class="ap-row"
-          [class.ap-detail-expanded]="apService.expandedRow === element"
+      <tr
+        mat-row
+        *matRowDef="let element; columns: apService.displayedColumns"
+        class="ap-row"
+        [class.ap-detail-expanded]="apService.expandedRow === element"
       ></tr>
-      <tr mat-row *matRowDef="let element; columns: ['apdetails']" class="ap-detail-row"
-          [class.ap-detail-content-expanded]="apService.expandedRow === element"
+      <tr
+        mat-row
+        *matRowDef="let element; columns: ['apdetails']"
+        class="ap-detail-row"
+        [class.ap-detail-content-expanded]="apService.expandedRow === element"
       ></tr>
       <!--      <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true" ></tr>-->
     </table>
   </div>
 
-                        <!-- ?? background: linear-gradient(to top, #fd3232 0%, #ce0000 100%); -->
-  <mat-paginator [pageSizeOptions]="[100, 250, 500, 1000]"
-                 showFirstLastButtons
-                 (page)="apService.onPage($event)"
-                 class="paginator"
-                 color="primary"></mat-paginator>
+  <!-- ?? background: linear-gradient(to top, #fd3232 0%, #ce0000 100%); -->
+  <mat-paginator
+    [pageSizeOptions]="[100, 250, 500, 1000]"
+    showFirstLastButtons
+    (page)="apService.onPage($event)"
+    class="paginator"
+    color="primary"
+  ></mat-paginator>
 </div>
 
 <sbsdb-status [bottom]="20" [left]="20" [text]="apService.statusText"></sbsdb-status>
@@ -367,38 +491,71 @@ https://github.com/angular/components/issues/6178
       <mat-icon>close</mat-icon>
       Alle Filter löschen
     </button>
-    <button mat-menu-item class="menue-entry"
-            (click)="apService.userSettings.showStandort = !apService.userSettings.showStandort">
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.userSettings.showStandort = !apService.userSettings.showStandort"
+    >
       <mat-icon>home</mat-icon>
       Standort anzeigen
       <div class="fill"></div>
-      <mat-icon class="menue-checkbox">{{apService.userSettings.showStandort ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+      <mat-icon class="menue-checkbox">{{
+        apService.userSettings.showStandort ? "check_box" : "check_box_outline_blank"
+      }}</mat-icon>
     </button>
-    <button mat-menu-item class="menue-entry"
-            (click)="apService.userSettings.searchSonstHw = !apService.userSettings.searchSonstHw">
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.userSettings.searchSonstHw = !apService.userSettings.searchSonstHw"
+    >
       <mat-icon>devices</mat-icon>
       Suche in sonstiger HW
       <div class="fill"></div>
-      <mat-icon class="menue-checkbox">{{apService.userSettings.searchSonstHw ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+      <mat-icon class="menue-checkbox">{{
+        apService.userSettings.searchSonstHw ? "check_box" : "check_box_outline_blank"
+      }}</mat-icon>
     </button>
-    <button mat-menu-item class="menue-entry" (click)="apService.tableWrapCell = !apService.tableWrapCell">
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.tableWrapCell = !apService.tableWrapCell"
+    >
       <mat-icon>wrap_text</mat-icon>
       Zeilenumbruch
       <div class="fill"></div>
-      <mat-icon class="menue-checkbox">{{apService.tableWrapCell ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+      <mat-icon class="menue-checkbox">{{
+        apService.tableWrapCell ? "check_box" : "check_box_outline_blank"
+      }}</mat-icon>
     </button>
-    <button mat-menu-item class="menue-entry" (click)="apService.clickForDetails = !apService.clickForDetails">
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.clickForDetails = !apService.clickForDetails"
+    >
       <mat-icon>touch_app</mat-icon>
       Zeilenklick
       <div class="fill"></div>
-      <mat-icon class="menue-checkbox">{{apService.clickForDetails ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+      <mat-icon class="menue-checkbox">{{
+        apService.clickForDetails ? "check_box" : "check_box_outline_blank"
+      }}</mat-icon>
     </button>
-    <button mat-menu-item class="menue-entry"
-            (click)="apService.linkcolor === 'primary' ? apService.linkcolor = 'accent' : apService.linkcolor = 'primary'">
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="
+        apService.linkcolor === 'primary'
+          ? (apService.linkcolor = 'accent')
+          : (apService.linkcolor = 'primary')
+      "
+    >
       <mat-icon>format_color_text</mat-icon>
       toggle menu color
     </button>
-    <button mat-menu-item class="menue-entry" (click)="apService.linkcolor2 = !apService.linkcolor2">
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.linkcolor2 = !apService.linkcolor2"
+    >
       <mat-icon>format_color_text</mat-icon>
       toggle link color
     </button>

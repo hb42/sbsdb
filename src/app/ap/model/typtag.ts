@@ -5,5 +5,4 @@ export class TypTag {
 
   // berechnete felder
   public select: string;
-
 }

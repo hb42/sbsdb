@@ -1,5 +1,4 @@
 export class RelationalNotLike /*implements RelationalOperator*/ {
-
   public toString(): string {
     return "ENTHÄLT_NICHT";
   }
@@ -9,5 +8,4 @@ export class RelationalNotLike /*implements RelationalOperator*/ {
     compare = compare ? compare.toLocaleLowerCase() : "";
     return !fieldContent.includes(compare);
   }
-
 }

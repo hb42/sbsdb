@@ -1,5 +1,4 @@
 export class Hardware {
-
   public id: number;
   public hersteller: string;
   public bezeichnung: string;

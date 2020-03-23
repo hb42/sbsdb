@@ -1,5 +1,13 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
-import { AfterViewInit, Component, HostBinding, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  HostBinding,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
@@ -10,17 +18,23 @@ import { ApFilterComponent } from "../ap-filter/ap-filter.component";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
-             selector   : "sbsdb-ap",
-             templateUrl: "./ap.component.html",
-             styleUrls  : ["./ap.component.scss"],
-             animations : [
-               trigger("detailExpand", [
-                 state("collapsed", style({height: "0px", minHeight: "0", display: "none"})),
-                 state("expanded", style({height: "*"})),
-                 transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
-               ])
-             ],
-           })
+  selector: "sbsdb-ap",
+  templateUrl: "./ap.component.html",
+  styleUrls: ["./ap.component.scss"],
+  animations: [
+    trigger("detailExpand", [
+      state(
+        "collapsed",
+        style({ height: "0px", minHeight: "0", display: "none" })
+      ),
+      state("expanded", style({ height: "*" })),
+      transition(
+        "expanded <=> collapsed",
+        animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")
+      ),
+    ]),
+  ],
+})
 export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
 
@@ -36,13 +50,17 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener("document:keydown", ["$event"])
   handleSort(event: KeyboardEvent) {
     if (event.altKey && !event.shiftKey && !event.ctrlKey) {
-      const colIdx = this.apService.columns.findIndex((c) => c.accelerator && c.accelerator === event.key);
+      const colIdx = this.apService.columns.findIndex(
+        (c) => c.accelerator && c.accelerator === event.key
+      );
       if (colIdx >= 0) {
         // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
         //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
         //       -> https://github.com/angular/components/issues/10242
         // this.sort.sort(this.sort.sortables.get(this.apService.columns[colIdx].name));
-        const sortHeader = this.sort.sortables.get(this.apService.columns[colIdx].columnName) as MatSortHeader;
+        const sortHeader = this.sort.sortables.get(
+          this.apService.columns[colIdx].columnName
+        ) as MatSortHeader;
         sortHeader._handleClick();
         event.preventDefault();
         event.stopPropagation();
@@ -50,18 +68,19 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("firstfilter") firstFilter;
   @ViewChild("lastfilter") lastFilter;
 
   public subscription: Subscription;
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private config: ConfigService,
-              public apService: ArbeitsplatzService,
-              public dialog: MatDialog
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private config: ConfigService,
+    public apService: ArbeitsplatzService,
+    public dialog: MatDialog
   ) {
     console.debug("c'tor ApComponent");
   }
@@ -85,7 +104,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       //   <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">test</a>
       this.apService.urlParams = {
         tree: params.tree,
-        id  : Number.parseInt(params.id, 10)
+        id: Number.parseInt(params.id, 10),
       };
       if (params.tree && params.tree === "oe") {
         this.apService.expandTree(this.apService.urlParams.id);
@@ -95,7 +114,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     // await this.apService.getAps();
     this.apService.apDataSource.sort = this.sort;
     this.apService.apDataSource.paginator = this.paginator;
-
   }
 
   public ngAfterViewInit(): void {
@@ -148,16 +166,14 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       // width: "500px",
       // maxWidth: "600px",
       disableClose: true,
-      data        : this.apService.filterExpression,
+      data: this.apService.filterExpression,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.debug("The dialog was closed");
         console.dir(result);
       }
     });
-
   }
-
 }

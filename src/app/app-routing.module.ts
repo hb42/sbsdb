@@ -11,17 +11,17 @@ const HW_PATH = "hw";
 const ADM_PATH = "admin";
 
 const routes: Routes = [
-  {path: "", redirectTo: "/" + AP_PATH, pathMatch: "full"},
-  {path: AP_PATH, component: ApComponent},
-  {path: HW_PATH, component: HwComponent},
-  {path: ADM_PATH, component: AdminComponent},
-  {path: ErrorService.errorPage, component: ErrorComponent}
+  { path: "", redirectTo: "/" + AP_PATH, pathMatch: "full" },
+  { path: AP_PATH, component: ApComponent },
+  { path: HW_PATH, component: HwComponent },
+  { path: ADM_PATH, component: AdminComponent },
+  { path: ErrorService.errorPage, component: ErrorComponent },
 ];
 
 @NgModule({
-            imports: [RouterModule.forRoot(routes)],
-            exports: [RouterModule]
-          })
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
 export class AppRoutingModule {
   public static apPath = AP_PATH;
   public static hwPath = HW_PATH;

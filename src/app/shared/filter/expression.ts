@@ -11,15 +11,18 @@ import { Term } from "./term";
  *
  */
 export class Expression implements Term {
-
-  constructor(public readonly field: Field,
-              public readonly operator: RelationalOperator,
-              public readonly compare: string) {
+  constructor(
+    public readonly field: Field,
+    public readonly operator: RelationalOperator,
+    public readonly compare: string
+  ) {
     // noop
   }
 
   toString(): string {
-    return "[" + this.field.displayName + " " + this.operator.toString() + " \"" + this.compare + "\"]";
+    return (
+      "[" + this.field.displayName + " " + this.operator.toString() + ' "' + this.compare + '"]'
+    );
   }
 
   validate(record: Object): boolean {
