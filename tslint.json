@@ -1,142 +1,180 @@
 {
-  "rulesDirectory": [
-    "node_modules/codelyzer"
-  ],
-  "extends": ["tslint-plugin-prettier", "tslint-config-prettier"],
+  "extends": ["tslint:recommended", "tslint-plugin-prettier", "tslint-config-prettier"],
   "rules": {
     "prettier": true,
-    "callable-types": true,
-    "class-name": true,
-    "comment-format": [
-      true,
-      "check-space"
-    ],
-    "curly": true,
-    "eofline": true,
-    "forin": true,
-    "import-blacklist": [
-      true
-    ],
-    "import-spacing": true,
-    "indent": [
-      true,
-      "spaces"
-    ],
-    "interface-over-type-literal": true,
-    "label-position": true,
-    "max-line-length": [
-      true,
-      140
-    ],
-    "member-access": false,
-    "member-ordering": [
-      false,
-      "static-before-instance",
-      "variables-before-functions"
-    ],
-    "no-arg": true,
-    "no-bitwise": true,
-    "no-console": [
-      true,
-      "log"
-      /* nur log ausschliessen
-      "debug",
-      "info",
-      "time",
-      "timeEnd",
-      "trace"  */
-    ],
-    "no-construct": true,
-    "no-debugger": true,
-    "no-duplicate-variable": true,
-    "no-empty": false,
-    "no-empty-interface": true,
-    "no-eval": true,
-    "no-inferrable-types": [
-      true,
-      "ignore-params"
-    ],
-    "no-shadowed-variable": true,
+    /*
+     * Any rules specified here will override those from the base config we are extending
+     */
+    /*  console nur mit .info(), .error(), .debug() */
+    // "no-console": [true, "log"],
+    /* interface name ohne 'I' (ng2 style guide) */
+    // "interface-name": [true, "never-prefix"],
+    /* alpha-sort fuer object properties ist wenig hilfreich */
+    //    "object-literal-sort-keys": false,
+    /* Zugriff via obj["name"] erlauben, ist zwar nicht sauber aber nicht vollstaendig zu vermeiden */
     "no-string-literal": false,
-    "no-string-throw": true,
-    /* submodule imports erlauben */
-    "no-submodule-imports": [
-      true,
-      "rxjs",
-      true,
-      "@angular",
-      true,
-      "primeng"
-    ],
-    "no-switch-case-fall-through": true,
-    /* die Webstorm-IDE rueckt auch Leerzeilen ein, das wuerde dauernd angemeckert */
+    /* die IDE rueckt auch Leerzeilen ein, das wuerde dauernd angemeckert */
     "no-trailing-whitespace": false,
-    "no-unused-expression": true,
-    "no-use-before-declare": true,
-    "no-var-keyword": true,
-    "object-literal-sort-keys": false,
-    "one-line": [
-      true,
-      "check-open-brace",
-      "check-catch",
-      "check-else",
-      "check-whitespace"
-    ],
-    "prefer-const": true,
-    "quotemark": [
-      true,
-      /* single -> double  */
-      "double"
-    ],
-    "radix": true,
-    "semicolon": [
-      "always"
-    ],
-    "triple-equals": [
-      true,
-      "allow-null-check"
-    ],
-    "typedef-whitespace": [
-      true,
-      {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      }
-    ],
-    "typeof-compare": true,
-    "unified-signatures": true,
-    "variable-name": false,
-    "whitespace": [
-      true,
-      "check-branch",
-      "check-decl",
-      "check-operator",
-      "check-separator",
-      "check-type"
-    ],
+    /* sort explizit auf case-insensitive */
+    //    "ordered-imports": [
+    //      true,
+    //      { "import-sources-order": "case-insensitive", "named-imports-order": "case-insensitive" }
+    //    ],
+    /* import from rxjs/observable etc. erlauben */
+    //    "no-submodule-imports": [true, "rxjs", true, "@angular"],
+    /* public vor private etc. wenn mal Zeit ist... */
+    //    "member-ordering": false,
+
+    /* angular config */
+    "align": {
+      "options": [
+        "parameters",
+        "statements"
+      ]
+    },
+    "array-type": false,
+    "arrow-return-shorthand": true,
+    "curly": true,
+    "deprecation": {
+      "severity": "warning"
+    },
+    "component-class-suffix": true,
+    "contextual-lifecycle": true,
+    "directive-class-suffix": true,
     "directive-selector": [
       true,
       "attribute",
-      "camelCase"
+      "sbsdb",    // ggf. anpassen
+       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
+      "sbsdb",  // ggf. anpassen
       "kebab-case"
     ],
-    "no-inputs-metadata-property": true,
-    "no-outputs-metadata-property": true,
+    "eofline": true,
+    "import-blacklist": [
+      true,
+      "rxjs/Rx"
+    ],
+    "import-spacing": true,
+    "indent": {
+      "options": [
+        "spaces"
+      ]
+    },
+    "max-classes-per-file": false,
+    /* das macht prettier
+    "max-line-length": [
+      true,
+      140
+    ], */
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "static-field",
+          "instance-field",
+          "static-method",
+          "instance-method"
+        ]
+      }
+    ],
+    "no-console": [
+      true,
+    /*  "debug",  wird erstmal noch gebraucht */
+    /*  "info", */
+      "time",
+      "timeEnd",
+      "trace"
+    ],
+    "no-empty": false,
+    "no-inferrable-types": [
+      true,
+      "ignore-params"
+    ],
+    "no-non-null-assertion": true,
+    "no-redundant-jsdoc": true,
+    "no-switch-case-fall-through": true,
+    "no-var-requires": false,
+    "object-literal-key-quotes": [
+      true,
+      "as-needed"
+    ],
+    /* darum kuemmert sich prettier (-> double)
+    "quotemark": [
+      true,
+      "single"
+    ], */
+    "semicolon": {
+      "options": [
+        "always",
+        "ignore-bound-class-methods"  /* wg. prettier */
+      ]
+    },
+    "space-before-function-paren": {
+      "options": {
+        "anonymous": "never",
+        "asyncArrow": "always",
+        "constructor": "never",
+        "method": "never",
+        "named": "never"
+      }
+    },
+    "typedef-whitespace": {
+      "options": [
+        {
+          "call-signature": "nospace",
+          "index-signature": "nospace",
+          "parameter": "nospace",
+          "property-declaration": "nospace",
+          "variable-declaration": "nospace"
+        },
+        {
+          "call-signature": "onespace",
+          "index-signature": "onespace",
+          "parameter": "onespace",
+          "property-declaration": "onespace",
+          "variable-declaration": "onespace"
+        }
+      ]
+    },
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-pascal-case"
+      ]
+    },
+    "whitespace": {
+      "options": [
+        "check-branch",
+        "check-decl",
+        "check-operator",
+        "check-separator",
+        "check-type",
+        "check-typecast"
+      ]
+    },
+    "no-conflicting-lifecycle": true,
     "no-host-metadata-property": true,
     "no-input-rename": true,
+    "no-inputs-metadata-property": true,
+    "no-output-native": true,
+    "no-output-on-prefix": true,
     "no-output-rename": true,
+    "no-outputs-metadata-property": true,
+    "template-banana-in-box": true,
+    "template-no-negated-async": true,
     "use-lifecycle-interface": true,
-    "use-pipe-transform-interface": true,
-    "component-class-suffix": true,
-    "directive-class-suffix": true,
-    "no-access-missing-member": true,
-    "templates-use-public": true
-  }
+    "use-pipe-transform-interface": true
+  },
+  "rulesDirectory": [
+    /*
+     * A list of relative or absolute paths to directories that contain custom rules.
+     * See the Custom Rules documentation below for more details.
+     */
+    "codelyzer"
+  ]
 }

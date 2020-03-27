@@ -12,13 +12,13 @@ class User {
   public path: string;
 
   // AP-Page
-  showStandort: boolean;
-  apColumnFilters: ColumnFilter[];
-  apExtFilter: string;
-  apSortColumn: string;
-  apSortDirection: string;
-  apPageSize: number;
-  searchSonstHw: boolean;
+  public showStandort: boolean;
+  public apColumnFilters: ColumnFilter[];
+  public apExtFilter: string;
+  public apSortColumn: string;
+  public apSortDirection: string;
+  public apPageSize: number;
+  public searchSonstHw: boolean;
 }
 
 /**
@@ -28,6 +28,7 @@ class User {
  * loesst einen Event aus, der im ConfigService das Speichern der Userdaten
  * anstoesst.
  */
+// tslint:disable-next-line:max-classes-per-file
 export class UserSession {
   private user: User;
   private changeEvent: EventEmitter<User>;
@@ -119,9 +120,7 @@ export class UserSession {
     if (nr >= this.user.apColumnFilters.length) {
       return { text: "", inc: true };
     }
-    return this.user.apColumnFilters[nr]
-      ? this.user.apColumnFilters[nr]
-      : { text: "", inc: true };
+    return this.user.apColumnFilters[nr] ? this.user.apColumnFilters[nr] : { text: "", inc: true };
   }
 
   public setApFilter(nr: number, filt: ColumnFilter) {

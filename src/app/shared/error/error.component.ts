@@ -20,7 +20,7 @@ export class ErrorComponent implements OnInit {
     console.debug("c'tor ErrorComponent");
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     const latest = this.errorService.getLastError();
     this.status = latest["title"];
     this.message = latest["message"];

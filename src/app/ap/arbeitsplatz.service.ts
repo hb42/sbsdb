@@ -18,18 +18,14 @@ import { OeTreeItem } from "./model/oe.tree.item";
 
 @Injectable({ providedIn: "root" })
 export class ArbeitsplatzService {
-  public treeControl = new NestedTreeControl<OeTreeItem>(
-    (node) => node.children
-  );
+  public treeControl = new NestedTreeControl<OeTreeItem>((node) => node.children);
   public dataSource = new MatTreeNestedDataSource<OeTreeItem>();
 
   private oeTree: OeTreeItem[];
   public selected: OeTreeItem;
   public urlParams: any;
 
-  public apDataSource: MatTableDataSource<
-    Arbeitsplatz
-  > = new MatTableDataSource<Arbeitsplatz>();
+  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
   public filterExpression = new Bracket(null);
 
@@ -61,6 +57,20 @@ export class ArbeitsplatzService {
   public columns: ApColumn[] = [];
   public displayedColumns: string[];
   public extFilterColumns: ApColumn[];
+
+  // Web-API calls
+  private readonly oeTreeUrl: string;
+  private readonly allApsUrl: string;
+  private readonly pageApsUrl: string;
+  private readonly singleApUrl: string;
+
+  // case insensitive alpha sort
+  // deutlich schneller als String.localeCompare()
+  //  -> result = this.collator.compare(a, b)
+  private collator = new Intl.Collator("de", {
+    numeric: true,
+    sensitivity: "base",
+  });
 
   private buildColumns() {
     this.columns.push(
@@ -106,9 +116,7 @@ export class ArbeitsplatzService {
           [
             ...new Set(
               this.apDataSource.data.map((a) =>
-                this.userSettings.showStandort
-                  ? a.verantwOe.betriebsstelle
-                  : a.oe.betriebsstelle
+                this.userSettings.showStandort ? a.verantwOe.betriebsstelle : a.oe.betriebsstelle
               )
             ),
           ].sort()
@@ -175,9 +183,7 @@ export class ArbeitsplatzService {
     // + cols bemerkung -> enthaelt
     //        tags -> hat tag [dropdown], hat tag nicht [dropdown], enthaelt (text aller tags)
 
-    this.displayedColumns = this.columns
-      .filter((c) => c.show)
-      .map((col) => col.columnName);
+    this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
     this.extFilterColumns = this.columns.filter((c) => c.operators);
   }
 
@@ -193,20 +199,6 @@ export class ArbeitsplatzService {
       return null;
     }
   }
-
-  // Web-API calls
-  private readonly oeTreeUrl: string;
-  private readonly allApsUrl: string;
-  private readonly pageApsUrl: string;
-  private readonly singleApUrl: string;
-
-  // case insensitive alpha sort
-  // deutlich schneller als String.localeCompare()
-  //  -> result = this.collator.compare(a, b)
-  private collator = new Intl.Collator("de", {
-    numeric: true,
-    sensitivity: "base",
-  });
 
   /* TODO AP-TABLE-LOAD
    Fuer erweiterte Filter muessen alle Daten in der gesamten Tabelle vorliegen.
@@ -286,17 +278,13 @@ export class ArbeitsplatzService {
     // this.typtagSelect = await this.http.get<TypTag[]>(this.typtagUrl).toPromise();
     // this.typtagSelect.forEach((t) => t.select = t.apkategorie + ": " + t.tagTyp);
 
-    const pagesize: number = await this.configService.getConfig(
-      ConfigService.AP_PAGE_SIZE
-    );
+    const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
     const defaultpagesize = 100;
     let page = 0;
 
     // TODO AP-TABLE-LOAD
     // const data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();  // alle, aber nicht alle Daten
-    const data = await this.http
-      .get<Arbeitsplatz[]>(this.pageApsUrl + page)
-      .toPromise(); // 1. Teil, vollstaendiger record
+    const data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise(); // 1. Teil, vollstaendiger record
     data.forEach((ap) => {
       this.prepAP(ap);
     });
@@ -350,8 +338,7 @@ export class ArbeitsplatzService {
       this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
       if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
         this.apDataSource.sort.active = this.userSettings.apSortColumn;
-        this.apDataSource.sort.direction =
-          this.userSettings.apSortDirection === "asc" ? "" : "asc";
+        this.apDataSource.sort.direction = this.userSettings.apSortDirection === "asc" ? "" : "asc";
         const sortheader = this.apDataSource.sort.sortables.get(
           this.userSettings.apSortColumn
         ) as MatSortHeader;
@@ -422,9 +409,7 @@ export class ArbeitsplatzService {
       "OE: " +
       ap.oe.bstNr +
       "\n\n" +
-      (ap.oe.strasse
-        ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n"
-        : "") +
+      (ap.oe.strasse ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n" : "") +
       (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "") +
       (ap.oe.oeff ? "\n" + ap.oe.oeff : "")
     );
@@ -516,7 +501,7 @@ export class ArbeitsplatzService {
 
   // eindeutiger String fuer alle Filter -> apDataSource.filter
   private getFilterString(): string {
-    let s;
+    let s = "";
     for (let i = 0; i < this.userSettings.apFiltersCount(); i++) {
       const filt = this.userSettings.getApFilter(i);
       s += filt.text + filt.inc;
@@ -528,9 +513,7 @@ export class ArbeitsplatzService {
 
   public getMacString(mac: string) {
     // kein match => Eingabe-String
-    return mac
-      .replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1:$2:$3:$4:$5:$6")
-      .toUpperCase();
+    return mac.replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1:$2:$3:$4:$5:$6").toUpperCase();
   }
 
   public getIpString(ip: number) {
@@ -668,8 +651,7 @@ export class ArbeitsplatzService {
     ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
     ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
     // if (ap.verantwOe) {
-    ap.voesearch =
-      ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
+    ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
     ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
     // } else {
     //   ap.voesearch = ap.oesearch;

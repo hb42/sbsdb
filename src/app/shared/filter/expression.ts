@@ -19,20 +19,20 @@ export class Expression implements Term {
     // noop
   }
 
-  toString(): string {
+  public toString(): string {
     return (
       "[" + this.field.displayName + " " + this.operator.toString() + ' "' + this.compare + '"]'
     );
   }
 
-  validate(record: Object): boolean {
+  public validate(record: object): boolean {
     if (record && record.hasOwnProperty(this.field.fieldName)) {
       return this.operator.execute(record[this.field.fieldName], this.compare);
     }
     return false;
   }
 
-  isBracket(): boolean {
+  public isBracket(): boolean {
     return false;
   }
 }

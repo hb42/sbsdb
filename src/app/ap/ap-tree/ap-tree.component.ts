@@ -5,17 +5,14 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
 import { OeTreeItem } from "../model/oe.tree.item";
 
 @Component({
-             selector   : "sbsdb-ap-tree",
-             templateUrl: "./ap-tree.component.html",
-             styleUrls  : ["./ap-tree.component.scss"]
-           })
+  selector: "sbsdb-ap-tree",
+  templateUrl: "./ap-tree.component.html",
+  styleUrls: ["./ap-tree.component.scss"],
+})
 export class ApTreeComponent implements OnInit {
   // @HostBinding("attr.class") cssClass = "flex-content";
 
-
-  constructor(public apService: ArbeitsplatzService,
-              private router: Router) {
-  }
+  constructor(public apService: ArbeitsplatzService, private router: Router) {}
 
   public async ngOnInit() {
     await this.apService.getOeTree();
@@ -29,10 +26,11 @@ export class ApTreeComponent implements OnInit {
   public select(node: OeTreeItem) {
     console.debug("node selected " + node.id);
     this.apService.selected = node;
-    this.router.navigate(["/" + AppRoutingModule.apPath, {tree: "oe", id: node.id}]);
+    this.router.navigate(["/" + AppRoutingModule.apPath, { tree: "oe", id: node.id }]);
   }
 
-  public isSelected = (id: number) => !!this.apService.selected && this.apService.selected.id === id;
+  public isSelected = (id: number) =>
+    !!this.apService.selected && this.apService.selected.id === id;
 
   public showInfo(node) {
     window.alert(node.oeff);

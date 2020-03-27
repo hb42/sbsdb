@@ -1,11 +1,9 @@
-
 // Dimensionen fuer Baum und Liste
 $treeWidth: 350px;
 $treeMinWidth: 100px;
 
 $listWidth: 100%;
 $listMinWidth: 100px;
-
 
 .treePanel {
   width: $treeWidth;
@@ -39,7 +37,9 @@ $listMinWidth: 100px;
 }
 
 /* Standard fuer Tabelle/Zellen */
-td.mat-cell, td.mat-footer-cell, th.mat-header-cell {
+td.mat-cell,
+td.mat-footer-cell,
+th.mat-header-cell {
   padding-right: 15px;
 }
 
@@ -68,7 +68,7 @@ table:not(.wrap-cell) .mat-cell > div {
 
 /* Filter-Felder */
 .filter-xs {
-  width: 80px
+  width: 80px;
 }
 
 .filter-s {
@@ -170,7 +170,6 @@ tr.ap-row:not(.ap-detail-expanded):active {
   background: var(--md-row-active-background-color);
 }
 
-
 .ap-detail-expanded,
 .ap-detail-content-expanded {
   background-color: var(--md-details-background-color);
@@ -181,7 +180,7 @@ tr.ap-row:not(.ap-detail-expanded):active {
 
 .ap-detail-expanded .highlight-when-expanded {
   font-weight: bold !important;
-  color: rgba(0, 0, 0, .87);
+  color: rgba(0, 0, 0, 0.87);
 }
 
 .pseudo-button {
@@ -222,7 +221,7 @@ tr.ap-row:not(.ap-detail-expanded):active {
 .ap-detail-content-row {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap
+  flex-wrap: wrap;
 }
 
 .ap-detail-margin {
@@ -239,14 +238,14 @@ tr.ap-row:not(.ap-detail-expanded):active {
 
 .ap-detail-oeff {
   white-space: pre-wrap;
-  font-family: 'Roboto Mono', monospace;
+  font-family: "Roboto Mono", monospace;
   font-size: 13px;
 }
 
 .ap-detail-bemerk {
   white-space: pre-wrap;
   margin-top: 25px;
-  margin-bottom: 25px
+  margin-bottom: 25px;
 }
 
 /* Paginator */

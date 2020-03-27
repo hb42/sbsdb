@@ -17,12 +17,24 @@ import { NavigationService } from "../navigation.service";
   styleUrls: ["./head.component.scss"],
 })
 export class HeadComponent implements OnInit, AfterViewInit {
-  @HostBinding("attr.class") cssClass = "flex-panel";
+  @HostBinding("attr.class") public cssClass = "flex-panel";
 
-  @ViewChild("menubtn") menuBtn;
+  @ViewChild("menubtn") public menuBtn;
+
+  @ViewChild("apmenu", { static: true }) public apmenu;
+  @ViewChild("hwmenu", { static: true }) public hwmenu;
+  @ViewChild("admenu", { static: true }) public admenu;
+
+  public navLinks = [
+    { path: "/ap", label: "Arbeitsplätze", key: "a", menu: null },
+    { path: "/hw", label: "Hardware", key: "h", menu: null },
+    { path: "/admin", label: "Admin", key: "d", menu: null },
+  ];
+
+  public search: string;
 
   @HostListener("document:keydown", ["$event"])
-  handleKeyboardEvent(event: KeyboardEvent) {
+  public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.altKey) {
       this.navLinks.forEach((nav) => {
         if (nav.key === event.key) {
@@ -42,17 +54,6 @@ export class HeadComponent implements OnInit, AfterViewInit {
     }
   }
 
-  @ViewChild("apmenu", { static: true }) apmenu;
-  @ViewChild("hwmenu", { static: true }) hwmenu;
-  @ViewChild("admenu", { static: true }) admenu;
-  public navLinks = [
-    { path: "/ap", label: "Arbeitsplätze", key: "a", menu: null },
-    { path: "/hw", label: "Hardware", key: "h", menu: null },
-    { path: "/admin", label: "Admin", key: "d", menu: null },
-  ];
-
-  public search: string;
-
   constructor(
     private router: Router,
     public navigationService: NavigationService,
@@ -60,7 +61,8 @@ export class HeadComponent implements OnInit, AfterViewInit {
     public apService: ArbeitsplatzService
   ) {}
 
-  ngOnInit() {}
+  // tslint:disable-next-line:no-empty
+  public ngOnInit() {}
 
   public ngAfterViewInit(): void {
     this.navLinks[0].menu = this.apmenu;

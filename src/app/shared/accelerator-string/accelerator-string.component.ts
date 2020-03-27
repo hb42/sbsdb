@@ -7,16 +7,17 @@ import { Component, Input, OnInit } from "@angular/core";
 })
 export class AcceleratorStringComponent implements OnInit {
   // accel ist das Zeichen in text, das unterstrichen werden soll
-  @Input() text: string;
-  @Input() accel: string;
+  @Input() public text: string;
+  @Input() public accel: string;
 
   public pre = "";
   public acc = "";
   public post = "";
 
+  // tslint:disable-next-line:no-empty
   constructor() {}
 
-  ngOnInit() {
+  public ngOnInit() {
     const pos = this.text.toLowerCase().indexOf(this.accel.toLowerCase());
     if (pos === -1) {
       this.pre = this.text; // key nicht gefunden

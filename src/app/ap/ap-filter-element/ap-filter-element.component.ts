@@ -8,11 +8,13 @@ import { Element } from "../../shared/filter/element";
   styleUrls: ["./ap-filter-element.component.scss"],
 })
 export class ApFilterElementComponent implements OnInit {
-  @Input() element: Element;
+  @Input() public element: Element;
 
+  // tslint:disable-next-line:no-empty
   constructor() {}
 
-  ngOnInit() {}
+  // tslint:disable-next-line:no-empty
+  public ngOnInit() {}
 
   public edit(el: Element) {
     console.debug("EDIT " + el.term.toString());

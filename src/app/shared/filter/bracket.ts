@@ -38,7 +38,7 @@ export class Bracket implements Term {
     return rc + this.brRight;
   }
 
-  public validate(record: Object): boolean {
+  public validate(record: object): boolean {
     return this.elements.reduce((prev, curr) => {
       return curr.operator
         ? curr.operator.execute(prev, curr.term.validate(record))
@@ -75,7 +75,7 @@ export class Bracket implements Term {
     this.elements.splice(this.elements.indexOf(el), 1);
   }
 
-  isBracket(): boolean {
+  public isBracket(): boolean {
     return true;
   }
 }

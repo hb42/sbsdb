@@ -8,13 +8,10 @@ import { ConfigService } from "../config/config.service";
   styleUrls: ["./foot.component.scss"],
 })
 export class FootComponent implements OnInit {
-  @HostBinding("attr.class") cssClass = "flex-panel";
+  @HostBinding("attr.class") public cssClass = "flex-panel";
 
   // TODO apService muss hier wieder raus - Footer notwendig?
-  constructor(
-    public configService: ConfigService,
-    public apService: ArbeitsplatzService
-  ) {}
+  constructor(public configService: ConfigService, public apService: ArbeitsplatzService) {}
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

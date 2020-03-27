@@ -8,14 +8,16 @@ import { LogicalOperator } from "../../shared/filter/logical-operator";
   styleUrls: ["./ap-filter-bracket.component.scss"],
 })
 export class ApFilterBracketComponent implements OnInit {
-  @Input() bracket: Bracket;
-  @Input() operator: LogicalOperator;
+  @Input() public bracket: Bracket;
+  @Input() public operator: LogicalOperator;
 
   public menuopen = false;
 
+  // tslint:disable-next-line:no-empty
   constructor() {}
 
-  ngOnInit() {}
+  // tslint:disable-next-line:no-empty
+  public ngOnInit() {}
 
   public insert(b: Bracket) {
     console.debug("INSERT " + b.toString());

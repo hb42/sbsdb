@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
     console.debug("c'tor AppComponent");
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // zur letzten gespeicherten Seite des Users
     this.nav.gotoUserPath();
   }

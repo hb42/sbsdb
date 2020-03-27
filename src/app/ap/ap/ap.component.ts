@@ -23,24 +23,18 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
   styleUrls: ["./ap.component.scss"],
   animations: [
     trigger("detailExpand", [
-      state(
-        "collapsed",
-        style({ height: "0px", minHeight: "0", display: "none" })
-      ),
+      state("collapsed", style({ height: "0px", minHeight: "0", display: "none" })),
       state("expanded", style({ height: "*" })),
-      transition(
-        "expanded <=> collapsed",
-        animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")
-      ),
+      transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
     ]),
   ],
 })
 export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
-  @HostBinding("attr.class") cssClass = "flex-panel flex-content-fix";
+  @HostBinding("attr.class") public cssClass = "flex-panel flex-content-fix";
 
   // focus first filter
   @HostListener("document:keydown.alt.f", ["$event"])
-  handleKeyboardEvent(event: KeyboardEvent) {
+  public handleKeyboardEvent(event: KeyboardEvent) {
     this.focusFirstFilter();
     event.preventDefault();
     event.stopPropagation();
@@ -48,7 +42,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Spalten via Keyboard sortieren
   @HostListener("document:keydown", ["$event"])
-  handleSort(event: KeyboardEvent) {
+  public handleSort(event: KeyboardEvent) {
     if (event.altKey && !event.shiftKey && !event.ctrlKey) {
       const colIdx = this.apService.columns.findIndex(
         (c) => c.accelerator && c.accelerator === event.key
@@ -68,10 +62,10 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild("firstfilter") firstFilter;
-  @ViewChild("lastfilter") lastFilter;
+  @ViewChild(MatSort, { static: true }) public sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
+  @ViewChild("firstfilter") public firstFilter;
+  @ViewChild("lastfilter") public lastFilter;
 
   public subscription: Subscription;
 
@@ -127,7 +121,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 0);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.subscription) {
       console.debug("ApComponent - subscription.unsubscribe");
       this.subscription.unsubscribe();

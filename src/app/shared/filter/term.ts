@@ -3,7 +3,7 @@
  */
 export interface Term {
   // Ausdruck fuer einen  Datensatz auswerten
-  validate(record: Object): boolean;
+  validate(record: object): boolean;
 
   // fuer die schnelle Unterscheidung
   isBracket(): boolean;

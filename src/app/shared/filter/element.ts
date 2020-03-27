@@ -9,13 +9,13 @@ import { Term } from "./term";
  */
 export class Element {
   private static counter = 0;
-  private _count: number;
+  private cnt: number;
 
   public get count(): number {
-    return this._count;
+    return this.cnt;
   }
 
   constructor(public operator: LogicalOperator | null, public term: Term) {
-    this._count = Element.counter++;
+    this.cnt = Element.counter++;
   }
 }

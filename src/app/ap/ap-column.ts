@@ -27,8 +27,8 @@ export interface ApColumn {
 */
 
 export class ApColumn {
-  static LCASE = 0;
-  static IP = 1;
+  public static LCASE = 0;
+  public static IP = 1;
 
   /**
    * Sammlung der Spalten
@@ -50,24 +50,22 @@ export class ApColumn {
   //   }
   // }
 
-  private filter_control: FormControl = null;
+  private filtercontrol: FormControl = null;
 
   public get columnName(): string {
-    return this.col_name;
+    return this.colname;
   }
 
   public get displayName(): string {
-    return this.callback(this.display_name, this.apService);
+    return this.callback(this.displayname, this.apService);
   }
 
   public get fieldName(): string {
-    return this.callback(this.field_name, this.apService);
+    return this.callback(this.fieldname, this.apService);
   }
 
   public get sortFieldName(): string | null {
-    return this.sort_field_name
-      ? this.callback(this.sort_field_name, this.apService)
-      : null;
+    return this.sortfieldname ? this.callback(this.sortfieldname, this.apService) : null;
   }
 
   public get accelerator(): string {
@@ -75,11 +73,11 @@ export class ApColumn {
   }
 
   public get show(): boolean {
-    return this.show_col;
+    return this.showcol;
   }
 
   public get filterControl(): FormControl {
-    return this.filter_control;
+    return this.filtercontrol;
   }
 
   public get operators(): RelOp[] | null {
@@ -87,43 +85,39 @@ export class ApColumn {
   }
 
   public get selectList(): string[] | null {
-    return this.select_list
-      ? this.callback(this.select_list, this.apService)
-      : null;
+    return this.selectlist ? this.callback(this.selectlist, this.apService) : null;
   }
 
   constructor(
     private apService: ArbeitsplatzService,
-    private col_name: string,
-    private display_name: () => string,
-    private field_name: () => string,
-    private sort_field_name: (() => string) | null, // falls soert_field != field_name sonst null
+    private colname: string,
+    private displayname: () => string,
+    private fieldname: () => string,
+    private sortfieldname: (() => string) | null, // falls soert_field != field_name sonst null
     private accel: string, //
-    private show_col: boolean,
-    private type_key: number,
+    private showcol: boolean,
+    private typekey: number,
     private op: RelOp[] | null, // erlaubte Verknuepfungen
-    private select_list: (() => string[]) | null // soweit sinnvoll: no dup list fuer das Feld
+    private selectlist: (() => string[]) | null // soweit sinnvoll: no dup list fuer das Feld
   ) {
     if (this.fieldName) {
-      this.filter_control = new FormControl("");
+      this.filtercontrol = new FormControl("");
     }
   }
 
   /**
    * Feldinhalt fuer die Sortierung aufbereiten
    *
-   * @param ap
+   * @param ap - Arbeitsplatz-Record
    */
   public sortString(ap: Arbeitsplatz) {
-    const field = this.sort_field_name
-      ? ap[this.sortFieldName]
-      : ap[this.fieldName];
-    switch (this.type_key) {
+    const field = this.sortfieldname ? ap[this.sortFieldName] : ap[this.fieldName];
+    switch (this.typekey) {
       case ApColumn.LCASE:
-        const s = <string>field;
+        const s = field as string;
         return s.toLowerCase();
       case ApColumn.IP:
-        const v = <Netzwerk>field;
+        const v = field as Netzwerk;
         return v && v[0] ? v[0].vlan + v[0].ip : 0;
     }
   }
@@ -131,11 +125,11 @@ export class ApColumn {
   /**
    * Suchstring vorbereiten
    *
-   * @param text
+   * @param text - Eingabetext
    */
   public valueChange(text: string): ColumnFilter {
     const t = this.checkSearchString(text);
-    if (this.type_key === ApColumn.IP) {
+    if (this.typekey === ApColumn.IP) {
       t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
     }
     return t;
@@ -144,17 +138,13 @@ export class ApColumn {
   /**
    * Expression fuer die Spalte bauen
    *
-   * @param filter
+   * @param filter - Filter-Ausdruck der Spalte
    */
   //  nur fuer std-filter oder auch fuer extd??
   public getFilterExpression(filter: ColumnFilter): Expression {
     if (filter.text) {
       let op: RelationalOperator;
-      if (filter.inc) {
-        op = new RelationalOperator(RelOp.like);
-      } else {
-        op = new RelationalOperator(RelOp.notlike);
-      }
+      op = filter.inc ? new RelationalOperator(RelOp.like) : new RelationalOperator(RelOp.notlike);
       const f: Field = new Field(this.fieldName, this.displayName);
       return new Expression(f, op, filter.text);
     } else {
@@ -168,16 +158,16 @@ export class ApColumn {
    * Fuehrendes ! negiert den Filter (-> enthaelt nicht).
    * Filtertext wird als lowerCase geliefert.
    *
-   * @param text
+   * @param text - Filtertext
    */
   private checkSearchString(text: string): ColumnFilter {
     let str = text ? text.toLowerCase() : "";
-    let inc = true;
+    let incl = true;
     if (str.startsWith("!")) {
       str = str.slice(1);
-      inc = false;
+      incl = false;
     }
-    return { text: str, inc: inc };
+    return { text: str, inc: incl };
   }
 
   /**
@@ -187,8 +177,8 @@ export class ApColumn {
    * ApService) noetig, damit der Kontext hergestellt werdenn kann.
    * -> https://stackoverflow.com/questions/29822773/passing-class-method-as-parameter-in-typescript
    *
-   * @param callbackFunction
-   * @param thisarg
+   * @param callbackFunction - externe function
+   * @param thisarg - object der function
    */
   private callback<T>(callbackFunction: (this: T) => any, thisarg: T): any {
     return callbackFunction.call(thisarg);

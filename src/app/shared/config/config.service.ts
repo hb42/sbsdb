@@ -10,10 +10,10 @@ export class ConfigService {
   // Name in der Config-DB
   public static AP_PAGE_SIZE = "ap.pagesize";
 
-  private _webservice: string;
+  private websvc: string;
   // Pfad zur Web-API
   public get webservice(): string {
-    return this._webservice;
+    return this.websvc;
   }
 
   public version: Version;
@@ -37,7 +37,7 @@ export class ConfigService {
   ) {
     console.debug("c'tor ConfigService");
     // Adresse der Web-API
-    this._webservice = location.prepareExternalUrl(environment.webservice);
+    this.websvc = location.prepareExternalUrl(environment.webservice);
 
     this.getConf = this.webservice + "/config/get";
     this.setConf = this.webservice + "/config/set";
@@ -101,14 +101,7 @@ export class ConfigService {
           return this.versionService.init(this.getVersion).then((ver) => {
             console.debug(">>> meta data done");
             console.info(
-              ver.displayname +
-                " v" +
-                ver.version +
-                " " +
-                ver.copyright +
-                " (" +
-                ver.githash +
-                ")"
+              ver.displayname + " v" + ver.version + " " + ver.copyright + " (" + ver.githash + ")"
             );
             console.dir(ver.versions);
             const server = this.versionService.serverVer;

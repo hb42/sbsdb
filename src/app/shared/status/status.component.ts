@@ -16,15 +16,16 @@ export class StatusComponent implements OnInit {
   // @HostBinding("style.left.px") st_left: number;
   // @HostBinding("style.bottom.px") st_bottom: number;
 
-  @Input() left = 10; // Abstand von links in px
-  @Input() bottom = 10; // Abstand von unten in px
-  @Input() text = ""; // anzuzeigender Text
+  @Input() public left = 10; // Abstand von links in px
+  @Input() public bottom = 10; // Abstand von unten in px
+  @Input() public text = ""; // anzuzeigender Text
 
   public panelPosition;
 
+  // tslint:disable-next-line:no-empty
   constructor() {}
 
-  ngOnInit() {
+  public ngOnInit() {
     // this.st_left = this.left;
     // this.st_bottom = this.bottom;
     this.panelPosition = {
