@@ -14,6 +14,7 @@ import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
+import { Element } from "../../shared/filter/element";
 import { ApFilterComponent } from "../ap-filter/ap-filter.component";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
@@ -31,6 +32,13 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
 })
 export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding("attr.class") public cssClass = "flex-panel flex-content-fix";
+
+  @ViewChild(MatSort, { static: true }) public sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
+  @ViewChild("firstfilter") public firstFilter;
+  @ViewChild("lastfilter") public lastFilter;
+
+  public subscription: Subscription;
 
   // focus first filter
   @HostListener("document:keydown.alt.f", ["$event"])
@@ -61,13 +69,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
-
-  @ViewChild(MatSort, { static: true }) public sort: MatSort;
-  @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
-  @ViewChild("firstfilter") public firstFilter;
-  @ViewChild("lastfilter") public lastFilter;
-
-  public subscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -160,7 +161,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       // width: "500px",
       // maxWidth: "600px",
       disableClose: true,
-      data: this.apService.filterExpression,
+      data: new Element(null, this.apService.filterExpression),
     });
 
     dialogRef.afterClosed().subscribe((result) => {

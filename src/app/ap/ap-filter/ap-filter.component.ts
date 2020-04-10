@@ -14,7 +14,7 @@ export class ApFilterComponent implements OnInit {
   constructor(
     public apService: ArbeitsplatzService,
     public dialogRef: MatDialogRef<ApFilterComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Bracket
+    @Inject(MAT_DIALOG_DATA) public data: Element
   ) {
     console.debug("c'tor ApFilterComponent");
   }

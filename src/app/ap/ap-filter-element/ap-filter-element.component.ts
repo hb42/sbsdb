@@ -18,5 +18,10 @@ export class ApFilterElementComponent implements OnInit {
 
   public edit(el: Element) {
     console.debug("EDIT " + el.term.toString());
+    console.dir(el);
+    if (el.term.up) {
+      const me = el.term.up.getElements().indexOf(el);
+      console.debug("Index = " + me);
+    }
   }
 }

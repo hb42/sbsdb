@@ -27,7 +27,7 @@ export class ArbeitsplatzService {
 
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
-  public filterExpression = new Bracket(null);
+  public filterExpression = new Bracket();
 
   public expandedRow: Arbeitsplatz;
 

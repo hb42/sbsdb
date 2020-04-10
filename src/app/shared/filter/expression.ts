@@ -1,3 +1,4 @@
+import { Bracket } from "./bracket";
 import { Field } from "./field";
 import { RelationalOperator } from "./relational-operator";
 import { Term } from "./term";
@@ -18,6 +19,8 @@ export class Expression implements Term {
   ) {
     // noop
   }
+
+  public up: Bracket | null;
 
   public toString(): string {
     return (

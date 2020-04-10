@@ -12,14 +12,13 @@ import { Term } from "./term";
  * LO := logischer Operator (AND, OR)
  */
 export class Bracket implements Term {
+  public up: Bracket | null;
   private elements: Element[] = [];
-  private brLeft = "(";
-  private brRight = ")";
+  private brLeft = this.up ? "(" : "{";
+  private brRight = this.up ? ")" : "}";
 
-  constructor(private up: Bracket | null) {
-    if (up === null) {
-      this.brLeft = this.brRight = "";
-    }
+  constructor() {
+    // noop
   }
 
   public toString(): string {
@@ -60,7 +59,7 @@ export class Bracket implements Term {
   }
 
   public addElement(op: LogicalOperator, term: Term) {
-    // TODO .up fuer Bracket hier einsetzen??
+    term.up = this;
     if (this.elements.length > 0) {
       this.elements.push(new Element(op, term));
     } else {

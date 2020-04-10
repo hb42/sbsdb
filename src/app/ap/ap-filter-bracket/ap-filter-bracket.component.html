@@ -4,17 +4,16 @@
     color="accent"
     class="mat-button-filter"
     [matMenuTriggerFor]="bmenu"
-    [matMenuTriggerData]="{ b: bracket }"
+    [matMenuTriggerData]="{ el: element }"
     (menuOpened)="menuOpen()"
     (menuClosed)="menuClose()"
   >
-    {{ operator ? operator.toString() + " " : "" }}(
+    {{ element.operator ? element.operator.toString() + " " : "" }}(
   </button>
-  <span *ngFor="let el of bracket.getElements()">
+  <span *ngFor="let el of getElements()">
     <span *ngIf="el.term.isBracket()">
       <sbsdb-ap-filter-bracket
-        [operator]="el.operator"
-        [bracket]="el.term"
+        [element]="el"
         [title]="el.count"
       ></sbsdb-ap-filter-bracket>
       <!--        {{el.operator ? el.operator.toString() + " " : ""}}(-->
@@ -32,7 +31,7 @@
     color="accent"
     class="mat-button-filter"
     [matMenuTriggerFor]="bmenu"
-    [matMenuTriggerData]="{ b: bracket }"
+    [matMenuTriggerData]="{ el: element }"
     (menuOpened)="menuOpen()"
     (menuClosed)="menuClose()"
   >
@@ -41,8 +40,8 @@
 </span>
 
 <mat-menu #bmenu="matMenu">
-  <ng-template matMenuContent let-b="b">
-    <button mat-menu-item (click)="insert(b)">Ausdruck einfügen</button>
+  <ng-template matMenuContent let-el="el">
+    <button mat-menu-item (click)="insert(el)">Ausdruck einfügen</button>
     <button mat-menu-item>Klammer löschen</button>
   </ng-template>
 </mat-menu>

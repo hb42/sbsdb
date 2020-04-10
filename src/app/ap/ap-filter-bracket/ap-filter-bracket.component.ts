@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Bracket } from "../../shared/filter/bracket";
-import { LogicalOperator } from "../../shared/filter/logical-operator";
+import { Element } from "../../shared/filter/element";
 
 @Component({
   selector: "sbsdb-ap-filter-bracket",
@@ -8,8 +8,7 @@ import { LogicalOperator } from "../../shared/filter/logical-operator";
   styleUrls: ["./ap-filter-bracket.component.scss"],
 })
 export class ApFilterBracketComponent implements OnInit {
-  @Input() public bracket: Bracket;
-  @Input() public operator: LogicalOperator;
+  @Input() public element: Element;
 
   public menuopen = false;
 
@@ -31,6 +30,14 @@ export class ApFilterBracketComponent implements OnInit {
   public menuClose() {
     console.debug("MENU CLOSE");
     this.menuopen = false;
+  }
+
+  public getElements(): Element[] {
+    if (this.element.term.isBracket()) {
+      return (this.element.term as Bracket).getElements();
+    } else {
+      return [];
+    }
   }
 
   // @HostListener("mouseover") mouseOver() {
