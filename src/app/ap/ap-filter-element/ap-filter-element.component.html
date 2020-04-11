@@ -2,8 +2,13 @@
   mat-button
   color="accent"
   class="mat-button-filter"
+  [class.md-accent-hover]="highlight"
   [matMenuTriggerFor]="emenu"
   [matMenuTriggerData]="{ el: element }"
+  (menuOpened)="menuOpen()"
+  (menuClosed)="menuClose()"
+  (mouseenter)="mouseIn()"
+  (mouseleave)="mouseOut()"
 >
   {{ element.operator ? element.operator + " " : ""
   }}{{ element.term ? element.term.toString() : "" }}
@@ -11,7 +16,17 @@
 
 <mat-menu #emenu="matMenu">
   <ng-template matMenuContent let-el="el">
-    <button mat-menu-item (click)="edit(el)">Ausdruck bearbeiten</button>
-    <button mat-menu-item>Ausdruck löschen</button>
+    <button mat-menu-item (click)="apFilterService.edit(el)">Ausdruck bearbeiten</button>
+    <button mat-menu-item [matMenuTriggerFor]="insMenu" [matMenuTriggerData]="{el: el}">Danach einfügen</button>
+    <button mat-menu-item (click)="apFilterService.remove(el)">Ausdruck löschen</button>
+  </ng-template>
+</mat-menu>
+
+<mat-menu #insMenu="matMenu">
+  <ng-template matMenuContent let-el="el">
+    <button mat-menu-item (click)="apFilterService.insert(el, 'and_brack')">UND ()</button>
+    <button mat-menu-item (click)="apFilterService.insert(el, 'or_brack')">ODER ()</button>
+    <button mat-menu-item (click)="apFilterService.insert(el, 'and_exp')">UND Ausdruck</button>
+    <button mat-menu-item (click)="apFilterService.insert(el, 'or_exp')">ODER Ausdruck</button>
   </ng-template>
 </mat-menu>

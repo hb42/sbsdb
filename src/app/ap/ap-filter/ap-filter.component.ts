@@ -19,7 +19,6 @@ export class ApFilterComponent implements OnInit {
     console.debug("c'tor ApFilterComponent");
   }
 
-  // tslint:disable-next-line:no-empty
   public ngOnInit() {}
 
   public getBracketElements(t: Term): Element[] {

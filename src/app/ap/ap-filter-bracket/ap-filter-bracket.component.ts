@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Bracket } from "../../shared/filter/bracket";
 import { Element } from "../../shared/filter/element";
+import { ApFilterService } from "../ap-filter.service";
 
 @Component({
   selector: "sbsdb-ap-filter-bracket",
@@ -10,26 +11,26 @@ import { Element } from "../../shared/filter/element";
 export class ApFilterBracketComponent implements OnInit {
   @Input() public element: Element;
 
-  public menuopen = false;
+  public highlight = false;
+  private menuopen = false;
 
-  // tslint:disable-next-line:no-empty
-  constructor() {}
+  constructor(private apFilterService: ApFilterService) {}
 
-  // tslint:disable-next-line:no-empty
   public ngOnInit() {}
 
-  public insert(b: Bracket) {
-    console.debug("INSERT " + b.toString());
-  }
-
   public menuOpen() {
-    console.debug("MENU OPEN");
     this.menuopen = true;
+    this.highlight = true;
   }
-
   public menuClose() {
-    console.debug("MENU CLOSE");
     this.menuopen = false;
+    this.highlight = false;
+  }
+  public mouseIn() {
+    this.highlight = true;
+  }
+  public mouseOut() {
+    this.highlight = this.menuopen;
   }
 
   public getElements(): Element[] {
@@ -39,8 +40,4 @@ export class ApFilterBracketComponent implements OnInit {
       return [];
     }
   }
-
-  // @HostListener("mouseover") mouseOver() {
-  //   console.debug("MOUSEOVER " + this.bracket.toString());
-  // }
 }

@@ -1,5 +1,6 @@
-<span [class.menu-open]="menuopen" style="display: inline-block;">
+<span [class.md-accent-hover]="highlight" style="display: inline-block;">
   <button
+    *ngIf="element.term.up"
     mat-button
     color="accent"
     class="mat-button-filter"
@@ -7,26 +8,41 @@
     [matMenuTriggerData]="{ el: element }"
     (menuOpened)="menuOpen()"
     (menuClosed)="menuClose()"
+    (mouseenter)="mouseIn()"
+    (mouseleave)="mouseOut()"
   >
     {{ element.operator ? element.operator.toString() + " " : "" }}(
   </button>
-  <span *ngFor="let el of getElements()">
-    <span *ngIf="el.term.isBracket()">
-      <sbsdb-ap-filter-bracket
-        [element]="el"
-        [title]="el.count"
-      ></sbsdb-ap-filter-bracket>
-      <!--        {{el.operator ? el.operator.toString() + " " : ""}}(-->
-      <!--        <span *ngFor="let el2 of getBracketElements(el.term)">-->
-      <!--          <sbsdb-ap-filter-element [element]="el2" [title]="el2.count"></sbsdb-ap-filter-element>-->
-      <!--        </span>-->
-      <!--        )-->
+  <span *ngIf="getElements().length">
+    <span *ngFor="let el of getElements()">
+      <span *ngIf="el.term.isBracket()">
+        <sbsdb-ap-filter-bracket [element]="el" [title]="el.count"></sbsdb-ap-filter-bracket>
+        <!--        {{el.operator ? el.operator.toString() + " " : ""}}(-->
+        <!--        <span *ngFor="let el2 of getBracketElements(el.term)">-->
+        <!--          <sbsdb-ap-filter-element [element]="el2" [title]="el2.count"></sbsdb-ap-filter-element>-->
+        <!--        </span>-->
+        <!--        )-->
+      </span>
+      <span *ngIf="!el.term.isBracket()">
+        <sbsdb-ap-filter-element [element]="el" [title]="el.count"></sbsdb-ap-filter-element>
+      </span>
     </span>
-    <span *ngIf="!el.term.isBracket()">
-      <sbsdb-ap-filter-element [element]="el" [title]="el.count"></sbsdb-ap-filter-element>
+  </span>
+  <span *ngIf="getElements().length === 0">
+    <span>
+      <button
+        mat-button
+        color="accent"
+        class="mat-button-filter"
+        [matMenuTriggerFor]="newMenu"
+        [matMenuTriggerData]="{ el: element.term }"
+      >
+        <mat-icon>add_circle</mat-icon>
+      </button>
     </span>
   </span>
   <button
+    *ngIf="element.term.up"
     mat-button
     color="accent"
     class="mat-button-filter"
@@ -34,6 +50,8 @@
     [matMenuTriggerData]="{ el: element }"
     (menuOpened)="menuOpen()"
     (menuClosed)="menuClose()"
+    (mouseenter)="mouseIn()"
+    (mouseleave)="mouseOut()"
   >
     )
   </button>
@@ -41,7 +59,25 @@
 
 <mat-menu #bmenu="matMenu">
   <ng-template matMenuContent let-el="el">
-    <button mat-menu-item (click)="insert(el)">Ausdruck einfügen</button>
-    <button mat-menu-item>Klammer löschen</button>
+    <button mat-menu-item [matMenuTriggerFor]="insMenu" [matMenuTriggerData]="{ el: el }">
+      Danach einfügen
+    </button>
+    <button mat-menu-item (click)="apFilterService.remove(el)">Klammer löschen</button>
+  </ng-template>
+</mat-menu>
+
+<mat-menu #insMenu="matMenu">
+  <ng-template matMenuContent let-el="el">
+    <button mat-menu-item (click)="apFilterService.insert(el, 'and_brack')">UND ()</button>
+    <button mat-menu-item (click)="apFilterService.insert(el, 'or_brack')">ODER ()</button>
+    <button mat-menu-item (click)="apFilterService.insert(el, 'and_exp')">UND Ausdruck</button>
+    <button mat-menu-item (click)="apFilterService.insert(el, 'or_exp')">ODER Ausdruck</button>
+  </ng-template>
+</mat-menu>
+
+<mat-menu #newMenu="matMenu">
+  <ng-template matMenuContent let-el="el">
+    <button mat-menu-item (click)="apFilterService.insertFirst(el, 'brack')">Klammer einfügen</button>
+    <button mat-menu-item (click)="apFilterService.insertFirst(el, 'exp')">Ausdruck einfügen</button>
   </ng-template>
 </mat-menu>

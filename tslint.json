@@ -14,7 +14,7 @@
     /* Zugriff via obj["name"] erlauben, ist zwar nicht sauber aber nicht vollstaendig zu vermeiden */
     "no-string-literal": false,
     /* die IDE rueckt auch Leerzeilen ein, das wuerde dauernd angemeckert */
-    "no-trailing-whitespace": false,
+    // "no-trailing-whitespace": false,
     /* sort explizit auf case-insensitive */
     //    "ordered-imports": [
     //      true,

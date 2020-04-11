@@ -132,7 +132,7 @@ export class ArbeitsplatzService {
         "b",
         true,
         ApColumn.LCASE,
-        null,
+        [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
     );

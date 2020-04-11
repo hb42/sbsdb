@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 
 import { Element } from "../../shared/filter/element";
+import { ApFilterService } from "../ap-filter.service";
 
 @Component({
   selector: "sbsdb-ap-filter-element",
@@ -10,18 +11,25 @@ import { Element } from "../../shared/filter/element";
 export class ApFilterElementComponent implements OnInit {
   @Input() public element: Element;
 
-  // tslint:disable-next-line:no-empty
-  constructor() {}
+  public highlight = false;
+  private menuopen = false;
 
-  // tslint:disable-next-line:no-empty
+  constructor(public apFilterService: ApFilterService) {}
+
   public ngOnInit() {}
 
-  public edit(el: Element) {
-    console.debug("EDIT " + el.term.toString());
-    console.dir(el);
-    if (el.term.up) {
-      const me = el.term.up.getElements().indexOf(el);
-      console.debug("Index = " + me);
-    }
+  public menuOpen() {
+    this.menuopen = true;
+    this.highlight = true;
+  }
+  public menuClose() {
+    this.menuopen = false;
+    this.highlight = false;
+  }
+  public mouseIn() {
+    this.highlight = true;
+  }
+  public mouseOut() {
+    this.highlight = this.menuopen;
   }
 }

@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Filter-Ausdruck bearbeiten</h2>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Feld</mat-label>
+    <mat-select [(value)]="selectedField">
+      <mat-option *ngFor="let col of apService.extFilterColumns" [value]="col">
+        {{ col.displayName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="abstand">
+    <mat-label>Verknüpfung</mat-label>
+    <mat-select [(value)]="data.o">
+      <mat-option *ngFor="let oper of selectedField?.operators" [value]="oper">
+        {{ oper.toString() }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="abstand">
+    <mat-label>Vergleich</mat-label>
+    <input *ngIf="!compareAsList()" matInput [(ngModel)]="data.c"/>
+    <mat-select *ngIf="compareAsList()" [(value)]="data.c">
+      <mat-option *ngFor="let sel of selectedField?.selectList" [value]="sel">
+        {{ sel }}
+      </mat-option>
+    </mat-select>
+
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Abbrechen</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>OK</button>
+</div>

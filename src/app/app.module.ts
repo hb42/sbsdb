@@ -10,6 +10,7 @@ import { LibClientModule, LOGON_OPTIONS, LogonParameter } from "@hb42/lib-client
 
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ApFilterBracketComponent } from "./ap/ap-filter-bracket/ap-filter-bracket.component";
+import { ApFilterEditComponent } from "./ap/ap-filter-edit/ap-filter-edit.component";
 import { ApFilterElementComponent } from "./ap/ap-filter-element/ap-filter-element.component";
 import { ApFilterComponent } from "./ap/ap-filter/ap-filter.component";
 import { ApListComponent } from "./ap/ap-list/ap-list.component";
@@ -65,6 +66,7 @@ export function initConf(configService: ConfigService) {
     ApFilterComponent,
     ApFilterElementComponent,
     ApFilterBracketComponent,
+    ApFilterEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -81,7 +83,7 @@ export function initConf(configService: ConfigService) {
     LibClientModule,
   ],
   // f. mat-dialog
-  entryComponents: [ApFilterComponent],
+  entryComponents: [ApFilterComponent, ApFilterEditComponent],
   providers: [
     { provide: LOCALE_ID, useValue: "de" }, // registerLocaleData() s.o.
     // -- eigene

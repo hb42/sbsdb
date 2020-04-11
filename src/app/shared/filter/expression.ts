@@ -12,11 +12,7 @@ import { Term } from "./term";
  *
  */
 export class Expression implements Term {
-  constructor(
-    public readonly field: Field,
-    public readonly operator: RelationalOperator,
-    public readonly compare: string
-  ) {
+  constructor(public field: Field, public operator: RelationalOperator, public compare: string) {
     // noop
   }
 

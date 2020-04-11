@@ -67,6 +67,14 @@ export class Bracket implements Term {
     }
   }
 
+  public addElementAt(after: Element, op: LogicalOperator, term: Term) {
+    let idx = this.elements.indexOf(after);
+    if (idx >= 0) {
+      term.up = this;
+      this.elements.splice(++idx, 0, new Element(op, term));
+    }
+  }
+
   public removeElement(el: Element) {
     // TODO das ist erstmal ein Platzhalter
     //      vermutlich muss ueber Term gesucht werden, ausserdem ist offen ob auch rekursiv
