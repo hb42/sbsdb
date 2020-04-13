@@ -3,6 +3,7 @@ import { HttpClientModule } from "@angular/common/http";
 import localeDe from "@angular/common/locales/de";
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatCardModule } from "@angular/material/card";
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";

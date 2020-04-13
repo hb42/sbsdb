@@ -52,6 +52,10 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener("document:keydown", ["$event"])
   public handleSort(event: KeyboardEvent) {
     if (event.altKey && !event.shiftKey && !event.ctrlKey) {
+      // Extended Filter => alt-e
+      if (event.key === "e") {
+        this.extendedFilter();
+      }
       const colIdx = this.apService.columns.findIndex(
         (c) => c.accelerator && c.accelerator === event.key
       );
@@ -156,19 +160,23 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public extendedFilter() {
-    const dialogRef = this.dialog.open(ApFilterComponent, {
-      // height: "300px",
-      // width: "500px",
-      // maxWidth: "600px",
-      disableClose: true,
-      data: new Element(null, this.apService.filterExpression),
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.debug("The dialog was closed");
-        console.dir(result);
-      }
-    });
+    this.apService.resetFilters();
+    this.apService.extendedFilter(true);
+    // const dialogRef = this.dialog.open(ApFilterComponent, {
+    //   // height: "300px",
+    //   // width: "500px",
+    //   // maxWidth: "600px",
+    //   disableClose: true,
+    //   data: new Element(null, this.apService.filterExpression),
+    // });
+    //
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   if (result) {
+    //     console.debug("The dialog was closed");
+    //     console.dir(result);
+    //     // TODO save filter, block std filter ...
+    //     this.apService.triggerFilter();
+    //   }
+    // });
   }
 }

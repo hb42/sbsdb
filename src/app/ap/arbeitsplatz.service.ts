@@ -9,6 +9,7 @@ import { ColumnFilter } from "../shared/config/column-filter";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { Bracket } from "../shared/filter/bracket";
+import { Element } from "../shared/filter/element";
 import { LogicalAnd } from "../shared/filter/logical-and";
 import { RelOp } from "../shared/filter/rel-op.enum";
 import { KeyboardService } from "../shared/keyboard.service";
@@ -28,6 +29,8 @@ export class ArbeitsplatzService {
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
   public filterExpression = new Bracket();
+  private filterChanged = 0;
+  public stdFilter = true;
 
   public expandedRow: Arbeitsplatz;
 
@@ -243,7 +246,7 @@ export class ArbeitsplatzService {
             console.debug(this.filterExpression.toString());
             // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
             // this.apDataSource.filter = JSON.stringify(this.userSettings);
-            this.apDataSource.filter = this.getFilterString();
+            this.triggerFilter();
           });
       }
     });
@@ -252,6 +255,8 @@ export class ArbeitsplatzService {
     setTimeout(() => {
       this.getAps();
     }, 0);
+
+    // this.getColumn("apname").filterControl.disable();
   }
 
   /**
@@ -499,14 +504,38 @@ export class ArbeitsplatzService {
   //   }
   // }
 
+  /**
+   * Filter in MatTable anstossen
+   *
+   * Der Filter reagiert auf Aenderungen in DataSource.filter. Da der Inhalt von filter
+   * hier nicht genutzt wird (-> DataSource.filterPredicate, wird in getAps() gesetzt)
+   * kann hier ein beliebiger Wert verwendet werden.
+   */
+  public triggerFilter() {
+    this.apDataSource.filter = "" + this.filterChanged++;
+  }
   // eindeutiger String fuer alle Filter -> apDataSource.filter
-  private getFilterString(): string {
-    let s = "";
-    for (let i = 0; i < this.userSettings.apFiltersCount(); i++) {
-      const filt = this.userSettings.getApFilter(i);
-      s += filt.text + filt.inc;
-    }
-    return s;
+  // private getFilterString(): string {
+  //   let s = "";
+  //   for (let i = 0; i < this.userSettings.apFiltersCount(); i++) {
+  //     const filt = this.userSettings.getApFilter(i);
+  //     s += filt.text + filt.inc;
+  //   }
+  //   return s;
+  // }
+
+  public getExtendedFilter(): Element {
+    return new Element(null, this.filterExpression);
+  }
+  public extendedFilter(on: boolean) {
+    // this.extFilter = on;
+    // this.columns.forEach((c) => {
+    //   if (c.filterControl) {
+    //     on ? c.filterControl.disable() : c.filterControl.enable();
+    //   }
+    // });
+    this.stdFilter = !this.stdFilter;
+    console.debug("extendedFilter is " + this.stdFilter);
   }
 
   // --- ---

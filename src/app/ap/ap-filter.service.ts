@@ -118,6 +118,7 @@ export class ApFilterService {
           }
         }
         console.dir(result);
+        this.apService.triggerFilter();
       }
     });
   }

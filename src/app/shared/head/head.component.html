@@ -1,8 +1,22 @@
 <mat-toolbar color="primary" class="head-spk header">
-  <!--  <button mat-button (click)="navigationService.resetApp()">-->
-  <!--    <img src="./resource/sbs32-grey.png" title="{{configService.version.displayname}} {{configService.version.version}}"/>-->
-  <!--  </button>-->
-  <!--  <span class="spacer"></span>-->
+  <button mat-button [mat-menu-trigger-for]="mainmenu">
+    <img
+      src="./resource/sbs32-grey2.png"
+      title="{{ configService.version.displayname }} {{ configService.version.version }}"
+    />
+  </button>
+  <mat-menu #mainmenu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>info</mat-icon>
+      <span>Über</span>
+    </button>
+    <button mat-menu-item (click)="navigationService.resetApp()">
+      <mat-icon>power_settings_new</mat-icon>
+      <span>Reset</span>
+    </button>
+  </mat-menu>
+
+  <span class="spacer"></span>
 
   <!--  <nav mat-tab-nav-bar backgroundColor="primary">-->
   <!--    <a mat-tab-link-->
@@ -15,15 +29,18 @@
   <!--  </nav>-->
 
   <div *ngFor="let link of navLinks">
-    <button mat-button *ngIf="!navigationService.currentPath.startsWith(link.path)"
-            [routerLink]="link.path">
+    <button
+      mat-button
+      *ngIf="!navigationService.currentPath.startsWith(link.path)"
+      [routerLink]="link.path"
+    >
       <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
       <mat-icon></mat-icon>
     </button>
-    <button mat-flat-button *ngIf="navigationService.currentPath.startsWith(link.path)"
-            [matMenuTriggerFor]="link.menu" #menubtn>
+    <button mat-flat-button *ngIf="navigationService.currentPath.startsWith(link.path)">
+      <!--            [matMenuTriggerFor]="link.menu" #menubtn>-->
       <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
-      <mat-icon>arrow_drop_down</mat-icon>
+      <!--      <mat-icon>arrow_drop_down</mat-icon>-->
     </button>
     <span class="spacer2"></span>
   </div>
@@ -92,27 +109,18 @@
   <!--  <button mat-button color="accent"-->
   <!--          (click)="apService.apDataSource.filter = search">Suche-->
   <!--  </button>-->
-  <!--  <button mat-button color="accent">Erweiterte Suche</button>-->
-
   <div class="fill"></div>
-  <!--  style="font-size: 11px"-->
-  <button mat-button style="font-size: 11px"
-          [mat-menu-trigger-for]="mainmenu"
-  > {{configService.version.displayname}} {{configService.version.version}}</button>
+
+  <!-- hier kann die jeweilige Seite ihre Menues einhaengen -->
+  <ng-content></ng-content>
+
+  <!--  <div class="fill"></div>-->
+  <!--  &lt;!&ndash;  style="font-size: 11px"&ndash;&gt;-->
+  <!--  <button mat-button style="font-size: 11px"-->
+  <!--          [mat-menu-trigger-for]="mainmenu"-->
+  <!--  > {{configService.version.displayname}} {{configService.version.version}}</button>-->
   <!--  <span class="spacer"></span>-->
   <!--  <button mat-icon-button [mat-menu-trigger-for]="mainmenu">-->
   <!--    <mat-icon>menu</mat-icon>-->
   <!--  </button>-->
-
-  <mat-menu #mainmenu="matMenu">
-    <button mat-menu-item>
-      <mat-icon>info</mat-icon>
-      <span>Über</span>
-    </button>
-    <button mat-menu-item (click)="navigationService.resetApp()">
-      <mat-icon>power_settings_new</mat-icon>
-      <span>Reset</span>
-    </button>
-
-  </mat-menu>
 </mat-toolbar>
