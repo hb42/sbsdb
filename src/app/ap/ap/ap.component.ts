@@ -134,11 +134,15 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public focusFirstFilter() {
-    this.firstFilter.nativeElement.focus();
+    if (this.firstFilter) {
+      this.firstFilter.nativeElement.focus();
+    }
   }
 
   public focusLastFilter() {
-    this.lastFilter.nativeElement.focus();
+    if (this.lastFilter) {
+      this.lastFilter.nativeElement.focus();
+    }
   }
 
   public sortHeading(column: string): string {

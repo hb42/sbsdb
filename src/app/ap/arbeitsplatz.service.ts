@@ -29,8 +29,8 @@ export class ArbeitsplatzService {
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
   public filterExpression = new Bracket();
-  private filterChanged = 0;
   public stdFilter = true;
+  private filterChanged = 0;
 
   public expandedRow: Arbeitsplatz;
 
@@ -41,6 +41,8 @@ export class ArbeitsplatzService {
   // DEBUG Linkfarben (nach Entscheidung festnageln und vars raus)
   public linkcolor = "primary";
   public linkcolor2 = true;
+  // DEBUG keine Links in den Zeilen
+  public sortLinks = true;
 
   // Text fuer Statuszeile
   public statusText = "";
@@ -142,7 +144,7 @@ export class ArbeitsplatzService {
     this.columns.push(
       new ApColumn(
         this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
-        // dropdown VLAN?
+        // dropdown VLAN? -> eigene Spalte
         "ip",
         () => "IP/MAC",
         () => "ipsearch",
@@ -157,7 +159,7 @@ export class ArbeitsplatzService {
     this.columns.push(
       new ApColumn(
         this, // enthaelt, enthaelt nicht/ Hersteller|Typenbezeichnung|SerNr enthaelt, enthaelt nicht, start,end
-        // hersteller + bezeichnung evtl dropdown
+        // (hersteller + bezeichnung) -> eigene Spalte
         "hardware",
         () => "Hardware",
         () => (this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr"),

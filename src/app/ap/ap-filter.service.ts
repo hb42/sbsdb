@@ -10,6 +10,7 @@ import { LogicalAnd } from "../shared/filter/logical-and";
 import { LogicalOperator } from "../shared/filter/logical-operator";
 import { LogicalOr } from "../shared/filter/logical-or";
 import { RelationalOperator } from "../shared/filter/relational-operator";
+import { ApColumn } from "./ap-column";
 import { ApFilterEditComponent } from "./ap-filter-edit/ap-filter-edit.component";
 import { ArbeitsplatzService } from "./arbeitsplatz.service";
 
@@ -71,6 +72,7 @@ export class ApFilterService {
   public remove(el: Element) {
     console.debug("DELETE " + el.term.toString());
     el.term.up.removeElement(el);
+    this.apService.triggerFilter();
   }
 
   /**
@@ -117,7 +119,7 @@ export class ApFilterService {
             el.term.up.addElementAt(el, op, ex);
           }
         }
-        console.dir(result);
+        console.dir(this.apService.getExtendedFilter());
         this.apService.triggerFilter();
       }
     });

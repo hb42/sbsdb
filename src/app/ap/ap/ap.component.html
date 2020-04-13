@@ -42,23 +42,12 @@ https://github.com/angular/components/issues/6178
   <!-- table + paginator -->
   <!--  <sbsdb-ap-filter> &lt;!&ndash; DEBUG &ndash;&gt;-->
   <!--  </sbsdb-ap-filter>-->
+    <sbsdb-ap-filter *ngIf="!apService.stdFilter" [data]="apService.getExtendedFilter()"></sbsdb-ap-filter>
   <div class="flex-content">
     <!-- table -->
     <div class="spinner-container" *ngIf="apService.loading">
       <mat-spinner></mat-spinner>
     </div>
-    <mat-card *ngIf="!apService.stdFilter" style="background-color: var(--md-light-gray-background-color)">
-      <div mat-card-header>
-        <div mat-card-subtitle>Erweiterte Suche</div>
-      </div>
-      <div mat-card-content>
-        <!--  <div>{{apService.filterExpression.toString()}}</div>-->
-        <!--  <div>-->
-        <!--    <sbsdb-ap-filter-bracket [operator]="null" [bracket]="apService.filterExpression" title="0"></sbsdb-ap-filter-bracket>-->
-        <sbsdb-ap-filter-bracket [element]="apService.getExtendedFilter()" title="0"></sbsdb-ap-filter-bracket>
-        <!--  </div>-->
-      </div>
-    </mat-card>
     <table
       mat-table
       [dataSource]="apService.apDataSource"
@@ -119,8 +108,8 @@ https://github.com/angular/components/issues/6178
           <!--            {{element.aptyp}}-->
           <!--          </button>-->
           <div
-            [class.md-primary-color]="apService.linkcolor2"
-            [class.md-accent-color]="!apService.linkcolor2"
+            [class.md-primary-color]="apService.linkcolor2 && apService.sortLinks"
+            [class.md-accent-color]="!apService.linkcolor2 && apService.sortLinks"
           >
             <button
               mat-icon-button
@@ -132,9 +121,10 @@ https://github.com/angular/components/issues/6178
               <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>
             </button>
             <span
-              class="highlight-when-expanded pseudo-button"
+              class="highlight-when-expanded"
+              [class.pseudo-button]="apService.sortLinks"
               (click)="
-                apService.expandedRow !== element ? apService.filterByAptyp(element, $event) : ''
+                apService.sortLinks && apService.expandedRow !== element ? apService.filterByAptyp(element, $event) : ''
               "
             >
               {{ element.aptyp }}
@@ -242,11 +232,12 @@ https://github.com/angular/components/issues/6178
           <!--            {{element.oe.betriebsstelle}}-->
           <!--          </a>-->
           <div
-            [class.md-primary-color]="apService.linkcolor2"
-            [class.md-accent-color]="!apService.linkcolor2"
-            class="highlight-when-expanded pseudo-button"
+            [class.md-primary-color]="apService.linkcolor2 && apService.sortLinks"
+            [class.md-accent-color]="!apService.linkcolor2 && apService.sortLinks"
+            [class.pseudo-button]="apService.sortLinks"
+            class="highlight-when-expanded"
             (click)="
-              apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''
+              apService.sortLinks && apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''
             "
             (mouseenter)="apService.tooltipOnEllipsis($event)"
           >
@@ -586,6 +577,14 @@ https://github.com/angular/components/issues/6178
     >
       <mat-icon>format_color_text</mat-icon>
       toggle link color
+    </button>
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.sortLinks = !apService.sortLinks"
+    >
+      <mat-icon>format_color_text</mat-icon>
+      toggle show links
     </button>
   </ng-template>
 </mat-menu>

@@ -1,12 +1,8 @@
-<h2 mat-dialog-title>Erweiterte Suche</h2>
-<div mat-dialog-content>
-  <!--  <div>{{apService.filterExpression.toString()}}</div>-->
-  <!--  <div>-->
-  <!--    <sbsdb-ap-filter-bracket [operator]="null" [bracket]="apService.filterExpression" title="0"></sbsdb-ap-filter-bracket>-->
-  <sbsdb-ap-filter-bracket [element]="data" title="0"></sbsdb-ap-filter-bracket>
-  <!--  </div>-->
-</div>
-<div mat-dialog-actions>
-  <button mat-button mat-dialog-close>Abbrechen</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>OK</button>
-</div>
+<mat-card class="ext-filter-panel">
+  <div mat-card-header>
+    <div mat-card-subtitle>Erweiterte Suche</div>
+  </div>
+  <div mat-card-content>
+    <sbsdb-ap-filter-bracket [element]="data" title="zum Bearbeiten klicken"></sbsdb-ap-filter-bracket>
+  </div>
+</mat-card>

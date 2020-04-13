@@ -37,6 +37,12 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   .md-primary-color {
     color: mat-color($primary);
   }
+  .md-primary-highlight-color {
+    color: mat-color($primary, A200);
+  }
+  .md-primary-hover {
+    background-color: mat-color($primary, A200, .08);
+  }
   .md-accent-color {
     color: mat-color($accent);
   }

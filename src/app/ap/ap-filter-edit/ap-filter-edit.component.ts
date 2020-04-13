@@ -29,8 +29,6 @@ export class ApFilterEditComponent implements OnInit {
     }
   }
 
-  // public selectedField: FormControl;
-
   constructor(public apService: ArbeitsplatzService, @Inject(MAT_DIALOG_DATA) public data) {
     console.debug("c'tor ApFilterEditComponent");
   }
