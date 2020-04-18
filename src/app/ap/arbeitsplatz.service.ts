@@ -37,12 +37,12 @@ export class ArbeitsplatzService {
   // DEBUG Zeilenumbruch in den Tabellenzellen (drin lassen??)
   public tableWrapCell = false;
   // DEBUG Klick auf Zeile zeigt Details (nach Entscheidung festnageln und var raus)
-  public clickForDetails = false;
+  public clickForDetails = true;
   // DEBUG Linkfarben (nach Entscheidung festnageln und vars raus)
   public linkcolor = "primary";
   public linkcolor2 = true;
   // DEBUG keine Links in den Zeilen
-  public sortLinks = true;
+  public sortLinks = false;
 
   // Text fuer Statuszeile
   public statusText = "";

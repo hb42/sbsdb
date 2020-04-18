@@ -158,95 +158,11 @@ table:not(.wrap-cell) .mat-cell > div {
   text-align: left;
 }
 
-/* Detail-Anzeige */
-tr.ap-detail-row {
-  height: 0;
-}
-
-tr.ap-row:not(.ap-detail-expanded):hover {
-  background: var(--md-row-hover-background-color);
-}
-tr.ap-row:not(.ap-detail-expanded):active {
-  background: var(--md-row-active-background-color);
-}
-
-.ap-detail-expanded,
-.ap-detail-content-expanded {
-  background-color: var(--md-details-background-color);
-}
-.ap-detail-expanded div {
-  white-space: unset !important;
-}
-
-.ap-detail-expanded .highlight-when-expanded {
-  font-weight: bold !important;
-  color: rgba(0, 0, 0, 0.87);
-}
-
-.pseudo-button {
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.ap-detail-expanded .pseudo-button {
-  cursor: auto;
-}
-
-.ap-row td {
-  border-bottom-width: 0;
-}
-
-.ap-detail-content {
-  overflow: hidden;
-  display: flex;
-  //padding: 10px 0;
-  flex-direction: column;
-}
-
-.ap-detail-content table {
-  border-collapse: collapse;
-}
-
-.ap-detail-content td,
-.ap-detail-content th {
-  border: solid 1px var(--md-details-border-color);
-  padding: 4px 15px;
-}
-
-.ap-detail-content th {
-  font-weight: normal;
-  background-color: var(--md-details-background-color-highlight);
-}
-
-.ap-detail-content-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.ap-detail-margin {
-  margin-top: 25px;
-  margin-right: 30px;
-}
-
-.ap-detail-standort-text {
-  background-color: var(--md-details-background-color-highlight);
-  padding: 2px 10px;
-  border-left: solid 1px var(--md-details-border-color);
-  border-bottom: solid 1px var(--md-details-border-color);
-}
-
-.ap-detail-oeff {
-  white-space: pre-wrap;
-  font-family: "Roboto Mono", monospace;
-  font-size: 13px;
-}
-
-.ap-detail-bemerk {
-  white-space: pre-wrap;
-  margin-top: 25px;
-  margin-bottom: 25px;
-}
+/* AP-Details */
+// muss hier definiert werden und nicht global
+//td.mat-cell {
+//  border: 0;
+//}
 
 /* Paginator */
 .paginator {
@@ -265,7 +181,7 @@ tr.ap-row:not(.ap-detail-expanded):active {
 }
 
 /* extended Filter */
-.ext-filter-button-select {
-  background-color: var(--md-light-gray-background-color);
-  color: #fd3232;
-}
+//.ext-filter-button-select {
+//  background-color: var(--md-light-gray-background-color);
+//  color: #fd3232;
+//}
