@@ -120,6 +120,7 @@ export class ApFilterService {
           }
         }
         console.dir(this.apService.getExtendedFilter());
+        this.apService.saveFilterExpression();
         this.apService.triggerFilter();
       }
     });

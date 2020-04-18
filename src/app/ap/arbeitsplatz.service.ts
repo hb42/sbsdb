@@ -10,6 +10,7 @@ import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { Bracket } from "../shared/filter/bracket";
 import { Element } from "../shared/filter/element";
+import { Expression } from "../shared/filter/expression";
 import { LogicalAnd } from "../shared/filter/logical-and";
 import { RelOp } from "../shared/filter/rel-op.enum";
 import { KeyboardService } from "../shared/keyboard.service";
@@ -242,7 +243,7 @@ export class ArbeitsplatzService {
             // FIXME speichern der Filter ist vom Index der Spalte abhaengig, das koennte
             //       noch Aerger machen (ausserdem ist noch zu klären, wie ext.Filter in den
             //       userSettings gespeichert wird)
-            this.userSettings.setApFilter(idx, filtervalue);
+            this.userSettings.setApFilter(idx, filtervalue); // TODO Filter -> fn saveFilter
             this.filterExpression.reset();
             this.buildFilterExpression();
             console.debug(this.filterExpression.toString());
@@ -438,6 +439,8 @@ export class ArbeitsplatzService {
 
   // --- filter ---
 
+  // TODO Filter
+  //      userSettings -> from JSON to this.filerExpression
   public initializeFilters() {
     this.columns.forEach((c, idx) => {
       if (c.filterControl) {
@@ -450,6 +453,7 @@ export class ArbeitsplatzService {
     });
   }
 
+  // TODO Filter -> filterExpression = null ?
   public resetFilters() {
     this.columns.forEach((c, idx) => {
       if (c.filterControl) {
@@ -458,6 +462,7 @@ export class ArbeitsplatzService {
     });
   }
 
+  // TODO Filter -> vermutlich ueberfluessig
   private buildFilterExpression() {
     const and = new LogicalAnd();
     this.columns.forEach((col, idx) => {
@@ -469,6 +474,29 @@ export class ArbeitsplatzService {
         }
       }
     });
+  }
+
+  public saveFilterExpression() {
+    // TODO filterExpression to obj to JSON -> userSettings
+    console.debug("saveFilterExpression");
+    const filt = this.convBracket(this.filterExpression);
+    console.debug(JSON.stringify(filt));
+  }
+
+  private convBracket(b: Bracket) {
+    return b.getElements().map((el) => {
+      return {
+        op: el.operator ? (el.operator.toString() === "UND" ? 1 : 0) : -1,
+        elem: el.term.isBracket()
+          ? this.convBracket(el.term as Bracket)
+          : this.convExpression(el.term as Expression),
+      };
+    });
+  }
+  private convExpression(e: Expression) {
+    return e
+      ? { fName: e.field.fieldName, dName: e.field.displayName, op: e.operator.op, comp: e.compare }
+      : null;
   }
 
   public filterByAptyp(ap: Arbeitsplatz, event: Event) {
