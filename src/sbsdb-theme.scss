@@ -1,6 +1,7 @@
 // -> https://material.angular.io/guide/theming
 @import "~@angular/material/theming";
 // Plus imports for other components in your app.
+@import "app/ap/ap-theme";
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -10,11 +11,11 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$sbsdb-app-primary: mat-palette($mat-red); // red
-$sbsdb-app-accent: mat-palette($mat-indigo, A200, A100, A400); // 700, 500, 900);  // indigo
+$sbsdb-app-primary: mat-palette($mat-deep-orange);
+$sbsdb-app-accent: mat-palette($mat-indigo, A200, A100, A400); // 700, 500, 900);
 
 // The warn palette is optional (defaults to red).
-$sbsdb-app-warn: mat-palette($mat-deep-orange);
+$sbsdb-app-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-app-warn);
@@ -37,11 +38,17 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   .md-primary-color {
     color: mat-color($primary);
   }
+  .md-primary-highlight-color2 {
+    color: mat-color($primary, A400);
+  }
   .md-primary-highlight-color {
     color: mat-color($primary, A200);
   }
-  .md-primary-hover {
-    background-color: mat-color($primary, A200, .08);
+  .md-primary-shadow {
+    background-color: mat-color($primary, A400, 0.2);
+  }
+  .md-primary-shadow-hover:hover {
+    background-color: mat-color($primary, A400, 0.2);
   }
   .md-accent-color {
     color: mat-color($accent);
@@ -50,15 +57,23 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
     background-color: mat-color($accent, A200);
   }
   .md-accent-hover {
-    background-color: mat-color($accent, A200, .08);
+    background-color: mat-color($accent, A200, 0.08);
   }
   .md-background-color {
-    background-color: mat-color($background);
+    background-color: mat-color($background, background);
   }
   .md-background-color-hover {
     background-color: mat-color($background, hover);
   }
-  // Angular und SCSS
+  .mat-toolbar.head-spk {
+    background: linear-gradient(
+      to bottom,
+      mat-color($primary, A200) 0%,
+      mat-color($primary, A700) 100%
+    );
+  }
+
+  // Angular und SCSS ** TODO CSS-Variable sind Kruecken => mit spezifischen mixins loesen
   // mixins und SCSS-Variablen ($...) die hier definiert werden, sind in den .scss-Dateien der Komponenten nur verwendbar,
   // wenn jeweils diese Datei per @import eingebunden wird. Dadurch wuerde aber das hier generierte CSS x-fach im Code
   // auftauchen und das ist ja nicht der Sinn der Sache (partial imports wuerden noch ein weiteres Fass aufmachen, bringt
@@ -67,16 +82,10 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   // sehr elegant, dafuer funktioniert's mit wenig Overhead und die Farben koennen an einer Stelle verwaltet werden.
   :root {
     // red = 0; blue = 240 / google-material #500: indigo = 230; orange = 35; deep orange = 14; cyan = 186; blue = 206; red = 4
-    --md-details-background-color: hsl(
-      4,
-      100%,
-      99%
-    ); // sehr helle Hintergrundfarbe passend zu $primary
-    --md-details-background-color-highlight: hsl(
-      4,
-      100%,
-      96%
-    ); // helle Hintergrundfarbe passend zu $primary
+    // sehr helle Hintergrundfarbe passend zu $primary
+    --md-details-background-color: hsl(4, 100%, 99%);
+    // helle Hintergrundfarbe passend zu $primary
+    --md-details-background-color-highlight: hsl(4, 100%, 96%);
     --md-details-border-color: #c0c0c0;
     --md-light-gray-background-color: #f9f9f9; // hellgrauer Hintergrund
     --md-row-active-background-color: #efefef; // grauer Hintergrund f. :hover-Effekt

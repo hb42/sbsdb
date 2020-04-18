@@ -1,7 +1,7 @@
 <span [class.md-primary-hover]="highlight" style="display: inline-block;">
   <button
     *ngIf="element.term.up"
-    mat-button
+    mat-flat-button
     class="mat-button-filter"
     [matMenuTriggerFor]="bmenu"
     [matMenuTriggerData]="{ el: element }"
@@ -42,7 +42,7 @@
   </span>
   <button
     *ngIf="element.term.up"
-    mat-button
+    mat-flat-button
     class="mat-button-filter"
     [matMenuTriggerFor]="bmenu"
     [matMenuTriggerData]="{ el: element }"

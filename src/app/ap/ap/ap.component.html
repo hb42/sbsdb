@@ -58,7 +58,7 @@ https://github.com/angular/components/issues/6178
     >
       <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
-      <ng-container matColumnDef="aptyp" sticky *ngIf="'aptyp'; let colname">
+      <ng-container matColumnDef="aptyp" *ngIf="'aptyp'; let colname"> <!-- sticky -->
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
             <sbsdb-accelerator-string
@@ -144,7 +144,7 @@ https://github.com/angular/components/issues/6178
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="apname" sticky>
+      <ng-container matColumnDef="apname" > <!-- sticky -->
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
             <sbsdb-accelerator-string
@@ -363,7 +363,7 @@ https://github.com/angular/components/issues/6178
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="menu" stickyEnd>
+      <ng-container matColumnDef="menu" > <!-- stickyEnd -->
         <th mat-header-cell *matHeaderCellDef>
           <!--          <button mat-icon-button [matMenuTriggerFor]="tableMenu" [color]="apService.linkcolor">-->
           <!--            <mat-icon>menu</mat-icon>-->
