@@ -127,7 +127,8 @@ export class ApColumn {
    *
    * @param text - Eingabetext
    */
-  public valueChange(text: string): ColumnFilter {
+  public valueChange(): ColumnFilter {
+    const text = this.filterControl.value;
     const t = this.checkSearchString(text);
     if (this.typekey === ApColumn.IP) {
       t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();

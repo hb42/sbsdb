@@ -1,7 +1,8 @@
 import { EventEmitter } from "@angular/core";
+import { TransportElement } from "../filter/transport-element";
 import { ColumnFilter } from "./column-filter";
 
-// dieser Datentyp wird in der DB gespeichert
+// dieser Datentyp kommt vom Server
 // -> hb.SbsdbServer.Model.ViewModel.UserSession
 class User {
   public uid: string;
@@ -9,16 +10,17 @@ class User {
   public isReadonly: boolean;
   public isHotline: boolean;
 
-  public path: string;
-
-  // AP-Page
-  public showStandort: boolean;
-  public apColumnFilters: ColumnFilter[];
-  public apExtFilter: string;
-  public apSortColumn: string;
-  public apSortDirection: string;
-  public apPageSize: number;
-  public searchSonstHw: boolean;
+  public settings: string; // JSON-BLOB
+  // public path: string;
+  //
+  // // AP-Page
+  // public showStandort: boolean;
+  // public apColumnFilters: ColumnFilter[];
+  // public apExtFilter: string;
+  // public apSortColumn: string;
+  // public apSortDirection: string;
+  // public apPageSize: number;
+  // public searchSonstHw: boolean;
 }
 
 /**
@@ -33,6 +35,9 @@ export class UserSession {
   private user: User;
   private changeEvent: EventEmitter<User>;
 
+  // Settings
+  private settings: any;
+
   constructor(event: EventEmitter<User>, data: User | null) {
     this.changeEvent = event;
     // defaults
@@ -41,17 +46,24 @@ export class UserSession {
       isAdmin: data ? !!data.isAdmin : false,
       isReadonly: data ? !!data.isReadonly : false,
       isHotline: data ? !!data.isHotline : false,
-
-      path: data && data.path ? data.path : "",
-
-      showStandort: data ? !!data.showStandort : true,
-      apColumnFilters: data && data.apColumnFilters ? data.apColumnFilters : [],
-      apExtFilter: data && data.apExtFilter ? data.apExtFilter : "",
-      apSortColumn: data && data.apSortColumn ? data.apSortColumn : "",
-      apSortDirection: data && data.apSortDirection ? data.apSortDirection : "",
-      apPageSize: data && data.apPageSize ? data.apPageSize : 100,
-      searchSonstHw: data ? !!data.searchSonstHw : false,
+      settings: data && data.settings ? data.settings : "{}",
     };
+    try {
+      this.settings = JSON.parse(this.user.settings);
+    } catch {
+      this.settings = {};
+    }
+
+    // sicherstellen, dass alle Einstellungen definiert sind
+    this.settings.path = this.settings.path ?? "";
+    this.settings.showStandort = this.settings.showStandort ?? true;
+    this.settings.apColumnFilters = this.settings.apColumnFilters ?? [];
+    this.settings.apFilter = this.settings.apFilter ?? [];
+    this.settings.apStdFilter = this.settings.apStdFilter ?? true;
+    this.settings.apSortColumn = this.settings.apSortColumn ?? "";
+    this.settings.apSortDirection = this.settings.apSortDirection ?? "";
+    this.settings.apPageSize = this.settings.apPageSize ?? 100;
+    this.settings.searchSonstHw = this.settings.searchSonstHw ?? false;
   }
 
   // Benutzerrechte sind R/O
@@ -68,86 +80,102 @@ export class UserSession {
   }
 
   public get path(): string {
-    return this.user.path;
+    return this.settings.path;
   }
   public set path(p: string) {
-    this.user.path = p;
-    this.changeEvent.emit(this.user);
+    this.settings.path = p;
+    this.change();
   }
 
   public get showStandort(): boolean {
-    return this.user.showStandort;
+    return this.settings.showStandort;
   }
 
   public set showStandort(o: boolean) {
-    this.user.showStandort = o;
-    this.changeEvent.emit(this.user);
+    this.settings.showStandort = o;
+    this.change();
   }
 
   public get apSortColumn(): string {
-    return this.user.apSortColumn;
+    return this.settings.apSortColumn;
   }
 
   public set apSortColumn(col: string) {
-    this.user.apSortColumn = col;
-    this.changeEvent.emit(this.user);
+    this.settings.apSortColumn = col;
+    this.change();
   }
 
   public get apSortDirection(): string {
-    return this.user.apSortDirection;
+    return this.settings.apSortDirection;
   }
 
   public set apSortDirection(dir: string) {
-    this.user.apSortDirection = dir;
-    this.changeEvent.emit(this.user);
+    this.settings.apSortDirection = dir;
+    this.change();
   }
 
   public get apPageSize(): number {
-    return this.user.apPageSize;
+    return this.settings.apPageSize;
   }
 
   public set apPageSize(pg: number) {
-    this.user.apPageSize = pg;
-    this.changeEvent.emit(this.user);
+    this.settings.apPageSize = pg;
+    this.change();
   }
 
   // AP Filter
   public apFiltersCount(): number {
-    return this.user.apColumnFilters.length;
+    return this.settings.apColumnFilters.length;
   }
 
   public getApFilter(nr: number): ColumnFilter {
-    if (nr >= this.user.apColumnFilters.length) {
+    if (nr >= this.settings.apColumnFilters.length) {
       return { text: "", inc: true };
     }
-    return this.user.apColumnFilters[nr] ? this.user.apColumnFilters[nr] : { text: "", inc: true };
+    return this.settings.apColumnFilters[nr]
+      ? this.settings.apColumnFilters[nr]
+      : { text: "", inc: true };
   }
 
   public setApFilter(nr: number, filt: ColumnFilter) {
-    if (nr >= this.user.apColumnFilters.length) {
-      for (let i = this.user.apColumnFilters.length; i <= nr; i++) {
-        this.user.apColumnFilters.push({ text: "", inc: true });
+    if (nr >= this.settings.apColumnFilters.length) {
+      for (let i = this.settings.apColumnFilters.length; i <= nr; i++) {
+        this.settings.apColumnFilters.push({ text: "", inc: true });
       }
     }
-    this.user.apColumnFilters[nr] = filt;
-    this.changeEvent.emit(this.user);
+    this.settings.apColumnFilters[nr] = filt;
+    this.change();
   }
 
-  public get apExtFilter(): string {
-    return this.user.apExtFilter;
+  public get apFilter(): TransportElement[] {
+    return this.settings.apFilter;
   }
 
-  public set apExtFilter(filt: string) {
-    this.user.apExtFilter = filt;
-    this.changeEvent.emit(this.user);
+  public set apFilter(filt: TransportElement[]) {
+    this.settings.apFilter = filt;
+    this.change();
+  }
+
+  public get apStdFilter(): boolean {
+    return this.settings.apStdFilter;
+  }
+
+  public set apStdFilter(ex: boolean) {
+    this.settings.apStdFilter = ex;
+    this.change();
   }
 
   public get searchSonstHw(): boolean {
-    return this.user.searchSonstHw;
+    return this.settings.searchSonstHw;
   }
 
   public set searchSonstHw(sh: boolean) {
-    this.user.searchSonstHw = sh;
+    this.settings.searchSonstHw = sh;
+    this.change();
+  }
+
+  private change() {
+    this.user.settings = JSON.stringify(this.settings);
     this.changeEvent.emit(this.user);
   }
 }

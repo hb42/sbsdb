@@ -24,15 +24,8 @@ export class Bracket implements Term {
   public toString(): string {
     const rc = this.elements.reduce((prev, curr) => {
       return curr.operator
-        ? prev +
-            " " +
-            curr.operator.toString() +
-            " " +
-            curr.term.toString() +
-            "#" +
-            curr.count +
-            "#"
-        : prev + " " + curr.term.toString() + "#" + curr.count + "#";
+        ? prev + " " + curr.operator.toString() + " " + curr.term.toString()
+        : prev + " " + curr.term.toString();
     }, this.brLeft);
     return rc + this.brRight;
   }

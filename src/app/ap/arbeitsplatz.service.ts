@@ -11,8 +11,14 @@ import { UserSession } from "../shared/config/user.session";
 import { Bracket } from "../shared/filter/bracket";
 import { Element } from "../shared/filter/element";
 import { Expression } from "../shared/filter/expression";
+import { Field } from "../shared/filter/field";
 import { LogicalAnd } from "../shared/filter/logical-and";
+import { LogicalOperator } from "../shared/filter/logical-operator";
+import { LogicalOr } from "../shared/filter/logical-or";
 import { RelOp } from "../shared/filter/rel-op.enum";
+import { RelationalOperator } from "../shared/filter/relational-operator";
+import { TransportElement } from "../shared/filter/transport-element";
+import { TransportExpression } from "../shared/filter/transport-expression";
 import { KeyboardService } from "../shared/keyboard.service";
 import { ApColumn } from "./ap-column";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
@@ -239,13 +245,15 @@ export class ArbeitsplatzService {
         c.filterControl.valueChanges // FormControl
           .pipe(debounceTime(keyDebounce))
           .subscribe((text) => {
-            const filtervalue: ColumnFilter = c.valueChange(text);
+            // const filtervalue: ColumnFilter = c.valueChange(text);
             // FIXME speichern der Filter ist vom Index der Spalte abhaengig, das koennte
             //       noch Aerger machen (ausserdem ist noch zu klären, wie ext.Filter in den
             //       userSettings gespeichert wird)
-            this.userSettings.setApFilter(idx, filtervalue); // TODO Filter -> fn saveFilter
+            //       *** Filter-Handling nochmal von vorne angehen ***
+            // this.userSettings.setApFilter(idx, filtervalue); // TODO Filter -> fn saveFilter
             this.filterExpression.reset();
             this.buildFilterExpression();
+            this.saveFilterExpression();
             console.debug(this.filterExpression.toString());
             // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
             // this.apDataSource.filter = JSON.stringify(this.userSettings);
@@ -442,13 +450,57 @@ export class ArbeitsplatzService {
   // TODO Filter
   //      userSettings -> from JSON to this.filerExpression
   public initializeFilters() {
-    this.columns.forEach((c, idx) => {
-      if (c.filterControl) {
-        const filt = this.userSettings.getApFilter(idx);
-        if (filt.text) {
-          c.filterControl.setValue((filt.inc ? "" : "!") + filt.text);
-          c.filterControl.markAsDirty();
+    this.stdFilter = this.userSettings.apStdFilter;
+    this.filterExpression.reset();
+    this.makeElements(this.filterExpression, this.userSettings.apFilter);
+
+    if (this.stdFilter) {
+      this.userSettings.apFilter.forEach((t) => {
+        if (t.elem instanceof TransportExpression) {
+          const feld = t.elem.fName;
+          const col = this.columns.find((c) => c.fieldName === feld);
+          let not = "";
+          if (t.elem.op === RelOp.notlike) {
+            not = "!";
+          }
+          col.filterControl.setValue(not + t.elem.comp);
+          col.filterControl.markAsDirty();
         }
+      });
+    }
+    // this.columns.forEach((c, idx) => {
+    //   if (c.filterControl) {
+    //     const filt = this.userSettings.getApFilter(idx);
+    //     if (filt.text) {
+    //       c.filterControl.setValue((filt.inc ? "" : "!") + filt.text);
+    //       c.filterControl.markAsDirty();
+    //     }
+    //   }
+    // });
+  }
+
+  private makeElements(b: Bracket, t: TransportElement[]) {
+    let op: LogicalOperator = null;
+    const and = new LogicalAnd();
+    const or = new LogicalOr();
+    t.forEach((tr) => {
+      if (tr.op === 0) {
+        op = or;
+      } else if (tr.op === 1) {
+        op = and;
+      }
+      if (Array.isArray(tr.elem)) {
+        const br = new Bracket();
+        br.up = b;
+        b.addElement(op, br);
+        this.makeElements(br, tr.elem);
+      } else {
+        const ex = new Expression(
+          new Field(tr.elem.dName, tr.elem.fName),
+          new RelationalOperator(tr.elem.op),
+          tr.elem.comp
+        );
+        b.addElement(op, ex);
       }
     });
   }
@@ -462,13 +514,12 @@ export class ArbeitsplatzService {
     });
   }
 
-  // TODO Filter -> vermutlich ueberfluessig
+  // TODO Filter
   private buildFilterExpression() {
     const and = new LogicalAnd();
     this.columns.forEach((col, idx) => {
       if (col.filterControl) {
-        const filtervalue: ColumnFilter = this.userSettings.getApFilter(idx);
-        const colExpr = col.getFilterExpression(filtervalue);
+        const colExpr = col.getFilterExpression(col.valueChange());
         if (colExpr) {
           this.filterExpression.addElement(and, colExpr);
         }
@@ -479,23 +530,22 @@ export class ArbeitsplatzService {
   public saveFilterExpression() {
     // TODO filterExpression to obj to JSON -> userSettings
     console.debug("saveFilterExpression");
-    const filt = this.convBracket(this.filterExpression);
-    console.debug(JSON.stringify(filt));
+    this.userSettings.apFilter = this.convBracket(this.filterExpression);
   }
 
-  private convBracket(b: Bracket) {
+  private convBracket(b: Bracket): TransportElement[] {
     return b.getElements().map((el) => {
-      return {
-        op: el.operator ? (el.operator.toString() === "UND" ? 1 : 0) : -1,
-        elem: el.term.isBracket()
+      return new TransportElement(
+        el.operator ? (el.operator.toString() === "UND" ? 1 : 0) : -1,
+        el.term.isBracket()
           ? this.convBracket(el.term as Bracket)
-          : this.convExpression(el.term as Expression),
-      };
+          : this.convExpression(el.term as Expression)
+      );
     });
   }
-  private convExpression(e: Expression) {
+  private convExpression(e: Expression): TransportExpression | null {
     return e
-      ? { fName: e.field.fieldName, dName: e.field.displayName, op: e.operator.op, comp: e.compare }
+      ? new TransportExpression(e.field.fieldName, e.field.displayName, e.operator.op, e.compare)
       : null;
   }
 
@@ -565,7 +615,7 @@ export class ArbeitsplatzService {
     //   }
     // });
     this.stdFilter = !this.stdFilter;
-    console.debug("extendedFilter is " + this.stdFilter);
+    this.userSettings.apStdFilter = this.stdFilter;
   }
 
   // --- ---

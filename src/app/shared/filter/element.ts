@@ -8,14 +8,7 @@ import { Term } from "./term";
  * Fuer den ersten Ausdruck der Kette ist der operator null.
  */
 export class Element {
-  private static counter = 0;
-  private cnt: number;
-
-  public get count(): number {
-    return this.cnt;
-  }
-
   constructor(public operator: LogicalOperator | null, public term: Term) {
-    this.cnt = Element.counter++;
+    // nop
   }
 }
