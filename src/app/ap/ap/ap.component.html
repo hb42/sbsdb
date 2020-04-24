@@ -23,10 +23,15 @@ https://github.com/angular/components/issues/6178
 -->
 <div class="flex-col">
   <sbsdb-head>
-<!--    <mat-button-toggle mat-icon-button title="Erweiterte Suche" [checked]="apService.stdFilter" (change)="extendedFilter()">-->
-<!--      <mat-icon>find_in_page</mat-icon>-->
-<!--    </mat-button-toggle>-->
-    <button mat-icon-button title="Erweiterte Suche" (click)="extendedFilter()" [class.ext-filter-button-select]="!apService.stdFilter">
+    <!--    <mat-button-toggle mat-icon-button title="Erweiterte Suche" [checked]="apService.stdFilter" (change)="extendedFilter()">-->
+    <!--      <mat-icon>find_in_page</mat-icon>-->
+    <!--    </mat-button-toggle>-->
+    <button
+      mat-icon-button
+      title="Erweiterte Suche"
+      (click)="apService.filterService.toggleExtendedFilter()"
+      [class.ext-filter-button-select]="!apService.filterService.stdFilter"
+    >
       <mat-icon>find_in_page</mat-icon>
     </button>
     <button mat-icon-button title="Als CSV ausgeben"><mat-icon>share</mat-icon></button>
@@ -42,7 +47,10 @@ https://github.com/angular/components/issues/6178
   <!-- table + paginator -->
   <!--  <sbsdb-ap-filter> &lt;!&ndash; DEBUG &ndash;&gt;-->
   <!--  </sbsdb-ap-filter>-->
-    <sbsdb-ap-filter *ngIf="!apService.stdFilter" [data]="apService.getExtendedFilter()"></sbsdb-ap-filter>
+  <sbsdb-ap-filter
+    *ngIf="!apService.filterService.stdFilter"
+    [data]="apService.filterService.filterElement"
+  ></sbsdb-ap-filter>
   <div class="flex-content">
     <!-- table -->
     <div class="spinner-container" *ngIf="apService.loading">
@@ -58,7 +66,8 @@ https://github.com/angular/components/issues/6178
     >
       <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
-      <ng-container matColumnDef="aptyp" *ngIf="'aptyp'; let colname"> <!-- sticky -->
+      <ng-container matColumnDef="aptyp" *ngIf="'aptyp'; let colname">
+        <!-- sticky -->
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
             <sbsdb-accelerator-string
@@ -67,7 +76,11 @@ https://github.com/angular/components/issues/6178
             ></sbsdb-accelerator-string>
           </span>
           <!--          <div class="select-filter">-->
-          <mat-form-field floatLabel="never" class="filter-s" *ngIf="apService.stdFilter">
+          <mat-form-field
+            floatLabel="never"
+            class="filter-s"
+            *ngIf="apService.filterService.stdFilter"
+          >
             <!--              <mat-label>Filter</mat-label>-->
             <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
             <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
@@ -124,7 +137,9 @@ https://github.com/angular/components/issues/6178
               class="highlight-when-expanded"
               [class.pseudo-button]="apService.sortLinks"
               (click)="
-                apService.sortLinks && apService.expandedRow !== element ? apService.filterByAptyp(element, $event) : ''
+                apService.sortLinks && apService.expandedRow !== element
+                  ? apService.filterByAptyp(element, $event)
+                  : ''
               "
             >
               {{ element.aptyp }}
@@ -144,7 +159,8 @@ https://github.com/angular/components/issues/6178
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="apname" > <!-- sticky -->
+      <ng-container matColumnDef="apname">
+        <!-- sticky -->
         <th mat-header-cell *matHeaderCellDef>
           <span mat-sort-header class="sort-header">
             <sbsdb-accelerator-string
@@ -152,7 +168,11 @@ https://github.com/angular/components/issues/6178
               [accel]="sortAccel('apname')"
             ></sbsdb-accelerator-string>
           </span>
-          <mat-form-field floatLabel="never" class="filter-s" *ngIf="apService.stdFilter">
+          <mat-form-field
+            floatLabel="never"
+            class="filter-s"
+            *ngIf="apService.filterService.stdFilter"
+          >
             <!--            <mat-label>Filter</mat-label>-->
             <input
               matInput
@@ -196,7 +216,11 @@ https://github.com/angular/components/issues/6178
               *ngIf="!apService.userSettings.showStandort"
             ></sbsdb-accelerator-string>
           </span>
-          <mat-form-field floatLabel="never" class="filter-s" *ngIf="apService.stdFilter">
+          <mat-form-field
+            floatLabel="never"
+            class="filter-s"
+            *ngIf="apService.filterService.stdFilter"
+          >
             <!--            <mat-label>Filter</mat-label>-->
             <input
               matInput
@@ -237,7 +261,9 @@ https://github.com/angular/components/issues/6178
             [class.pseudo-button]="apService.sortLinks"
             class="highlight-when-expanded"
             (click)="
-              apService.sortLinks && apService.expandedRow !== element ? apService.filterByBetrst(element, $event) : ''
+              apService.sortLinks && apService.expandedRow !== element
+                ? apService.filterByBetrst(element, $event)
+                : ''
             "
             (mouseenter)="apService.tooltipOnEllipsis($event)"
           >
@@ -257,7 +283,11 @@ https://github.com/angular/components/issues/6178
               [accel]="sortAccel('bezeichnung')"
             ></sbsdb-accelerator-string>
           </span>
-          <mat-form-field floatLabel="never" class="filter-s" *ngIf="apService.stdFilter">
+          <mat-form-field
+            floatLabel="never"
+            class="filter-s"
+            *ngIf="apService.filterService.stdFilter"
+          >
             <!--            <mat-label>Filter</mat-label>-->
             <input
               matInput
@@ -293,7 +323,11 @@ https://github.com/angular/components/issues/6178
               [accel]="sortAccel('ip')"
             ></sbsdb-accelerator-string>
           </span>
-          <mat-form-field floatLabel="never" class="filter-s" *ngIf="apService.stdFilter">
+          <mat-form-field
+            floatLabel="never"
+            class="filter-s"
+            *ngIf="apService.filterService.stdFilter"
+          >
             <!--            <mat-label>Filter</mat-label>-->
             <input
               matInput
@@ -333,7 +367,11 @@ https://github.com/angular/components/issues/6178
               [accel]="sortAccel('hardware')"
             ></sbsdb-accelerator-string>
           </span>
-          <mat-form-field floatLabel="never" class="filter-s" *ngIf="apService.stdFilter">
+          <mat-form-field
+            floatLabel="never"
+            class="filter-s"
+            *ngIf="apService.filterService.stdFilter"
+          >
             <!--            <mat-label>Filter</mat-label>-->
             <input
               matInput
@@ -363,7 +401,8 @@ https://github.com/angular/components/issues/6178
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="menu" > <!-- stickyEnd -->
+      <ng-container matColumnDef="menu">
+        <!-- stickyEnd -->
         <th mat-header-cell *matHeaderCellDef>
           <!--          <button mat-icon-button [matMenuTriggerFor]="tableMenu" [color]="apService.linkcolor">-->
           <!--            <mat-icon>menu</mat-icon>-->
@@ -384,7 +423,12 @@ https://github.com/angular/components/issues/6178
 
       <!-- details template -->
       <ng-container matColumnDef="apdetails">
-        <td mat-cell *matCellDef="let element" [colSpan]="apService.displayedColumns.length" class="ap-detail-cell">
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [colSpan]="apService.displayedColumns.length"
+          class="ap-detail-cell"
+        >
           <div
             *ngIf="apService.expandedRow === element"
             [@detailExpand]="'expanded'"
@@ -433,11 +477,11 @@ https://github.com/angular/components/issues/6178
               <div class="ap-detail-margin">
                 <table>
                   <th colspan="2">IP</th>
-                  <tr *ngFor="let vlan of element.vlan">
+                  <tr *ngFor="let vl of element.vlan">
                     <td>
-                      {{ vlan.bezeichnung }}: {{ apService.getIpString(vlan.vlan + vlan.ip) }}
+                      {{ vl.bezeichnung }}: {{ apService.getIpString(vl.vlan + vl.ip) }}
                     </td>
-                    <td>{{ apService.getMacString(vlan.mac) }}</td>
+                    <td>{{ apService.getMacString(vl.mac) }}</td>
                   </tr>
                 </table>
               </div>
@@ -507,7 +551,7 @@ https://github.com/angular/components/issues/6178
     <!--      <mat-icon>find_in_page</mat-icon>-->
     <!--      Erweiterte Suche-->
     <!--    </button>-->
-    <button mat-menu-item class="menue-entry" (click)="apService.resetFilters()">
+    <button mat-menu-item class="menue-entry" (click)="apService.filterService.resetStdFilters()">
       <mat-icon>close</mat-icon>
       Alle Filter löschen
     </button>
@@ -579,11 +623,7 @@ https://github.com/angular/components/issues/6178
       <mat-icon>format_color_text</mat-icon>
       toggle link color
     </button>
-    <button
-      mat-menu-item
-      class="menue-entry"
-      (click)="apService.sortLinks = !apService.sortLinks"
-    >
+    <button mat-menu-item class="menue-entry" (click)="apService.sortLinks = !apService.sortLinks">
       <mat-icon>format_color_text</mat-icon>
       toggle show links
     </button>

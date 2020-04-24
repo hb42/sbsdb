@@ -124,26 +124,27 @@ export class ApColumn {
 
   /**
    * Suchstring vorbereiten
-   *
-   * @param text - Eingabetext
    */
-  public valueChange(): ColumnFilter {
+  private valueChange(): ColumnFilter {
     const text = this.filterControl.value;
-    const t = this.checkSearchString(text);
-    if (this.typekey === ApColumn.IP) {
-      t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
+    if (text) {
+      const t = this.checkSearchString(text);
+      if (this.typekey === ApColumn.IP) {
+        t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
+      }
+      return t;
+    } else {
+      return null;
     }
-    return t;
   }
 
   /**
-   * Expression fuer die Spalte bauen
+   * Expression fuer die Spalte bauen (std filter)
    *
-   * @param filter - Filter-Ausdruck der Spalte
    */
-  //  nur fuer std-filter oder auch fuer extd??
-  public getFilterExpression(filter: ColumnFilter): Expression {
-    if (filter.text) {
+  public getFilterExpression(): Expression {
+    const filter: ColumnFilter = this.valueChange();
+    if (filter) {
       let op: RelationalOperator;
       op = filter.inc ? new RelationalOperator(RelOp.like) : new RelationalOperator(RelOp.notlike);
       const f: Field = new Field(this.fieldName, this.displayName);

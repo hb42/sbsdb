@@ -1,26 +1,15 @@
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { MatSortHeader } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
-import { debounceTime } from "rxjs/operators";
-import { ColumnFilter } from "../shared/config/column-filter";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
-import { Bracket } from "../shared/filter/bracket";
-import { Element } from "../shared/filter/element";
-import { Expression } from "../shared/filter/expression";
-import { Field } from "../shared/filter/field";
-import { LogicalAnd } from "../shared/filter/logical-and";
-import { LogicalOperator } from "../shared/filter/logical-operator";
-import { LogicalOr } from "../shared/filter/logical-or";
 import { RelOp } from "../shared/filter/rel-op.enum";
-import { RelationalOperator } from "../shared/filter/relational-operator";
-import { TransportElement } from "../shared/filter/transport-element";
-import { TransportExpression } from "../shared/filter/transport-expression";
 import { KeyboardService } from "../shared/keyboard.service";
 import { ApColumn } from "./ap-column";
+import { ApFilterService } from "./ap-filter.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { OeTreeItem } from "./model/oe.tree.item";
 
@@ -35,9 +24,8 @@ export class ArbeitsplatzService {
 
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
-  public filterExpression = new Bracket();
-  public stdFilter = true;
-  private filterChanged = 0;
+  private filterChange: EventEmitter<any> = new EventEmitter();
+  private filterChanged = 1;
 
   public expandedRow: Arbeitsplatz;
 
@@ -196,7 +184,6 @@ export class ArbeitsplatzService {
     //        tags -> hat tag [dropdown], hat tag nicht [dropdown], enthaelt (text aller tags)
 
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
-    this.extFilterColumns = this.columns.filter((c) => c.operators);
   }
 
   public getColumnIndex(name: string): number {
@@ -224,6 +211,7 @@ export class ArbeitsplatzService {
   constructor(
     private configService: ConfigService,
     private http: HttpClient,
+    public filterService: ApFilterService,
     private keyboardService: KeyboardService
   ) {
     console.debug("c'tor ArbeitsplatzService");
@@ -231,43 +219,25 @@ export class ArbeitsplatzService {
     this.allApsUrl = this.configService.webservice + "/ap/all";
     this.pageApsUrl = this.configService.webservice + "/ap/page/";
     this.singleApUrl = this.configService.webservice + "/ap/id/";
-    // this.getOeTree();
     this.userSettings = configService.getUser();
     this.buildColumns();
-    // Filtereingaben bremsen
-    const keyDebounce = 500;
 
-    // Aenderung an Filter-Feldern in den Benutzereinstellungen speichern
-    // und Filter triggern
-
-    this.columns.forEach((c, idx) => {
-      if (c.filterControl) {
-        c.filterControl.valueChanges // FormControl
-          .pipe(debounceTime(keyDebounce))
-          .subscribe((text) => {
-            // const filtervalue: ColumnFilter = c.valueChange(text);
-            // FIXME speichern der Filter ist vom Index der Spalte abhaengig, das koennte
-            //       noch Aerger machen (ausserdem ist noch zu klären, wie ext.Filter in den
-            //       userSettings gespeichert wird)
-            //       *** Filter-Handling nochmal von vorne angehen ***
-            // this.userSettings.setApFilter(idx, filtervalue); // TODO Filter -> fn saveFilter
-            this.filterExpression.reset();
-            this.buildFilterExpression();
-            this.saveFilterExpression();
-            console.debug(this.filterExpression.toString());
-            // .filter muass geandert werden, damit MatTable den Filter ausfuehrt
-            // this.apDataSource.filter = JSON.stringify(this.userSettings);
-            this.triggerFilter();
-          });
-      }
+    /*
+     * Filter in MatTable anstossen
+     *
+     * Der Filter reagiert auf Aenderungen in DataSource.filter. Da der Inhalt von filter
+     * hier nicht genutzt wird (-> DataSource.filterPredicate, wird in getAps() gesetzt)
+     * kann hier ein beliebiger Wert verwendet werden.
+     */
+    this.filterChange.subscribe(() => {
+      this.apDataSource.filter = "" + this.filterChanged++;
     });
+    this.filterService.initService(this.columns, this.filterChange);
 
     // AP-Daten vom Server holen
     setTimeout(() => {
       this.getAps();
     }, 0);
-
-    // this.getColumn("apname").filterControl.disable();
   }
 
   /**
@@ -289,17 +259,12 @@ export class ArbeitsplatzService {
   // APs aus der DB holen
   public async getAps() {
     this.loading = true;
-    console.debug("### getAps() 1 - " + this.userSettings.showStandort);
-
-    // this.typtagSelect = await this.http.get<TypTag[]>(this.typtagUrl).toPromise();
-    // this.typtagSelect.forEach((t) => t.select = t.apkategorie + ": " + t.tagTyp);
+    console.debug("### getAps() 1 - ");
 
     const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
     const defaultpagesize = 100;
     let page = 0;
 
-    // TODO AP-TABLE-LOAD
-    // const data = await this.http.get<Arbeitsplatz[]>(this.allApsUrl).toPromise();  // alle, aber nicht alle Daten
     const data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise(); // 1. Teil, vollstaendiger record
     data.forEach((ap) => {
       this.prepAP(ap);
@@ -319,16 +284,14 @@ export class ArbeitsplatzService {
 
     // eigener Filter
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
-      return this.filterExpression.validate(ap);
+      return this.filterService.filterExpression.validate(ap);
     };
 
     this.applyUserSettings();
 
-    // TODO AP-TABLE-LOAD
     this.fetchPage(++page, pagesize || defaultpagesize); // Rest holen
   }
 
-  // TODO AP-TABLE-LOAD
   private fetchPage(page: number, size: number) {
     console.debug("load page " + page + ", size " + size);
     this.http
@@ -341,6 +304,8 @@ export class ArbeitsplatzService {
         this.apDataSource.data = [...this.apDataSource.data, ...dat];
         if (dat.length === size) {
           this.fetchPage(++page, size); // recursion!
+        } else {
+          // alle Seiten geladen
         }
       });
   }
@@ -362,9 +327,7 @@ export class ArbeitsplatzService {
         // FIXME Hack -> ApComponent#handleSort
         sortheader._handleClick();
       }
-      // this.changeBetrst();
-      // this.changeHw();
-      this.initializeFilters();
+      this.filterService.initializeFilters();
     }
   }
 
@@ -380,45 +343,9 @@ export class ArbeitsplatzService {
   }
 
   public async expandApRow(ap: Arbeitsplatz, event: Event) {
-    // TODO AP-TABLE-LOAD
-    // if (this.expandedRow === ap) {
-    //   this.expandedRow = null;
-    // } else {
-    //   const apdata: Arbeitsplatz = await this.http.get<Arbeitsplatz>(this.singleApUrl + ap.apId).toPromise();
-    //   // const rec: Arbeitsplatz = this.apDataSource.data.find((a => a.apId === ap.apId));
-    //   // console.dir(rec);
-    //   if (apdata) {
-    //     ap.verantwOe = apdata.verantwOe;
-    //     ap.oe = apdata.oe;
-    //     ap.hw = apdata.hw;
-    //     ap.bezeichnung = apdata.bezeichnung;
-    //     ap.apname = apdata.apname;
-    //     ap.aptyp = apdata.aptyp;
-    //     ap.bemerkung = apdata.bemerkung;
-    //     ap.tags = apdata.tags;
-    //     ap.vlan = apdata.vlan;
-    //     this.sortAP(ap);
-    //     this.prepAP(ap);
-    //     this.expandedRow = ap;
-    //   } else {
-    //     console.error("Fehler beim Laden der Details fuer AP #" + ap.apId);
-    //   }
-    // }
     this.expandedRow = this.expandedRow === ap ? null : ap;
     event.stopPropagation();
   }
-
-  // // Wechsel Standort <-> verantw. OE
-  // public changeBetrst() {
-  //   const col = this.getColumn("betrst");
-  //   col.displayName = this.bstDisplayName();
-  //   col.fieldName = this.bstFieldName();
-  // }
-  // // Wechsel search pri HW <-> all HW
-  // public changeHw() {
-  //   const col = this.getColumn("hardware");
-  //   col.fieldName = this.hwFieldName();
-  // }
 
   public bstTooltip(ap: Arbeitsplatz): string {
     return (
@@ -445,110 +372,6 @@ export class ArbeitsplatzService {
     });
   }
 
-  // --- filter ---
-
-  // TODO Filter
-  //      userSettings -> from JSON to this.filerExpression
-  public initializeFilters() {
-    this.stdFilter = this.userSettings.apStdFilter;
-    this.filterExpression.reset();
-    this.makeElements(this.filterExpression, this.userSettings.apFilter);
-
-    if (this.stdFilter) {
-      this.userSettings.apFilter.forEach((t) => {
-        if (t.elem instanceof TransportExpression) {
-          const feld = t.elem.fName;
-          const col = this.columns.find((c) => c.fieldName === feld);
-          let not = "";
-          if (t.elem.op === RelOp.notlike) {
-            not = "!";
-          }
-          col.filterControl.setValue(not + t.elem.comp);
-          col.filterControl.markAsDirty();
-        }
-      });
-    }
-    // this.columns.forEach((c, idx) => {
-    //   if (c.filterControl) {
-    //     const filt = this.userSettings.getApFilter(idx);
-    //     if (filt.text) {
-    //       c.filterControl.setValue((filt.inc ? "" : "!") + filt.text);
-    //       c.filterControl.markAsDirty();
-    //     }
-    //   }
-    // });
-  }
-
-  private makeElements(b: Bracket, t: TransportElement[]) {
-    let op: LogicalOperator = null;
-    const and = new LogicalAnd();
-    const or = new LogicalOr();
-    t.forEach((tr) => {
-      if (tr.op === 0) {
-        op = or;
-      } else if (tr.op === 1) {
-        op = and;
-      }
-      if (Array.isArray(tr.elem)) {
-        const br = new Bracket();
-        br.up = b;
-        b.addElement(op, br);
-        this.makeElements(br, tr.elem);
-      } else {
-        const ex = new Expression(
-          new Field(tr.elem.dName, tr.elem.fName),
-          new RelationalOperator(tr.elem.op),
-          tr.elem.comp
-        );
-        b.addElement(op, ex);
-      }
-    });
-  }
-
-  // TODO Filter -> filterExpression = null ?
-  public resetFilters() {
-    this.columns.forEach((c, idx) => {
-      if (c.filterControl) {
-        c.filterControl.reset();
-      }
-    });
-  }
-
-  // TODO Filter
-  private buildFilterExpression() {
-    const and = new LogicalAnd();
-    this.columns.forEach((col, idx) => {
-      if (col.filterControl) {
-        const colExpr = col.getFilterExpression(col.valueChange());
-        if (colExpr) {
-          this.filterExpression.addElement(and, colExpr);
-        }
-      }
-    });
-  }
-
-  public saveFilterExpression() {
-    // TODO filterExpression to obj to JSON -> userSettings
-    console.debug("saveFilterExpression");
-    this.userSettings.apFilter = this.convBracket(this.filterExpression);
-  }
-
-  private convBracket(b: Bracket): TransportElement[] {
-    return b.getElements().map((el) => {
-      return new TransportElement(
-        el.operator ? (el.operator.toString() === "UND" ? 1 : 0) : -1,
-        el.term.isBracket()
-          ? this.convBracket(el.term as Bracket)
-          : this.convExpression(el.term as Expression)
-      );
-    });
-  }
-  private convExpression(e: Expression): TransportExpression | null {
-    return e
-      ? new TransportExpression(e.field.fieldName, e.field.displayName, e.operator.op, e.compare)
-      : null;
-  }
-
   public filterByAptyp(ap: Arbeitsplatz, event: Event) {
     const col = this.getColumn("aptyp");
     col.filterControl.setValue(ap.aptyp);
@@ -562,63 +385,6 @@ export class ArbeitsplatzService {
     col.filterControl.markAsDirty();
     event.stopPropagation();
   }
-
-  /*
-     static fn kann nicht in template verwendet werden, deshalb der accessor
-   */
-  // public getColumn(name: string): ApColumn {
-  //   return this.getColumn(name);
-  // }
-
-  // // OE-Name abhaengig von gewaehlter Anzeige
-  // // (Standort || verantwortliche OE)
-  // public getBetrst(ap: Arbeitsplatz): string {
-  //   if (this.userSettings.showStandort) {
-  //     return ap.oe.betriebsstelle;
-  //   } else {
-  //     if (ap.verantwOe) {
-  //       return ap.verantwOe.betriebsstelle;
-  //     } else {
-  //       return ap.oe.betriebsstelle;
-  //     }
-  //   }
-  // }
-
-  /**
-   * Filter in MatTable anstossen
-   *
-   * Der Filter reagiert auf Aenderungen in DataSource.filter. Da der Inhalt von filter
-   * hier nicht genutzt wird (-> DataSource.filterPredicate, wird in getAps() gesetzt)
-   * kann hier ein beliebiger Wert verwendet werden.
-   */
-  public triggerFilter() {
-    this.apDataSource.filter = "" + this.filterChanged++;
-  }
-  // eindeutiger String fuer alle Filter -> apDataSource.filter
-  // private getFilterString(): string {
-  //   let s = "";
-  //   for (let i = 0; i < this.userSettings.apFiltersCount(); i++) {
-  //     const filt = this.userSettings.getApFilter(i);
-  //     s += filt.text + filt.inc;
-  //   }
-  //   return s;
-  // }
-
-  public getExtendedFilter(): Element {
-    return new Element(null, this.filterExpression);
-  }
-  public extendedFilter(on: boolean) {
-    // this.extFilter = on;
-    // this.columns.forEach((c) => {
-    //   if (c.filterControl) {
-    //     on ? c.filterControl.disable() : c.filterControl.enable();
-    //   }
-    // });
-    this.stdFilter = !this.stdFilter;
-    this.userSettings.apStdFilter = this.stdFilter;
-  }
-
-  // --- ---
 
   public getMacString(mac: string) {
     // kein match => Eingabe-String
@@ -766,48 +532,5 @@ export class ArbeitsplatzService {
     //   ap.voesearch = ap.oesearch;
     //   ap.voesort = ap.oesort;
     // }
-  }
-
-  /* TODO kann raus, wenn Tree definitiv draussen ist */
-  public async getOeTree() {
-    this.oeTree = await this.http.get<OeTreeItem[]>(this.oeTreeUrl).toPromise();
-    this.dataSource.data = this.oeTree;
-    console.debug("get OE-Tree");
-    console.dir(this.oeTree);
-  }
-
-  public expandTree(id: number) {
-    if (!this.oeTree || (!!this.selected && this.selected.id === id)) {
-      return;
-    }
-    if (this.expandTreeRecurse(id, this.oeTree)) {
-      setTimeout(() => {
-        document.getElementById("tree" + id).scrollIntoView(false);
-      }, 0);
-    }
-  }
-
-  private expandTreeRecurse(id: number, oes: OeTreeItem[]): boolean {
-    if (!!oes && oes.length > 0) {
-      return oes.some((oe) => {
-        console.debug("recurse " + oe.betriebsstelle + " /" + oe.id);
-        if (oe.id === id) {
-          console.debug("found ");
-          this.selected = oe;
-          return true;
-        } else {
-          console.debug("recurse OEs for " + oe.betriebsstelle);
-          if (this.expandTreeRecurse(id, oe.children)) {
-            console.debug("expand OE " + oe.betriebsstelle);
-            this.treeControl.expand(oe);
-            return true;
-          } else {
-            return false;
-          }
-        }
-      });
-    } else {
-      return false;
-    }
   }
 }

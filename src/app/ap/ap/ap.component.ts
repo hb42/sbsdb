@@ -14,8 +14,6 @@ import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
-import { Element } from "../../shared/filter/element";
-import { ApFilterComponent } from "../ap-filter/ap-filter.component";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
@@ -54,7 +52,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     if (event.altKey && !event.shiftKey && !event.ctrlKey) {
       // Extended Filter => alt-e
       if (event.key === "e") {
-        this.extendedFilter();
+        this.apService.filterService.toggleExtendedFilter();
       }
       const colIdx = this.apService.columns.findIndex(
         (c) => c.accelerator && c.accelerator === event.key
@@ -106,7 +104,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         id: Number.parseInt(params.id, 10),
       };
       if (params.tree && params.tree === "oe") {
-        this.apService.expandTree(this.apService.urlParams.id);
+        // this.apService.expandTree(this.apService.urlParams.id);
       }
     });
 
@@ -120,7 +118,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     setTimeout(() => {
       // Benutzereinstellungen setzen
-      this.apService.applyUserSettings();
+      // this.apService.applyUserSettings();
 
       this.focusFirstFilter();
     }, 0);
@@ -161,26 +159,5 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       return "";
     }
-  }
-
-  public extendedFilter() {
-    this.apService.resetFilters();
-    this.apService.extendedFilter(true);
-    // const dialogRef = this.dialog.open(ApFilterComponent, {
-    //   // height: "300px",
-    //   // width: "500px",
-    //   // maxWidth: "600px",
-    //   disableClose: true,
-    //   data: new Element(null, this.apService.filterExpression),
-    // });
-    //
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   if (result) {
-    //     console.debug("The dialog was closed");
-    //     console.dir(result);
-    //     // TODO save filter, block std filter ...
-    //     this.apService.triggerFilter();
-    //   }
-    // });
   }
 }

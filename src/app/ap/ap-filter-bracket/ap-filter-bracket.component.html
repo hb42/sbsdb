@@ -1,8 +1,10 @@
-<span [class.md-primary-shadow]="highlight" style="display: inline-block;">
+<span style="display: inline-block;">
   <button
     *ngIf="element.term.up"
     mat-flat-button
     class="mat-button-filter"
+    [class.md-primary-shadow]="highlight"
+    [class.ext-filter-panel]="!highlight"
     [matMenuTriggerFor]="bmenu"
     [matMenuTriggerData]="{ el: element }"
     (menuOpened)="menuOpen()"
@@ -15,7 +17,7 @@
   <span *ngIf="getElements().length">
     <span *ngFor="let el of getElements()">
       <span *ngIf="el.term.isBracket()">
-        <sbsdb-ap-filter-bracket [element]="el" ></sbsdb-ap-filter-bracket>
+        <sbsdb-ap-filter-bracket [element]="el"></sbsdb-ap-filter-bracket>
         <!--        {{el.operator ? el.operator.toString() + " " : ""}}(-->
         <!--        <span *ngFor="let el2 of getBracketElements(el.term)">-->
         <!--          <sbsdb-ap-filter-element [element]="el2" [title]="el2.count"></sbsdb-ap-filter-element>-->
@@ -33,6 +35,7 @@
         mat-button
         color="primary"
         class="mat-button-filter"
+        [class.md-primary-shadow]="highlight"
         [matMenuTriggerFor]="newMenu"
         [matMenuTriggerData]="{ el: element.term }"
       >
@@ -44,6 +47,8 @@
     *ngIf="element.term.up"
     mat-flat-button
     class="mat-button-filter"
+    [class.md-primary-shadow]="highlight"
+    [class.ext-filter-panel]="!highlight"
     [matMenuTriggerFor]="bmenu"
     [matMenuTriggerData]="{ el: element }"
     (menuOpened)="menuOpen()"

@@ -15,9 +15,9 @@ export class ApTreeComponent implements OnInit {
   constructor(public apService: ArbeitsplatzService, private router: Router) {}
 
   public async ngOnInit() {
-    await this.apService.getOeTree();
+    // await this.apService.getOeTree();
     if (this.apService.urlParams.tree && this.apService.urlParams.tree === "oe") {
-      this.apService.expandTree(this.apService.urlParams.id);
+      // this.apService.expandTree(this.apService.urlParams.id);
     }
   }
 

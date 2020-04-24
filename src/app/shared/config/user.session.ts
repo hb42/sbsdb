@@ -124,28 +124,6 @@ export class UserSession {
   }
 
   // AP Filter
-  public apFiltersCount(): number {
-    return this.settings.apColumnFilters.length;
-  }
-
-  public getApFilter(nr: number): ColumnFilter {
-    if (nr >= this.settings.apColumnFilters.length) {
-      return { text: "", inc: true };
-    }
-    return this.settings.apColumnFilters[nr]
-      ? this.settings.apColumnFilters[nr]
-      : { text: "", inc: true };
-  }
-
-  public setApFilter(nr: number, filt: ColumnFilter) {
-    if (nr >= this.settings.apColumnFilters.length) {
-      for (let i = this.settings.apColumnFilters.length; i <= nr; i++) {
-        this.settings.apColumnFilters.push({ text: "", inc: true });
-      }
-    }
-    this.settings.apColumnFilters[nr] = filt;
-    this.change();
-  }
 
   public get apFilter(): TransportElement[] {
     return this.settings.apFilter;

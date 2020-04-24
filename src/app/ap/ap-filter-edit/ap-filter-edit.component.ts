@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Field } from "../../shared/filter/field";
 import { RelOp } from "../../shared/filter/rel-op.enum";
 import { ApColumn } from "../ap-column";
+import { ApFilterService } from "../ap-filter.service";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
@@ -13,7 +14,7 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
 export class ApFilterEditComponent implements OnInit {
   public get selectedField(): ApColumn {
     return this.data.f
-      ? this.apService.extFilterColumns.find((col) => col.displayName === this.data.f.displayName)
+      ? this.data.columns.find((col) => col.displayName === this.data.f.displayName)
       : null;
   }
   public set selectedField(col) {
@@ -29,7 +30,7 @@ export class ApFilterEditComponent implements OnInit {
     }
   }
 
-  constructor(public apService: ArbeitsplatzService, @Inject(MAT_DIALOG_DATA) public data) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data) {
     console.debug("c'tor ApFilterEditComponent");
   }
 
