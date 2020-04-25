@@ -10,7 +10,7 @@ import { ApFilterService } from "../ap-filter.service";
 export class ApFilterComponent implements OnInit, AfterViewInit {
   @Input() data: Element;
 
-  constructor() {
+  constructor(public apFilter: ApFilterService) {
     console.debug("c'tor ApFilterComponent");
   }
 

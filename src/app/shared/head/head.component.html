@@ -37,18 +37,20 @@
       <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
       <mat-icon></mat-icon>
     </button>
+<!--      class="md-background-color"-->
+<!--        class="md-primary-highlight-color2"-->
     <button
-      mat-button
+      mat-flat-button
       disabled
-      class="md-background-color"
+      class="disabled-button"
       *ngIf="navigationService.currentPath.startsWith(link.path)"
     >
       <!--            [matMenuTriggerFor]="link.menu" #menubtn>-->
-      <sbsdb-accelerator-string
-        class="md-primary-highlight-color2"
-        [text]="link.label"
-        [accel]="link.key"
-      ></sbsdb-accelerator-string>
+      {{link.label}}
+<!--      <sbsdb-accelerator-string-->
+<!--        [text]="link.label"-->
+<!--        [accel]="link.key"-->
+<!--      ></sbsdb-accelerator-string>-->
       <!--      <mat-icon>arrow_drop_down</mat-icon>-->
     </button>
     <span class="spacer2"></span>

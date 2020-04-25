@@ -1,10 +1,8 @@
-<span style="display: inline-block;">
+<span style="display: inline-block;" [class.highlight]="highlight">
   <button
     *ngIf="element.term.up"
     mat-flat-button
     class="mat-button-filter"
-    [class.md-primary-shadow]="highlight"
-    [class.ext-filter-panel]="!highlight"
     [matMenuTriggerFor]="bmenu"
     [matMenuTriggerData]="{ el: element }"
     (menuOpened)="menuOpen()"
@@ -35,7 +33,6 @@
         mat-button
         color="primary"
         class="mat-button-filter"
-        [class.md-primary-shadow]="highlight"
         [matMenuTriggerFor]="newMenu"
         [matMenuTriggerData]="{ el: element.term }"
       >
@@ -47,8 +44,6 @@
     *ngIf="element.term.up"
     mat-flat-button
     class="mat-button-filter"
-    [class.md-primary-shadow]="highlight"
-    [class.ext-filter-panel]="!highlight"
     [matMenuTriggerFor]="bmenu"
     [matMenuTriggerData]="{ el: element }"
     (menuOpened)="menuOpen()"

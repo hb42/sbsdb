@@ -439,7 +439,7 @@ https://github.com/angular/components/issues/6178
                 Standort
               </div>
               <div class="ap-detail-margin">
-                OE {{ element.oe.bstNr }}<br />
+                {{ element.oe.bstNr }}<br />
                 {{ element.oe.betriebsstelle }}<br /><br />
                 {{ element.oe.strasse ? element.oe.strasse + " " : ""
                 }}{{ element.oe.hausnr ? element.oe.hausnr : "" }}<br />
@@ -451,9 +451,13 @@ https://github.com/angular/components/issues/6178
                 Öffnungszeiten<br />{{ element.oe.oeff }}
               </div>
             </div>
-            <div *ngIf="element.verantwOe" class="ap-detail-margin">
-              <span>Verantwortliche OE:</span> {{ element.verantwOe.bstNr }} -
-              {{ element.verantwOe.betriebsstelle }}
+            <div class="ap-detail-content-row">
+              <div *ngIf="element.verantwOe" class="ap-detail-margin ap-detail-standort-text">
+                Verantwortliche OE
+              </div>
+              <div class="ap-detail-margin">
+                {{ element.verantwOe.bstNr }} - {{ element.verantwOe.betriebsstelle }}
+              </div>
             </div>
             <div class="ap-detail-content-row">
               <div class="ap-detail-margin">
@@ -476,10 +480,11 @@ https://github.com/angular/components/issues/6178
               </div>
               <div class="ap-detail-margin">
                 <table>
-                  <th colspan="2">IP</th>
+                  <th colspan="2">IP/MAC</th>
                   <tr *ngFor="let vl of element.vlan">
                     <td>
-                      {{ vl.bezeichnung }}: {{ apService.getIpString(vl.vlan + vl.ip) }}
+                      {{ vl.bezeichnung }}<br />
+                      {{ apService.getIpString(vl.vlan + vl.ip) }}
                     </td>
                     <td>{{ apService.getMacString(vl.mac) }}</td>
                   </tr>

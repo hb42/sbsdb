@@ -1,8 +1,7 @@
 <button
   mat-flat-button
   class="mat-button-filter"
-  [class.md-primary-shadow]="highlight"
-  [class.ext-filter-panel]="!highlight"
+  [class.highlight]="highlight"
   [matMenuTriggerFor]="emenu"
   [matMenuTriggerData]="{ el: element }"
   (menuOpened)="menuOpen()"

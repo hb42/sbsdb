@@ -25,3 +25,9 @@
   min-width: 160px;
   display: inline-grid;
 }
+
+.mat-flat-button.disabled-button {
+  background-color: transparent;
+  border-bottom: solid 2px;
+  color: inherit;
+}

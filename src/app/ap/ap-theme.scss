@@ -84,6 +84,7 @@
     padding: 2px 10px;
     border-left: solid 1px var(--md-details-border-color);
     border-bottom: solid 1px var(--md-details-border-color);
+    min-width: 140px;
   }
 
   .ap-detail-oeff {
@@ -99,10 +100,26 @@
   }
 
   /* extended Filter */
+  .mat-button-filter {
+    min-width: 0 !important;
+    padding: 0 4px !important;
+  }
+  .ext-filter-panel {
+    background-color: var(--md-light-gray-background-color);
+  }
+
   .ext-filter-button-select {
     background-color: mat-color($background, background);
     color: mat-color($primary, A400);
     //color: #fd3232;
   }
 
+  .mat-card .mat-flat-button.mat-button-filter {
+    background-color: transparent;
+  }
+  .mat-card .mat-flat-button.highlight,
+  .mat-card .highlight .mat-button.mat-button-filter,
+  .mat-card .highlight .mat-flat-button.mat-button-filter {
+    background-color: mat-color($primary, A400, 0.2);
+  }
 }

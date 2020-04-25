@@ -35,7 +35,7 @@ export class ApFilterBracketComponent implements OnInit {
 
   public getElements(): Element[] {
     if (this.element.term.isBracket()) {
-      return (this.element.term as Bracket).getElements();
+      return (this.element.term as Bracket).elements;
     } else {
       return [];
     }

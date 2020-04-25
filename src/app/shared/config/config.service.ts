@@ -9,6 +9,7 @@ import { UserSession } from "./user.session";
 export class ConfigService {
   // Name in der Config-DB
   public static AP_PAGE_SIZE = "ap.pagesize";
+  public static AP_FILTERS = "ap.filters";
 
   private websvc: string;
   // Pfad zur Web-API
@@ -131,8 +132,11 @@ export class ConfigService {
       .get<string>(this.getConf + "/" + confName)
       .toPromise()
       .then((val) => {
-        // return JSON.parse(val);
-        return val;
+        try {
+          return JSON.parse(val);
+        } catch {
+          return val;
+        }
       });
   }
 

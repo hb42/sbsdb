@@ -13,12 +13,12 @@ import { Term } from "./term";
  */
 export class Bracket implements Term {
   public up: Bracket | null;
-  private elements: Element[] = [];
+  public elements: Element[] = [];
   private brLeft = this.up ? "(" : "{";
   private brRight = this.up ? ")" : "}";
 
   constructor() {
-    // noop
+    // nop
   }
 
   public toString(): string {
@@ -40,11 +40,6 @@ export class Bracket implements Term {
 
   public isTop(): boolean {
     return this.up !== null;
-  }
-
-  // TODO evtl. Zugriff einschraenken
-  public getElements() {
-    return this.elements;
   }
 
   public reset() {
@@ -69,10 +64,13 @@ export class Bracket implements Term {
   }
 
   public removeElement(el: Element) {
-    // TODO das ist erstmal ein Platzhalter
-    //      vermutlich muss ueber Term gesucht werden, ausserdem ist offen ob auch rekursiv
-    //      gesucht werden muesste und ob ein Vergleich elements[i].term == term funktioniert
-    this.elements.splice(this.elements.indexOf(el), 1);
+    const index = this.elements.indexOf(el);
+    this.elements.splice(index, 1);
+    // wenn das erste Element entfernt wurde, muss bei der neuen Nr. 1
+    // der Operator entfernt werden.
+    if (index === 0 && this.elements.length > 0) {
+      this.elements[0].operator = null;
+    }
   }
 
   public isBracket(): boolean {

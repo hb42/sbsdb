@@ -1,5 +1,6 @@
 import { EventEmitter } from "@angular/core";
 import { TransportElement } from "../filter/transport-element";
+import { TransportFilters } from "../filter/transport-filters";
 import { ColumnFilter } from "./column-filter";
 
 // dieser Datentyp kommt vom Server
@@ -58,8 +59,7 @@ export class UserSession {
     this.settings.path = this.settings.path ?? "";
     this.settings.showStandort = this.settings.showStandort ?? true;
     this.settings.apColumnFilters = this.settings.apColumnFilters ?? [];
-    this.settings.apFilter = this.settings.apFilter ?? [];
-    this.settings.apStdFilter = this.settings.apStdFilter ?? true;
+    this.settings.apFilter = this.settings.apFilter ?? new TransportFilters();
     this.settings.apSortColumn = this.settings.apSortColumn ?? "";
     this.settings.apSortDirection = this.settings.apSortDirection ?? "";
     this.settings.apPageSize = this.settings.apPageSize ?? 100;
@@ -125,21 +125,21 @@ export class UserSession {
 
   // AP Filter
 
-  public get apFilter(): TransportElement[] {
+  public get apFilter(): TransportFilters {
     return this.settings.apFilter;
   }
 
-  public set apFilter(filt: TransportElement[]) {
+  public set apFilter(filt: TransportFilters) {
     this.settings.apFilter = filt;
     this.change();
   }
 
   public get apStdFilter(): boolean {
-    return this.settings.apStdFilter;
+    return this.settings.apFilter.stdFilter;
   }
 
   public set apStdFilter(ex: boolean) {
-    this.settings.apStdFilter = ex;
+    this.settings.apFilter.stdFilter = ex;
     this.change();
   }
 
