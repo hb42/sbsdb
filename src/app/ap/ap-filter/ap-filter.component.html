@@ -4,7 +4,7 @@
       Erweiterte Suche
 
       <mat-form-field class="abstand">
-        <mat-label>Gespeicherte Suchen</mat-label>
+        <mat-label>Gespeicherte Filter</mat-label>
         <mat-select
           [(value)]="apFilter.selectedFilter"
           (selectionChange)="apFilter.selectFilter($event)"
@@ -25,7 +25,7 @@
       <button
         mat-icon-button
         color="primary"
-        title="Aktuelle Suche speichern"
+        title="Aktuellen Filter speichern"
         [disabled]="
           apFilter.filterExpression.elements.length === 0 ||
           (apFilter.selectedFilter !== null && apFilter.selectedFilter.type === 0)
@@ -37,35 +37,35 @@
       <button
         mat-icon-button
         color="primary"
-        title="Ausgewählte Suche aus der Liste löschen"
+        title="Ausgewählten Filter aus der Liste löschen"
         [disabled]="apFilter.selectedFilter === null || apFilter.selectedFilter.type > 0"
         (click)="apFilter.deleteFilter()"
       >
         <mat-icon>delete</mat-icon>
       </button>
-      <button
-        *ngIf="apFilter.userSettings.isAdmin"
-        mat-icon-button
-        color="accent"
-        title="Aktuelle Suche für alle Benutzer speichern"
-        [disabled]="
-          apFilter.filterExpression.elements.length === 0 ||
-          (apFilter.selectedFilter !== null && apFilter.selectedFilter.type > 0)
-        "
-        (click)="apFilter.addGlobalFilter()"
-      >
-        <mat-icon>save_alt</mat-icon>
-      </button>
-      <button
-        *ngIf="apFilter.userSettings.isAdmin"
-        mat-icon-button
-        color="accent"
-        title="Ausgewählte globale Suche aus der Liste löschen"
-        [disabled]="apFilter.selectedFilter === null || apFilter.selectedFilter.type === 0"
-        (click)="apFilter.deleteGlobalFilter()"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
+<!--      <button-->
+<!--        *ngIf="apFilter.userSettings.isAdmin"-->
+<!--        mat-icon-button-->
+<!--        color="accent"-->
+<!--        title="Aktuelle Suche für alle Benutzer speichern"-->
+<!--        [disabled]="-->
+<!--          apFilter.filterExpression.elements.length === 0 ||-->
+<!--          (apFilter.selectedFilter !== null && apFilter.selectedFilter.type > 0)-->
+<!--        "-->
+<!--        (click)="apFilter.addGlobalFilter()"-->
+<!--      >-->
+<!--        <mat-icon>save_alt</mat-icon>-->
+<!--      </button>-->
+<!--      <button-->
+<!--        *ngIf="apFilter.userSettings.isAdmin"-->
+<!--        mat-icon-button-->
+<!--        color="accent"-->
+<!--        title="Ausgewählte globale Suche aus der Liste löschen"-->
+<!--        [disabled]="apFilter.selectedFilter === null || apFilter.selectedFilter.type === 0"-->
+<!--        (click)="apFilter.deleteGlobalFilter()"-->
+<!--      >-->
+<!--        <mat-icon>delete</mat-icon>-->
+<!--      </button>-->
     </div>
   </div>
   <div mat-card-content>

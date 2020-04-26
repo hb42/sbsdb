@@ -29,6 +29,7 @@ import { FootComponent } from "./shared/foot/foot.component";
 import { HeadComponent } from "./shared/head/head.component";
 import { MatPaginatorIntlDe } from "./shared/mat.paginator.intl.de";
 import { StatusComponent } from "./shared/status/status.component";
+import { ApFilterEditListComponent } from "./ap/ap-filter-edit-list/ap-filter-edit-list.component";
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -67,6 +68,7 @@ export function initConf(configService: ConfigService) {
     ApFilterElementComponent,
     ApFilterBracketComponent,
     ApFilterEditComponent,
+    ApFilterEditListComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,7 +85,8 @@ export function initConf(configService: ConfigService) {
     LibClientModule,
   ],
   // f. mat-dialog
-  entryComponents: [ApFilterEditComponent],
+  entryComponents: [ApFilterEditComponent, ApFilterEditListComponent],
+
   providers: [
     { provide: LOCALE_ID, useValue: "de" }, // registerLocaleData() s.o.
     // -- eigene

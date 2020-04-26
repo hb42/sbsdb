@@ -1,7 +1,9 @@
-import { EventEmitter, Injectable } from "@angular/core";
+import { EventEmitter, Injectable, ViewContainerRef } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
-import { debounceTime } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { debounceTime, map, startWith } from "rxjs/operators";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { Bracket } from "../shared/filter/bracket";
@@ -16,6 +18,7 @@ import { TransportElement } from "../shared/filter/transport-element";
 import { TransportExpression } from "../shared/filter/transport-expression";
 import { TransportFilter } from "../shared/filter/transport-filter";
 import { ApColumn } from "./ap-column";
+import { ApFilterEditListComponent } from "./ap-filter-edit-list/ap-filter-edit-list.component";
 import { ApFilterEditComponent } from "./ap-filter-edit/ap-filter-edit.component";
 
 @Injectable({ providedIn: "root" })
@@ -164,12 +167,12 @@ export class ApFilterService {
    */
   setFilterExpression(key: number) {
     // TODO +type -> lookup global
-    const map: TransportFilter = this.getFilter(key);
-    if (map) {
+    const tf: TransportFilter = this.getFilter(key);
+    if (tf) {
       this.filterExpression.reset();
-      this.makeElements(this.filterExpression, map.filter);
+      this.makeElements(this.filterExpression, tf.filter);
       if (ApFilterService.STDFILTER !== key) {
-        this.setFilter(ApFilterService.STDFILTER, "", map.filter);
+        this.setFilter(ApFilterService.STDFILTER, "", tf.filter);
         this.saveFilters();
         this.triggerFilter();
       }
@@ -193,9 +196,9 @@ export class ApFilterService {
    * @param type - User- oder globaler Filter
    */
   private setFilter(key: number, name: string, filt: TransportElement[], type?: number) {
-    const map: TransportFilter = this.getFilter(key);
-    if (map) {
-      map.filter = filt;
+    const tf: TransportFilter = this.getFilter(key);
+    if (tf) {
+      tf.filter = filt;
     } else {
       this.userSettings.apFilter.filters.push(new TransportFilter(key, name, filt, type));
     }
@@ -322,10 +325,7 @@ export class ApFilterService {
 
   public addFilter() {
     // TODO name per dialog
-    const key = this.nextKey++;
-
-    this.setFilter(key, "Test " + key, this.convBracket(this.filterExpression));
-    this.saveFilters();
+    this.editListName();
   }
 
   public deleteFilter() {
@@ -337,13 +337,41 @@ export class ApFilterService {
     this.saveFilters();
   }
 
+  // TODO -> admin
   public addGlobalFilter() {
     const key = this.globNextKey++;
     // TODO dialog + save
   }
 
+  // TODO -> admin
   public deleteGlobalFilter() {
     // TODO remove + save
+  }
+  // TODO
+  public editListName() {
+    const lst: TransportFilter[] = this.extFilterList();
+
+    // Dialog oeffnen
+    const dialogRef = this.dialog.open(ApFilterEditListComponent, {
+      disableClose: true,
+      autoFocus: true,
+      minWidth: 450,
+      data: { list: lst },
+    });
+
+    // Dialog-Ergebnis
+    dialogRef.afterClosed().subscribe((result: TransportFilter | string) => {
+      if (result) {
+        if (typeof result === "string") {
+          const key = this.nextKey++;
+          this.setFilter(key, result, this.convBracket(this.filterExpression));
+        } else {
+          result.filter = this.convBracket(this.filterExpression);
+        }
+        // TODO dropdown in apfilterComp auf den neuen/alten  Wert setzen
+        this.saveFilters();
+      }
+    });
   }
 
   /**
