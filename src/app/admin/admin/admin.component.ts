@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostBinding, OnInit } from "@angular/core";
 
 @Component({
   selector: "sbsdb-admin",
@@ -6,6 +6,8 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./admin.component.scss"],
 })
 export class AdminComponent implements OnInit {
+  @HostBinding("attr.class") public cssClass = "flex-panel flex-content-fix";
+
   constructor() {}
 
   ngOnInit() {}

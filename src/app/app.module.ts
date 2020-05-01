@@ -30,6 +30,9 @@ import { HeadComponent } from "./shared/head/head.component";
 import { MatPaginatorIntlDe } from "./shared/mat.paginator.intl.de";
 import { StatusComponent } from "./shared/status/status.component";
 import { ApFilterEditListComponent } from "./ap/ap-filter-edit-list/ap-filter-edit-list.component";
+import { AdminOptionsComponent } from "./admin/admin-options/admin-options.component";
+import { AdminListApFilterComponent } from "./admin/admin-list-ap-filter/admin-list-ap-filter.component";
+import { AdminListConfigComponent } from "./admin/admin-list-config/admin-list-config.component";
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -69,6 +72,9 @@ export function initConf(configService: ConfigService) {
     ApFilterBracketComponent,
     ApFilterEditComponent,
     ApFilterEditListComponent,
+    AdminOptionsComponent,
+    AdminListApFilterComponent,
+    AdminListConfigComponent,
   ],
   imports: [
     BrowserModule,

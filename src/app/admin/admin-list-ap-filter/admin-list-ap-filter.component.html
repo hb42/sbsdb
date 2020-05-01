@@ -1,0 +1,27 @@
+<mat-list>
+  <div mat-subheader>Vordefinierte Arbeitsplatzfilter</div>
+  <mat-list-item *ngFor="let gfilt of apFilter.extGlobalFilterList()">
+    <button
+      mat-icon-button
+      color="primary"
+      (click)="apFilter.moveFilterToUser(gfilt.key)"
+      title="zu Benutzerdefinierten verschieben"
+    >
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+    <div class="abstand">{{ gfilt.name }}</div>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+  <div mat-subheader>Benutzerdefinierte Arbeitsplatzfilter</div>
+  <mat-list-item *ngFor="let filt of apFilter.extFilterList()">
+    <button
+      mat-icon-button
+      color="primary"
+      (click)="apFilter.moveFilterToGlobal(filt.key)"
+      title="zu Vordefinierten verschieben"
+    >
+      <mat-icon>keyboard_arrow_up</mat-icon>
+    </button>
+    <div class="abstand">{{ filt.name }}</div>
+  </mat-list-item>
+</mat-list>

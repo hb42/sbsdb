@@ -1,7 +1,15 @@
-<sbsdb-head>
-  <!-- TODO Admin-Menue -->
-</sbsdb-head>
+<div class="flex-col">
+  <sbsdb-head>
+    <!-- TODO HW-Menue -->
+  </sbsdb-head>
 
-<div class="flex-row">
-  admin page
+  <div class="flex-row">
+    <div class="flex-panel optionsPanel">
+      <sbsdb-admin-options></sbsdb-admin-options>
+    </div>
+    <div fb-splitter></div>
+    <div class="flex-panel flex-max listPanel">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

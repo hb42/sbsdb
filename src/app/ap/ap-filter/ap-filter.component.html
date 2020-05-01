@@ -28,7 +28,7 @@
         title="Aktuellen Filter speichern"
         [disabled]="
           apFilter.filterExpression.elements.length === 0 ||
-          (apFilter.selectedFilter !== null && apFilter.selectedFilter.type === 0)
+          apFilter.selectedFilter !== null
         "
         (click)="apFilter.addFilter()"
       >

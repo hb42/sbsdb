@@ -1,0 +1,17 @@
+// Dimensionen fuer Baum und Liste
+$optionsWidth: 350px;
+$optionsMinWidth: 100px;
+
+$listWidth: 100%;
+$listMinWidth: 100px;
+
+
+.optionsPanel {
+  width: $optionsWidth;
+  min-width: $optionsMinWidth;
+}
+
+.listPanel {
+  width: $listWidth;
+  min-width: $listMinWidth;
+}

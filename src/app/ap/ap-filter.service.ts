@@ -28,6 +28,8 @@ export class ApFilterService {
     this.userSettings = configService.getUser();
   }
   public static STDFILTER = -1;
+  public static USERFILTER = 0;
+  public static GLOBALFILTER = 1;
 
   public userSettings: UserSession;
 
@@ -92,7 +94,7 @@ export class ApFilterService {
   public initializeFilters() {
     this.stdFilter = this.userSettings.apStdFilter;
     this.filterExpression.reset();
-    this.setFilterExpression(ApFilterService.STDFILTER);
+    this.setFilterExpression(ApFilterService.STDFILTER, ApFilterService.USERFILTER);
     const maxkey: number = this.userSettings.apFilter.filters.reduce(
       (prev, curr) => (curr.key > prev ? curr.key : prev),
       0
@@ -129,10 +131,6 @@ export class ApFilterService {
     }
   }
 
-  private saveGlobalFilters() {
-    this.configService.saveConfig(ConfigService.AP_FILTERS, this.globalFilters);
-  }
-
   /**
    * Filter loeschen (triggert valueChange)
    */
@@ -164,10 +162,16 @@ export class ApFilterService {
    * Aktiven Filter aus den Benutzereinstellungen setzen
    *
    * @param key - Filtername
+   * @param type - User/Global
    */
-  setFilterExpression(key: number) {
+  private setFilterExpression(key: number, type: number) {
     // TODO +type -> lookup global
-    const tf: TransportFilter = this.getFilter(key);
+    let tf: TransportFilter;
+    if (type === ApFilterService.USERFILTER) {
+      tf = this.getFilter(key);
+    } else {
+      tf = this.getGlobalFilter(key);
+    }
     if (tf) {
       this.filterExpression.reset();
       this.makeElements(this.filterExpression, tf.filter);
@@ -188,19 +192,45 @@ export class ApFilterService {
   }
 
   /**
+   * Globalen Filter suchen
+   *
+   * @param key - Schluessel
+   */
+  private getGlobalFilter(key: number): TransportFilter {
+    return this.globalFilters.find((tf) => tf.key === key);
+  }
+
+  /**
    * Filter in die Benutzereinstellungen schreiben
    *
    * @param key - Filtername
    * @param name - display name
    * @param filt - Filter als TransportElement-Array
-   * @param type - User- oder globaler Filter
    */
-  private setFilter(key: number, name: string, filt: TransportElement[], type?: number) {
+  private setFilter(key: number, name: string, filt: TransportElement[]) {
     const tf: TransportFilter = this.getFilter(key);
     if (tf) {
       tf.filter = filt;
     } else {
-      this.userSettings.apFilter.filters.push(new TransportFilter(key, name, filt, type));
+      this.userSettings.apFilter.filters.push(
+        new TransportFilter(key, name, filt, ApFilterService.USERFILTER)
+      );
+    }
+  }
+
+  /**
+   * Globalen Filter hinzufuegen
+   *
+   * @param key - Schluessel
+   * @param name - Bezeichnung
+   * @param filt - Filter
+   */
+  private setGlobalFilter(key: number, name: string, filt: TransportElement[]) {
+    const tf: TransportFilter = this.getGlobalFilter(key);
+    if (tf) {
+      tf.filter = filt;
+    } else {
+      this.globalFilters.push(new TransportFilter(key, name, filt, ApFilterService.GLOBALFILTER));
     }
   }
 
@@ -213,6 +243,18 @@ export class ApFilterService {
     const idx = this.userSettings.apFilter.filters.findIndex((tf) => tf.key === key);
     if (idx >= 0) {
       this.userSettings.apFilter.filters.splice(idx, 1);
+    }
+  }
+
+  /**
+   * Filter aus der globalen Liste entfernen
+   *
+   * @param key - Schluessel
+   */
+  private removeGlobalFilter(key: number) {
+    const idx = this.globalFilters.findIndex((tf) => tf.key === key);
+    if (idx >= 0) {
+      this.globalFilters.splice(idx, 1);
     }
   }
 
@@ -272,6 +314,13 @@ export class ApFilterService {
   }
 
   /**
+   * Globale Filter speichern
+   */
+  private saveGlobalFilters() {
+    this.configService.saveConfig(ConfigService.AP_FILTERS, this.globalFilters);
+  }
+
+  /**
    * filterExpression fuer die Benutzereinstellungen umwandeln
    *
    * @param b - startende Klammer
@@ -320,11 +369,10 @@ export class ApFilterService {
   public selectFilter(evt: MatSelectChange) {
     console.debug("list select change");
     console.dir(evt);
-    this.setFilterExpression(evt.value.key); // TODO +type
+    this.setFilterExpression(evt.value.key, evt.value.type);
   }
 
   public addFilter() {
-    // TODO name per dialog
     this.editListName();
   }
 
@@ -338,16 +386,29 @@ export class ApFilterService {
   }
 
   // TODO -> admin
-  public addGlobalFilter() {
-    const key = this.globNextKey++;
-    // TODO dialog + save
+  public moveFilterToGlobal(key: number) {
+    const filter: TransportFilter = this.getFilter(key);
+    if (filter) {
+      const gkey = this.globNextKey++;
+      this.removeFilter(key);
+      this.setGlobalFilter(gkey, filter.name, filter.filter);
+      this.saveFilters();
+      this.saveGlobalFilters();
+    }
   }
 
   // TODO -> admin
-  public deleteGlobalFilter() {
-    // TODO remove + save
+  public moveFilterToUser(key: number) {
+    const filter: TransportFilter = this.getGlobalFilter(key);
+    if (filter) {
+      const ukey = this.nextKey++;
+      this.removeGlobalFilter(key);
+      this.setFilter(ukey, filter.name, filter.filter);
+      this.saveFilters();
+      this.saveGlobalFilters();
+    }
   }
-  // TODO
+
   public editListName() {
     const lst: TransportFilter[] = this.extFilterList();
 
@@ -362,13 +423,16 @@ export class ApFilterService {
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: TransportFilter | string) => {
       if (result) {
+        let key: number;
         if (typeof result === "string") {
-          const key = this.nextKey++;
+          key = this.nextKey++;
           this.setFilter(key, result, this.convBracket(this.filterExpression));
         } else {
           result.filter = this.convBracket(this.filterExpression);
+          key = result.key;
         }
-        // TODO dropdown in apfilterComp auf den neuen/alten  Wert setzen
+        // dropdown in apfilterComp auf den neuen/alten  Wert setzen
+        this.selectedFilter = this.getFilter(key);
         this.saveFilters();
       }
     });
@@ -387,7 +451,7 @@ export class ApFilterService {
   }
 
   /**
-   * Ausdruck oderr Klammer einfuegen
+   * Ausdruck oder Klammer einfuegen
    *
    * @param el - Element
    * @param what - was wird eingefuegt?
