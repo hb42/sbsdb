@@ -23,9 +23,11 @@ export class Arbeitsplatz {
   public sonstHwStr = ""; // ges. HW fuer die Suche
   public ipStr = "";
   public macStr = "";
+  public vlanStr = "";
   public ipsearch = "";
   public oesearch = "";
   public oesort = "";
   public voesearch = "";
   public voesort = "";
+  public subTypes: string[] = [];
 }

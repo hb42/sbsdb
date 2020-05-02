@@ -89,6 +89,22 @@ export class ArbeitsplatzService {
     );
     this.columns.push(
       new ApColumn(
+        this,
+        "subtype",
+        () => "Subtyp",
+        () => "subTypes",
+        null,
+        "",
+        false,
+        ApColumn.LCASE,
+        [RelOp.inlistA, RelOp.notinlistA],
+        () =>
+          // @ts-ignore
+          [...new Set(this.apDataSource.data.flatMap((ap) => ap.subTypes))].sort() as Array<string>
+      )
+    );
+    this.columns.push(
+      new ApColumn(
         this, // beginnt, endet, enthaelt, enthaelt nicht
         "apname",
         () => "AP-Name",
@@ -147,7 +163,7 @@ export class ArbeitsplatzService {
         "i",
         true,
         ApColumn.IP,
-        null,
+        [RelOp.like, RelOp.notlike],
         null
       )
     );
@@ -162,7 +178,7 @@ export class ArbeitsplatzService {
         "w",
         true,
         ApColumn.LCASE,
-        null,
+        [RelOp.like, RelOp.notlike],
         null
       )
     );
@@ -180,9 +196,66 @@ export class ArbeitsplatzService {
         null
       )
     );
-    // + cols bemerkung -> enthaelt
-    //        tags -> hat tag [dropdown], hat tag nicht [dropdown], enthaelt (text aller tags)
 
+    this.columns.push(
+      new ApColumn(
+        this, // bemerkung -> enthaelt
+        "bemerkung",
+        () => "Bemerkung",
+        () => "bemerkung",
+        null,
+        "",
+        false,
+        ApColumn.LCASE,
+        [RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
+        // dropdown VLAN? -> eigene Spalte
+        "ipfilt",
+        () => "IP",
+        () => "ipStr",
+        null,
+        "",
+        false,
+        ApColumn.LCASE,
+        [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
+        // dropdown VLAN? -> eigene Spalte
+        "mac",
+        () => "MAC",
+        () => "macStr",
+        null,
+        "",
+        false,
+        ApColumn.IP,
+        [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
+        // dropdown VLAN? -> eigene Spalte
+        "vlan",
+        () => "VLAN",
+        () => "vlanStr",
+        null,
+        "",
+        false,
+        ApColumn.LCASE,
+        [RelOp.inlist, RelOp.notinlist],
+        () => [...new Set(this.apDataSource.data.map((a) => a.vlanStr))].sort()
+      )
+    );
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 
@@ -306,8 +379,36 @@ export class ArbeitsplatzService {
           this.fetchPage(++page, size); // recursion!
         } else {
           // alle Seiten geladen
+          this.onDataReady();
         }
       });
+  }
+
+  private onDataReady() {
+    const tags = [
+      ...new Set(
+        // @ts-ignore
+        this.apDataSource.data.flatMap((ap) =>
+          ap.tags.filter((t1) => t1.flag !== 1).map((t2) => t2.bezeichnung)
+        )
+      ),
+    ].sort() as Array<string>;
+    tags.forEach((tag) => {
+      this.columns.push(
+        new ApColumn(
+          this,
+          "TAG" + tag,
+          () => "TAG: " + tag,
+          () => "TAG: " + tag,
+          null,
+          "",
+          false,
+          ApColumn.LCASE,
+          [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
+          null
+        )
+      );
+    });
   }
 
   public applyUserSettings() {
@@ -510,14 +611,27 @@ export class ArbeitsplatzService {
         (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
     });
 
+    ap.ipStr = "";
+    ap.macStr = "";
+    ap.vlanStr = "";
     if (ap.vlan && ap.vlan[0]) {
-      ap.ipStr = this.getIpString(ap.vlan[0].vlan + ap.vlan[0].ip);
-      ap.macStr = this.getMacString(ap.vlan[0].mac);
-      ap.ipsearch = ap.ipStr + " " + ap.vlan[0].mac;
-    } else {
-      ap.ipStr = "";
-      ap.macStr = "";
-      ap.ipsearch = "";
+      let msearch = "";
+      ap.vlan.forEach((v) => {
+        if (ap.ipStr) {
+          ap.ipStr = ap.ipStr + "/ ";
+        }
+        if (ap.macStr) {
+          ap.macStr = ap.macStr + "/ ";
+        }
+        if (ap.vlanStr) {
+          ap.vlanStr = ap.vlanStr + "/ ";
+        }
+        ap.ipStr = ap.ipStr + this.getIpString(v.vlan + v.ip);
+        ap.macStr = ap.macStr + this.getMacString(v.mac);
+        msearch = msearch + v.mac;
+        ap.vlanStr = ap.vlanStr + v.bezeichnung;
+      });
+      ap.ipsearch = ap.ipStr + " " + msearch;
     }
     // das spart den null-check
     if (!ap.verantwOe) {
@@ -525,12 +639,16 @@ export class ArbeitsplatzService {
     }
     ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
     ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
-    // if (ap.verantwOe) {
     ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
     ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
-    // } else {
-    //   ap.voesearch = ap.oesearch;
-    //   ap.voesort = ap.oesort;
-    // }
+
+    ap.subTypes = [];
+    ap.tags.forEach((tag) => {
+      if (tag.flag === 1) {
+        ap.subTypes.push(tag.bezeichnung);
+      } else {
+        ap["TAG: " + tag.bezeichnung] = tag.text;
+      }
+    });
   }
 }

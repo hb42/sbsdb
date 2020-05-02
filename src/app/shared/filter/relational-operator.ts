@@ -9,12 +9,12 @@ import { RelOp } from "./rel-op.enum";
 //   execute(fieldContent: string, compare: string): boolean;
 //
 //   // Textausgabe
-//   toString(): string;
+//   toString(): string;s
 // }
 
 export class RelationalOperator {
-  public execute: (fieldContent: string, compare: string) => boolean;
-  private name: string;
+  public execute: (fieldContent: string | Array<string>, compare: string) => boolean;
+  private readonly name: string;
 
   private static noop(fieldContent: string, compare: string): boolean {
     return true;
@@ -56,6 +56,13 @@ export class RelationalOperator {
     return fieldContent.endsWith(compare);
   }
 
+  private static inList(fieldContent: Array<string>, compare: string): boolean {
+    return fieldContent.indexOf(compare) >= 0;
+  }
+  private static notInList(fieldContent: Array<string>, compare: string): boolean {
+    return fieldContent.indexOf(compare) === -1;
+  }
+
   constructor(public readonly op: RelOp) {
     switch (op) {
       case RelOp.like:
@@ -88,6 +95,14 @@ export class RelationalOperator {
         break;
       case RelOp.notinlist:
         this.execute = RelationalOperator.notequal;
+        this.name = op;
+        break;
+      case RelOp.inlistA:
+        this.execute = RelationalOperator.inList;
+        this.name = op;
+        break;
+      case RelOp.notinlistA:
+        this.execute = RelationalOperator.notInList;
         this.name = op;
         break;
       default:

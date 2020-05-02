@@ -6,6 +6,8 @@ export enum RelOp {
   notequal = "UNGLEICH",
   startswith = "BEGINNT MIT",
   endswith = "ENDED MIT",
-  inlist = "GLEICH",
-  notinlist = "UNGLEICH",
+  inlist = " GLEICH",
+  notinlist = " UNGLEICH",
+  inlistA = "GLEICH ",
+  notinlistA = "UNGLEICH ",
 }

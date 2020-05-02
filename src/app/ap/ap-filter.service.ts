@@ -45,7 +45,6 @@ export class ApFilterService {
 
   // wird in initService() von apService geliefert
   private columns: ApColumn[];
-  public extFilterColumns: ApColumn[];
   private filterChange: EventEmitter<any>;
 
   // Filtereingaben bremsen
@@ -68,7 +67,6 @@ export class ApFilterService {
   public initService(col: ApColumn[], evt: EventEmitter<any>) {
     this.columns = col;
     this.filterChange = evt;
-    this.extFilterColumns = this.columns.filter((c) => c.operators);
 
     this.readGlobalFilters();
 
@@ -385,6 +383,17 @@ export class ApFilterService {
     this.saveFilters();
   }
 
+  public moveFilter() {
+    if (this.selectedFilter) {
+      if (this.selectedFilter.type === ApFilterService.USERFILTER) {
+        this.moveFilterToGlobal(this.selectedFilter.key);
+      } else {
+        this.moveFilterToUser(this.selectedFilter.key);
+      }
+      this.selectedFilter = null;
+    }
+  }
+
   // TODO -> admin
   public moveFilterToGlobal(key: number) {
     const filter: TransportFilter = this.getFilter(key);
@@ -527,7 +536,7 @@ export class ApFilterService {
     // Dialog oeffnen
     const dialogRef = this.dialog.open(ApFilterEditComponent, {
       disableClose: true,
-      data: { f: field, o: oper, c: comp, columns: this.extFilterColumns },
+      data: { f: field, o: oper, c: comp, columns: this.columns },
     });
 
     // Dialog-Ergebnis

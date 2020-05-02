@@ -36,7 +36,17 @@ export class ApFilterEditComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  public columnList(): ApColumn[] {
+    return this.data.columns.filter((c) => c.operators);
+  }
+
   public compareAsList(): boolean {
-    return this.data.o && (this.data.o === RelOp.inlist || this.data.o === RelOp.notinlist);
+    return (
+      this.data.o &&
+      (this.data.o === RelOp.inlist ||
+        this.data.o === RelOp.notinlist ||
+        this.data.o === RelOp.inlistA ||
+        this.data.o === RelOp.notinlistA)
+    );
   }
 }

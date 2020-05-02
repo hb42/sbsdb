@@ -3,7 +3,7 @@
   <mat-form-field>
     <mat-label>Feld</mat-label>
     <mat-select [(value)]="selectedField">
-      <mat-option *ngFor="let col of data.columns" [value]="col">
+      <mat-option *ngFor="let col of columnList()" [value]="col">
         {{ col.displayName }}
       </mat-option>
     </mat-select>

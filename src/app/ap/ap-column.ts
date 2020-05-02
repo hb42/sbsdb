@@ -100,7 +100,7 @@ export class ApColumn {
     private op: RelOp[] | null, // erlaubte Verknuepfungen
     private selectlist: (() => string[]) | null // soweit sinnvoll: no dup list fuer das Feld
   ) {
-    if (this.fieldName) {
+    if (this.fieldName && this.showcol) {
       this.filtercontrol = new FormControl("");
     }
   }
