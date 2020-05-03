@@ -64,8 +64,7 @@
               "src/sbsdb-theme.scss",
               "src/styles.scss"
             ],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "scripts": []
           },
           "configurations": {
             "dev": {

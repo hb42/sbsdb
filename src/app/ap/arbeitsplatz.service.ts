@@ -99,7 +99,7 @@ export class ArbeitsplatzService {
         ApColumn.LCASE,
         [RelOp.inlistA, RelOp.notinlistA],
         () =>
-          // @ts-ignore
+          // @ts-ignore (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
           [...new Set(this.apDataSource.data.flatMap((ap) => ap.subTypes))].sort() as Array<string>
       )
     );
@@ -169,50 +169,6 @@ export class ArbeitsplatzService {
     );
     this.columns.push(
       new ApColumn(
-        this, // enthaelt, enthaelt nicht/ Hersteller|Typenbezeichnung|SerNr enthaelt, enthaelt nicht, start,end
-        // (hersteller + bezeichnung) -> eigene Spalte
-        "hardware",
-        () => "Hardware",
-        () => (this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr"),
-        () => "hwStr",
-        "w",
-        true,
-        ApColumn.LCASE,
-        [RelOp.like, RelOp.notlike],
-        null
-      )
-    );
-    this.columns.push(
-      new ApColumn(
-        this,
-        "menu",
-        () => null,
-        () => null,
-        null,
-        "",
-        true,
-        -1,
-        null,
-        null
-      )
-    );
-
-    this.columns.push(
-      new ApColumn(
-        this, // bemerkung -> enthaelt
-        "bemerkung",
-        () => "Bemerkung",
-        () => "bemerkung",
-        null,
-        "",
-        false,
-        ApColumn.LCASE,
-        [RelOp.like, RelOp.notlike],
-        null
-      )
-    );
-    this.columns.push(
-      new ApColumn(
         this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
         // dropdown VLAN? -> eigene Spalte
         "ipfilt",
@@ -254,6 +210,50 @@ export class ArbeitsplatzService {
         ApColumn.LCASE,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.apDataSource.data.map((a) => a.vlanStr))].sort()
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this, // enthaelt, enthaelt nicht/ Hersteller|Typenbezeichnung|SerNr enthaelt, enthaelt nicht, start,end
+        // (hersteller + bezeichnung) -> eigene Spalte
+        "hardware",
+        () => "Hardware",
+        () => (this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr"),
+        () => "hwStr",
+        "w",
+        true,
+        ApColumn.LCASE,
+        [RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this,
+        "menu",
+        () => null,
+        () => null,
+        null,
+        "",
+        true,
+        -1,
+        null,
+        null
+      )
+    );
+
+    this.columns.push(
+      new ApColumn(
+        this, // bemerkung -> enthaelt
+        "bemerkung",
+        () => "Bemerkung",
+        () => "bemerkung",
+        null,
+        "",
+        false,
+        ApColumn.LCASE,
+        [RelOp.like, RelOp.notlike],
+        null
       )
     );
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
@@ -339,11 +339,13 @@ export class ArbeitsplatzService {
     let page = 0;
 
     const data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise(); // 1. Teil, vollstaendiger record
-    data.forEach((ap) => {
-      this.prepAP(ap);
-    });
-    this.apDataSource.data = data;
-    this.loading = false;
+    setTimeout(() => {
+      data.forEach((ap) => {
+        this.prepAP(ap);
+      });
+      this.apDataSource.data = data;
+      this.loading = false;
+    }, 0);
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
@@ -371,10 +373,12 @@ export class ArbeitsplatzService {
       .get<Arbeitsplatz[]>(this.pageApsUrl + page)
       .toPromise()
       .then((dat) => {
+        // setTimeout(() => {
         dat.forEach((ap) => {
           this.prepAP(ap);
         });
         this.apDataSource.data = [...this.apDataSource.data, ...dat];
+        // }, 0);
         if (dat.length === size) {
           this.fetchPage(++page, size); // recursion!
         } else {
@@ -387,7 +391,7 @@ export class ArbeitsplatzService {
   private onDataReady() {
     const tags = [
       ...new Set(
-        // @ts-ignore
+        // @ts-ignore (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
         this.apDataSource.data.flatMap((ap) =>
           ap.tags.filter((t1) => t1.flag !== 1).map((t2) => t2.bezeichnung)
         )
@@ -550,7 +554,7 @@ export class ArbeitsplatzService {
     return ip & 0xffL;
   }
 
-  // byte hat Wertebereich -127 bis 128! das funktioniert nivht fuer IPs
+  // byte hat Wertebereich -127 bis 128! das funktioniert nicht fuer IPs
   public static int[] getIpBytes(long ip) {
     int[] ret = new int[4];
     ret[3] = (int)(ip & 0xff);
@@ -602,8 +606,7 @@ export class ArbeitsplatzService {
           (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
       }
       // fuer die Suche
-      ap.sonstHwStr =
-        ap.sonstHwStr +
+      ap.sonstHwStr +=
         " " +
         h.hersteller +
         " " +
@@ -618,18 +621,21 @@ export class ArbeitsplatzService {
       let msearch = "";
       ap.vlan.forEach((v) => {
         if (ap.ipStr) {
-          ap.ipStr = ap.ipStr + "/ ";
+          ap.ipStr += "/ " + this.getIpString(v.vlan + v.ip);
+        } else {
+          ap.ipStr = this.getIpString(v.vlan + v.ip);
         }
         if (ap.macStr) {
-          ap.macStr = ap.macStr + "/ ";
+          ap.macStr += "/ " + this.getMacString(v.mac);
+        } else {
+          ap.macStr = this.getMacString(v.mac);
         }
         if (ap.vlanStr) {
-          ap.vlanStr = ap.vlanStr + "/ ";
+          ap.vlanStr += "/ " + v.bezeichnung;
+        } else {
+          ap.vlanStr = v.bezeichnung;
         }
-        ap.ipStr = ap.ipStr + this.getIpString(v.vlan + v.ip);
-        ap.macStr = ap.macStr + this.getMacString(v.mac);
-        msearch = msearch + v.mac;
-        ap.vlanStr = ap.vlanStr + v.bezeichnung;
+        msearch += v.mac;
       });
       ap.ipsearch = ap.ipStr + " " + msearch;
     }

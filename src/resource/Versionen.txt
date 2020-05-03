@@ -1,7 +1,18 @@
 ﻿
 
 #######################################################################################
+## Feb. 2019
 ## v5.x:  Relaunch als JavaScript-Anwendung mit REST-API-Backend (.NET Core/IIS)
+##
+## Basis
+## Client: Angular + Angular Material + Electron
+## Server: .NET Core auf IIS + Oracle-DB
+##
+## Repos
+## https://github.com/hb42/sbsdb
+## https://github.com/hb42/sbsdb-server
+## https://github.com/hb42/lib-client
+## https://github.com/hb42/lib-common
 #######################################################################################
 
 
