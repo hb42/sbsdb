@@ -4,7 +4,7 @@ import {
   HostBinding,
   HostListener,
   OnInit,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";

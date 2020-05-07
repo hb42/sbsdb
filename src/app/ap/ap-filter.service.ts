@@ -471,14 +471,14 @@ export class ApFilterService {
     switch (what) {
       case "and_brack":
         log = new LogicalAnd();
-      // tslint:disable-next-line:no-switch-case-fall-through
+      // eslint-disable-next-line no-fallthrough
       case "or_brack":
         el.term.up.addElementAt(el, log, new Bracket());
         this.selectedFilter = null;
         break;
       case "and_exp":
         log = new LogicalAnd();
-      // tslint:disable-next-line:no-switch-case-fall-through
+      // eslint-disable-next-line no-fallthrough
       case "or_exp":
         this.editExpression(null, el, log, null);
         break;
