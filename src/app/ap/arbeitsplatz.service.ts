@@ -419,8 +419,9 @@ export class ArbeitsplatzService {
     // Nur ausfuehren, wenn AP-Daten schon geladen (= nur AP-Component wurde neu erstellt)
     // Beim Start des Service wird diese fn in getAps() aufgerufen, weil die Component evtl.
     // schon fertig ist bevor alle Daten geladen wurden, dann wird der Aufruf aus der Component
-    // ignoriert.
-    if (this.apDataSource.data) {
+    // ignoriert. .paginator wird in der Component gesetzt => falls paginator noch nicht exxistiert
+    // muss die Component das hier erledigen.
+    if (this.apDataSource.data && this.apDataSource.paginator) {
       this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
       if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
         this.apDataSource.sort.active = this.userSettings.apSortColumn;

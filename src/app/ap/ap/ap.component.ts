@@ -118,7 +118,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     setTimeout(() => {
       // Benutzereinstellungen setzen
-      // this.apService.applyUserSettings();
+      this.apService.applyUserSettings();
 
       this.focusFirstFilter();
     }, 0);
