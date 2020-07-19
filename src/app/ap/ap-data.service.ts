@@ -1,6 +1,5 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
-import { forkJoin, Observable } from "rxjs";
 import { ConfigService } from "../shared/config/config.service";
 import { DataService } from "../shared/data.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
@@ -12,11 +11,16 @@ export class ApDataService {
   // Daten fuer MatTable
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
+  // AP-Datensaetze je GET
+  // TODO evtl. in Config ablegen, fuers Feintuning
+  private pageSize = 200;
+
   // Web-API calls
   private readonly oeTreeUrl: string;
   private readonly allApsUrl: string;
   private readonly pageApsUrl: string;
   private readonly singleApUrl: string;
+  private readonly countUrl: string;
 
   constructor(private dataService: DataService, private configService: ConfigService) {
     console.debug("c'tor ApDataService");
@@ -24,17 +28,26 @@ export class ApDataService {
     this.allApsUrl = this.configService.webservice + "/ap/all";
     this.pageApsUrl = this.configService.webservice + "/ap/page/";
     this.singleApUrl = this.configService.webservice + "/ap/id/";
+    this.countUrl = this.configService.webservice + "/ap/count";
     this.apDataSource.data = [];
   }
 
-  public getAPs(each: () => void, ready: EventEmitter<any>) {
-    // TODO Param f. Anzahl Seiten -> Server errechnet pagesize
-    //                                (ceil(count(*) / pages)
-    //      dafuer kann Param ap.pagesize raus
-    const count = 15;
+  /**
+   * Arbeitsplaetze parallel, in Bloecken von this.pageSize holen.
+   *
+   * @param each - callback wenn ein Block fertig ist
+   * @param ready - event nach dem letzten Block
+   */
+  public async getAPs(each: () => void, ready: EventEmitter<any>) {
+    // Anzahl der Datensaetze
+    const recs = await this.dataService.get(this.countUrl).toPromise();
+    // zu holende Seiten
+    const count = Math.ceil(recs / this.pageSize);
+    let fetched = 0;
     for (let page = 0; page < count; page++) {
-      this.dataService.get(this.pageApsUrl + page).subscribe(
-        (aps) => {
+      this.dataService.get(this.pageApsUrl + page + "/" + this.pageSize).subscribe(
+        (aps: Arbeitsplatz[]) => {
+          console.debug("fetch page #" + page + " size=" + aps.length);
           aps.forEach((ap) => this.prepAP(ap));
           this.apDataSource.data = [...this.apDataSource.data, ...aps];
         },
@@ -43,8 +56,9 @@ export class ApDataService {
         },
         () => {
           each();
-          // this.loading = false;
-          if (page === count - 1) {
+          fetched++;
+          if (fetched === count) {
+            console.debug("fetch page READY");
             ready.emit();
             // this.onDataReady();
           }

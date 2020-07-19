@@ -90,7 +90,7 @@ export function initConf(configService: ConfigService) {
     // -- eigene
     LibClientModule,
   ],
-  // f. mat-dialog
+  // f. mat-dialog (wird nur ohne Ivy gebraucht)
   // entryComponents: [ApFilterEditComponent, ApFilterEditListComponent],
 
   providers: [
