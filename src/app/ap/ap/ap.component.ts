@@ -107,10 +107,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         // this.apService.expandTree(this.apService.urlParams.id);
       }
     });
-
-    // await this.apService.getAps();
-    this.apService.apDataSource.sort = this.sort;
-    this.apService.apDataSource.paginator = this.paginator;
   }
 
   public ngAfterViewInit(): void {
@@ -118,7 +114,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     setTimeout(() => {
       // Benutzereinstellungen setzen
-      this.apService.applyUserSettings();
+      this.apService.setViewParams(this.sort, this.paginator);
 
       this.focusFirstFilter();
     }, 0);

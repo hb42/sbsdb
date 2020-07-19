@@ -1,9 +1,7 @@
-import { EventEmitter, Injectable, ViewContainerRef } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { EventEmitter, Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
-import { Observable } from "rxjs";
-import { debounceTime, map, startWith } from "rxjs/operators";
+import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { Bracket } from "../shared/filter/bracket";

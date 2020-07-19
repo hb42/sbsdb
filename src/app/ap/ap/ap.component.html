@@ -58,7 +58,7 @@ https://github.com/angular/components/issues/6178
     </div>
     <table
       mat-table
-      [dataSource]="apService.apDataSource"
+      [dataSource]="apService.apDataService.apDataSource"
       matSort
       multiTemplateDataRows
       (matSortChange)="apService.onSort($event)"
@@ -484,9 +484,9 @@ https://github.com/angular/components/issues/6178
                   <tr *ngFor="let vl of element.vlan">
                     <td>
                       {{ vl.bezeichnung }}<br />
-                      {{ apService.getIpString(vl.vlan + vl.ip) }}
+                      {{ apService.apDataService.getIpString(vl.vlan + vl.ip) }}
                     </td>
-                    <td>{{ apService.getMacString(vl.mac) }}</td>
+                    <td>{{ apService.apDataService.getMacString(vl.mac) }}</td>
                   </tr>
                 </table>
               </div>
@@ -510,8 +510,8 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="footer">
         <td mat-footer-cell *matFooterCellDef [colSpan]="apService.displayedColumns.length">
           <div>
-            {{ apService.apDataSource.filteredData.length }} APs von
-            {{ apService.apDataSource.data.length }}
+            {{ apService.apDataService.apDataSource.filteredData.length }} APs von
+            {{ apService.apDataService.apDataSource.data.length }}
           </div>
           <div class="fill"></div>
           <div style="font-size: 10px;">

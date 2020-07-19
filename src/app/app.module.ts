@@ -91,7 +91,7 @@ export function initConf(configService: ConfigService) {
     LibClientModule,
   ],
   // f. mat-dialog
-  entryComponents: [ApFilterEditComponent, ApFilterEditListComponent],
+  // entryComponents: [ApFilterEditComponent, ApFilterEditListComponent],
 
   providers: [
     { provide: LOCALE_ID, useValue: "de" }, // registerLocaleData() s.o.
