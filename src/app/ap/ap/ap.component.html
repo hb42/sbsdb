@@ -435,9 +435,7 @@ https://github.com/angular/components/issues/6178
             class="ap-detail-content"
           >
             <div class="ap-detail-content-row">
-              <div class="ap-detail-margin ap-detail-standort-text">
-                Standort
-              </div>
+              <div class="ap-detail-margin ap-detail-standort-text">Standort</div>
               <div class="ap-detail-margin">
                 {{ element.oe.bstNr }}<br />
                 {{ element.oe.betriebsstelle }}<br /><br />
@@ -514,7 +512,7 @@ https://github.com/angular/components/issues/6178
             {{ apService.apDataService.apDataSource.data.length }}
           </div>
           <div class="fill"></div>
-          <div style="font-size: 10px;">
+          <div style="font-size: 10px">
             <!--  rechtsbuendiger Text -->
           </div>
         </td>
@@ -637,14 +635,8 @@ https://github.com/angular/components/issues/6178
 
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">
-    <button mat-menu-item (click)="apService.testApMenu(ap)">
-      Test1
-    </button>
-    <button mat-menu-item>
-      Test2
-    </button>
-    <button mat-menu-item *ngIf="ap.aptyp.indexOf('Thin') !== -1">
-      Test3 TC
-    </button>
+    <button mat-menu-item (click)="apService.testApMenu(ap)">Test1</button>
+    <button mat-menu-item>Test2</button>
+    <button mat-menu-item *ngIf="ap.aptyp.indexOf('Thin') !== -1">Test3 TC</button>
   </ng-template>
 </mat-menu>

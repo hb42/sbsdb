@@ -20,7 +20,7 @@ export class Expression implements Term {
 
   public toString(): string {
     return (
-      "[" + this.field.displayName + " " + this.operator.toString() + ' "' + this.compare + '"]'
+      "[" + this.field.displayName + " " + this.operator.toString() + " '" + this.compare + "']"
     );
   }
 
