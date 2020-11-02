@@ -12,8 +12,7 @@ export class ApDataService {
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
   // AP-Datensaetze je GET
-  // TODO evtl. in Config ablegen, fuers Feintuning
-  private pageSize = 200;
+  private defaultpageSize = 200;
 
   // Web-API calls
   private readonly oeTreeUrl: string;
@@ -33,19 +32,23 @@ export class ApDataService {
   }
 
   /**
-   * Arbeitsplaetze parallel, in Bloecken von this.pageSize holen.
+   * Arbeitsplaetze parallel, in Bloecken von ConfigService.AP_PAGE_SIZE holen.
    *
-   * @param each - callback wenn ein Block fertig ist
+   * @param each - callback wenn alle Bloecke fertig ist
    * @param ready - event nach dem letzten Block
    */
   public async getAPs(each: () => void, ready: EventEmitter<any>) {
+    // Groesse der einzelnen Bloecke
+    const pageSize =
+      Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
+      this.defaultpageSize;
     // Anzahl der Datensaetze
     const recs = await this.dataService.get(this.countUrl).toPromise();
     // zu holende Seiten
-    const count = Math.ceil(recs / this.pageSize);
+    const count = Math.ceil(recs / pageSize);
     let fetched = 0;
     for (let page = 0; page < count; page++) {
-      this.dataService.get(this.pageApsUrl + page + "/" + this.pageSize).subscribe(
+      this.dataService.get(this.pageApsUrl + page + "/" + pageSize).subscribe(
         (aps: Arbeitsplatz[]) => {
           console.debug("fetch page #" + page + " size=" + aps.length);
           aps.forEach((ap) => this.prepAP(ap));
