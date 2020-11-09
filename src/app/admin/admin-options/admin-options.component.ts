@@ -1,5 +1,6 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
 import { AppRoutingModule } from "../../app-routing.module";
+import { NavigationService } from "../../shared/navigation.service";
 
 @Component({
   selector: "sbsdb-admin-options",
@@ -11,7 +12,7 @@ export class AdminOptionsComponent implements OnInit {
   public admApFilterPath = "/" + AppRoutingModule.admApfilterPath;
   public admConfig = "/" + AppRoutingModule.admConfig;
 
-  constructor() {}
+  constructor(public navigationService: NavigationService) {}
 
   ngOnInit(): void {}
 }

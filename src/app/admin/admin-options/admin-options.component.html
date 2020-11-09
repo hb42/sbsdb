@@ -1,8 +1,22 @@
 <mat-action-list class="btn-list">
-  <button mat-stroked-button [routerLink]="admConfig" class="adm-btn">
+  <button
+    mat-raised-button
+    [routerLink]="admConfig"
+    class="adm-btn"
+    [color]="navigationService.currentPath === admConfig ? '' : 'primary'"
+    [skipLocationChange]="navigationService.currentPath === admConfig"
+    title="Allgemeine Programmparameter"
+  >
     Konfiguration
   </button>
-<!--  <button mat-stroked-button [routerLink]="admApFilterPath" class="adm-btn">-->
-<!--    Vordefinierte Arbeitsplatzfilter bearbeiten-->
-<!--  </button>-->
+  <button
+    mat-raised-button
+    [routerLink]="admApFilterPath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admApFilterPath"
+    [color]="navigationService.currentPath === admApFilterPath ? '' : 'primary'"
+    title="Selbstdefinierte Filter allen Benutzern bereitstellen"
+  >
+    Globale Arbeitsplatzfilter
+  </button>
 </mat-action-list>

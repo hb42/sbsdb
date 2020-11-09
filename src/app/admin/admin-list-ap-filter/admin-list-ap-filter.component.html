@@ -1,5 +1,7 @@
 <mat-list>
-  <div mat-subheader>Vordefinierte Arbeitsplatzfilter</div>
+  <div mat-subheader title="Filter, die alle Benutzer verwenden können">
+    Vordefinierte Arbeitsplatzfilter
+  </div>
   <mat-list-item *ngFor="let gfilt of apFilter.extGlobalFilterList()">
     <button
       mat-icon-button
@@ -12,7 +14,9 @@
     <div class="abstand">{{ gfilt.name }}</div>
   </mat-list-item>
   <mat-divider></mat-divider>
-  <div mat-subheader>Benutzerdefinierte Arbeitsplatzfilter</div>
+  <div mat-subheader title="Persönliche Filter - werden auf der Arbeitsplatz-Seite bearbeitet">
+    Benutzerdefinierte Arbeitsplatzfilter
+  </div>
   <mat-list-item *ngFor="let filt of apFilter.extFilterList()">
     <button
       mat-icon-button
