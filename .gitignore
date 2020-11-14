@@ -3,7 +3,8 @@
 /src/resource/config*
 # Verzeichnisse die nur lokal genutzt werden
 /div
-
+# Sicherungs-Dateien
+*.sav
 
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 

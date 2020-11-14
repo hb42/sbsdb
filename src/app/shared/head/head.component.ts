@@ -33,6 +33,13 @@ export class HeadComponent implements OnInit, AfterViewInit {
 
   public search: string;
 
+  constructor(
+    private router: Router,
+    public navigationService: NavigationService,
+    public configService: ConfigService,
+    public apService: ArbeitsplatzService
+  ) {}
+
   @HostListener("document:keydown", ["$event"])
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.altKey) {
@@ -42,6 +49,7 @@ export class HeadComponent implements OnInit, AfterViewInit {
           if (this.navigationService.isPage(nav.path)) {
             console.debug("on page");
             console.dir(this.menuBtn);
+            // eslint-disable-next-line no-underscore-dangle
             this.menuBtn._elementRef.nativeElement.click();
           } else {
             console.debug("navigate");
@@ -54,15 +62,9 @@ export class HeadComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(
-    private router: Router,
-    public navigationService: NavigationService,
-    public configService: ConfigService,
-    public apService: ArbeitsplatzService
-  ) {}
-
-  // tslint:disable-next-line:no-empty
-  public ngOnInit() {}
+  public ngOnInit() {
+    // noop
+  }
 
   public ngAfterViewInit(): void {
     this.navLinks[0].menu = this.apmenu;

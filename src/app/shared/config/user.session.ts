@@ -31,7 +31,7 @@ class User {
  * loesst einen Event aus, der im ConfigService das Speichern der Userdaten
  * anstoesst.
  */
-// tslint:disable-next-line:max-classes-per-file
+// eslint-disable-next-line max-classes-per-file
 export class UserSession {
   private user: User;
   private changeEvent: EventEmitter<User>;

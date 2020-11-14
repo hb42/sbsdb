@@ -16,53 +16,6 @@ export class RelationalOperator {
   public execute: (fieldContent: string | Array<string>, compare: string) => boolean;
   private readonly name: string;
 
-  private static noop(fieldContent: string, compare: string): boolean {
-    return true;
-  }
-
-  private static like(fieldContent: string, compare: string): boolean {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent.includes(compare);
-  }
-
-  private static notlike(fieldContent: string, compare: string): boolean {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return !fieldContent.includes(compare);
-  }
-
-  private static equal(fieldContent: string, compare: string): boolean {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent === compare;
-  }
-
-  private static notequal(fieldContent: string, compare: string): boolean {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent !== compare;
-  }
-
-  private static startsWith(fieldContent: string, compare: string): boolean {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent.startsWith(compare);
-  }
-
-  private static endsWith(fieldContent: string, compare: string): boolean {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent.endsWith(compare);
-  }
-
-  private static inList(fieldContent: Array<string>, compare: string): boolean {
-    return fieldContent.indexOf(compare) >= 0;
-  }
-  private static notInList(fieldContent: Array<string>, compare: string): boolean {
-    return fieldContent.indexOf(compare) === -1;
-  }
-
   constructor(public readonly op: RelOp) {
     switch (op) {
       case RelOp.like:
@@ -110,6 +63,53 @@ export class RelationalOperator {
         this.name = RelOp.nop;
         break;
     }
+  }
+
+  private static noop(fieldContent: string, compare: string): boolean {
+    return true;
+  }
+
+  private static like(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent.includes(compare);
+  }
+
+  private static notlike(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return !fieldContent.includes(compare);
+  }
+
+  private static equal(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent === compare;
+  }
+
+  private static notequal(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent !== compare;
+  }
+
+  private static startsWith(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent.startsWith(compare);
+  }
+
+  private static endsWith(fieldContent: string, compare: string): boolean {
+    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return fieldContent.endsWith(compare);
+  }
+  private static inList(fieldContent: Array<string>, compare: string): boolean {
+    return fieldContent.indexOf(compare) >= 0;
+  }
+
+  private static notInList(fieldContent: Array<string>, compare: string): boolean {
+    return fieldContent.indexOf(compare) === -1;
   }
 
   public toString(): string {

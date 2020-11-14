@@ -12,11 +12,11 @@ import { Term } from "./term";
  *
  */
 export class Expression implements Term {
+  public up: Bracket | null;
+
   constructor(public field: Field, public operator: RelationalOperator, public compare: string) {
     // noop
   }
-
-  public up: Bracket | null;
 
   public toString(): string {
     return (
@@ -24,7 +24,7 @@ export class Expression implements Term {
     );
   }
 
-  public validate(record: object): boolean {
+  public validate(record: Record<string, string | Array<string>>): boolean {
     if (record && record.hasOwnProperty(this.field.fieldName)) {
       return this.operator.execute(record[this.field.fieldName], this.compare);
     }

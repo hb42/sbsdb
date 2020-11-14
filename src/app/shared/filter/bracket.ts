@@ -12,7 +12,7 @@ import { Term } from "./term";
  * LO := logischer Operator (AND, OR)
  */
 export class Bracket implements Term {
-  public up: Bracket | null;
+  public up: Bracket | null = null;
   public elements: Element[] = [];
   private brLeft = this.up ? "(" : "{";
   private brRight = this.up ? ")" : "}";
@@ -22,20 +22,24 @@ export class Bracket implements Term {
   }
 
   public toString(): string {
-    const rc = this.elements.reduce((prev, curr) => {
-      return curr.operator
-        ? prev + " " + curr.operator.toString() + " " + curr.term.toString()
-        : prev + " " + curr.term.toString();
-    }, this.brLeft);
+    const rc = this.elements.reduce(
+      (prev, curr) =>
+        curr.operator
+          ? prev + " " + curr.operator.toString() + " " + curr.term.toString()
+          : prev + " " + curr.term.toString(),
+      this.brLeft
+    );
     return rc + this.brRight;
   }
 
-  public validate(record: object): boolean {
-    return this.elements.reduce((prev, curr) => {
-      return curr.operator
-        ? curr.operator.execute(prev, curr.term.validate(record))
-        : curr.term.validate(record);
-    }, true);
+  public validate(record: Record<string, string | Array<string>>): boolean {
+    return this.elements.reduce(
+      (prev, curr) =>
+        curr.operator
+          ? curr.operator.execute(prev, curr.term.validate(record))
+          : curr.term.validate(record),
+      true
+    );
   }
 
   public isTop(): boolean {

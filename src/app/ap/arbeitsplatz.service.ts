@@ -18,17 +18,13 @@ export class ArbeitsplatzService {
   public treeControl = new NestedTreeControl<OeTreeItem>((node) => node.children);
   public dataSource = new MatTreeNestedDataSource<OeTreeItem>();
 
-  private oeTree: OeTreeItem[];
   public selected: OeTreeItem;
   public urlParams: any;
-
-  private filterChange: EventEmitter<any> = new EventEmitter();
-  private filterChanged = 1;
-
   public expandedRow: Arbeitsplatz;
 
   // DEBUG Zeilenumbruch in den Tabellenzellen (drin lassen??)
   public tableWrapCell = false;
+
   // DEBUG Klick auf Zeile zeigt Details (nach Entscheidung festnageln und var raus)
   public clickForDetails = true;
   // DEBUG Linkfarben (nach Entscheidung festnageln und vars raus)
@@ -36,14 +32,18 @@ export class ArbeitsplatzService {
   public linkcolor2 = true;
   // DEBUG keine Links in den Zeilen
   public sortLinks = false;
-
   // Text fuer Statuszeile
   public statusText = "";
 
   public userSettings: UserSession;
+
   public loading = false;
   // public typtagSelect: TypTag[];
 
+  public columns: ApColumn[] = [];
+
+  public displayedColumns: string[];
+  public extFilterColumns: ApColumn[];
   /* fuer select list: Liste ohne Duplikate fuer ein Feld (nicht bei allen sinnvoll -> aptyp, oe, voe, tags, hwtyp, vlan(?))
     new Set() -> nur eindeutige - ... -> zu Array
     -> https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array#9229932
@@ -52,9 +52,10 @@ export class ArbeitsplatzService {
  const uniq2 = [ ...new Set(this.apDataService.apDataSource.data.map((a) => a.oesearch)) ].sort();
   */
 
-  public columns: ApColumn[] = [];
-  public displayedColumns: string[];
-  public extFilterColumns: ApColumn[];
+  private oeTree: OeTreeItem[];
+
+  private filterChange: EventEmitter<any> = new EventEmitter();
+  private filterChanged = 1;
 
   // case insensitive alpha sort
   // deutlich schneller als String.localeCompare()
@@ -63,6 +64,145 @@ export class ArbeitsplatzService {
     numeric: true,
     sensitivity: "base",
   });
+
+  constructor(
+    private configService: ConfigService,
+    public apDataService: ApDataService,
+    public filterService: ApFilterService,
+    private keyboardService: KeyboardService
+  ) {
+    console.debug("c'tor ArbeitsplatzService");
+    this.userSettings = configService.getUser();
+    this.buildColumns();
+    setTimeout(() => {
+      this.initTable();
+    }, 0);
+  }
+
+  public getColumnIndex(name: string): number {
+    return this.columns.findIndex((c) => c.columnName === name);
+  }
+  public getColumn(name: string): ApColumn {
+    const idx = this.getColumnIndex(name);
+    if (idx >= 0 && idx < this.columns.length) {
+      return this.columns[idx];
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Tooltip mit dem vollstaendigen Text anzeigen, wenn der Text
+   * mittels ellipsis abgeschnitten ist.
+   * (scheint mit <span> nicht zu funktionieren)
+   * ->
+   * https://stackoverflow.com/questions/5474871/html-how-can-i-show-tooltip-only-when-ellipsis-is-activated
+   *
+   * @param evt - Mouseevent
+   */
+  public tooltipOnEllipsis(evt) {
+    // fkt. nicht mit span
+    if (evt.target.offsetWidth < evt.target.scrollWidth && !evt.target.title) {
+      evt.target.title = evt.target.innerText;
+    }
+  }
+
+  public setViewParams(sort: MatSort, paginator: MatPaginator) {
+    this.apDataService.apDataSource.sort = sort;
+    this.apDataService.apDataSource.paginator = paginator;
+
+    this.apDataService.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
+    if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
+      this.apDataService.apDataSource.sort.active = this.userSettings.apSortColumn;
+      this.apDataService.apDataSource.sort.direction =
+        this.userSettings.apSortDirection === "asc" ? "" : "asc";
+      const sortheader = this.apDataService.apDataSource.sort.sortables.get(
+        this.userSettings.apSortColumn
+      ) as MatSortHeader;
+      // this.sort.sort(sortheader);
+      // FIXME Hack -> ApComponent#handleSort
+      // eslint-disable-next-line no-underscore-dangle
+      sortheader._handleClick();
+    }
+  }
+
+  // public applyUserSettings() {
+  //   // Nur ausfuehren, wenn AP-Daten schon geladen (= nur AP-Component wurde neu erstellt)
+  //   // Beim Start des Service wird diese fn in getAps() aufgerufen, weil die Component evtl.
+  //   // schon fertig ist bevor alle Daten geladen wurden, dann wird der Aufruf aus der Component
+  //   // ignoriert. .paginator wird in der Component gesetzt => falls paginator noch nicht exxistiert
+  //   // muss die Component das hier erledigen.
+  //   if (this.apDataService.apDataSource.data && this.apDataService.apDataSource.paginator) {
+  //     this.apDataService.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
+  //     if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
+  //       this.apDataService.apDataSource.sort.active = this.userSettings.apSortColumn;
+  //       this.apDataService.apDataSource.sort.direction =
+  //         this.userSettings.apSortDirection === "asc" ? "" : "asc";
+  //       const sortheader = this.apDataService.apDataSource.sort.sortables.get(
+  //         this.userSettings.apSortColumn
+  //       ) as MatSortHeader;
+  //       // this.sort.sort(sortheader);
+  //       // FIXME Hack -> ApComponent#handleSort
+  //       sortheader._handleClick();
+  //     }
+  //     this.filterService.initializeFilters();
+  //   }
+  // }
+
+  public onSort(event) {
+    this.userSettings.apSortColumn = event.active;
+    this.userSettings.apSortDirection = event.direction;
+  }
+
+  public onPage(event) {
+    if (event.pageSize !== this.userSettings.apPageSize) {
+      this.userSettings.apPageSize = event.pageSize;
+    }
+  }
+
+  public async expandApRow(ap: Arbeitsplatz, event: Event) {
+    this.expandedRow = this.expandedRow === ap ? null : ap;
+    event.stopPropagation();
+  }
+
+  public bstTooltip(ap: Arbeitsplatz): string {
+    return (
+      "OE: " +
+      ap.oe.bstNr +
+      "\n\n" +
+      (ap.oe.strasse ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n" : "") +
+      (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "") +
+      (ap.oe.oeff ? "\n" + ap.oe.oeff : "")
+    );
+  }
+
+  public testApMenu(ap: Arbeitsplatz) {
+    // console.debug("DEBUG AP-Menue fuer " + ap.apname);
+    // const uniq1 = [...new Set(this.apDataService.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr))].sort();
+    // const uniq2 = [...new Set(this.apDataService.apDataSource.data.map((a) => a.oesearch))].sort();
+    // console.debug("DEBUG end uniq hw+oe");
+    // console.dir(uniq1);
+    // console.dir(uniq2);
+    console.debug("### DEBUG filter columns");
+    this.extFilterColumns.forEach((col) => {
+      console.debug("Filter-Column: " + col.displayName);
+      console.dir(col.selectList);
+    });
+  }
+
+  public filterByAptyp(ap: Arbeitsplatz, event: Event) {
+    const col = this.getColumn("aptyp");
+    col.filterControl.setValue(ap.aptyp);
+    col.filterControl.markAsDirty();
+    event.stopPropagation();
+  }
+
+  public filterByBetrst(ap: Arbeitsplatz, event: Event) {
+    const col = this.getColumn("betrst");
+    col.filterControl.setValue(ap[col.sortFieldName]);
+    col.filterControl.markAsDirty();
+    event.stopPropagation();
+  }
 
   private buildColumns() {
     this.columns.push(
@@ -253,49 +393,6 @@ export class ArbeitsplatzService {
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 
-  public getColumnIndex(name: string): number {
-    return this.columns.findIndex((c) => c.columnName === name);
-  }
-
-  public getColumn(name: string): ApColumn {
-    const idx = this.getColumnIndex(name);
-    if (idx >= 0 && idx < this.columns.length) {
-      return this.columns[idx];
-    } else {
-      return null;
-    }
-  }
-
-  constructor(
-    private configService: ConfigService,
-    public apDataService: ApDataService,
-    public filterService: ApFilterService,
-    private keyboardService: KeyboardService
-  ) {
-    console.debug("c'tor ArbeitsplatzService");
-    this.userSettings = configService.getUser();
-    this.buildColumns();
-    setTimeout(() => {
-      this.initTable();
-    }, 0);
-  }
-
-  /**
-   * Tooltip mit dem vollstaendigen Text anzeigen, wenn der Text
-   * mittels ellipsis abgeschnitten ist.
-   * (scheint mit <span> nicht zu funktionieren)
-   * ->
-   * https://stackoverflow.com/questions/5474871/html-how-can-i-show-tooltip-only-when-ellipsis-is-activated
-   *
-   * @param evt - Mouseevent
-   */
-  public tooltipOnEllipsis(evt) {
-    // fkt. nicht mit span
-    if (evt.target.offsetWidth < evt.target.scrollWidth && !evt.target.title) {
-      evt.target.title = evt.target.innerText;
-    }
-  }
-
   // APs aus der DB holen
   private initTable() {
     this.loading = true;
@@ -321,9 +418,10 @@ export class ArbeitsplatzService {
     });
     this.filterService.initService(this.columns, this.filterChange);
     // eigener Filter
-    this.apDataService.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
-      return this.filterService.filterExpression.validate(ap);
-    };
+    this.apDataService.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) =>
+      this.filterService.filterExpression.validate(
+        (ap as unknown) as Record<string, string | Array<string>>
+      );
     this.filterService.initializeFilters();
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
@@ -439,102 +537,6 @@ export class ArbeitsplatzService {
         )
       );
     });
-  }
-
-  public setViewParams(sort: MatSort, paginator: MatPaginator) {
-    this.apDataService.apDataSource.sort = sort;
-    this.apDataService.apDataSource.paginator = paginator;
-
-    this.apDataService.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
-    if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
-      this.apDataService.apDataSource.sort.active = this.userSettings.apSortColumn;
-      this.apDataService.apDataSource.sort.direction =
-        this.userSettings.apSortDirection === "asc" ? "" : "asc";
-      const sortheader = this.apDataService.apDataSource.sort.sortables.get(
-        this.userSettings.apSortColumn
-      ) as MatSortHeader;
-      // this.sort.sort(sortheader);
-      // FIXME Hack -> ApComponent#handleSort
-      sortheader._handleClick();
-    }
-  }
-
-  // public applyUserSettings() {
-  //   // Nur ausfuehren, wenn AP-Daten schon geladen (= nur AP-Component wurde neu erstellt)
-  //   // Beim Start des Service wird diese fn in getAps() aufgerufen, weil die Component evtl.
-  //   // schon fertig ist bevor alle Daten geladen wurden, dann wird der Aufruf aus der Component
-  //   // ignoriert. .paginator wird in der Component gesetzt => falls paginator noch nicht exxistiert
-  //   // muss die Component das hier erledigen.
-  //   if (this.apDataService.apDataSource.data && this.apDataService.apDataSource.paginator) {
-  //     this.apDataService.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
-  //     if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
-  //       this.apDataService.apDataSource.sort.active = this.userSettings.apSortColumn;
-  //       this.apDataService.apDataSource.sort.direction =
-  //         this.userSettings.apSortDirection === "asc" ? "" : "asc";
-  //       const sortheader = this.apDataService.apDataSource.sort.sortables.get(
-  //         this.userSettings.apSortColumn
-  //       ) as MatSortHeader;
-  //       // this.sort.sort(sortheader);
-  //       // FIXME Hack -> ApComponent#handleSort
-  //       sortheader._handleClick();
-  //     }
-  //     this.filterService.initializeFilters();
-  //   }
-  // }
-
-  public onSort(event) {
-    this.userSettings.apSortColumn = event.active;
-    this.userSettings.apSortDirection = event.direction;
-  }
-
-  public onPage(event) {
-    if (event.pageSize !== this.userSettings.apPageSize) {
-      this.userSettings.apPageSize = event.pageSize;
-    }
-  }
-
-  public async expandApRow(ap: Arbeitsplatz, event: Event) {
-    this.expandedRow = this.expandedRow === ap ? null : ap;
-    event.stopPropagation();
-  }
-
-  public bstTooltip(ap: Arbeitsplatz): string {
-    return (
-      "OE: " +
-      ap.oe.bstNr +
-      "\n\n" +
-      (ap.oe.strasse ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n" : "") +
-      (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "") +
-      (ap.oe.oeff ? "\n" + ap.oe.oeff : "")
-    );
-  }
-
-  public testApMenu(ap: Arbeitsplatz) {
-    // console.debug("DEBUG AP-Menue fuer " + ap.apname);
-    // const uniq1 = [...new Set(this.apDataService.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr))].sort();
-    // const uniq2 = [...new Set(this.apDataService.apDataSource.data.map((a) => a.oesearch))].sort();
-    // console.debug("DEBUG end uniq hw+oe");
-    // console.dir(uniq1);
-    // console.dir(uniq2);
-    console.debug("### DEBUG filter columns");
-    this.extFilterColumns.forEach((col) => {
-      console.debug("Filter-Column: " + col.displayName);
-      console.dir(col.selectList);
-    });
-  }
-
-  public filterByAptyp(ap: Arbeitsplatz, event: Event) {
-    const col = this.getColumn("aptyp");
-    col.filterControl.setValue(ap.aptyp);
-    col.filterControl.markAsDirty();
-    event.stopPropagation();
-  }
-
-  public filterByBetrst(ap: Arbeitsplatz, event: Event) {
-    const col = this.getColumn("betrst");
-    col.filterControl.setValue(ap[col.sortFieldName]);
-    col.filterControl.markAsDirty();
-    event.stopPropagation();
   }
 
   private sortAP(ap: Arbeitsplatz) {

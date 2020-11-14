@@ -21,10 +21,6 @@ import { ApFilterEditComponent } from "./ap-filter-edit/ap-filter-edit.component
 
 @Injectable({ providedIn: "root" })
 export class ApFilterService {
-  constructor(private configService: ConfigService, public dialog: MatDialog) {
-    console.debug("c'tor ApFilterService");
-    this.userSettings = configService.getUser();
-  }
   public static STDFILTER = -1;
   public static USERFILTER = 0;
   public static GLOBALFILTER = 1;
@@ -36,6 +32,7 @@ export class ApFilterService {
   public stdFilter = true;
 
   public selectedFilter: TransportFilter = null;
+
   private nextKey = ApFilterService.STDFILTER + 1;
 
   private globalFilters: TransportFilter[] = [];
@@ -55,6 +52,11 @@ export class ApFilterService {
     numeric: true,
     sensitivity: "base",
   });
+
+  constructor(private configService: ConfigService, public dialog: MatDialog) {
+    console.debug("c'tor ApFilterService");
+    this.userSettings = configService.getUser();
+  }
 
   /**
    * Startparameter setzen (-> ArbeitsplatzService)
@@ -115,18 +117,6 @@ export class ApFilterService {
     }
   }
 
-  private async readGlobalFilters() {
-    const blob = await this.configService.getConfig(ConfigService.AP_FILTERS);
-    if (blob) {
-      this.globalFilters = blob;
-      const maxkey: number = this.globalFilters.reduce(
-        (prev, curr) => (curr.key > prev ? curr.key : prev),
-        0
-      );
-      this.globNextKey = maxkey + 1;
-    }
-  }
-
   /**
    * Filter loeschen (triggert valueChange)
    */
@@ -134,154 +124,6 @@ export class ApFilterService {
     this.columns.forEach((c) => {
       if (c.filterControl) {
         c.filterControl.reset();
-      }
-    });
-  }
-
-  /**
-   * Filter-Ausdruck fuer std filter
-   */
-  private buildStdFilterExpression() {
-    this.filterExpression.reset();
-    const and = new LogicalAnd();
-    this.columns.forEach((col) => {
-      if (col.filterControl) {
-        const colExpr = col.getFilterExpression();
-        if (colExpr) {
-          this.filterExpression.addElement(and, colExpr);
-        }
-      }
-    });
-  }
-
-  /**
-   * Aktiven Filter aus den Benutzereinstellungen setzen
-   *
-   * @param key - Filtername
-   * @param type - User/Global
-   */
-  private setFilterExpression(key: number, type: number) {
-    // TODO +type -> lookup global
-    let tf: TransportFilter;
-    if (type === ApFilterService.USERFILTER) {
-      tf = this.getFilter(key);
-    } else {
-      tf = this.getGlobalFilter(key);
-    }
-    if (tf) {
-      this.filterExpression.reset();
-      this.makeElements(this.filterExpression, tf.filter);
-      if (ApFilterService.STDFILTER !== key) {
-        this.setFilter(ApFilterService.STDFILTER, "", tf.filter);
-        this.saveFilters();
-        this.triggerFilter();
-      }
-    }
-  }
-  /**
-   * Filter aus den Benutzereinstellungen holen
-   *
-   * @param key - Filtername
-   */
-  private getFilter(key: number): TransportFilter {
-    return this.userSettings.apFilter.filters.find((tf) => tf.key === key);
-  }
-
-  /**
-   * Globalen Filter suchen
-   *
-   * @param key - Schluessel
-   */
-  private getGlobalFilter(key: number): TransportFilter {
-    return this.globalFilters.find((tf) => tf.key === key);
-  }
-
-  /**
-   * Filter in die Benutzereinstellungen schreiben
-   *
-   * @param key - Filtername
-   * @param name - display name
-   * @param filt - Filter als TransportElement-Array
-   */
-  private setFilter(key: number, name: string, filt: TransportElement[]) {
-    const tf: TransportFilter = this.getFilter(key);
-    if (tf) {
-      tf.filter = filt;
-    } else {
-      this.userSettings.apFilter.filters.push(
-        new TransportFilter(key, name, filt, ApFilterService.USERFILTER)
-      );
-    }
-  }
-
-  /**
-   * Globalen Filter hinzufuegen
-   *
-   * @param key - Schluessel
-   * @param name - Bezeichnung
-   * @param filt - Filter
-   */
-  private setGlobalFilter(key: number, name: string, filt: TransportElement[]) {
-    const tf: TransportFilter = this.getGlobalFilter(key);
-    if (tf) {
-      tf.filter = filt;
-    } else {
-      this.globalFilters.push(new TransportFilter(key, name, filt, ApFilterService.GLOBALFILTER));
-    }
-  }
-
-  /**
-   * Filter aus den Benutzereinstellungen entfernen
-   *
-   * @param key - Filtername
-   */
-  private removeFilter(key: number) {
-    const idx = this.userSettings.apFilter.filters.findIndex((tf) => tf.key === key);
-    if (idx >= 0) {
-      this.userSettings.apFilter.filters.splice(idx, 1);
-    }
-  }
-
-  /**
-   * Filter aus der globalen Liste entfernen
-   *
-   * @param key - Schluessel
-   */
-  private removeGlobalFilter(key: number) {
-    const idx = this.globalFilters.findIndex((tf) => tf.key === key);
-    if (idx >= 0) {
-      this.globalFilters.splice(idx, 1);
-    }
-  }
-
-  /**
-   * filterExpression aus den Benutzereinstellungen wiederherstellen
-   *
-   * @param b - uebergeordnete Klammer oder null
-   * @param t - Array der TransportElemente
-   */
-  private makeElements(b: Bracket, t: TransportElement[]) {
-    let op: LogicalOperator = null;
-    const and = new LogicalAnd();
-    const or = new LogicalOr();
-    t.forEach((tr) => {
-      if (tr.op === 0) {
-        op = or;
-      } else if (tr.op === 1) {
-        op = and;
-      }
-      if (Array.isArray(tr.elem)) {
-        const br = new Bracket();
-        br.up = b;
-        b.addElement(op, br);
-        this.makeElements(br, tr.elem);
-      } else {
-        const ex = new Expression(
-          new Field(tr.elem.fName, tr.elem.dName),
-          new RelationalOperator(tr.elem.op),
-          tr.elem.comp
-        );
-        b.addElement(op, ex);
       }
     });
   }
@@ -301,40 +143,6 @@ export class ApFilterService {
     this.setFilter(ApFilterService.STDFILTER, "", this.convBracket(this.filterExpression));
     this.saveFilters();
   }
-
-  /**
-   * Benutzereinstellungen speichern
-   */
-  private saveFilters() {
-    this.userSettings.apStdFilter = this.stdFilter; // trigger save
-  }
-
-  /**
-   * Globale Filter speichern
-   */
-  private saveGlobalFilters() {
-    this.configService.saveConfig(ConfigService.AP_FILTERS, this.globalFilters);
-  }
-
-  /**
-   * filterExpression fuer die Benutzereinstellungen umwandeln
-   *
-   * @param b - startende Klammer
-   */
-  private convBracket(b: Bracket): TransportElement[] {
-    return b.elements.map((el) => {
-      return new TransportElement(
-        el.operator ? (el.operator.toString() === "UND" ? 1 : 0) : -1,
-        el.term.isBracket()
-          ? this.convBracket(el.term as Bracket) // recurse
-          : this.convExpression(el.term as Expression)
-      );
-    });
-  }
-  private convExpression = (e: Expression): TransportExpression | null =>
-    e
-      ? new TransportExpression(e.field.fieldName, e.field.displayName, e.operator.op, e.compare)
-      : null;
 
   // --- Edit Exxtended Filter ---
 
@@ -561,4 +369,203 @@ export class ApFilterService {
       }
     });
   }
+
+  private async readGlobalFilters() {
+    const blob = await this.configService.getConfig(ConfigService.AP_FILTERS);
+    if (blob) {
+      this.globalFilters = blob;
+      const maxkey: number = this.globalFilters.reduce(
+        (prev, curr) => (curr.key > prev ? curr.key : prev),
+        0
+      );
+      this.globNextKey = maxkey + 1;
+    }
+  }
+  /**
+   * Filter-Ausdruck fuer std filter
+   */
+  private buildStdFilterExpression() {
+    this.filterExpression.reset();
+    const and = new LogicalAnd();
+    this.columns.forEach((col) => {
+      if (col.filterControl) {
+        const colExpr = col.getFilterExpression();
+        if (colExpr) {
+          this.filterExpression.addElement(and, colExpr);
+        }
+      }
+    });
+  }
+
+  /**
+   * Aktiven Filter aus den Benutzereinstellungen setzen
+   *
+   * @param key - Filtername
+   * @param type - User/Global
+   */
+  private setFilterExpression(key: number, type: number) {
+    // TODO +type -> lookup global
+    let tf: TransportFilter;
+    if (type === ApFilterService.USERFILTER) {
+      tf = this.getFilter(key);
+    } else {
+      tf = this.getGlobalFilter(key);
+    }
+    if (tf) {
+      this.filterExpression.reset();
+      this.makeElements(this.filterExpression, tf.filter);
+      if (ApFilterService.STDFILTER !== key) {
+        this.setFilter(ApFilterService.STDFILTER, "", tf.filter);
+        this.saveFilters();
+        this.triggerFilter();
+      }
+    }
+  }
+
+  /**
+   * Filter aus den Benutzereinstellungen holen
+   *
+   * @param key - Filtername
+   */
+  private getFilter(key: number): TransportFilter {
+    return this.userSettings.apFilter.filters.find((tf) => tf.key === key);
+  }
+
+  /**
+   * Globalen Filter suchen
+   *
+   * @param key - Schluessel
+   */
+  private getGlobalFilter(key: number): TransportFilter {
+    return this.globalFilters.find((tf) => tf.key === key);
+  }
+
+  /**
+   * Filter in die Benutzereinstellungen schreiben
+   *
+   * @param key - Filtername
+   * @param name - display name
+   * @param filt - Filter als TransportElement-Array
+   */
+  private setFilter(key: number, name: string, filt: TransportElement[]) {
+    const tf: TransportFilter = this.getFilter(key);
+    if (tf) {
+      tf.filter = filt;
+    } else {
+      this.userSettings.apFilter.filters.push(
+        new TransportFilter(key, name, filt, ApFilterService.USERFILTER)
+      );
+    }
+  }
+
+  /**
+   * Globalen Filter hinzufuegen
+   *
+   * @param key - Schluessel
+   * @param name - Bezeichnung
+   * @param filt - Filter
+   */
+  private setGlobalFilter(key: number, name: string, filt: TransportElement[]) {
+    const tf: TransportFilter = this.getGlobalFilter(key);
+    if (tf) {
+      tf.filter = filt;
+    } else {
+      this.globalFilters.push(new TransportFilter(key, name, filt, ApFilterService.GLOBALFILTER));
+    }
+  }
+
+  /**
+   * Filter aus den Benutzereinstellungen entfernen
+   *
+   * @param key - Filtername
+   */
+  private removeFilter(key: number) {
+    const idx = this.userSettings.apFilter.filters.findIndex((tf) => tf.key === key);
+    if (idx >= 0) {
+      this.userSettings.apFilter.filters.splice(idx, 1);
+    }
+  }
+
+  /**
+   * Filter aus der globalen Liste entfernen
+   *
+   * @param key - Schluessel
+   */
+  private removeGlobalFilter(key: number) {
+    const idx = this.globalFilters.findIndex((tf) => tf.key === key);
+    if (idx >= 0) {
+      this.globalFilters.splice(idx, 1);
+    }
+  }
+  /**
+   * filterExpression aus den Benutzereinstellungen wiederherstellen
+   *
+   * @param b - uebergeordnete Klammer oder null
+   * @param t - Array der TransportElemente
+   */
+  private makeElements(b: Bracket, t: TransportElement[]) {
+    let op: LogicalOperator = null;
+    const and = new LogicalAnd();
+    const or = new LogicalOr();
+    t.forEach((tr) => {
+      if (tr.op === 0) {
+        op = or;
+      } else if (tr.op === 1) {
+        op = and;
+      }
+      if (Array.isArray(tr.elem)) {
+        const br = new Bracket();
+        br.up = b;
+        b.addElement(op, br);
+        this.makeElements(br, tr.elem);
+      } else {
+        const ex = new Expression(
+          new Field(tr.elem.fName, tr.elem.dName),
+          new RelationalOperator(tr.elem.op),
+          tr.elem.comp
+        );
+        b.addElement(op, ex);
+      }
+    });
+  }
+
+  /**
+   * Benutzereinstellungen speichern
+   */
+  private saveFilters() {
+    this.userSettings.apStdFilter = this.stdFilter; // trigger save
+  }
+
+  /**
+   * Globale Filter speichern
+   */
+  private saveGlobalFilters() {
+    this.configService.saveConfig(ConfigService.AP_FILTERS, this.globalFilters);
+  }
+  /**
+   * filterExpression fuer die Benutzereinstellungen umwandeln
+   *
+   * @param b - startende Klammer
+   */
+  private convBracket(b: Bracket): TransportElement[] {
+    return b.elements.map(
+      (el) =>
+        new TransportElement(
+          el.operator ? (el.operator.toString() === "UND" ? 1 : 0) : -1,
+          el.term.isBracket()
+            ? this.convBracket(el.term as Bracket) // recurse
+            : this.convExpression(el.term as Expression)
+        )
+    );
+  }
+
+  private convExpression = (exp: Expression): TransportExpression | null =>
+    exp
+      ? new TransportExpression(
+          exp.field.fieldName,
+          exp.field.displayName,
+          exp.operator.op,
+          exp.compare
+        )
+      : null;
 }

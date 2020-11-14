@@ -38,6 +38,16 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public subscription: Subscription;
 
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private config: ConfigService,
+    public apService: ArbeitsplatzService,
+    public dialog: MatDialog
+  ) {
+    console.debug("c'tor ApComponent");
+  }
+
   // focus first filter
   @HostListener("document:keydown.alt.f", ["$event"])
   public handleKeyboardEvent(event: KeyboardEvent) {
@@ -65,21 +75,12 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         const sortHeader = this.sort.sortables.get(
           this.apService.columns[colIdx].columnName
         ) as MatSortHeader;
+        // eslint-disable-next-line no-underscore-dangle
         sortHeader._handleClick();
         event.preventDefault();
         event.stopPropagation();
       }
     }
-  }
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private config: ConfigService,
-    public apService: ArbeitsplatzService,
-    public dialog: MatDialog
-  ) {
-    console.debug("c'tor ApComponent");
   }
 
   public async ngOnInit() {

@@ -22,7 +22,7 @@ export class StatusComponent implements OnInit {
 
   public panelPosition;
 
-  // tslint:disable-next-line:no-empty
+  // eslint-disable-next-line no-empty, @typescript-eslint/no-empty-function
   constructor() {}
 
   public ngOnInit() {

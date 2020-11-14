@@ -91,7 +91,7 @@ export class ApDataService {
   }
 
   public getIpString(ip: number) {
-    // tslint:disable:no-bitwise
+    /* eslint-disable no-bitwise */
     const ip4 = ip & 0xff;
     ip = ip >> 8;
     const ip3 = ip & 0xff;

@@ -14,7 +14,7 @@ export class AcceleratorStringComponent implements OnInit {
   public acc = "";
   public post = "";
 
-  // tslint:disable-next-line:no-empty
+  // eslint-disable-next-line no-empty, @typescript-eslint/no-empty-function
   constructor() {}
 
   public ngOnInit() {

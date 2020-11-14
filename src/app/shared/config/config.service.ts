@@ -11,13 +11,14 @@ export class ConfigService {
   public static AP_PAGE_SIZE = "ap.pagesize";
   public static AP_FILTERS = "ap.filters";
 
+  public version: Version;
+
   private websvc: string;
+
   // Pfad zur Web-API
   public get webservice(): string {
     return this.websvc;
   }
-
-  public version: Version;
 
   // Web-API calls
   private readonly getConf: string;
@@ -68,6 +69,7 @@ export class ConfigService {
    *  return () => configService.init();
    * }
    * ...
+   *
    * @NgModule(
    *   ...
    *   providers   : [
@@ -151,18 +153,14 @@ export class ConfigService {
     return this.http
       .post(this.setConf + "/" + confName, val)
       .toPromise()
-      .then((rc) => {
-        return rc;
-      });
+      .then((rc) => rc);
   }
 
   public deleteConfig(confName: string): Promise<any> {
     return this.http
       .delete(this.delConf + "/" + confName)
       .toPromise()
-      .then((rc) => {
-        return rc;
-      });
+      .then((rc) => rc);
   }
 
   // --- Benutzer-Config ---

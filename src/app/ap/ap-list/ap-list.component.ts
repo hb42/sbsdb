@@ -11,6 +11,6 @@ export class ApListComponent implements OnInit {
 
   constructor(public apService: ArbeitsplatzService) {}
 
-  // tslint:disable-next-line:no-empty
+  // eslint-disable-next-line no-empty, @typescript-eslint/no-empty-function
   public ngOnInit() {}
 }

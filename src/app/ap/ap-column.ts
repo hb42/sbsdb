@@ -123,6 +123,23 @@ export class ApColumn {
   }
 
   /**
+   * Expression fuer die Spalte bauen (std filter)
+   *
+   */
+  public getFilterExpression(): Expression {
+    const filter: ColumnFilter = this.valueChange();
+    if (filter) {
+      const op: RelationalOperator = filter.inc
+        ? new RelationalOperator(RelOp.like)
+        : new RelationalOperator(RelOp.notlike);
+      const f: Field = new Field(this.fieldName, this.displayName);
+      return new Expression(f, op, filter.text);
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * Suchstring vorbereiten
    */
   private valueChange(): ColumnFilter {
@@ -133,22 +150,6 @@ export class ApColumn {
         t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
       }
       return t;
-    } else {
-      return null;
-    }
-  }
-
-  /**
-   * Expression fuer die Spalte bauen (std filter)
-   *
-   */
-  public getFilterExpression(): Expression {
-    const filter: ColumnFilter = this.valueChange();
-    if (filter) {
-      let op: RelationalOperator;
-      op = filter.inc ? new RelationalOperator(RelOp.like) : new RelationalOperator(RelOp.notlike);
-      const f: Field = new Field(this.fieldName, this.displayName);
-      return new Expression(f, op, filter.text);
     } else {
       return null;
     }
