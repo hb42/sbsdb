@@ -11,8 +11,8 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$sbsdb-app-primary: mat-palette($mat-deep-orange);
-$sbsdb-app-accent: mat-palette($mat-indigo, A200, A100, A400); // 700, 500, 900);
+$sbsdb-app-primary: mat-palette($mat-blue); //$mat-deep-orange);
+$sbsdb-app-accent: mat-palette($mat-amber, A200, A100, A400); // 700, 500, 900); //$mat-indigo
 
 // The warn palette is optional (defaults to red).
 $sbsdb-app-warn: mat-palette($mat-red);
@@ -68,8 +68,8 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   .mat-toolbar.head-spk {
     background: linear-gradient(
       to bottom,
-      mat-color($primary, A200) 0%,
-      mat-color($primary, A700) 100%
+      mat-color($primary, 300) 0%, // A200
+      mat-color($primary, 900) 100% // A700
     );
   }
 

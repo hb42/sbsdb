@@ -1,17 +1,15 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Field } from "../../shared/filter/field";
 import { RelOp } from "../../shared/filter/rel-op.enum";
 import { ApColumn } from "../ap-column";
-import { ApFilterService } from "../ap-filter.service";
-import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
   selector: "sbsdb-ap-filter-edit",
   templateUrl: "./ap-filter-edit.component.html",
   styleUrls: ["./ap-filter-edit.component.scss"],
 })
-export class ApFilterEditComponent implements OnInit {
+export class ApFilterEditComponent {
   public get selectedField(): ApColumn {
     return this.data.f
       ? this.data.columns.find((col) => col.displayName === this.data.f.displayName)
@@ -33,8 +31,6 @@ export class ApFilterEditComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data) {
     console.debug("c'tor ApFilterEditComponent");
   }
-
-  ngOnInit(): void {}
 
   public columnList(): ApColumn[] {
     return this.data.columns.filter((c) => c.operators);

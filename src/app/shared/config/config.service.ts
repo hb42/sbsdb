@@ -103,12 +103,12 @@ export class ConfigService {
           console.debug(">>> getting app meta data");
           return this.versionService.init(this.getVersion).then((ver) => {
             console.debug(">>> meta data done");
-            console.info(
+            console.log(
               ver.displayname + " v" + ver.version + " " + ver.copyright + " (" + ver.githash + ")"
             );
             console.dir(ver.versions);
             const server = this.versionService.serverVer;
-            console.info(
+            console.log(
               server.displayname +
                 " v" +
                 server.version +

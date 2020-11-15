@@ -1,1 +1,13 @@
-<p>admin-list-config works!</p>
+<div>
+  <mat-form-field>
+    <mat-label>Blockgröße der AP-liste</mat-label>
+    <input
+      matInput
+      placeholder="200"
+      [formControl]="blockSize"
+      [errorStateMatcher]="matcher"
+      required
+    />
+    <mat-error *ngIf="blockSize.invalid">{{ getErrorMessage() }}</mat-error>
+  </mat-form-field>
+</div>

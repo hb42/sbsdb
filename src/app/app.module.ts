@@ -36,7 +36,6 @@ import { AdminListConfigComponent } from "./admin/admin-list-config/admin-list-c
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function logonOptionsFactory(): LogonParameter {
   return {
     logon: "NO",
@@ -49,7 +48,6 @@ registerLocaleData(localeDe); // + provider, s.u.
 // (u.a. Benutzer-Session) fuer alle anderen Services verfuegbar sind.
 // (fn , die fn liefert, die ein Promise liefert)
 // mit AOT fkt. nur das folgende Konstrukt
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function initConf(configService: ConfigService) {
   return () => configService.init();
 }

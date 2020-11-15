@@ -12,14 +12,15 @@
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
         // prettier verwenden
-        "prettier/@typescript-eslint"
+        "prettier"
+//        "prettier/@typescript-eslint"
       ],
       "rules": {
         "@angular-eslint/component-selector": [
           "error",
           {
             "type": "element",
-            // *hb* an Projekt anpassen
+            // an Projekt anpassen
             "prefix": "sbsdb",
             "style": "kebab-case"
           }
@@ -28,7 +29,7 @@
           "error",
           {
             "type": "attribute",
-            // *hb* an Projekt anpassen
+            // an Projekt anpassen
             "prefix": "sbsdb",
             "style": "camelCase"
           }
@@ -44,8 +45,14 @@
         "@typescript-eslint/no-shadow": ["error"],
         // Webstorm rückt Leerzeilen ein
         "no-trailing-spaces": "off",
-        // *hb* console erlauben
-        "no-console": "off"
+        // console.info, etc. verbieten (aber .debug erlauben)
+        "no-restricted-syntax": [
+          "error",
+          {
+            "selector": "CallExpression[callee.object.name=\"console\"][callee.property.name=/^(info|time|timeEnd|trace)$/]",
+            "message": "Unexpected property on console object was called"
+          }
+        ]
       }
     },
     {

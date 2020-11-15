@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  HostBinding,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
+import { AfterViewInit, Component, HostBinding, HostListener, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";
 import { ConfigService } from "../config/config.service";
@@ -16,7 +9,7 @@ import { NavigationService } from "../navigation.service";
   templateUrl: "./head.component.html",
   styleUrls: ["./head.component.scss"],
 })
-export class HeadComponent implements OnInit, AfterViewInit {
+export class HeadComponent implements AfterViewInit {
   @HostBinding("attr.class") public cssClass = "flex-panel";
 
   @ViewChild("menubtn") public menuBtn;
@@ -60,10 +53,6 @@ export class HeadComponent implements OnInit, AfterViewInit {
         }
       });
     }
-  }
-
-  public ngOnInit() {
-    // noop
   }
 
   public ngAfterViewInit(): void {

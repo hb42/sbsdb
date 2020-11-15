@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from "@angular/core";
+import { Component, HostBinding } from "@angular/core";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
@@ -6,11 +6,8 @@ import { ArbeitsplatzService } from "../arbeitsplatz.service";
   templateUrl: "./ap-list.component.html",
   styleUrls: ["./ap-list.component.scss"],
 })
-export class ApListComponent implements OnInit {
+export class ApListComponent {
   @HostBinding("attr.class") public cssClass = "flex-content";
 
   constructor(public apService: ArbeitsplatzService) {}
-
-  // eslint-disable-next-line no-empty, @typescript-eslint/no-empty-function
-  public ngOnInit() {}
 }

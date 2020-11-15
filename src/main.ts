@@ -20,6 +20,6 @@ if (environment.production) {
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
   .catch((err) => {
-    console.info("Runtime-ERROR " + err);
+    console.error("Runtime-ERROR " + err);
   });
 // });

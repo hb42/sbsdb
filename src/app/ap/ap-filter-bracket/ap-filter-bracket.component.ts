@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Bracket } from "../../shared/filter/bracket";
 import { Element } from "../../shared/filter/element";
 import { ApFilterService } from "../ap-filter.service";
@@ -8,15 +8,13 @@ import { ApFilterService } from "../ap-filter.service";
   templateUrl: "./ap-filter-bracket.component.html",
   styleUrls: ["./ap-filter-bracket.component.scss"],
 })
-export class ApFilterBracketComponent implements OnInit {
+export class ApFilterBracketComponent {
   @Input() public element: Element;
 
   public highlight = false;
   private menuopen = false;
 
   constructor(private apFilterService: ApFilterService) {}
-
-  public ngOnInit() {}
 
   public menuOpen() {
     this.menuopen = true;

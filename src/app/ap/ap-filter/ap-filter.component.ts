@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Element } from "../../shared/filter/element";
 import { ApFilterService } from "../ap-filter.service";
 
@@ -7,14 +7,10 @@ import { ApFilterService } from "../ap-filter.service";
   templateUrl: "./ap-filter.component.html",
   styleUrls: ["./ap-filter.component.scss"],
 })
-export class ApFilterComponent implements OnInit, AfterViewInit {
+export class ApFilterComponent {
   @Input() data: Element;
 
   constructor(public apFilter: ApFilterService) {
     console.debug("c'tor ApFilterComponent");
   }
-
-  public ngOnInit() {}
-
-  public ngAfterViewInit(): void {}
 }
