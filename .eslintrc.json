@@ -12,8 +12,8 @@
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
         // prettier verwenden
-        "prettier"
-//        "prettier/@typescript-eslint"
+        "prettier",
+        "prettier/@typescript-eslint"
       ],
       "rules": {
         "@angular-eslint/component-selector": [
