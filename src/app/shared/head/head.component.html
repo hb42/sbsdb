@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" class="head-spk header">
   <button mat-button [mat-menu-trigger-for]="mainmenu">
-    <img
+    <img alt="SBSDB"
       src="./resource/sbs32-grey2.png"
       title="{{ configService.version.displayname }} {{ configService.version.version }}"
     />
@@ -30,17 +30,17 @@
 
   <div *ngFor="let link of navLinks">
     <button
-      mat-button
+      mat-raised-button
       *ngIf="!navigationService.currentPath.startsWith(link.path)"
       [routerLink]="link.path"
     >
       <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
-      <mat-icon></mat-icon>
+<!--      <mat-icon></mat-icon>-->
     </button>
 <!--      class="md-background-color"-->
 <!--        class="md-primary-highlight-color2"-->
     <button
-      mat-flat-button
+      mat-raised-button
       disabled
       class="disabled-button"
       *ngIf="navigationService.currentPath.startsWith(link.path)"

@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { ErrorService } from "@hb42/lib-client";
-import { AdminListApFilterComponent } from "./admin/admin-list-ap-filter/admin-list-ap-filter.component";
-import { AdminListConfigComponent } from "./admin/admin-list-config/admin-list-config.component";
+import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
+import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ApComponent } from "./ap/ap/ap.component";
 import { HwComponent } from "./hw/hw/hw.component";
@@ -27,12 +27,12 @@ const routes: Routes = [
     children: [
       {
         path: ADM_APFILTER,
-        component: AdminListApFilterComponent,
+        component: AdminPanelApFilterComponent,
         canActivate: [AdminGuard],
       },
       {
         path: ADM_CONFIG,
-        component: AdminListConfigComponent,
+        component: AdminPanelConfigComponent,
         canActivate: [AdminGuard],
       },
     ],

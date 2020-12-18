@@ -13,7 +13,7 @@ export class ConfigService {
 
   public version: Version;
 
-  private websvc: string;
+  private readonly websvc: string;
 
   // Pfad zur Web-API
   public get webservice(): string {

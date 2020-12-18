@@ -2,11 +2,11 @@ import { Component, HostBinding } from "@angular/core";
 import { ApFilterService } from "../../ap/ap-filter.service";
 
 @Component({
-  selector: "sbsdb-admin-list-ap-filter",
-  templateUrl: "./admin-list-ap-filter.component.html",
-  styleUrls: ["./admin-list-ap-filter.component.scss"],
+  selector: "sbsdb-admin-panel-ap-filter",
+  templateUrl: "./admin-panel-ap-filter.component.html",
+  styleUrls: ["./admin-panel-ap-filter.component.scss"],
 })
-export class AdminListApFilterComponent {
+export class AdminPanelApFilterComponent {
   @HostBinding("attr.class") public cssClass = "flex-content";
   constructor(public apFilter: ApFilterService) {}
 }

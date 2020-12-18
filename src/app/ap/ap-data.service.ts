@@ -8,11 +8,12 @@ import { Arbeitsplatz } from "./model/arbeitsplatz";
   providedIn: "root",
 })
 export class ApDataService {
+  public static defaultpageSize = 199;
+
   // Daten fuer MatTable
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
   // AP-Datensaetze je GET
-  private defaultpageSize = 200;
 
   // Web-API calls
   private readonly oeTreeUrl: string;
@@ -41,7 +42,7 @@ export class ApDataService {
     // Groesse der einzelnen Bloecke
     const pageSize =
       Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
-      this.defaultpageSize;
+      ApDataService.defaultpageSize;
     // Anzahl der Datensaetze
     const recs = await this.dataService.get(this.countUrl).toPromise();
     // zu holende Seiten

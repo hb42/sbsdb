@@ -1,0 +1,19 @@
+<div class="input-panel">
+  <mat-form-field>
+    <mat-label >{{ label }}</mat-label>
+    <input matInput placeholder="{{ placeholder }}" [formControl]="control" [errorStateMatcher]="matcher" />
+    <mat-error *ngIf="control.invalid">{{ getErrorMessage() }}</mat-error>
+  </mat-form-field>
+  <button
+    mat-icon-button
+    color="primary"
+    (click)="saveControl()"
+    [disabled]="!control.dirty || control.invalid"
+    title="Speichern"
+  >
+    <mat-icon>save</mat-icon>
+  </button>
+  <div class="hinweis">
+    {{ note }}
+  </div>
+</div>

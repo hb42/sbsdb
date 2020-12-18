@@ -8,11 +8,80 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
+/* selbstgestrickte Palette
+   -> http://mcg.mbitson.com/#!?mcgpalette0=%231b72b8&mcgpalette1=%23ff9800
+   -> https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=1b72b8&secondary.color=FF9800
+ */
+$hb-blue: (
+  50: #e4eef6,
+  100: #bbd5ea,
+  200: #8db9dc,
+  300: #5f9ccd,
+  400: #3d87c3,
+  500: #1b72b8,
+  600: #186ab1,
+  700: #145fa8,
+  800: #1055a0,
+  900: #084291,
+  A100: #bed6ff,
+  A200: #8bb6ff,
+  A400: #5896ff,
+  A700: #3f86ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #ffffff,
+  ),
+);
+$hb-blue-alt: (
+  50: #e4ebf8,
+  100: #bcceec,
+  200: #8fade0,
+  300: #628cd4,
+  400: #4073ca,
+  500: #1e5ac1,
+  600: #1a52bb,
+  700: #1648b3,
+  800: #123fab,
+  900: #0a2e9e,
+  A100: #cbd5ff,
+  A200: #98acff,
+  A400: #6583ff,
+  A700: #4c6fff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #ffffff,
+  ),
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$sbsdb-app-primary: mat-palette($mat-blue); //$mat-deep-orange);
-$sbsdb-app-accent: mat-palette($mat-amber, A200, A100, A400); // 700, 500, 900); //$mat-indigo
+$sbsdb-app-primary: mat-palette($hb-blue); //$mat-deep-orange);
+$sbsdb-app-accent: mat-palette($mat-orange, A200, A100, A400); // 700, 500, 900); //$mat-indigo
 
 // The warn palette is optional (defaults to red).
 $sbsdb-app-warn: mat-palette($mat-red);
@@ -68,8 +137,9 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   .mat-toolbar.head-spk {
     background: linear-gradient(
       to bottom,
-      mat-color($primary, 300) 0%, // A200
-      mat-color($primary, 900) 100% // A700
+      mat-color($primary, 200) 0%,
+      // A200
+      mat-color($primary, 700) 100% // A700
     );
   }
 
