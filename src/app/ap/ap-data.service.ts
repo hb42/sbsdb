@@ -1,3 +1,4 @@
+import { SelectionModel } from "@angular/cdk/collections";
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
 import { ConfigService } from "../shared/config/config.service";
@@ -12,7 +13,6 @@ export class ApDataService {
 
   // Daten fuer MatTable
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
-
   // AP-Datensaetze je GET
 
   // Web-API calls

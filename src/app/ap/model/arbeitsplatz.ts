@@ -30,4 +30,8 @@ export class Arbeitsplatz {
   public voesearch = "";
   public voesort = "";
   public subTypes: string[] = [];
+
+  // Darstellung
+  public expanded?: boolean;
+  public selected?: boolean;
 }

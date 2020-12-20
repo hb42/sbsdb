@@ -11,21 +11,25 @@
   }
 
   tr.ap-row.ap-row-clickable:hover {
-    background-color: mat-color($primary, 100);
+    background-color: mat-color($primary, 200);
   }
 
-
-  .ap-detail-expanded,
+  .ap-detail-expanded {
+    background-color: mat-color($primary, 100);
+  }
   .ap-detail-content-expanded {
     background-color: mat-color($primary, 100, .5);
   }
   .ap-detail-expanded div {
     white-space: unset !important;
   }
-
   .ap-detail-expanded .highlight-when-expanded {
     font-weight: bold !important;
     color: mat-color($foreground, text);
+  }
+  tr.ap-detail-expanded td {
+    border-top: solid 2px;
+    border-top-color: mat-color($primary, 200);
   }
 
   .pseudo-button {

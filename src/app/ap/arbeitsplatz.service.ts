@@ -1,3 +1,4 @@
+import { SelectionModel } from "@angular/cdk/collections";
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
@@ -20,7 +21,8 @@ export class ArbeitsplatzService {
 
   public selected: OeTreeItem;
   public urlParams: any;
-  public expandedRow: Arbeitsplatz;
+  // public expandedRow: Arbeitsplatz;
+  // public selection: SelectionModel<Arbeitsplatz>;
 
   // DEBUG Zeilenumbruch in den Tabellenzellen (drin lassen??)
   public tableWrapCell = false;
@@ -74,6 +76,9 @@ export class ArbeitsplatzService {
     console.debug("c'tor ArbeitsplatzService");
     this.userSettings = configService.getUser();
     this.buildColumns();
+    // const initialSelection = [];
+    // const allowMultiSelect = true;
+    // this.selection = new SelectionModel<Arbeitsplatz>(allowMultiSelect, initialSelection);
     setTimeout(() => {
       this.initTable();
     }, 0);
@@ -161,7 +166,8 @@ export class ArbeitsplatzService {
   }
 
   public async expandApRow(ap: Arbeitsplatz, event: Event) {
-    this.expandedRow = this.expandedRow === ap ? null : ap;
+    // this.expandedRow = this.expandedRow === ap ? null : ap;
+    ap.expanded = !ap.expanded;
     event.stopPropagation();
   }
 
@@ -204,7 +210,49 @@ export class ArbeitsplatzService {
     event.stopPropagation();
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  public isAllSelected() {
+    // TODO leerer Filter? / empty array -> true
+    return this.apDataService.apDataSource.filteredData.every((ap) => ap.selected);
+    // const numSelected = this.selection.selected.length;
+    // const numRows = this.apDataService.apDataSource.filteredData.length;
+    // return numSelected == numRows;
+  }
+
+  public isSelected() {
+    return this.apDataService.apDataSource.filteredData.some((ap) => ap.selected);
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  public masterToggle() {
+    const toggle = this.isAllSelected() ? false : true;
+    this.apDataService.apDataSource.filteredData.forEach((row) => (row.selected = toggle));
+    // this.isAllSelected()
+    //   ? this.selection.clear()
+    //   : this.apDataService.apDataSource.filteredData.forEach((row) => this.selection.select(row));
+  }
+
+  public selectCount() {
+    let count = 0;
+    this.apDataService.apDataSource.filteredData.forEach((row) => (row.selected ? count++ : 0));
+    return count;
+  }
+
   private buildColumns() {
+    this.columns.push(
+      new ApColumn(
+        this,
+        "select",
+        () => null,
+        () => null,
+        null,
+        "",
+        true,
+        -1,
+        null,
+        null
+      )
+    );
     this.columns.push(
       new ApColumn(
         this, // hat typ [dropdown], hat typ nicht [dropdown]
@@ -415,13 +463,22 @@ export class ArbeitsplatzService {
      */
     this.filterChange.subscribe(() => {
       this.apDataService.apDataSource.filter = "" + this.filterChanged++;
+      // TODO hier select zuruecksetzen? -> moeglich
+      //      Alt.: select als Feld & select beim Filtern loeschen? Performance?
+      // console.debug("#event# filterchange");
     });
     this.filterService.initService(this.columns, this.filterChange);
     // eigener Filter
-    this.apDataService.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) =>
-      this.filterService.filterExpression.validate(
+    this.apDataService.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
+      const valid = this.filterService.filterExpression.validate(
         (ap as unknown) as Record<string, string | Array<string>>
       );
+      if (!valid) {
+        ap.selected = false;
+        // console.debug("## ausgefiltert ##");
+      }
+      return valid;
+    };
     this.filterService.initializeFilters();
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen

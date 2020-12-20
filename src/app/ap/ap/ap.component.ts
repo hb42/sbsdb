@@ -2,6 +2,7 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   HostBinding,
   HostListener,
   OnDestroy,
@@ -35,6 +36,9 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
   @ViewChild("firstfilter") public firstFilter;
   @ViewChild("lastfilter") public lastFilter;
+
+  @ViewChild("pagInsert", { read: ElementRef }) pagInsert: ElementRef;
+  @ViewChild(MatPaginator, { read: ElementRef }) pagElement: ElementRef;
 
   public subscription: Subscription;
 
@@ -116,8 +120,13 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => {
       // Benutzereinstellungen setzen
       this.apService.setViewParams(this.sort, this.paginator);
-
       this.focusFirstFilter();
+
+      const at = this.pagElement.nativeElement.getElementsByClassName("mat-paginator-container");
+      const before = this.pagElement.nativeElement.getElementsByClassName(
+        "mat-paginator-page-size"
+      );
+      at[0].insertBefore(this.pagInsert.nativeElement, before[0]);
     }, 0);
   }
 
