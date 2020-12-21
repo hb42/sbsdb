@@ -18,40 +18,16 @@
 
   <span class="spacer"></span>
 
-  <!--  <nav mat-tab-nav-bar backgroundColor="primary">-->
-  <!--    <a mat-tab-link-->
-  <!--       *ngFor="let link of navLinks"-->
-  <!--       [routerLink]="link.path"-->
-  <!--       routerLinkActive #rla="routerLinkActive"-->
-  <!--       [active]="rla.isActive">-->
-  <!--      {{link.label}}-->
-  <!--    </a>-->
-  <!--  </nav>-->
-
   <div *ngFor="let link of navLinks">
     <button
       mat-raised-button
-      *ngIf="!navigationService.currentPath.startsWith(link.path)"
+      routerLinkActive #rla="routerLinkActive"
       [routerLink]="link.path"
+      [disabled]="rla.isActive"
+      [class.disabled-button]="rla.isActive"
     >
+      <!--      *ngIf="!navigationService.currentPath.startsWith(link.path)"-->
       <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
-<!--      <mat-icon></mat-icon>-->
-    </button>
-<!--      class="md-background-color"-->
-<!--        class="md-primary-highlight-color2"-->
-    <button
-      mat-raised-button
-      disabled
-      class="disabled-button"
-      *ngIf="navigationService.currentPath.startsWith(link.path)"
-    >
-      <!--            [matMenuTriggerFor]="link.menu" #menubtn>-->
-      {{link.label}}
-<!--      <sbsdb-accelerator-string-->
-<!--        [text]="link.label"-->
-<!--        [accel]="link.key"-->
-<!--      ></sbsdb-accelerator-string>-->
-      <!--      <mat-icon>arrow_drop_down</mat-icon>-->
     </button>
     <span class="spacer2"></span>
   </div>
@@ -99,12 +75,14 @@
   </mat-menu>
   <span class="spacer"></span>
 
-  <button mat-icon-button (click)="backBtn()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <button mat-icon-button (click)="forwardBtn()">
-    <mat-icon>arrow_forward</mat-icon>
-  </button>
+  <!--  Navigation ?? -->
+  <!--  <button mat-icon-button (click)="backBtn()">-->
+  <!--    <mat-icon>arrow_back</mat-icon>-->
+  <!--  </button>-->
+  <!--  <button mat-icon-button (click)="forwardBtn()">-->
+  <!--    <mat-icon>arrow_forward</mat-icon>-->
+  <!--  </button>-->
+
   <span class="spacer"></span>
   <!--  <button mat-button (click)="navigate('/ap')">Arbeitsplätze</button>-->
   <!--  <button mat-button (click)="navigate('/hw')">Hardware</button>-->

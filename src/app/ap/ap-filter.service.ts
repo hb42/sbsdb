@@ -33,6 +33,9 @@ export class ApFilterService {
 
   public selectedFilter: TransportFilter = null;
 
+  // nur ausgewaehlte anzeigen
+  public showSelected = false;
+
   private nextKey = ApFilterService.STDFILTER + 1;
 
   private globalFilters: TransportFilter[] = [];
@@ -142,6 +145,14 @@ export class ApFilterService {
   public saveFilterExpression() {
     this.setFilter(ApFilterService.STDFILTER, "", this.convBracket(this.filterExpression));
     this.saveFilters();
+  }
+
+  /**
+   * toggle "nur Ausgewaehlte anzeigen"
+   */
+  public toggleSelection() {
+    this.showSelected = !this.showSelected;
+    this.triggerFilter();
   }
 
   // --- Edit Exxtended Filter ---

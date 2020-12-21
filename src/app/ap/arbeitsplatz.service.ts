@@ -1,4 +1,3 @@
-import { SelectionModel } from "@angular/cdk/collections";
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
@@ -225,11 +224,17 @@ export class ArbeitsplatzService {
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   public masterToggle() {
-    const toggle = this.isAllSelected() ? false : true;
+    const toggle = !this.isAllSelected();
     this.apDataService.apDataSource.filteredData.forEach((row) => (row.selected = toggle));
+    this.filterService.triggerFilter();
     // this.isAllSelected()
     //   ? this.selection.clear()
     //   : this.apDataService.apDataSource.filteredData.forEach((row) => this.selection.select(row));
+  }
+
+  public rowToggle(row: Arbeitsplatz) {
+    row.selected = !row.selected;
+    this.filterService.triggerFilter();
   }
 
   public selectCount() {
@@ -470,12 +475,16 @@ export class ArbeitsplatzService {
     this.filterService.initService(this.columns, this.filterChange);
     // eigener Filter
     this.apDataService.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
-      const valid = this.filterService.filterExpression.validate(
+      let valid = this.filterService.filterExpression.validate(
         (ap as unknown) as Record<string, string | Array<string>>
       );
       if (!valid) {
         ap.selected = false;
         // console.debug("## ausgefiltert ##");
+      }
+      // nur ausgewählte anzeigen
+      if (valid && this.filterService.showSelected) {
+        valid = ap.selected;
       }
       return valid;
     };
