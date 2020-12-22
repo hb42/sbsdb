@@ -1,4 +1,3 @@
-import { SelectionModel } from "@angular/cdk/collections";
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
 import { ConfigService } from "../shared/config/config.service";
@@ -193,10 +192,11 @@ export class ApDataService {
     if (ap.vlan && ap.vlan[0]) {
       let msearch = "";
       ap.vlan.forEach((v) => {
+        let dhcp = v.ip === 0 ? " (DHCP)" : "";
         if (ap.ipStr) {
-          ap.ipStr += "/ " + this.getIpString(v.vlan + v.ip);
+          ap.ipStr += "/ " + this.getIpString(v.vlan + v.ip) + dhcp;
         } else {
-          ap.ipStr = this.getIpString(v.vlan + v.ip);
+          ap.ipStr = this.getIpString(v.vlan + v.ip) + dhcp;
         }
         if (ap.macStr) {
           ap.macStr += "/ " + this.getMacString(v.mac);
