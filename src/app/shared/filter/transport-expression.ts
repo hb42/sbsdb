@@ -5,7 +5,7 @@ import { RelOp } from "./rel-op.enum";
  */
 export class TransportExpression {
   constructor(
-    public fName: string, // Feldname
+    public fName: string | string[], // Feldname
     public dName: string, // Anzeigename des Felds
     public op: RelOp, // relationaler Operator
     public comp: string // Vergleichstring

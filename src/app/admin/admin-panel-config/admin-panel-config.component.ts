@@ -14,6 +14,17 @@ export class AdminPanelConfigComponent implements OnInit {
   public static bsValidator = "bserror";
   @HostBinding("attr.class") public cssClass = "flex-content";
 
+  // --- blocksize ---
+  public blocksize: FormControl;
+  public blocksizeLabel = "Blockgröße der AP-Liste";
+  public blocksizePlaceholder = "100";
+  public blocksizeDefaultValue = ApDataService.defaultpageSize;
+  public blocksizeConfigName = ConfigService.AP_PAGE_SIZE;
+  public blocksizeNote =
+    "Die Arbeitsplatzliste wird beim Starten der Anwendung im Hintergrund geladen. Um das zu " +
+    "beschleunigen wird die Liste in mehreren Blöcken geholt, die parallel geladen werden. Dieser " +
+    "Parameter stellt die Anzahl der Datensätze je Block ein (min. 100).";
+
   constructor(public configService: ConfigService) {
     console.debug("c'tor AdminPanelConfigComponent");
   }
@@ -25,15 +36,6 @@ export class AdminPanelConfigComponent implements OnInit {
   }
 
   // --- blocksize ---
-  public blocksize: FormControl;
-  public blocksizeLabel = "Blockgröße der AP-Liste";
-  public blocksizePlaceholder = "100";
-  public blocksizeDefaultValue = ApDataService.defaultpageSize;
-  public blocksizeConfigName = ConfigService.AP_PAGE_SIZE;
-  public blocksizeNote =
-    "Die Arbeitsplatzliste wird beim Starten der Anwendung im Hintergrund geladen. Um das zu " +
-    "beschleunigen wird die Liste in mehreren Blöcken geholt, die parallel geladen werden. Dieser " +
-    "Parameter stellt die Anzahl der Datensätze je Block ein (min. 100).";
 
   public blocksizeValidator(control: FormControl): { [s: string]: boolean } {
     if (!control.value.match(/^\s*[0-9]+\s*$/) || Number.parseInt(control.value, 10) < 100) {

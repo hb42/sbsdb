@@ -250,7 +250,7 @@ export class ArbeitsplatzService {
         "select",
         () => null,
         () => null,
-        null,
+        () => null,
         "",
         true,
         -1,
@@ -278,7 +278,7 @@ export class ArbeitsplatzService {
         "subtype",
         () => "Subtyp",
         () => "subTypes",
-        null,
+        () => "subTypes",
         "",
         false,
         ApColumn.LCASE,
@@ -361,7 +361,7 @@ export class ArbeitsplatzService {
         "ipfilt",
         () => "IP",
         () => "ipStr",
-        null,
+        () => "ipStr",
         "",
         false,
         ApColumn.LCASE,
@@ -376,7 +376,7 @@ export class ArbeitsplatzService {
         "mac",
         () => "MAC",
         () => "macStr",
-        null,
+        () => "macStr",
         "",
         false,
         ApColumn.IP,
@@ -391,7 +391,7 @@ export class ArbeitsplatzService {
         "vlan",
         () => "VLAN",
         () => "vlanStr",
-        null,
+        () => "vlanStr",
         "",
         false,
         ApColumn.LCASE,
@@ -405,7 +405,11 @@ export class ArbeitsplatzService {
         // (hersteller + bezeichnung) -> eigene Spalte
         "hardware",
         () => "Hardware",
-        () => (this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr"),
+        () =>
+          this.userSettings.searchSonstHw && this.filterService.stdFilter
+            ? ["hwStr", "sonstHwStr"]
+            : "hwStr",
+        // () => (this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr"),
         () => "hwStr",
         "w",
         true,
@@ -417,10 +421,24 @@ export class ArbeitsplatzService {
     this.columns.push(
       new ApColumn(
         this,
+        "sonsthw",
+        () => "Sonstige Hardware",
+        () => "sonstHwStr",
+        () => "hwStr",
+        "",
+        false,
+        ApColumn.LCASE,
+        [RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new ApColumn(
+        this,
         "menu",
         () => null,
         () => null,
-        null,
+        () => null,
         "",
         true,
         -1,
@@ -435,7 +453,7 @@ export class ArbeitsplatzService {
         "bemerkung",
         () => "Bemerkung",
         () => "bemerkung",
-        null,
+        () => null,
         "",
         false,
         ApColumn.LCASE,

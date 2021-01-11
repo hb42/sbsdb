@@ -60,12 +60,12 @@ export class ApColumn {
     return this.callback(this.displayname, this.apService);
   }
 
-  public get fieldName(): string {
+  public get fieldName(): string | string[] {
     return this.callback(this.fieldname, this.apService);
   }
 
   public get sortFieldName(): string | null {
-    return this.sortfieldname ? this.callback(this.sortfieldname, this.apService) : null;
+    return this.callback(this.sortfieldname, this.apService);
   }
 
   public get accelerator(): string {
@@ -92,8 +92,8 @@ export class ApColumn {
     private apService: ArbeitsplatzService,
     private colname: string,
     private displayname: () => string,
-    private fieldname: () => string,
-    private sortfieldname: (() => string) | null, // falls soert_field != field_name sonst null
+    private fieldname: () => string | string[],
+    private sortfieldname: () => string,
     private accel: string, //
     private showcol: boolean,
     private typekey: number,
@@ -111,7 +111,7 @@ export class ApColumn {
    * @param ap - Arbeitsplatz-Record
    */
   public sortString(ap: Arbeitsplatz) {
-    const field = this.sortfieldname ? ap[this.sortFieldName] : ap[this.fieldName];
+    const field = ap[this.sortFieldName];
     switch (this.typekey) {
       case ApColumn.LCASE:
         const s = field as string;

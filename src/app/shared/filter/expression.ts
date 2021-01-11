@@ -25,8 +25,17 @@ export class Expression implements Term {
   }
 
   public validate(record: Record<string, string | Array<string>>): boolean {
-    if (record && record.hasOwnProperty(this.field.fieldName)) {
-      return this.operator.execute(record[this.field.fieldName], this.compare);
+    const fields: string[] = Array.isArray(this.field.fieldName)
+      ? this.field.fieldName
+      : [this.field.fieldName];
+    if (record) {
+      const compStr = fields.reduce(
+        (prev, curr) => (prev += record.hasOwnProperty(curr) ? record[curr] : ""),
+        ""
+      );
+      if (compStr) {
+        return this.operator.execute(compStr, this.compare);
+      }
     }
     return false;
   }

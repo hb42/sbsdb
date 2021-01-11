@@ -176,14 +176,15 @@ export class ApDataService {
           " - " +
           h.bezeichnung +
           (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
+      } else {
+        // fuer die Suche in sonstiger HW
+        ap.sonstHwStr +=
+          " " +
+          h.hersteller +
+          " " +
+          h.bezeichnung +
+          (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
       }
-      // fuer die Suche
-      ap.sonstHwStr +=
-        " " +
-        h.hersteller +
-        " " +
-        h.bezeichnung +
-        (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
     });
 
     ap.ipStr = "";
