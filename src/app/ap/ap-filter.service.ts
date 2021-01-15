@@ -162,11 +162,10 @@ export class ApFilterService {
    */
   public toggleExtendedFilter() {
     this.stdFilter = !this.stdFilter;
-    if (this.stdFilter) {
-      this.resetStdFilters();
-    }
-    this.userSettings.apStdFilter = this.stdFilter;
     this.selectedFilter = null;
+    this.filterExpression.reset();
+    this.resetStdFilters();
+    this.userSettings.apStdFilter = this.stdFilter;
   }
 
   public extFilterList(): TransportFilter[] {

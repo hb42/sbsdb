@@ -9,6 +9,9 @@ import { Arbeitsplatz } from "./model/arbeitsplatz";
 })
 export class ApDataService {
   public static defaultpageSize = 199;
+  public static TAG_DISPLAY_NAME = "TAG";
+  public static BOOL_TAG_FLAG = 1;
+  public static FREMDE_HW_FLAG = 1;
 
   // Daten fuer MatTable
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
@@ -20,6 +23,14 @@ export class ApDataService {
   private readonly pageApsUrl: string;
   private readonly singleApUrl: string;
   private readonly countUrl: string;
+
+  // case insensitive alpha sort
+  // deutlich schneller als String.localeCompare()
+  //  -> result = this.collator.compare(a, b)
+  private collator = new Intl.Collator("de", {
+    numeric: true,
+    sensitivity: "base",
+  });
 
   constructor(private dataService: DataService, private configService: ConfigService) {
     console.debug("c'tor ApDataService");
@@ -168,14 +179,14 @@ export class ApDataService {
     ap.sonstHwStr = ""; // keine undef Felder!
     ap.hw.forEach((h) => {
       if (h.pri) {
-        if (h.hwtypFlag !== 1) {
+        if (h.hwtypFlag !== ApDataService.FREMDE_HW_FLAG) {
           ap.hwTypStr = h.hersteller + " - " + h.bezeichnung;
         }
         ap.hwStr =
           h.hersteller +
           " - " +
           h.bezeichnung +
-          (h.sernr && h.hwtypFlag !== 1 ? " [" + h.sernr + "]" : "");
+          (h.sernr && h.hwtypFlag !== ApDataService.FREMDE_HW_FLAG ? " [" + h.sernr + "]" : "");
       } else {
         // fuer die Suche in sonstiger HW
         ap.sonstHwStr +=
@@ -183,7 +194,7 @@ export class ApDataService {
           h.hersteller +
           " " +
           h.bezeichnung +
-          (h.sernr && h.hwtypFlag !== 1 ? " " + h.sernr : "");
+          (h.sernr && h.hwtypFlag !== ApDataService.FREMDE_HW_FLAG ? " " + h.sernr : "");
       }
     });
 
@@ -222,12 +233,37 @@ export class ApDataService {
     ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
     ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
 
-    ap.subTypes = [];
+    // ap.subTypes = [];
     ap.tags.forEach((tag) => {
-      if (tag.flag === 1) {
-        ap.subTypes.push(tag.bezeichnung);
+      // if (tag.flag === ApDataService.BOOL_TAG_FLAG) {
+      //   ap.subTypes.push(tag.bezeichnung);
+      // } else {
+      //   ap[ApDataService.TAG_DISPLAY_NAME + ": " + tag.bezeichnung] = tag.text;
+      // }
+      ap[ApDataService.TAG_DISPLAY_NAME + ": " + tag.bezeichnung] =
+        tag.flag === ApDataService.BOOL_TAG_FLAG ? tag.flag : tag.text;
+    });
+    this.sortAP(ap);
+  }
+
+  private sortAP(ap: Arbeitsplatz) {
+    ap.tags.sort((a, b) => {
+      if (a.flag === b.flag) {
+        return this.collator.compare(a.bezeichnung, b.bezeichnung);
       } else {
-        ap["TAG: " + tag.bezeichnung] = tag.text;
+        return a.flag === ApDataService.BOOL_TAG_FLAG ? -1 : 1;
+      }
+    });
+    ap.hw.sort((a, b) => {
+      if (a.pri) {
+        return -1;
+      } else if (b.pri) {
+        return 1;
+      } else {
+        return this.collator.compare(
+          a.hwtyp + a.hersteller + a.bezeichnung + a.sernr,
+          b.hwtyp + b.hersteller + b.bezeichnung + b.sernr
+        );
       }
     });
   }

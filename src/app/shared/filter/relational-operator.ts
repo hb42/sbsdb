@@ -27,10 +27,12 @@ export class RelationalOperator {
         this.name = op;
         break;
       case RelOp.equal:
+      case RelOp.inlist:
         this.execute = RelationalOperator.equal;
         this.name = op;
         break;
       case RelOp.notequal:
+      case RelOp.notinlist:
         this.execute = RelationalOperator.notequal;
         this.name = op;
         break;
@@ -42,20 +44,20 @@ export class RelationalOperator {
         this.execute = RelationalOperator.endsWith;
         this.name = op;
         break;
-      case RelOp.inlist:
-        this.execute = RelationalOperator.equal;
-        this.name = op;
-        break;
-      case RelOp.notinlist:
-        this.execute = RelationalOperator.notequal;
-        this.name = op;
-        break;
       case RelOp.inlistA:
         this.execute = RelationalOperator.inList;
         this.name = op;
         break;
       case RelOp.notinlistA:
         this.execute = RelationalOperator.notInList;
+        this.name = op;
+        break;
+      case RelOp.exist:
+        this.execute = RelationalOperator.exist;
+        this.name = op;
+        break;
+      case RelOp.notexist:
+        this.execute = RelationalOperator.notExist;
         this.name = op;
         break;
       default:
@@ -110,6 +112,14 @@ export class RelationalOperator {
 
   private static notInList(fieldContent: Array<string>, compare: string): boolean {
     return fieldContent.indexOf(compare) === -1;
+  }
+
+  private static exist(fieldContent: string, compare: string): boolean {
+    return !!fieldContent;
+  }
+
+  private static notExist(fieldContent: string, compare: string): boolean {
+    return !fieldContent;
   }
 
   public toString(): string {

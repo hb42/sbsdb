@@ -10,4 +10,6 @@ export enum RelOp {
   notinlist = " UNGLEICH",
   inlistA = "GLEICH ",
   notinlistA = "UNGLEICH ",
+  exist = "VORHANDEN",
+  notexist = "NICHT VORHANDEN",
 }

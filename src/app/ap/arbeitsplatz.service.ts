@@ -58,14 +58,6 @@ export class ArbeitsplatzService {
   private filterChange: EventEmitter<any> = new EventEmitter();
   private filterChanged = 1;
 
-  // case insensitive alpha sort
-  // deutlich schneller als String.localeCompare()
-  //  -> result = this.collator.compare(a, b)
-  private collator = new Intl.Collator("de", {
-    numeric: true,
-    sensitivity: "base",
-  });
-
   constructor(
     private configService: ConfigService,
     public apDataService: ApDataService,
@@ -243,6 +235,14 @@ export class ArbeitsplatzService {
     return count;
   }
 
+  public expandAllRows() {
+    this.apDataService.apDataSource.filteredData.forEach((row) => (row.expanded = true));
+  }
+
+  public collapseAllRows() {
+    this.apDataService.apDataSource.filteredData.forEach((row) => (row.expanded = false));
+  }
+
   private buildColumns() {
     this.columns.push(
       new ApColumn(
@@ -272,24 +272,24 @@ export class ArbeitsplatzService {
         () => [...new Set(this.apDataService.apDataSource.data.map((a) => a.aptyp))].sort()
       )
     );
-    this.columns.push(
-      new ApColumn(
-        this,
-        "subtype",
-        () => "Subtyp",
-        () => "subTypes",
-        () => "subTypes",
-        "",
-        false,
-        ApColumn.LCASE,
-        [RelOp.inlistA, RelOp.notinlistA],
-        () =>
-          [
-            // @ts-ignore (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
-            ...new Set(this.apDataService.apDataSource.data.flatMap((ap) => ap.subTypes)),
-          ].sort() as Array<string>
-      )
-    );
+    // this.columns.push(
+    //   new ApColumn(
+    //     this,
+    //     "subtype",
+    //     () => "Subtyp",
+    //     () => "subTypes",
+    //     () => "subTypes",
+    //     "",
+    //     false,
+    //     ApColumn.LCASE,
+    //     [RelOp.inlistA, RelOp.notinlistA],
+    //     () =>
+    //       [
+    //         // @ts-ignore (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
+    //         ...new Set(this.apDataService.apDataSource.data.flatMap((ap) => ap.subTypes)),
+    //       ].sort() as Array<string>
+    //   )
+    // );
     this.columns.push(
       new ApColumn(
         this, // beginnt, endet, enthaelt, enthaelt nicht
@@ -486,9 +486,6 @@ export class ArbeitsplatzService {
      */
     this.filterChange.subscribe(() => {
       this.apDataService.apDataSource.filter = "" + this.filterChanged++;
-      // TODO hier select zuruecksetzen? -> moeglich
-      //      Alt.: select als Feld & select beim Filtern loeschen? Performance?
-      // console.debug("#event# filterchange");
     });
     this.filterService.initService(this.columns, this.filterChange);
     // eigener Filter
@@ -597,51 +594,64 @@ export class ArbeitsplatzService {
   // }
 
   private onDataReady() {
+    // alle vorhandenen tags
     const tags = [
       ...new Set(
         // @ts-ignore (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
-        this.apDataService.apDataSource.data.flatMap((ap) =>
-          ap.tags.filter((t1) => t1.flag !== 1).map((t2) => t2.bezeichnung)
+        this.apDataService.apDataSource.data.flatMap(
+          (ap) => ap.tags.map((t1) => t1.bezeichnung + ";" + t1.flag)
+          // ap.tags.filter((t1) => t1.flag !== ApDataService.APTYPE_FLAG).map((t2) => t2.bezeichnung)
         )
       ),
     ].sort() as Array<string>;
-    tags.forEach((tag) => {
+    // je tag eine Spalte anhaengen -> fuer Filter + Ausgabe in csv
+    tags.forEach((t) => {
+      const tag = t.split(";");
       this.columns.push(
         new ApColumn(
           this,
-          "TAG" + tag,
-          () => "TAG: " + tag,
-          () => "TAG: " + tag,
-          null,
+          ApDataService.TAG_DISPLAY_NAME + tag[0],
+          () => ApDataService.TAG_DISPLAY_NAME + ": " + tag[0],
+          () => ApDataService.TAG_DISPLAY_NAME + ": " + tag[0],
+          () => ApDataService.TAG_DISPLAY_NAME + ": " + tag[0],
           "",
           false,
           ApColumn.LCASE,
-          [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
+          Number(tag[1]) === ApDataService.BOOL_TAG_FLAG
+            ? [RelOp.exist, RelOp.notexist]
+            : [
+                RelOp.startswith,
+                RelOp.endswith,
+                RelOp.like,
+                RelOp.notlike,
+                RelOp.exist,
+                RelOp.notexist,
+              ],
           null
         )
       );
     });
   }
 
-  private sortAP(ap: Arbeitsplatz) {
-    ap.tags.sort((a, b) => {
-      if (a.flag === b.flag) {
-        return this.collator.compare(a.bezeichnung, b.bezeichnung);
-      } else {
-        return a.flag === 1 ? -1 : 1;
-      }
-    });
-    ap.hw.sort((a, b) => {
-      if (a.pri) {
-        return -1;
-      } else if (b.pri) {
-        return 1;
-      } else {
-        return this.collator.compare(
-          a.hwtyp + a.hersteller + a.bezeichnung + a.sernr,
-          b.hwtyp + b.hersteller + b.bezeichnung + b.sernr
-        );
-      }
-    });
-  }
+  // private sortAP(ap: Arbeitsplatz) {
+  //   ap.tags.sort((a, b) => {
+  //     if (a.flag === b.flag) {
+  //       return this.collator.compare(a.bezeichnung, b.bezeichnung);
+  //     } else {
+  //       return a.flag === ArbeitsplatzService.TAG_FLAG ? -1 : 1;
+  //     }
+  //   });
+  //   ap.hw.sort((a, b) => {
+  //     if (a.pri) {
+  //       return -1;
+  //     } else if (b.pri) {
+  //       return 1;
+  //     } else {
+  //       return this.collator.compare(
+  //         a.hwtyp + a.hersteller + a.bezeichnung + a.sernr,
+  //         b.hwtyp + b.hersteller + b.bezeichnung + b.sernr
+  //       );
+  //     }
+  //   });
+  // }
 }

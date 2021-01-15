@@ -68,6 +68,29 @@ https://github.com/angular/components/issues/6178
             The actual rendered columns are set as a property on the row definition" -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
+          <button
+            style="font-size: 18px; width: 16px"
+            mat-icon-button
+            (click)="apService.filterService.toggleSelection()"
+          >
+<!--            *ngIf="apService.filterService.stdFilter"-->
+            <mat-icon
+              inline
+              title="Nur Ausgewählte anzeigen"
+              *ngIf="!apService.filterService.showSelected"
+              color="primary"
+              >filter_alt
+              <!--              check_circle_outline-->
+            </mat-icon>
+            <mat-icon
+              inline
+              title="Auch nicht Ausgewählte anzeigen"
+              *ngIf="apService.filterService.showSelected"
+              color="primary"
+              >unpublished
+              <!--              check_circle-->
+            </mat-icon>
+          </button>
           <mat-checkbox
             (change)="$event ? apService.masterToggle() : null"
             [checked]="apService.isAllSelected()"
@@ -76,29 +99,6 @@ https://github.com/angular/components/issues/6178
             title="alle auwählen"
           >
           </mat-checkbox>
-          <button
-            style="font-size: 18px; width: 16px; height: 30px"
-            mat-icon-button
-            *ngIf="apService.filterService.stdFilter"
-            (click)="apService.filterService.toggleSelection()"
-          >
-            <mat-icon
-              inline
-              title="Nur Ausgewählte anzeigen"
-              *ngIf="!apService.filterService.showSelected"
-              color="primary"
-            >check_circle_outline
-            </mat-icon
-            >
-            <mat-icon
-              inline
-              title="Auch nicht Ausgewählte anzeigen"
-              *ngIf="apService.filterService.showSelected"
-              color="primary"
-            >check_circle
-            </mat-icon
-            >
-          </button>
         </th>
         <td mat-cell *matCellDef="let row">
           <mat-checkbox
@@ -465,6 +465,20 @@ https://github.com/angular/components/issues/6178
           <!--          <button mat-icon-button [matMenuTriggerFor]="tableMenu" [color]="apService.linkcolor">-->
           <!--            <mat-icon>menu</mat-icon>-->
           <!--          </button>-->
+          <button
+            style="font-size: 18px; height: 1px; "
+            mat-icon-button
+            (click)="apService.expandAllRows()"
+          >
+            <mat-icon inline title="Alle aufklappen" color="primary">web_asset </mat-icon>
+          </button>
+          <button
+            style="font-size: 18px; height: 1px;"
+            mat-icon-button
+            (click)="apService.collapseAllRows()"
+          >
+            <mat-icon inline title="Alle zuklappen" color="primary">maximize </mat-icon>
+          </button>
         </th>
         <td mat-cell *matCellDef="let element">
           <button
@@ -526,7 +540,7 @@ https://github.com/angular/components/issues/6178
                     </td>
                     <td>
                       {{
-                        hw.hwtypFlag !== 1
+                        hw.hwtypFlag !== fremdeHwFlag
                           ? hw.hersteller + " - " + hw.bezeichnung + " [" + hw.sernr + "]"
                           : ""
                       }}
@@ -550,9 +564,8 @@ https://github.com/angular/components/issues/6178
                 <table>
                   <th colspan="2">Sonstige Informationen</th>
                   <tr *ngFor="let tag of element.tags">
-                    <td [colSpan]="tag.flag === 1 ? 2 : 1">{{ tag.bezeichnung }}</td>
-                    <td *ngIf="tag.flag !== 1">{{ tag.text }}</td>
-                    <!--                    <td>{{tag.flag === 1 ? '' : tag.text}}</td>-->
+                    <td [colSpan]="tag.flag === aptypeFlag ? 2 : 1">{{ tag.bezeichnung }}</td>
+                    <td *ngIf="tag.flag !== aptypeFlag">{{ tag.text }}</td>
                   </tr>
                 </table>
               </div>

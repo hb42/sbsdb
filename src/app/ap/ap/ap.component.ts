@@ -15,6 +15,7 @@ import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
+import { ApDataService } from "../ap-data.service";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
@@ -42,6 +43,10 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public subscription: Subscription;
 
+  // const importieren
+  public fremdeHwFlag = ApDataService.FREMDE_HW_FLAG;
+  public aptypeFlag = ApDataService.BOOL_TAG_FLAG;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -62,27 +67,30 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Spalten via Keyboard sortieren
   @HostListener("document:keydown", ["$event"])
-  public handleSort(event: KeyboardEvent) {
+  public handleApKeys(event: KeyboardEvent) {
     if (event.altKey && !event.shiftKey && !event.ctrlKey) {
       // Extended Filter => alt-e
       if (event.key === "e") {
         this.apService.filterService.toggleExtendedFilter();
-      }
-      const colIdx = this.apService.columns.findIndex(
-        (c) => c.accelerator && c.accelerator === event.key
-      );
-      if (colIdx >= 0) {
-        // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
-        //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
-        //       -> https://github.com/angular/components/issues/10242
-        // this.sort.sort(this.sort.sortables.get(this.apService.columns[colIdx].name));
-        const sortHeader = this.sort.sortables.get(
-          this.apService.columns[colIdx].columnName
-        ) as MatSortHeader;
-        // eslint-disable-next-line no-underscore-dangle
-        sortHeader._handleClick();
         event.preventDefault();
         event.stopPropagation();
+      } else {
+        const colIdx = this.apService.columns.findIndex(
+          (c) => c.accelerator && c.accelerator === event.key
+        );
+        if (colIdx >= 0) {
+          // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
+          //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
+          //       -> https://github.com/angular/components/issues/10242
+          // this.sort.sort(this.sort.sortables.get(this.apService.columns[colIdx].name));
+          const sortHeader = this.sort.sortables.get(
+            this.apService.columns[colIdx].columnName
+          ) as MatSortHeader;
+          // eslint-disable-next-line no-underscore-dangle
+          sortHeader._handleClick();
+          event.preventDefault();
+          event.stopPropagation();
+        }
       }
     }
   }
