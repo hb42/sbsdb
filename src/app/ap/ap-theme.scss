@@ -28,7 +28,7 @@
     color: mat-color($foreground, text);
   }
   tr.ap-detail-expanded td {
-    border-top: solid 2px;
+    border-top: solid 1px;
     border-top-color: mat-color($primary, 200);
   }
 
@@ -54,7 +54,8 @@
     border-bottom-style: none;
   }
   .ap-detail-content-expanded td.mat-cell.ap-detail-cell {
-    border-bottom-style: solid;
+    border-bottom: solid 2px;
+    border-bottom-color: mat-color($primary, 200);
   }
 
   .ap-detail-content table {
