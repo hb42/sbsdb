@@ -3,7 +3,6 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
-import { Router } from "@angular/router";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { RelOp } from "../shared/filter/rel-op.enum";
@@ -63,8 +62,7 @@ export class ArbeitsplatzService {
     private configService: ConfigService,
     public apDataService: ApDataService,
     public filterService: ApFilterService,
-    private keyboardService: KeyboardService,
-    private router: Router
+    private keyboardService: KeyboardService
   ) {
     console.debug("c'tor ArbeitsplatzService");
     this.userSettings = configService.getUser();
@@ -487,20 +485,6 @@ export class ArbeitsplatzService {
      * verwendet werden.
      */
     this.filterChange.subscribe(() => {
-      // DEBUG -vv-
-      const filtStr = JSON.stringify(
-        this.filterService.convBracket(this.filterService.filterExpression)
-      );
-      console.debug("### FilterChange ###");
-      console.debug("stdFilt=" + this.filterService.stdFilter + " " + filtStr);
-      this.router
-        .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
-        .then(() => console.debug("### test routing OK ###"))
-        .catch((reason) => {
-          console.debug("*** test routing ERROR:");
-          console.dir(reason);
-        });
-      // DEBUG -^^-
       this.apDataService.apDataSource.filter = "" + this.filterChanged++;
     });
     this.filterService.initService(this.columns, this.filterChange);

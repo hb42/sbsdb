@@ -1,7 +1,6 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
-import { Router } from "@angular/router";
 import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
@@ -58,7 +57,7 @@ export class ApFilterService {
   });
 
   constructor(private configService: ConfigService, public dialog: MatDialog) {
-    console.debug("c'tor ApFilterService #@#");
+    console.debug("c'tor ApFilterService");
     this.userSettings = configService.getUser();
   }
 
@@ -553,12 +552,13 @@ export class ApFilterService {
   private saveGlobalFilters() {
     this.configService.saveConfig(ConfigService.AP_FILTERS, this.globalFilters);
   }
+
   /**
    * filterExpression fuer die Benutzereinstellungen umwandeln
    *
    * @param b - startende Klammer
    */
-  public convBracket(b: Bracket): TransportElement[] {
+  private convBracket(b: Bracket): TransportElement[] {
     return b.elements.map(
       (el) =>
         new TransportElement(
