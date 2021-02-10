@@ -16,9 +16,9 @@ export class ApTreeComponent implements OnInit {
 
   public async ngOnInit() {
     // await this.apService.getOeTree();
-    if (this.apService.urlParams.tree && this.apService.urlParams.tree === "oe") {
-      // this.apService.expandTree(this.apService.urlParams.id);
-    }
+    //  if (this.apService.urlParams.tree && this.apService.urlParams.tree === "oe") {
+    // this.apService.expandTree(this.apService.urlParams.id);
+    //  }
   }
 
   public hasChild = (_: number, node: OeTreeItem) => !!node.children && node.children.length > 0;

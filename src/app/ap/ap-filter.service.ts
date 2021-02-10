@@ -2,6 +2,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { Router } from "@angular/router";
+import { Base64 } from "js-base64";
 import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
@@ -58,7 +59,7 @@ export class ApFilterService {
   });
 
   constructor(private configService: ConfigService, public dialog: MatDialog) {
-    console.debug("c'tor ApFilterService #@#");
+    console.debug("c'tor ApFilterService");
     this.userSettings = configService.getUser();
   }
 
@@ -94,9 +95,12 @@ export class ApFilterService {
    * Filter aus den Benutzereinstellungen erstellen
    */
   public initializeFilters() {
-    this.stdFilter = this.userSettings.apStdFilter;
-    this.filterExpression.reset();
-    this.setFilterExpression(ApFilterService.STDFILTER, ApFilterService.USERFILTER);
+    // TODO *nav_filt*
+    // this.stdFilter = this.userSettings.apStdFilter;
+    // this.filterExpression.reset();
+    // this.setFilterExpression(ApFilterService.STDFILTER, ApFilterService.USERFILTER);
+    this.decodeFilter(this.userSettings.latestApFilter);
+
     const maxkey: number = this.userSettings.apFilter.filters.reduce(
       (prev, curr) => (curr.key > prev ? curr.key : prev),
       0
@@ -111,13 +115,13 @@ export class ApFilterService {
           const feld = exp.field.fieldName;
           const col = this.columns.find((c) => c.fieldName === feld);
           col.filterControl.setValue(exp.compare);
-          col.filterControl.markAsDirty();
+          // col.filterControl.markAsDirty();
         }
       });
       this.buildStdFilterExpression();
     } else {
       // nur fuer ext. filter noetig (f. std filter implizit)
-      this.triggerFilter();
+      // this.triggerFilter();
     }
   }
 
@@ -126,7 +130,7 @@ export class ApFilterService {
    */
   public resetStdFilters() {
     this.columns.forEach((c) => {
-      if (c.filterControl) {
+      if (c.filterControl && c.filterControl.value) {
         c.filterControl.reset();
       }
     });
@@ -141,19 +145,52 @@ export class ApFilterService {
   }
 
   /**
-   * filterExpression in den Benutzereinstellungen speichern
+   * aktuelle filterExpression in den Benutzereinstellungen speichern
    */
   public saveFilterExpression() {
-    this.setFilter(ApFilterService.STDFILTER, "", this.convBracket(this.filterExpression));
-    this.saveFilters();
+    // this.setFilter(ApFilterService.STDFILTER, "", this.convBracket(this.filterExpression));
+    // this.saveFilters();
+    // TODO *nav_filt* hier sollte nichts zu tun sein
+  }
+
+  // TODO *nav_filt*
+  /**
+   * Aktuellen Filter fuer die Uebergabe via URL codieren
+   *
+   * Das Filter-Object wird zu einem TransportElement[] umgesetzt, weil
+   * JSON.stringify() mit Bracket nicht klarkommt. Dann werden .stdFilter
+   * und das TransportElement[] per JSON.stringify in einen String umgwandelt,
+   * der sodann Base64-codiert wird.
+   */
+  public encodeFilter(): string {
+    const te: TransportElement[] = this.convBracket(this.filterExpression);
+    const fStr = JSON.stringify({ s: this.stdFilter, f: te });
+    return Base64.encodeURI(fStr);
   }
 
   /**
-   * toggle "nur Ausgewaehlte anzeigen"
+   * Aktuellen Filter aus der URL setzen
+   *
+   * @param f - String aus der URL
+   * @private
    */
-  public toggleSelection() {
-    this.showSelected = !this.showSelected;
-    this.triggerFilter();
+  public decodeFilter(f: string) {
+    let filter: TransportElement[];
+    let std: boolean;
+    try {
+      const json = Base64.decode(f);
+      const filt = JSON.parse(json);
+      std = filt.s;
+      filter = filt.f;
+    } catch (e) {
+      // Malformed URI || JSON Syntax || Base64 error
+      // hier ist nichts zu retten, also params verwerfen
+      filter = [];
+      std = true;
+    }
+    this.filterExpression.reset();
+    this.makeElements(this.filterExpression, filter);
+    this.stdFilter = std;
   }
 
   // --- Edit Exxtended Filter ---
@@ -167,6 +204,7 @@ export class ApFilterService {
     this.filterExpression.reset();
     this.resetStdFilters();
     this.userSettings.apStdFilter = this.stdFilter;
+    this.triggerFilter();
   }
 
   public extFilterList(): TransportFilter[] {
@@ -213,7 +251,7 @@ export class ApFilterService {
 
   // TODO -> admin
   public moveFilterToGlobal(key: number) {
-    const filter: TransportFilter = this.getFilter(key);
+    const filter: TransportFilter = this.getUserFilter(key);
     if (filter) {
       const gkey = this.globNextKey++;
       this.removeFilter(key);
@@ -229,7 +267,7 @@ export class ApFilterService {
     if (filter) {
       const ukey = this.nextKey++;
       this.removeGlobalFilter(key);
-      this.setFilter(ukey, filter.name, filter.filter);
+      this.setUserFilter(ukey, filter.name, filter.filter);
       this.saveFilters();
       this.saveGlobalFilters();
     }
@@ -252,13 +290,13 @@ export class ApFilterService {
         let key: number;
         if (typeof result === "string") {
           key = this.nextKey++;
-          this.setFilter(key, result, this.convBracket(this.filterExpression));
+          this.setUserFilter(key, result, this.convBracket(this.filterExpression));
         } else {
           result.filter = this.convBracket(this.filterExpression);
           key = result.key;
         }
         // dropdown in apfilterComp auf den neuen/alten  Wert setzen
-        this.selectedFilter = this.getFilter(key);
+        this.selectedFilter = this.getUserFilter(key);
         this.saveFilters();
       }
     });
@@ -418,7 +456,7 @@ export class ApFilterService {
     // TODO +type -> lookup global
     let tf: TransportFilter;
     if (type === ApFilterService.USERFILTER) {
-      tf = this.getFilter(key);
+      tf = this.getUserFilter(key);
     } else {
       tf = this.getGlobalFilter(key);
     }
@@ -426,7 +464,8 @@ export class ApFilterService {
       this.filterExpression.reset();
       this.makeElements(this.filterExpression, tf.filter);
       if (ApFilterService.STDFILTER !== key) {
-        this.setFilter(ApFilterService.STDFILTER, "", tf.filter);
+        // TODO muss der Filter hier gespeichert werden?
+        this.setUserFilter(ApFilterService.STDFILTER, "", tf.filter);
         this.saveFilters();
         this.triggerFilter();
       }
@@ -438,7 +477,7 @@ export class ApFilterService {
    *
    * @param key - Filtername
    */
-  private getFilter(key: number): TransportFilter {
+  private getUserFilter(key: number): TransportFilter {
     return this.userSettings.apFilter.filters.find((tf) => tf.key === key);
   }
 
@@ -458,8 +497,8 @@ export class ApFilterService {
    * @param name - display name
    * @param filt - Filter als TransportElement-Array
    */
-  private setFilter(key: number, name: string, filt: TransportElement[]) {
-    const tf: TransportFilter = this.getFilter(key);
+  private setUserFilter(key: number, name: string, filt: TransportElement[]) {
+    const tf: TransportFilter = this.getUserFilter(key);
     if (tf) {
       tf.filter = filt;
     } else {

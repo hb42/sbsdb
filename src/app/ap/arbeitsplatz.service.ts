@@ -20,7 +20,6 @@ export class ArbeitsplatzService {
   public dataSource = new MatTreeNestedDataSource<OeTreeItem>();
 
   public selected: OeTreeItem;
-  public urlParams: any;
   // public expandedRow: Arbeitsplatz;
   // public selection: SelectionModel<Arbeitsplatz>;
 
@@ -58,6 +57,7 @@ export class ArbeitsplatzService {
 
   private filterChange: EventEmitter<any> = new EventEmitter();
   private filterChanged = 1;
+  private apDataReady = false;
 
   constructor(
     private configService: ConfigService,
@@ -243,6 +243,30 @@ export class ArbeitsplatzService {
 
   public collapseAllRows() {
     this.apDataService.apDataSource.filteredData.forEach((row) => (row.expanded = false));
+  }
+
+  /**
+   * toggle "nur Ausgewaehlte anzeigen"
+   */
+  public toggleSelection() {
+    this.filterService.showSelected = !this.filterService.showSelected;
+    this.triggerFilter();
+  }
+
+  /**
+   * Parameter aus der URL als Filter setzen.
+   * @param params ParamMap
+   */
+  public filterFromNavigation(params: string) {
+    console.debug("## filter from Nav");
+    console.dir(params);
+    // TODO *nav_filt*
+    this.filterService.decodeFilter(params);
+    // Falls die Tabelle noch nicht geladen ist, wird der Filter nach dem Laden
+    // angestossen (-> initTable()).
+    if (this.apDataReady) {
+      this.triggerFilter();
+    }
   }
 
   private buildColumns() {
@@ -466,6 +490,18 @@ export class ArbeitsplatzService {
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 
+  /**
+   * Filter ausloesen
+   *
+   * DataTable reagiert auf Aenderungen an DataSource.filter, hier wird nur ein Wert
+   * hochgezaehlt, der eigentliche Filter kommt per URl. Das Filtern passiert in
+   * DataSource.filterPredicate().
+   */
+  private triggerFilter() {
+    console.debug("### trigger filter");
+    this.apDataService.apDataSource.filter = "" + this.filterChanged++;
+  }
+
   // APs aus der DB holen
   private initTable() {
     this.loading = true;
@@ -474,6 +510,10 @@ export class ArbeitsplatzService {
     const dataReady: EventEmitter<any> = new EventEmitter();
     dataReady.subscribe(() => {
       this.onDataReady();
+      // TODO *filt_nav*
+      this.apDataReady = true;
+      // Filter erst ausloesen nachdem sie Tabelle vollstaendig geladen ist
+      this.triggerFilter();
     });
     this.apDataService.getAPs(() => {
       this.loading = false;
@@ -481,27 +521,35 @@ export class ArbeitsplatzService {
 
     /*
      * Filter in MatTable anstossen
+     * Neuen Filter in URL eintragen, die Navigation loest dann den Filter aus.
      *
-     * Der Filter reagiert auf Aenderungen in DataSource.filter. Da der Inhalt von filter
-     * hier nicht genutzt wird (-> DataSource.filterPredicate) kann hier ein beliebiger Wert
-     * verwendet werden.
      */
     this.filterChange.subscribe(() => {
       // DEBUG -vv-
-      const filtStr = JSON.stringify(
-        this.filterService.convBracket(this.filterService.filterExpression)
-      );
-      console.debug("### FilterChange ###");
-      console.debug("stdFilt=" + this.filterService.stdFilter + " " + filtStr);
-      this.router
-        .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
-        .then(() => console.debug("### test routing OK ###"))
-        .catch((reason) => {
-          console.debug("*** test routing ERROR:");
-          console.dir(reason);
-        });
-      // DEBUG -^^-
-      this.apDataService.apDataSource.filter = "" + this.filterChanged++;
+      if (this.apDataReady) {
+        // const filtStr = base64url.encode(
+        //   JSON.stringify(this.filterService.convBracket(this.filterService.filterExpression))
+        // );
+        const filtStr = this.filterService.encodeFilter();
+        // const filtStr = JSON.stringify(
+        //   this.filterService.convBracket(this.filterService.filterExpression)
+        // );
+        console.debug("### FilterChange ###");
+        console.debug(filtStr);
+        this.nav2filter(filtStr);
+        // this.router
+        //   // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
+        //   .navigate(["/ap", { filt: filtStr }])
+        //   .then(() => console.debug("### test routing OK ###"))
+        //   .catch((reason) => {
+        //     console.debug("*** test routing ERROR:");
+        //     console.dir(reason);
+        //   });
+
+        // DEBUG -^^-
+        // console.debug("### trigger filter");
+        // this.apDataService.apDataSource.filter = "" + this.filterChanged++;
+      }
     });
     this.filterService.initService(this.columns, this.filterChange);
     // eigener Filter
@@ -530,7 +578,6 @@ export class ArbeitsplatzService {
         return "";
       }
     };
-
     // const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
     // const defaultpagesize = 100;
     // let page = 0;
@@ -586,6 +633,17 @@ export class ArbeitsplatzService {
     // this.applyUserSettings();
 
     // this.fetchPage(++page, pagesize || defaultpagesize); // Rest holen
+  }
+
+  public nav2filter(filtStr: string) {
+    this.router
+      // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
+      .navigate(["/ap", { filt: filtStr }])
+      .then(() => console.debug("### test routing OK ###"))
+      .catch((reason) => {
+        console.debug("*** test routing ERROR:");
+        console.dir(reason);
+      });
   }
 
   // private fetchPage(page: number, size: number) {

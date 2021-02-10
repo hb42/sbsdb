@@ -60,6 +60,7 @@ export class UserSession {
     this.settings.showStandort = this.settings.showStandort ?? true;
     this.settings.apColumnFilters = this.settings.apColumnFilters ?? [];
     this.settings.apFilter = this.settings.apFilter ?? new TransportFilters();
+    this.settings.latestApFilter = this.settings.latestApFilter ?? "";
     this.settings.apSortColumn = this.settings.apSortColumn ?? "";
     this.settings.apSortDirection = this.settings.apSortDirection ?? "";
     this.settings.apPageSize = this.settings.apPageSize ?? 100;
@@ -131,6 +132,15 @@ export class UserSession {
 
   public set apFilter(filt: TransportFilters) {
     this.settings.apFilter = filt;
+    this.change();
+  }
+
+  public get latestApFilter(): string {
+    return this.settings.latestApFilter;
+  }
+
+  public set latestApFilter(filt: string) {
+    this.settings.latestApFilter = filt;
     this.change();
   }
 

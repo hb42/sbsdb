@@ -107,7 +107,33 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     //      (evtl. NaviagatonService ??)
     this.route.paramMap.subscribe((params) => {
       console.debug("## route params changed");
-      console.dir(params);
+      // TODO *nav_filt*
+      // check params
+      let encFilter: string = null;
+      if (params && params.has("filt")) {
+        console.debug("## param exist");
+        encFilter = params.get("filt");
+        // weitere Parameter muessten hier behandelt werden
+      } else {
+        console.debug("## no params");
+        // keine Parameter -> letzten gesicherten nehmen
+        // (Unterstellung: interne Navigation von z.B. HW-Seite)
+        // TODO evtl. filter doch noch in userConf, was ist, wenn letzte URL
+        //      vor Prog-Ende HWpage? Dann wuerde der letzte Filter verloren
+        //      gehen. Evtl. encoded wg. Platz. Filter aus conf wuerde dann nur
+        //      lateestUrlParams geladen, das sollte reichen um doppelte
+        //      Ausfuehrung beim Start zu verhindern.
+        if (this.config.getUser().latestApFilter) {
+          encFilter = this.config.getUser().latestApFilter;
+          console.debug("## nav to latest filter");
+          this.apService.nav2filter(encFilter);
+        }
+      }
+      // param merken
+      if (encFilter) {
+        this.config.getUser().latestApFilter = encFilter;
+      }
+      this.apService.filterFromNavigation(encFilter);
       // URL /ap;id=11;tree=bst -> {id: 11, tree: 'bst'}
       // als zweiter Navigationsparameter:
       //   this.router.navigate(['/ap', { id: 11, tree: 'bst' }]);
