@@ -1,6 +1,7 @@
 <mat-toolbar color="primary" class="head-spk header">
   <button mat-button [mat-menu-trigger-for]="mainmenu">
-    <img alt="SBSDB"
+    <img
+      alt="SBSDB"
       src="./resource/sbs32-grey2.png"
       title="{{ configService.version.displayname }} {{ configService.version.version }}"
     />
@@ -21,7 +22,8 @@
   <div *ngFor="let link of navLinks">
     <button
       mat-raised-button
-      routerLinkActive #rla="routerLinkActive"
+      routerLinkActive
+      #rla="routerLinkActive"
       [routerLink]="link.path"
       [disabled]="rla.isActive"
       [class.disabled-button]="rla.isActive"

@@ -1,9 +1,7 @@
 <mat-card class="ext-filter-panel ext-filter-panel-size">
   <div mat-card-header>
     <div mat-card-subtitle>
-      <span class="panel-title">
-        Erweiterte Suche
-      </span>
+      <span class="panel-title"> Erweiterte Suche </span>
       <mat-form-field class="abstand">
         <mat-label>Gespeicherte Filter</mat-label>
         <mat-select
@@ -43,7 +41,8 @@
       >
         <mat-icon>delete</mat-icon>
       </button>
-      <button *ngIf="apFilter.userSettings.isAdmin"
+      <button
+        *ngIf="apFilter.userSettings.isAdmin"
         mat-icon-button
         color="primary"
         [title]="
@@ -56,8 +55,7 @@
       >
         <mat-icon>swap_vert</mat-icon>
       </button>
-      <div style="float: right;"
-           (click)="apFilter.toggleExtendedFilter()">
+      <div style="float: right" (click)="apFilter.toggleExtendedFilter()">
         <button mat-icon-button title="Schließen">
           <mat-icon>close</mat-icon>
         </button>

@@ -42,6 +42,7 @@ export class Expression implements Term {
       : [this.field.fieldName];
     if (record) {
       const compStr = fields.reduce(
+        // eslint-disable-next-line no-prototype-builtins
         (prev, curr) => (prev += record.hasOwnProperty(curr) ? record[curr] : ""),
         ""
       );

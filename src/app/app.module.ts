@@ -6,15 +6,17 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { LibClientModule, LOGON_OPTIONS, LogonParameter } from "@hb42/lib-client";
-
+import { LibClientModule, LOGON_OPTIONS, LogonParameter, Version } from "@hb42/lib-client";
+import { AdminOptionsComponent } from "./admin/admin-options/admin-options.component";
+import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
+import { AdminPanelConfigInputComponent } from "./admin/admin-panel-config-input/admin-panel-config-input.component";
+import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ApFilterBracketComponent } from "./ap/ap-filter-bracket/ap-filter-bracket.component";
+import { ApFilterEditListComponent } from "./ap/ap-filter-edit-list/ap-filter-edit-list.component";
 import { ApFilterEditComponent } from "./ap/ap-filter-edit/ap-filter-edit.component";
 import { ApFilterElementComponent } from "./ap/ap-filter-element/ap-filter-element.component";
 import { ApFilterComponent } from "./ap/ap-filter/ap-filter.component";
-import { ApListComponent } from "./ap/ap-list/ap-list.component";
-import { ApTreeComponent } from "./ap/ap-tree/ap-tree.component";
 import { ApComponent } from "./ap/ap/ap.component";
 import { AppMaterialModule } from "./app-material.module";
 import { AppRoutingModule } from "./app-routing.module";
@@ -29,11 +31,6 @@ import { FootComponent } from "./shared/foot/foot.component";
 import { HeadComponent } from "./shared/head/head.component";
 import { MatPaginatorIntlDe } from "./shared/mat.paginator.intl.de";
 import { StatusComponent } from "./shared/status/status.component";
-import { ApFilterEditListComponent } from "./ap/ap-filter-edit-list/ap-filter-edit-list.component";
-import { AdminOptionsComponent } from "./admin/admin-options/admin-options.component";
-import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
-import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
-import { AdminPanelConfigInputComponent } from './admin/admin-panel-config-input/admin-panel-config-input.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -49,7 +46,7 @@ registerLocaleData(localeDe); // + provider, s.u.
 // (u.a. Benutzer-Session) fuer alle anderen Services verfuegbar sind.
 // (fn , die fn liefert, die ein Promise liefert)
 // mit AOT fkt. nur das folgende Konstrukt
-export function initConf(configService: ConfigService) {
+export function initConf(configService: ConfigService): () => Promise<void | Version> {
   return () => configService.init();
 }
 
@@ -58,8 +55,6 @@ export function initConf(configService: ConfigService) {
     AppComponent,
     HeadComponent,
     FootComponent,
-    ApTreeComponent,
-    ApListComponent,
     HwListComponent,
     HwTreeComponent,
     ApComponent,

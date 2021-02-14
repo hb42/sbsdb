@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
 import { Version, VersionService } from "@hb42/lib-client";
 import { environment } from "../../../environments/environment";
+import { User } from "./user";
 import { UserSession } from "./user.session";
 
 @Injectable({ providedIn: "root" })
@@ -28,9 +29,9 @@ export class ConfigService {
   private readonly setUserConf: string;
   private readonly getVersion: string;
 
-  private userDataChange: EventEmitter<any> = new EventEmitter();
+  private userDataChange: EventEmitter<User> = new EventEmitter() as EventEmitter<User>;
   private userSession: UserSession;
-  private timer: any;
+  private timer: number;
 
   constructor(
     private http: HttpClient,
@@ -81,7 +82,7 @@ export class ConfigService {
    *      multi     : true
    *    },
    */
-  public init(): Promise<any> {
+  public init(): Promise<void | Version> {
     // SSE init
     // TODO SSE mit .NET Core? Falls ja, gibt's Verwendung dafuer?
 
@@ -90,7 +91,7 @@ export class ConfigService {
     // Oberflaeche entschiweden werden.
     return (
       this.http
-        .get<any>(this.getUserConf)
+        .get<User>(this.getUserConf)
         .toPromise()
         .then((data) => {
           this.userSession = new UserSession(this.userDataChange, data);
@@ -99,7 +100,7 @@ export class ConfigService {
           return "OK";
         })
         // Versionen
-        .then((rc) => {
+        .then(() => {
           console.debug(">>> getting app meta data");
           return this.versionService.init(this.getVersion).then((ver) => {
             console.debug(">>> meta data done");
@@ -118,20 +119,20 @@ export class ConfigService {
 
   // --- config in der Server-DB ---
 
-  public getConfig(confName: string): Promise<any> {
+  public getConfig(confName: string): Promise<unknown> {
     return this.http
       .get<string>(this.getConf + "/" + confName)
       .toPromise()
       .then((val) => {
         try {
-          return JSON.parse(val);
+          return JSON.parse(val) as unknown;
         } catch {
           return val;
         }
       });
   }
 
-  public saveConfig(confName: string, value: any): Promise<any> {
+  public saveConfig(confName: string, value: unknown): Promise<unknown> {
     if (value === undefined) {
       return;
     }
@@ -145,7 +146,7 @@ export class ConfigService {
       .then((rc) => rc);
   }
 
-  public deleteConfig(confName: string): Promise<any> {
+  public deleteConfig(confName: string): Promise<unknown> {
     return this.http
       .delete(this.delConf + "/" + confName)
       .toPromise()
@@ -164,12 +165,12 @@ export class ConfigService {
    * Damit sich die Netzwerkzugriffe in Grenzen halten, wird das Schreiben
    * verzoegert.
    */
-  private saveUser(user: any) {
+  private saveUser(user: User) {
     if (this.timer) {
       clearTimeout(this.timer);
     }
     this.timer = setTimeout(() => {
-      this.http.post<any>(this.setUserConf, user).subscribe((rc) => {
+      this.http.post<User>(this.setUserConf, user).subscribe(() => {
         console.debug("user conf saved");
         console.dir(user);
       });

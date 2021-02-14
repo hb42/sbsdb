@@ -3,7 +3,8 @@ import { Inject, Injectable } from "@angular/core";
 
 @Injectable({ providedIn: "root" })
 export class KeyboardService {
-  constructor(@Inject(DOCUMENT) doc: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(@Inject(DOCUMENT) doc: unknown) {
     // doc.addEventListener("keydown", (event) => {
     //   if (event.altKey && event.key === "a") {
     //     console.debug("KEYBOARD EVENT altA");

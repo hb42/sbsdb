@@ -13,7 +13,7 @@ export class HwComponent implements OnInit {
     console.debug("c'tor HwComponent");
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     console.debug("onInit HwComponent");
     // this.config.saveConfig("test2", 42).then((val) => {
     //   console.debug("save config test2: " + val);

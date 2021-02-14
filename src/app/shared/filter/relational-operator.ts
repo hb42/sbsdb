@@ -1,16 +1,8 @@
 /**
- * Interface fuer relationale Operatoren im Filter
+ * Relationale Operatoren im Filter
  * z.B. groesser, beginnt mit, enthaelt
  */
 import { RelOp } from "./rel-op.enum";
-
-// export interface RelationalOperator {
-//   // Operator fuer Feldinhalt und Vergleichstext ausfuehren
-//   execute(fieldContent: string, compare: string): boolean;
-//
-//   // Textausgabe
-//   toString(): string;s
-// }
 
 export class RelationalOperator {
   public execute: (fieldContent: string | Array<string>, compare: string) => boolean;
@@ -67,60 +59,64 @@ export class RelationalOperator {
     }
   }
 
-  private static noop(fieldContent: string, compare: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private static noop = (fieldContent: string, compare: string): boolean => {
     return true;
-  }
+  };
 
-  private static like(fieldContent: string, compare: string): boolean {
+  private static like = (fieldContent: string, compare: string): boolean => {
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return fieldContent.includes(compare);
-  }
+  };
 
-  private static notlike(fieldContent: string, compare: string): boolean {
+  private static notlike = (fieldContent: string, compare: string): boolean => {
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return !fieldContent.includes(compare);
-  }
+  };
 
-  private static equal(fieldContent: string, compare: string): boolean {
+  private static equal = (fieldContent: string, compare: string): boolean => {
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return fieldContent === compare;
-  }
+  };
 
-  private static notequal(fieldContent: string, compare: string): boolean {
+  private static notequal = (fieldContent: string, compare: string): boolean => {
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return fieldContent !== compare;
-  }
+  };
 
-  private static startsWith(fieldContent: string, compare: string): boolean {
+  private static startsWith = (fieldContent: string, compare: string): boolean => {
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return fieldContent.startsWith(compare);
-  }
+  };
 
-  private static endsWith(fieldContent: string, compare: string): boolean {
+  private static endsWith = (fieldContent: string, compare: string): boolean => {
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return fieldContent.endsWith(compare);
-  }
-  private static inList(fieldContent: Array<string>, compare: string): boolean {
+  };
+
+  private static inList = (fieldContent: Array<string>, compare: string): boolean => {
     return fieldContent.indexOf(compare) >= 0;
-  }
+  };
 
-  private static notInList(fieldContent: Array<string>, compare: string): boolean {
+  private static notInList = (fieldContent: Array<string>, compare: string): boolean => {
     return fieldContent.indexOf(compare) === -1;
-  }
+  };
 
-  private static exist(fieldContent: string, compare: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private static exist = (fieldContent: string, compare: string): boolean => {
     return !!fieldContent;
-  }
+  };
 
-  private static notExist(fieldContent: string, compare: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private static notExist = (fieldContent: string, compare: string): boolean => {
     return !fieldContent;
-  }
+  };
 
   public toString(): string {
     return this.name;

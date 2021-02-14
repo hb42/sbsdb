@@ -42,31 +42,31 @@ export class ApDataService {
     this.apDataSource.data = [];
   }
 
-  /**
+  /**`
    * Arbeitsplaetze parallel, in Bloecken von ConfigService.AP_PAGE_SIZE holen.
    *
    * @param each - callback wenn alle Bloecke fertig ist
    * @param ready - event nach dem letzten Block
    */
-  public async getAPs(each: () => void, ready: EventEmitter<any>) {
+  public async getAPs(each: () => void, ready: EventEmitter<void>): Promise<void> {
     // Groesse der einzelnen Bloecke
     const pageSize =
       Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
       ApDataService.defaultpageSize;
     // Anzahl der Datensaetze
-    const recs = await this.dataService.get(this.countUrl).toPromise();
+    const recs = (await this.dataService.get(this.countUrl).toPromise()) as number;
     // zu holende Seiten
     const count = Math.ceil(recs / pageSize);
     let fetched = 0;
     for (let page = 0; page < count; page++) {
-      this.dataService.get(this.pageApsUrl + page + "/" + pageSize).subscribe(
+      this.dataService.get(`${this.pageApsUrl}${page}/${pageSize}`).subscribe(
         (aps: Arbeitsplatz[]) => {
-          console.debug("fetch page #" + page + " size=" + aps.length);
+          console.debug("fetch page #", page, " size=", aps.length);
           aps.forEach((ap) => this.prepAP(ap));
           this.apDataSource.data = [...this.apDataSource.data, ...aps];
         },
         (err) => {
-          console.error("ERROR loading AP-Data " + err);
+          console.error("ERROR loading AP-Data ", err);
         },
         () => {
           each();
@@ -96,12 +96,12 @@ export class ApDataService {
     // return this.dataService.get(this.pageApsUrl + page);
   }
 
-  public getMacString(mac: string) {
+  public getMacString(mac: string): string {
     // kein match => Eingabe-String
     return mac.replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1:$2:$3:$4:$5:$6").toUpperCase();
   }
 
-  public getIpString(ip: number) {
+  public getIpString(ip: number): string {
     /* eslint-disable no-bitwise */
     const ip4 = ip & 0xff;
     ip = ip >> 8;
@@ -111,7 +111,7 @@ export class ApDataService {
     ip = ip >> 8;
     const ip1 = ip & 0xff;
 
-    return "" + ip1 + "." + ip2 + "." + ip3 + "." + ip4;
+    return `${ip1}.${ip2}.${ip3}.${ip4}`;
   }
 
   /* IP-Addr in Java
@@ -201,10 +201,10 @@ export class ApDataService {
     ap.ipStr = "";
     ap.macStr = "";
     ap.vlanStr = "";
+    ap.macsearch = "";
     if (ap.vlan && ap.vlan[0]) {
-      let msearch = "";
       ap.vlan.forEach((v) => {
-        let dhcp = v.ip === 0 ? " (DHCP)" : "";
+        const dhcp = v.ip === 0 ? " (DHCP)" : "";
         if (ap.ipStr) {
           ap.ipStr += "/ " + this.getIpString(v.vlan + v.ip) + dhcp;
         } else {
@@ -220,17 +220,16 @@ export class ApDataService {
         } else {
           ap.vlanStr = v.bezeichnung;
         }
-        msearch += v.mac;
+        ap.macsearch += v.mac;
       });
-      ap.ipsearch = ap.ipStr + " " + msearch;
     }
     // das spart den null-check
     if (!ap.verantwOe) {
       ap.verantwOe = ap.oe;
     }
-    ap.oesearch = ("00" + ap.oe.bstNr).slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
+    ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
     ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
-    ap.voesearch = ("00" + ap.verantwOe.bstNr).slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
+    ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
     ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
 
     // ap.subTypes = [];

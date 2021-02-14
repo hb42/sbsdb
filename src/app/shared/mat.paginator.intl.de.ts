@@ -9,7 +9,7 @@ export class MatPaginatorIntlDe extends MatPaginatorIntl {
   public lastPageLabel = "Letzte Seite";
   public firstPageLabel = "Erste Seite";
 
-  public getRangeLabel = (page, pageSize, length) => {
+  public getRangeLabel = (page: number, pageSize: number, length: number): string => {
     if (length === 0 || pageSize === 0) {
       return ` Seite ${page + 1} (0 von ${length})`;
     }

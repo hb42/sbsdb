@@ -5,16 +5,10 @@ import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ApComponent } from "./ap/ap/ap.component";
+import { ADM_FILTER_PATH, ADM_OPTIONS_PATH, ADM_PATH, AP_PATH, HW_PATH } from "./app-routing-const";
 import { HwComponent } from "./hw/hw/hw.component";
 import { AdminGuard } from "./shared/admin.guard";
 import { ErrorComponent } from "./shared/error/error.component";
-
-const AP_PATH = "ap";
-const HW_PATH = "hw";
-const ADM_PATH = "admin";
-
-const ADM_APFILTER = "apfilter";
-const ADM_CONFIG = "config";
 
 const routes: Routes = [
   { path: "", redirectTo: "/" + AP_PATH, pathMatch: "full" },
@@ -26,12 +20,12 @@ const routes: Routes = [
     canActivate: [AdminGuard],
     children: [
       {
-        path: ADM_APFILTER,
+        path: ADM_FILTER_PATH,
         component: AdminPanelApFilterComponent,
         canActivate: [AdminGuard],
       },
       {
-        path: ADM_CONFIG,
+        path: ADM_OPTIONS_PATH,
         component: AdminPanelConfigComponent,
         canActivate: [AdminGuard],
       },
@@ -44,11 +38,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })],
   exports: [RouterModule],
 })
-export class AppRoutingModule {
-  public static apPath = AP_PATH;
-  public static hwPath = HW_PATH;
-  public static admPath = ADM_PATH;
-
-  public static admApfilterPath = ADM_PATH + "/" + ADM_APFILTER;
-  public static admConfig = ADM_PATH + "/" + ADM_CONFIG;
-}
+export class AppRoutingModule {}

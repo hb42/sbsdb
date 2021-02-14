@@ -3,7 +3,6 @@ import { FormControl, Validators } from "@angular/forms";
 import { debounceTime } from "rxjs/operators";
 import { ApDataService } from "../../ap/ap-data.service";
 import { ConfigService } from "../../shared/config/config.service";
-import { AdminService } from "../admin.service";
 
 @Component({
   selector: "sbsdb-admin-panel-config",
@@ -12,6 +11,7 @@ import { AdminService } from "../admin.service";
 })
 export class AdminPanelConfigComponent implements OnInit {
   public static bsValidator = "bserror";
+
   @HostBinding("attr.class") public cssClass = "flex-content";
 
   // --- blocksize ---
@@ -25,11 +25,21 @@ export class AdminPanelConfigComponent implements OnInit {
     "beschleunigen wird die Liste in mehreren Blöcken geholt, die parallel geladen werden. Dieser " +
     "Parameter stellt die Anzahl der Datensätze je Block ein (min. 100).";
 
+  // als Variable deklarieren ('bound'), damit die Uebergabe als Param sauber ist
+  private blocksizeValidator = (control: FormControl): { [s: string]: boolean } => {
+    const val: string = control.value as string;
+    const regexNumeric = /^\s*[0-9]+\s*$/;
+    if (!regexNumeric.test(val) || Number.parseInt(val, 10) < 100) {
+      console.debug("not an integer > 100");
+      return { [AdminPanelConfigComponent.bsValidator]: true };
+    }
+  };
+
   constructor(public configService: ConfigService) {
     console.debug("c'tor AdminPanelConfigComponent");
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     console.debug("oninit");
     this.initBlocksize();
     console.debug("end oninit");
@@ -37,14 +47,7 @@ export class AdminPanelConfigComponent implements OnInit {
 
   // --- blocksize ---
 
-  public blocksizeValidator(control: FormControl): { [s: string]: boolean } {
-    if (!control.value.match(/^\s*[0-9]+\s*$/) || Number.parseInt(control.value, 10) < 100) {
-      console.debug("not an integer > 100");
-      return { [AdminPanelConfigComponent.bsValidator]: true };
-    }
-  }
-
-  public blocksizeErrorMessage(control: FormControl) {
+  public blocksizeErrorMessage(control: FormControl): string {
     return control.hasError(AdminPanelConfigComponent.bsValidator)
       ? "Bitte Integer-Wert größer 100 eingeben."
       : "";
@@ -94,12 +97,13 @@ export class AdminPanelConfigComponent implements OnInit {
     //     this.blocksize.markAsPristine();
     //   });
 
-    this.blocksize = new FormControl("" + ApDataService.defaultpageSize, [
+    this.blocksize = new FormControl("" + ApDataService.defaultpageSize.toString(), [
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       Validators.required,
-      // Validators.min(100),
       this.blocksizeValidator,
     ]);
     this.blocksize.statusChanges.pipe(debounceTime(200)).subscribe(() => {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       console.debug("--- Blocksize value changed: " + this.blocksize.value);
     });
     console.debug("init Blocksize");

@@ -6,6 +6,7 @@ import { Component } from "@angular/core";
   styleUrls: ["./hw-tree.component.scss"],
 })
 export class HwTreeComponent {
-  // eslint-disable-next-line no-empty,@typescript-eslint/no-empty-function
-  constructor() {}
+  constructor() {
+    // no op
+  }
 }

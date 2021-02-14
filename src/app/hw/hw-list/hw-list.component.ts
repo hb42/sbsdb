@@ -6,6 +6,7 @@ import { Component } from "@angular/core";
   styleUrls: ["./hw-list.component.scss"],
 })
 export class HwListComponent {
-  // eslint-disable-next-line no-empty,@typescript-eslint/no-empty-function
-  constructor() {}
+  constructor() {
+    // no op
+  }
 }

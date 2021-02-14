@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Field } from "../../shared/filter/field";
 import { RelOp } from "../../shared/filter/rel-op.enum";
 import { ApColumn } from "../ap-column";
+import { ApFilterEditData } from "./ap-filter-edit-data";
 
 @Component({
   selector: "sbsdb-ap-filter-edit",
@@ -12,10 +13,10 @@ import { ApColumn } from "../ap-column";
 export class ApFilterEditComponent {
   public get selectedField(): ApColumn {
     return this.data.f
-      ? this.data.columns.find((col) => col.displayName === this.data.f.displayName)
+      ? this.data.columns.find((col: ApColumn) => col.displayName === this.data.f.displayName)
       : null;
   }
-  public set selectedField(col) {
+  public set selectedField(col: ApColumn) {
     if (this.data.f) {
       if (this.data.f.displayName !== col.displayName) {
         this.data.o = null;
@@ -28,7 +29,7 @@ export class ApFilterEditComponent {
     }
   }
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: ApFilterEditData) {
     console.debug("c'tor ApFilterEditComponent");
   }
 

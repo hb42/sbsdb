@@ -73,7 +73,7 @@ https://github.com/angular/components/issues/6178
             mat-icon-button
             (click)="apService.toggleSelection()"
           >
-<!--            *ngIf="apService.filterService.stdFilter"-->
+            <!--            *ngIf="apService.filterService.stdFilter"-->
             <mat-icon
               inline
               title="Nur Ausgewählte anzeigen"
@@ -466,14 +466,14 @@ https://github.com/angular/components/issues/6178
           <!--            <mat-icon>menu</mat-icon>-->
           <!--          </button>-->
           <button
-            style="font-size: 18px; height: 1px; "
+            style="font-size: 18px; height: 1px"
             mat-icon-button
             (click)="apService.expandAllRows()"
           >
             <mat-icon inline title="Alle aufklappen" color="primary">web_asset </mat-icon>
           </button>
           <button
-            style="font-size: 18px; height: 1px;"
+            style="font-size: 18px; height: 1px"
             mat-icon-button
             (click)="apService.collapseAllRows()"
           >
@@ -713,7 +713,7 @@ https://github.com/angular/components/issues/6178
 
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">
-    <button mat-menu-item (click)="apService.testApMenu(ap)">Test1</button>
+    <button mat-menu-item (click)="apService.testApMenu()">Test1</button>
     <button mat-menu-item>Test2</button>
     <button mat-menu-item *ngIf="ap.aptyp.indexOf('Thin') !== -1">Test3 TC</button>
   </ng-template>

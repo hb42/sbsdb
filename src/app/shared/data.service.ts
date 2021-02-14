@@ -10,7 +10,7 @@ export class DataService {
     console.debug("c'tor DataService");
   }
 
-  public get(url: string): Observable<any> {
+  public get(url: string): Observable<unknown> {
     return this.http.get(url);
   }
 }

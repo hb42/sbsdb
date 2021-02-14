@@ -30,6 +30,40 @@ export class ApColumn {
   public static LCASE = 0;
   public static IP = 1;
 
+  private readonly filtercontrol: FormControl = null;
+
+  /*
+   * Filter-String
+   *
+   * Fuehrendes ! negiert den Filter (-> enthaelt nicht).
+   * Filtertext wird als lowerCase geliefert.
+   *
+   * @param text - Filtertext
+   */
+  private static checkSearchString(text: string): ColumnFilter {
+    let str = text ? text.toLowerCase() : "";
+    let incl = true;
+    if (str.startsWith("!")) {
+      str = str.slice(1);
+      incl = false;
+    }
+    return { text: str, inc: incl };
+  }
+
+  /**
+   * Mit diesem Konstrukt kann eine fn aus z.B. ApService als Parameter
+   * uebergeben werden und mit dem richtigen 'this' aufgerufen werden.
+   * Dazu ist zusaetzlich die Uebergabe des jeweiligen Objekts (also z.B.
+   * ApService) noetig, damit der Kontext hergestellt werdenn kann.
+   * -> https://stackoverflow.com/questions/29822773/passing-class-method-as-parameter-in-typescript
+   *
+   * @param callbackFunction - externe function
+   * @param thisarg - object der function
+   */
+  private static callback<T>(callbackFunction: (this: T) => unknown, thisarg: T): unknown {
+    return callbackFunction.call(thisarg);
+  }
+
   /**
    * Sammlung der Spalten
    */
@@ -50,22 +84,20 @@ export class ApColumn {
   //   }
   // }
 
-  private filtercontrol: FormControl = null;
-
   public get columnName(): string {
     return this.colname;
   }
 
   public get displayName(): string {
-    return this.callback(this.displayname, this.apService);
+    return ApColumn.callback(this.displayname, this.apService) as string;
   }
 
   public get fieldName(): string | string[] {
-    return this.callback(this.fieldname, this.apService);
+    return ApColumn.callback(this.fieldname, this.apService) as string | string[];
   }
 
   public get sortFieldName(): string | null {
-    return this.callback(this.sortfieldname, this.apService);
+    return ApColumn.callback(this.sortfieldname, this.apService) as string;
   }
 
   public get accelerator(): string {
@@ -85,7 +117,9 @@ export class ApColumn {
   }
 
   public get selectList(): string[] | null {
-    return this.selectlist ? this.callback(this.selectlist, this.apService) : null;
+    return (this.selectlist
+      ? ApColumn.callback(this.selectlist, this.apService)
+      : null) as string[];
   }
 
   constructor(
@@ -110,14 +144,16 @@ export class ApColumn {
    *
    * @param ap - Arbeitsplatz-Record
    */
-  public sortString(ap: Arbeitsplatz) {
-    const field = ap[this.sortFieldName];
+  public sortString(ap: Arbeitsplatz): string | number {
+    const field: unknown = ap[this.sortFieldName];
+    let s: string;
+    let v: Netzwerk[];
     switch (this.typekey) {
       case ApColumn.LCASE:
-        const s = field as string;
+        s = field as string;
         return s.toLowerCase();
       case ApColumn.IP:
-        const v = field as Netzwerk;
+        v = field as Netzwerk[];
         return v && v[0] ? v[0].vlan + v[0].ip : 0;
     }
   }
@@ -143,9 +179,9 @@ export class ApColumn {
    * Suchstring vorbereiten
    */
   private valueChange(): ColumnFilter {
-    const text = this.filterControl.value;
+    const text = this.filterControl.value as string;
     if (text) {
-      const t = this.checkSearchString(text);
+      const t = ApColumn.checkSearchString(text);
       if (this.typekey === ApColumn.IP) {
         t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
       }
@@ -153,37 +189,5 @@ export class ApColumn {
     } else {
       return null;
     }
-  }
-
-  /*
-   * Filter-String
-   *
-   * Fuehrendes ! negiert den Filter (-> enthaelt nicht).
-   * Filtertext wird als lowerCase geliefert.
-   *
-   * @param text - Filtertext
-   */
-  private checkSearchString(text: string): ColumnFilter {
-    let str = text ? text.toLowerCase() : "";
-    let incl = true;
-    if (str.startsWith("!")) {
-      str = str.slice(1);
-      incl = false;
-    }
-    return { text: str, inc: incl };
-  }
-
-  /**
-   * Mit diesem Konstrukt kann eine fn aus z.B. ApService als Parameter
-   * uebergeben werden und mit dem richtigen 'this' aufgerufen werden.
-   * Dazu ist zusaetzlich die Uebergabe des jeweiligen Objekts (also z.B.
-   * ApService) noetig, damit der Kontext hergestellt werdenn kann.
-   * -> https://stackoverflow.com/questions/29822773/passing-class-method-as-parameter-in-typescript
-   *
-   * @param callbackFunction - externe function
-   * @param thisarg - object der function
-   */
-  private callback<T>(callbackFunction: (this: T) => any, thisarg: T): any {
-    return callbackFunction.call(thisarg);
   }
 }

@@ -1,20 +1,15 @@
 <h2 mat-dialog-title>Benutzerdefinierte Suche speichern</h2>
 <div mat-dialog-content>
   <form class="name-input-form">
-  <mat-form-field class="name-input">
-    <mat-label>Namen für die Suche auswählen/eingeben</mat-label>
-    <input
-      type="text"
-      matInput
-      [formControl]="formcontrol"
-      [matAutocomplete]="auto"
-    />
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayEntry">
-      <mat-option *ngFor="let filt of filteredOptions | async" [value]="filt">
-        {{ filt.name }}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+    <mat-form-field class="name-input">
+      <mat-label>Namen für die Suche auswählen/eingeben</mat-label>
+      <input type="text" matInput [formControl]="formcontrol" [matAutocomplete]="auto" />
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayEntry">
+        <mat-option *ngFor="let filt of filteredOptions | async" [value]="filt">
+          {{ filt.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
   </form>
   <!--  <mat-form-field>-->
   <!--    <mat-label>Namen auswählen</mat-label>-->
@@ -34,9 +29,11 @@
   <!--      </mat-option>-->
   <!--    </mat-select>-->
 
-<!--    </mat-form-field>-->
+  <!--    </mat-form-field>-->
 </div>
 <div mat-dialog-actions align="end">
   <button mat-flat-button color="primary" mat-dialog-close>Abbrechen</button>
-  <button mat-flat-button color="primary" [mat-dialog-close]="formcontrol.value" type="submit">OK</button>
+  <button mat-flat-button color="primary" [mat-dialog-close]="formcontrol.value" type="submit">
+    OK
+  </button>
 </div>

@@ -16,18 +16,18 @@ export class ApFilterElementComponent {
 
   constructor(public apFilterService: ApFilterService) {}
 
-  public menuOpen() {
+  public menuOpen(): void {
     this.menuopen = true;
     this.highlight = true;
   }
-  public menuClose() {
+  public menuClose(): void {
     this.menuopen = false;
     this.highlight = false;
   }
-  public mouseIn() {
+  public mouseIn(): void {
     this.highlight = true;
   }
-  public mouseOut() {
+  public mouseOut(): void {
     this.highlight = this.menuopen;
   }
 }

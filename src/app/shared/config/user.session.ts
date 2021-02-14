@@ -1,28 +1,7 @@
 import { EventEmitter } from "@angular/core";
-import { TransportElement } from "../filter/transport-element";
 import { TransportFilters } from "../filter/transport-filters";
-import { ColumnFilter } from "./column-filter";
-
-// dieser Datentyp kommt vom Server
-// -> hb.SbsdbServer.Model.ViewModel.UserSession
-class User {
-  public uid: string;
-  public isAdmin: boolean;
-  public isReadonly: boolean;
-  public isHotline: boolean;
-
-  public settings: string; // JSON-BLOB
-  // public path: string;
-  //
-  // // AP-Page
-  // public showStandort: boolean;
-  // public apColumnFilters: ColumnFilter[];
-  // public apExtFilter: string;
-  // public apSortColumn: string;
-  // public apSortDirection: string;
-  // public apPageSize: number;
-  // public searchSonstHw: boolean;
-}
+import { User } from "./user";
+import { UserSettings } from "./user-settings";
 
 /**
  * Benutzerdaten verwalten
@@ -31,13 +10,12 @@ class User {
  * loesst einen Event aus, der im ConfigService das Speichern der Userdaten
  * anstoesst.
  */
-// eslint-disable-next-line max-classes-per-file
 export class UserSession {
-  private user: User;
+  private readonly user: User;
   private changeEvent: EventEmitter<User>;
 
   // Settings
-  private settings: any;
+  private readonly settings: UserSettings;
 
   constructor(event: EventEmitter<User>, data: User | null) {
     this.changeEvent = event;
@@ -50,21 +28,21 @@ export class UserSession {
       settings: data && data.settings ? data.settings : "{}",
     };
     try {
-      this.settings = JSON.parse(this.user.settings);
+      this.settings = JSON.parse(this.user.settings) as UserSettings;
     } catch {
-      this.settings = {};
+      this.settings = { path: "" };
     }
 
     // sicherstellen, dass alle Einstellungen definiert sind
     this.settings.path = this.settings.path ?? "";
-    this.settings.showStandort = this.settings.showStandort ?? true;
+    this.settings.showStandort = !!this.settings.showStandort;
     this.settings.apColumnFilters = this.settings.apColumnFilters ?? [];
-    this.settings.apFilter = this.settings.apFilter ?? new TransportFilters();
+    this.settings.apFilter = this.settings.apFilter ?? { stdFilter: true, filters: [] };
     this.settings.latestApFilter = this.settings.latestApFilter ?? "";
     this.settings.apSortColumn = this.settings.apSortColumn ?? "";
     this.settings.apSortDirection = this.settings.apSortDirection ?? "";
     this.settings.apPageSize = this.settings.apPageSize ?? 100;
-    this.settings.searchSonstHw = this.settings.searchSonstHw ?? false;
+    this.settings.searchSonstHw = !!this.settings.searchSonstHw;
   }
 
   // Benutzerrechte sind R/O

@@ -14,10 +14,11 @@ export class AcceleratorStringComponent implements OnInit {
   public acc = "";
   public post = "";
 
-  // eslint-disable-next-line no-empty, @typescript-eslint/no-empty-function
-  constructor() {}
+  constructor() {
+    // noop
+  }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     const pos = this.text.toLowerCase().indexOf(this.accel.toLowerCase());
     if (pos === -1) {
       this.pre = this.text; // key nicht gefunden

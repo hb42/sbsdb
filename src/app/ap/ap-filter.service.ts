@@ -1,7 +1,6 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
-import { Router } from "@angular/router";
 import { Base64 } from "js-base64";
 import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../shared/config/config.service";
@@ -15,10 +14,13 @@ import { LogicalOperator } from "../shared/filter/logical-operator";
 import { LogicalOr } from "../shared/filter/logical-or";
 import { RelationalOperator } from "../shared/filter/relational-operator";
 import { TransportElement } from "../shared/filter/transport-element";
+import { TransportElements } from "../shared/filter/transport-elements";
 import { TransportExpression } from "../shared/filter/transport-expression";
 import { TransportFilter } from "../shared/filter/transport-filter";
 import { ApColumn } from "./ap-column";
+import { ApFilterEditListData } from "./ap-filter-edit-list/ap-filter-edit-list-data";
 import { ApFilterEditListComponent } from "./ap-filter-edit-list/ap-filter-edit-list.component";
+import { ApFilterEditData } from "./ap-filter-edit/ap-filter-edit-data";
 import { ApFilterEditComponent } from "./ap-filter-edit/ap-filter-edit.component";
 
 @Injectable({ providedIn: "root" })
@@ -45,7 +47,7 @@ export class ApFilterService {
 
   // wird in initService() von apService geliefert
   private columns: ApColumn[];
-  private filterChange: EventEmitter<any>;
+  private filterChange: EventEmitter<void>;
 
   // Filtereingaben bremsen
   private readonly keyDebounce = 500;
@@ -69,11 +71,11 @@ export class ApFilterService {
    * @param col - Array der Tabellen-Spalten
    * @param evt - Eventhandler fuer Aenderungen am Filter
    */
-  public initService(col: ApColumn[], evt: EventEmitter<any>) {
+  public initService(col: ApColumn[], evt: EventEmitter<void>): void {
     this.columns = col;
     this.filterChange = evt;
 
-    this.readGlobalFilters();
+    void this.readGlobalFilters();
 
     // Aenderung an Filter-Feldern in den Benutzereinstellungen speichern
     // und Filter triggern
@@ -94,11 +96,13 @@ export class ApFilterService {
   /**
    * Filter aus den Benutzereinstellungen erstellen
    */
-  public initializeFilters() {
+  public initializeFilters(): void {
     // TODO *nav_filt*
     // this.stdFilter = this.userSettings.apStdFilter;
     // this.filterExpression.reset();
     // this.setFilterExpression(ApFilterService.STDFILTER, ApFilterService.USERFILTER);
+
+    // letzten gespeicherten Filter setzen (kommt ggf. nochmal via URL)
     this.decodeFilter(this.userSettings.latestApFilter);
 
     const maxkey: number = this.userSettings.apFilter.filters.reduce(
@@ -112,10 +116,33 @@ export class ApFilterService {
       this.filterExpression.elements.forEach((el) => {
         if (!el.term.isBracket()) {
           const exp = el.term as Expression;
-          const feld = exp.field.fieldName;
-          const col = this.columns.find((c) => c.fieldName === feld);
-          col.filterControl.setValue(exp.compare);
-          // col.filterControl.markAsDirty();
+          const feld = exp.field.fieldName; // string | string[] !!
+          const col = this.columns.find((c) => {
+            // string[]-Vergleich
+            if (feld instanceof Array) {
+              if (c.fieldName instanceof Array) {
+                if (feld.length === c.fieldName.length) {
+                  let io = true;
+                  for (let i = 0; i < c.fieldName.length; i++) {
+                    if (c.fieldName[i] !== feld[i]) {
+                      io = false;
+                    }
+                  }
+                  return io;
+                } else {
+                  return false;
+                }
+              } else {
+                return false;
+              }
+            } else {
+              // string-Vergleich
+              return c.fieldName === feld;
+            }
+          });
+          if (col) {
+            col.filterControl.setValue(exp.compare);
+          }
         }
       });
       this.buildStdFilterExpression();
@@ -128,7 +155,7 @@ export class ApFilterService {
   /**
    * Filter loeschen (triggert valueChange)
    */
-  public resetStdFilters() {
+  public resetStdFilters(): void {
     this.columns.forEach((c) => {
       if (c.filterControl && c.filterControl.value) {
         c.filterControl.reset();
@@ -140,14 +167,14 @@ export class ApFilterService {
    * Der Filter muss in der MatTable angestossen werden. Deshalb wird
    * ein event an ArbeitsplatzService gesendet.
    */
-  public triggerFilter() {
+  public triggerFilter(): void {
     this.filterChange.emit();
   }
 
   /**
    * aktuelle filterExpression in den Benutzereinstellungen speichern
    */
-  public saveFilterExpression() {
+  public saveFilterExpression(): void {
     // this.setFilter(ApFilterService.STDFILTER, "", this.convBracket(this.filterExpression));
     // this.saveFilters();
     // TODO *nav_filt* hier sollte nichts zu tun sein
@@ -164,7 +191,8 @@ export class ApFilterService {
    */
   public encodeFilter(): string {
     const te: TransportElement[] = this.convBracket(this.filterExpression);
-    const fStr = JSON.stringify({ s: this.stdFilter, f: te });
+    const trans: TransportElements = { stdFilter: this.stdFilter, filter: te };
+    const fStr = JSON.stringify(trans);
     return Base64.encodeURI(fStr);
   }
 
@@ -174,14 +202,14 @@ export class ApFilterService {
    * @param f - String aus der URL
    * @private
    */
-  public decodeFilter(f: string) {
+  public decodeFilter(f: string): void {
     let filter: TransportElement[];
     let std: boolean;
     try {
       const json = Base64.decode(f);
-      const filt = JSON.parse(json);
-      std = filt.s;
-      filter = filt.f;
+      const filt: TransportElements = JSON.parse(json) as TransportElements;
+      std = filt.stdFilter ?? true;
+      filter = filt.filter ?? [];
     } catch (e) {
       // Malformed URI || JSON Syntax || Base64 error
       // hier ist nichts zu retten, also params verwerfen
@@ -198,7 +226,7 @@ export class ApFilterService {
   /**
    * Erweiterte Suche ab-/abschalten
    */
-  public toggleExtendedFilter() {
+  public toggleExtendedFilter(): void {
     this.stdFilter = !this.stdFilter;
     this.selectedFilter = null;
     this.filterExpression.reset();
@@ -219,17 +247,18 @@ export class ApFilterService {
     this.globalFilters.sort((a, b) => this.collator.compare(a.name, b.name));
     return this.globalFilters;
   }
-  public selectFilter(evt: MatSelectChange) {
+  public selectFilter(evt: MatSelectChange): void {
     console.debug("list select change");
     console.dir(evt);
-    this.setFilterExpression(evt.value.key, evt.value.type);
+    const tf: TransportFilter = evt.value as TransportFilter;
+    this.setFilterExpression(tf.key, tf.type);
   }
 
-  public addFilter() {
+  public addFilter(): void {
     this.editListName();
   }
 
-  public deleteFilter() {
+  public deleteFilter(): void {
     console.debug("delete filter");
     if (this.selectedFilter) {
       this.removeFilter(this.selectedFilter.key);
@@ -238,7 +267,7 @@ export class ApFilterService {
     this.saveFilters();
   }
 
-  public moveFilter() {
+  public moveFilter(): void {
     if (this.selectedFilter) {
       if (this.selectedFilter.type === ApFilterService.USERFILTER) {
         this.moveFilterToGlobal(this.selectedFilter.key);
@@ -250,7 +279,7 @@ export class ApFilterService {
   }
 
   // TODO -> admin
-  public moveFilterToGlobal(key: number) {
+  public moveFilterToGlobal(key: number): void {
     const filter: TransportFilter = this.getUserFilter(key);
     if (filter) {
       const gkey = this.globNextKey++;
@@ -262,7 +291,7 @@ export class ApFilterService {
   }
 
   // TODO -> admin
-  public moveFilterToUser(key: number) {
+  public moveFilterToUser(key: number): void {
     const filter: TransportFilter = this.getGlobalFilter(key);
     if (filter) {
       const ukey = this.nextKey++;
@@ -273,7 +302,7 @@ export class ApFilterService {
     }
   }
 
-  public editListName() {
+  public editListName(): void {
     const lst: TransportFilter[] = this.extFilterList();
 
     // Dialog oeffnen
@@ -281,7 +310,7 @@ export class ApFilterService {
       disableClose: true,
       autoFocus: true,
       minWidth: 450,
-      data: { list: lst },
+      data: { list: lst } as ApFilterEditListData,
     });
 
     // Dialog-Ergebnis
@@ -307,7 +336,7 @@ export class ApFilterService {
    *
    * @param el - Element
    */
-  public edit(el: Element) {
+  public edit(el: Element): void {
     console.debug("EDIT " + el.term.toString());
     if (!el.term.isBracket()) {
       this.editExpression(null, null, null, el.term as Expression);
@@ -320,7 +349,7 @@ export class ApFilterService {
    * @param el - Element
    * @param what - was wird eingefuegt?
    */
-  public insert(el: Element, what: string) {
+  public insert(el: Element, what: string): void {
     console.debug("INSERT " + what);
     let log: LogicalOperator = new LogicalOr();
     switch (what) {
@@ -346,7 +375,7 @@ export class ApFilterService {
    * @param br - uebergeordnete Klammer
    * @param what - was wird eingefuegt?
    */
-  public insertFirst(br: Bracket, what: string) {
+  public insertFirst(br: Bracket, what: string): void {
     switch (what) {
       case "brack":
         br.addElement(null, new Bracket());
@@ -363,7 +392,7 @@ export class ApFilterService {
    *
    * @param el - Element
    */
-  public remove(el: Element) {
+  public remove(el: Element): void {
     el.term.up.removeElement(el);
     this.selectedFilter = null;
     this.saveFilterExpression();
@@ -383,7 +412,7 @@ export class ApFilterService {
     el: Element | null,
     op: LogicalOperator | null,
     ex: Expression | null
-  ) {
+  ): void {
     const field = ex ? new Field(ex.field.fieldName, ex.field.displayName) : null;
     const oper = ex ? ex.operator.op : null;
     const comp = ex ? "" + ex.compare : null;
@@ -391,11 +420,11 @@ export class ApFilterService {
     // Dialog oeffnen
     const dialogRef = this.dialog.open(ApFilterEditComponent, {
       disableClose: true,
-      data: { f: field, o: oper, c: comp, columns: this.columns },
+      data: { f: field, o: oper, c: comp, columns: this.columns } as ApFilterEditData,
     });
 
     // Dialog-Ergebnis
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((result: ApFilterEditData) => {
       if (result) {
         if (ex) {
           // edit
@@ -420,9 +449,9 @@ export class ApFilterService {
   }
 
   private async readGlobalFilters() {
-    const blob = await this.configService.getConfig(ConfigService.AP_FILTERS);
-    if (blob) {
-      this.globalFilters = blob;
+    const blob: unknown = await this.configService.getConfig(ConfigService.AP_FILTERS);
+    if (blob && blob instanceof Array) {
+      this.globalFilters = blob as TransportFilter[];
       const maxkey: number = this.globalFilters.reduce(
         (prev, curr) => (curr.key > prev ? curr.key : prev),
         0
@@ -590,7 +619,7 @@ export class ApFilterService {
    * Globale Filter speichern
    */
   private saveGlobalFilters() {
-    this.configService.saveConfig(ConfigService.AP_FILTERS, this.globalFilters);
+    void this.configService.saveConfig(ConfigService.AP_FILTERS, this.globalFilters);
   }
 
   /**

@@ -1,9 +1,8 @@
-import { NestedTreeControl } from "@angular/cdk/tree";
 import { EventEmitter, Injectable } from "@angular/core";
-import { MatPaginator } from "@angular/material/paginator";
-import { MatSort, MatSortHeader } from "@angular/material/sort";
-import { MatTreeNestedDataSource } from "@angular/material/tree";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { Router } from "@angular/router";
+import { AP_PATH } from "../app-routing-const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { RelOp } from "../shared/filter/rel-op.enum";
@@ -12,14 +11,13 @@ import { ApColumn } from "./ap-column";
 import { ApDataService } from "./ap-data.service";
 import { ApFilterService } from "./ap-filter.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
-import { OeTreeItem } from "./model/oe.tree.item";
+import { Tag } from "./model/tag";
 
 @Injectable({ providedIn: "root" })
 export class ArbeitsplatzService {
-  public treeControl = new NestedTreeControl<OeTreeItem>((node) => node.children);
-  public dataSource = new MatTreeNestedDataSource<OeTreeItem>();
+  // public treeControl = new NestedTreeControl<OeTreeItem>((node) => node.children);
+  // public dataSource = new MatTreeNestedDataSource<OeTreeItem>();
 
-  public selected: OeTreeItem;
   // public expandedRow: Arbeitsplatz;
   // public selection: SelectionModel<Arbeitsplatz>;
 
@@ -53,9 +51,7 @@ export class ArbeitsplatzService {
  const uniq2 = [ ...new Set(this.apDataService.apDataSource.data.map((a) => a.oesearch)) ].sort();
   */
 
-  private oeTree: OeTreeItem[];
-
-  private filterChange: EventEmitter<any> = new EventEmitter();
+  private filterChange: EventEmitter<void> = new EventEmitter() as EventEmitter<void>;
   private filterChanged = 1;
   private apDataReady = false;
 
@@ -98,14 +94,15 @@ export class ArbeitsplatzService {
    *
    * @param evt - Mouseevent
    */
-  public tooltipOnEllipsis(evt) {
+  public tooltipOnEllipsis(evt: MouseEvent): void {
     // fkt. nicht mit span
-    if (evt.target.offsetWidth < evt.target.scrollWidth && !evt.target.title) {
-      evt.target.title = evt.target.innerText;
+    const elem: HTMLElement = evt.target as HTMLElement;
+    if (elem.offsetWidth < elem.scrollWidth && !elem.title) {
+      elem.title = elem.innerText;
     }
   }
 
-  public setViewParams(sort: MatSort, paginator: MatPaginator) {
+  public setViewParams(sort: MatSort, paginator: MatPaginator): void {
     this.apDataService.apDataSource.sort = sort;
     this.apDataService.apDataSource.paginator = paginator;
 
@@ -147,35 +144,35 @@ export class ArbeitsplatzService {
   //   }
   // }
 
-  public onSort(event) {
+  public onSort(event: Sort): void {
     this.userSettings.apSortColumn = event.active;
     this.userSettings.apSortDirection = event.direction;
   }
 
-  public onPage(event) {
+  public onPage(event: PageEvent): void {
     if (event.pageSize !== this.userSettings.apPageSize) {
       this.userSettings.apPageSize = event.pageSize;
     }
   }
 
-  public async expandApRow(ap: Arbeitsplatz, event: Event) {
+  public expandApRow(ap: Arbeitsplatz, event: Event): void {
     // this.expandedRow = this.expandedRow === ap ? null : ap;
     ap.expanded = !ap.expanded;
     event.stopPropagation();
   }
 
-  public bstTooltip(ap: Arbeitsplatz): string {
-    return (
-      "OE: " +
-      ap.oe.bstNr +
-      "\n\n" +
-      (ap.oe.strasse ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n" : "") +
-      (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "") +
-      (ap.oe.oeff ? "\n" + ap.oe.oeff : "")
-    );
-  }
+  // public bstTooltip(ap: Arbeitsplatz): string {
+  //   return (
+  //     "OE: " +
+  //     ap.oe.bstNr +
+  //     "\n\n" +
+  //     (ap.oe.strasse ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n" : "") +
+  //     (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "") +
+  //     (ap.oe.oeff ? "\n" + ap.oe.oeff : "")
+  //   );
+  // }
 
-  public testApMenu(ap: Arbeitsplatz) {
+  public testApMenu(): void {
     // console.debug("DEBUG AP-Menue fuer " + ap.apname);
     // const uniq1 = [...new Set(this.apDataService.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr))].sort();
     // const uniq2 = [...new Set(this.apDataService.apDataSource.data.map((a) => a.oesearch))].sort();
@@ -189,14 +186,14 @@ export class ArbeitsplatzService {
     });
   }
 
-  public filterByAptyp(ap: Arbeitsplatz, event: Event) {
+  public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
     const col = this.getColumn("aptyp");
     col.filterControl.setValue(ap.aptyp);
     col.filterControl.markAsDirty();
     event.stopPropagation();
   }
 
-  public filterByBetrst(ap: Arbeitsplatz, event: Event) {
+  public filterByBetrst(ap: Arbeitsplatz, event: Event): void {
     const col = this.getColumn("betrst");
     col.filterControl.setValue(ap[col.sortFieldName]);
     col.filterControl.markAsDirty();
@@ -204,7 +201,7 @@ export class ArbeitsplatzService {
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
-  public isAllSelected() {
+  public isAllSelected(): boolean {
     // TODO leerer Filter? / empty array -> true
     return this.apDataService.apDataSource.filteredData.every((ap) => ap.selected);
     // const numSelected = this.selection.selected.length;
@@ -212,12 +209,12 @@ export class ArbeitsplatzService {
     // return numSelected == numRows;
   }
 
-  public isSelected() {
+  public isSelected(): boolean {
     return this.apDataService.apDataSource.filteredData.some((ap) => ap.selected);
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
-  public masterToggle() {
+  public masterToggle(): void {
     const toggle = !this.isAllSelected();
     this.apDataService.apDataSource.filteredData.forEach((row) => (row.selected = toggle));
     this.filterService.triggerFilter();
@@ -226,29 +223,29 @@ export class ArbeitsplatzService {
     //   : this.apDataService.apDataSource.filteredData.forEach((row) => this.selection.select(row));
   }
 
-  public rowToggle(row: Arbeitsplatz) {
+  public rowToggle(row: Arbeitsplatz): void {
     row.selected = !row.selected;
     this.filterService.triggerFilter();
   }
 
-  public selectCount() {
+  public selectCount(): number {
     let count = 0;
     this.apDataService.apDataSource.filteredData.forEach((row) => (row.selected ? count++ : 0));
     return count;
   }
 
-  public expandAllRows() {
+  public expandAllRows(): void {
     this.apDataService.apDataSource.filteredData.forEach((row) => (row.expanded = true));
   }
 
-  public collapseAllRows() {
+  public collapseAllRows(): void {
     this.apDataService.apDataSource.filteredData.forEach((row) => (row.expanded = false));
   }
 
   /**
    * toggle "nur Ausgewaehlte anzeigen"
    */
-  public toggleSelection() {
+  public toggleSelection(): void {
     this.filterService.showSelected = !this.filterService.showSelected;
     this.triggerFilter();
   }
@@ -257,7 +254,7 @@ export class ArbeitsplatzService {
    * Parameter aus der URL als Filter setzen.
    * @param params ParamMap
    */
-  public filterFromNavigation(params: string) {
+  public filterFromNavigation(params: string): void {
     console.debug("## filter from Nav");
     console.dir(params);
     // TODO *nav_filt*
@@ -371,7 +368,7 @@ export class ArbeitsplatzService {
         // dropdown VLAN? -> eigene Spalte
         "ip",
         () => "IP/MAC",
-        () => "ipsearch",
+        () => ["ipStr", "macsearch"],
         () => "vlan",
         "i",
         true,
@@ -401,7 +398,7 @@ export class ArbeitsplatzService {
         // dropdown VLAN? -> eigene Spalte
         "mac",
         () => "MAC",
-        () => "macStr",
+        () => "macsearch",
         () => "macStr",
         "",
         false,
@@ -499,7 +496,7 @@ export class ArbeitsplatzService {
    */
   private triggerFilter() {
     console.debug("### trigger filter");
-    this.apDataService.apDataSource.filter = "" + this.filterChanged++;
+    this.apDataService.apDataSource.filter = `${this.filterChanged++}`;
   }
 
   // APs aus der DB holen
@@ -507,7 +504,7 @@ export class ArbeitsplatzService {
     this.loading = true;
     console.debug("### getAps()");
     // Daten aus der DB holen und aufbereiten
-    const dataReady: EventEmitter<any> = new EventEmitter();
+    const dataReady: EventEmitter<void> = new EventEmitter() as EventEmitter<void>;
     dataReady.subscribe(() => {
       this.onDataReady();
       // TODO *filt_nav*
@@ -515,7 +512,7 @@ export class ArbeitsplatzService {
       // Filter erst ausloesen nachdem sie Tabelle vollstaendig geladen ist
       this.triggerFilter();
     });
-    this.apDataService.getAPs(() => {
+    void this.apDataService.getAPs(() => {
       this.loading = false;
     }, dataReady);
 
@@ -552,7 +549,9 @@ export class ArbeitsplatzService {
       }
     });
     this.filterService.initService(this.columns, this.filterChange);
+
     // eigener Filter
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.apDataService.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
       let valid = this.filterService.filterExpression.validate(
         (ap as unknown) as Record<string, string | Array<string>>
@@ -567,6 +566,7 @@ export class ArbeitsplatzService {
       }
       return valid;
     };
+
     this.filterService.initializeFilters();
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
@@ -635,10 +635,10 @@ export class ArbeitsplatzService {
     // this.fetchPage(++page, pagesize || defaultpagesize); // Rest holen
   }
 
-  public nav2filter(filtStr: string) {
+  public nav2filter(filtStr: string): void {
     this.router
       // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
-      .navigate(["/ap", { filt: filtStr }])
+      .navigate(["/" + AP_PATH, { filt: filtStr }])
       .then(() => console.debug("### test routing OK ###"))
       .catch((reason) => {
         console.debug("*** test routing ERROR:");
@@ -671,13 +671,12 @@ export class ArbeitsplatzService {
     // alle vorhandenen tags
     const tags = [
       ...new Set(
-        // @ts-ignore (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
-        this.apDataService.apDataSource.data.flatMap(
-          (ap) => ap.tags.map((t1) => t1.bezeichnung + ";" + t1.flag)
-          // ap.tags.filter((t1) => t1.flag !== ApDataService.APTYPE_FLAG).map((t2) => t2.bezeichnung)
+        //  (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
+        this.apDataService.apDataSource.data.flatMap((ap: Arbeitsplatz) =>
+          ap.tags.map((t1: Tag) => `${t1.bezeichnung};${t1.flag}`)
         )
       ),
-    ].sort() as Array<string>;
+    ].sort();
     // je tag eine Spalte anhaengen -> fuer Filter + Ausgabe in csv
     tags.forEach((t) => {
       const tag = t.split(";");

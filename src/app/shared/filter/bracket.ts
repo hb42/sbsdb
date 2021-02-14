@@ -1,5 +1,4 @@
 import { Element } from "./element";
-import { Expression } from "./expression";
 import { LogicalOperator } from "./logical-operator";
 import { Term } from "./term";
 
@@ -46,11 +45,11 @@ export class Bracket implements Term {
     return this.up !== null;
   }
 
-  public reset() {
+  public reset(): void {
     this.elements = [];
   }
 
-  public addElement(op: LogicalOperator, term: Term) {
+  public addElement(op: LogicalOperator, term: Term): void {
     term.up = this;
     if (this.elements.length > 0) {
       this.elements.push(new Element(op, term));
@@ -59,7 +58,7 @@ export class Bracket implements Term {
     }
   }
 
-  public addElementAt(after: Element, op: LogicalOperator, term: Term) {
+  public addElementAt(after: Element, op: LogicalOperator, term: Term): void {
     let idx = this.elements.indexOf(after);
     if (idx >= 0) {
       term.up = this;
@@ -67,7 +66,7 @@ export class Bracket implements Term {
     }
   }
 
-  public removeElement(el: Element) {
+  public removeElement(el: Element): void {
     const index = this.elements.indexOf(el);
     this.elements.splice(index, 1);
     // wenn das erste Element entfernt wurde, muss bei der neuen Nr. 1

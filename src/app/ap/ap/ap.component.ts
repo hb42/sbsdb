@@ -35,11 +35,11 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
-  @ViewChild("firstfilter") public firstFilter;
-  @ViewChild("lastfilter") public lastFilter;
+  @ViewChild("firstfilter") public firstFilter: ElementRef<HTMLInputElement>;
+  @ViewChild("lastfilter") public lastFilter: ElementRef<HTMLInputElement>;
 
-  @ViewChild("pagInsert", { read: ElementRef }) pagInsert: ElementRef;
-  @ViewChild(MatPaginator, { read: ElementRef }) pagElement: ElementRef;
+  @ViewChild("pagInsert", { read: ElementRef }) pagInsert: ElementRef<Element>;
+  @ViewChild(MatPaginator, { read: ElementRef }) pagElement: ElementRef<Element>;
 
   public subscription: Subscription;
 
@@ -59,7 +59,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // focus first filter
   @HostListener("document:keydown.alt.f", ["$event"])
-  public handleKeyboardEvent(event: KeyboardEvent) {
+  public handleKeyboardEvent(event: KeyboardEvent): void {
     this.focusFirstFilter();
     event.preventDefault();
     event.stopPropagation();
@@ -67,7 +67,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Spalten via Keyboard sortieren
   @HostListener("document:keydown", ["$event"])
-  public handleApKeys(event: KeyboardEvent) {
+  public handleApKeys(event: KeyboardEvent): void {
     if (event.altKey && !event.shiftKey && !event.ctrlKey) {
       // Extended Filter => alt-e
       if (event.key === "e") {
@@ -95,7 +95,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public async ngOnInit() {
+  public ngOnInit(): void {
     // const par = this.route.snapshot.params["tree"];
     // console.debug("onInit ApComponent par=" + par);
 
@@ -172,13 +172,13 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public focusFirstFilter() {
+  public focusFirstFilter(): void {
     if (this.firstFilter) {
       this.firstFilter.nativeElement.focus();
     }
   }
 
-  public focusLastFilter() {
+  public focusLastFilter(): void {
     if (this.lastFilter) {
       this.lastFilter.nativeElement.focus();
     }

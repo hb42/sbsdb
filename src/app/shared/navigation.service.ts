@@ -46,7 +46,7 @@ export class NavigationService {
    * Die fn sollte in ngOnInit der ersten component aufgerufen weden
    * (i.d.R. also AppComponent).
    */
-  public gotoUserPath() {
+  public gotoUserPath(): void {
     console.debug("--- gotoUserPath");
     // mit welcher Adresse wird die Anwendung gestartet?
     // (location.path() liefert den Teil nach BASE_URL,
@@ -71,25 +71,25 @@ export class NavigationService {
     this.navigate(goto);
   }
 
-  public navigate(url: string) {
+  public navigate(url: string): void {
     this.router
       .navigateByUrl(this.router.parseUrl(url))
       .then((nav) => {
         if (!nav) {
           // canActivate liefert false, also zur Startseite
-          this.router.navigate(["/"]);
+          void this.router.navigate(["/"]);
         }
       })
       .catch((err) => {
-        console.debug("user navigation error " + err);
+        console.debug("user navigation error", err);
         // womoeglich ungueltige Daten im User-Profil, also noch ein Versuch
         // mit der Startseite
         this.configService.getUser().path = "";
-        this.router.navigate(["/"]);
+        void this.router.navigate(["/"]);
       });
   }
 
-  public resetApp() {
+  public resetApp(): void {
     window.location.href = this.location.prepareExternalUrl("/");
   }
 }

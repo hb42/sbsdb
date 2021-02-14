@@ -11,9 +11,12 @@
       "extends": [
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
         // prettier verwenden
-        "prettier",
-        "prettier/@typescript-eslint"
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
       ],
       "rules": {
         "@angular-eslint/component-selector": [
@@ -57,7 +60,12 @@
     },
     {
       "files": ["*.html"],
-      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "excludedFiles": ["*index.html"],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
+      ],
       "rules": {}
     }
   ]

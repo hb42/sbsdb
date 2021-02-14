@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, HostBinding, HostListener, ViewChild } from "@angular/core";
+import { MatMenu } from "@angular/material/menu";
 import { Router } from "@angular/router";
 import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";
+import { ADM_PATH, AP_PATH, HW_PATH } from "../../app-routing-const";
 import { ConfigService } from "../config/config.service";
 import { NavigationService } from "../navigation.service";
 
@@ -14,14 +16,14 @@ export class HeadComponent implements AfterViewInit {
 
   @ViewChild("menubtn") public menuBtn;
 
-  @ViewChild("apmenu", { static: true }) public apmenu;
-  @ViewChild("hwmenu", { static: true }) public hwmenu;
-  @ViewChild("admenu", { static: true }) public admenu;
+  @ViewChild("apmenu", { static: true }) public apmenu: MatMenu;
+  @ViewChild("hwmenu", { static: true }) public hwmenu: MatMenu;
+  @ViewChild("admenu", { static: true }) public admenu: MatMenu;
 
   public navLinks = [
-    { path: "/ap", label: "Arbeitsplätze", key: "a", menu: null },
-    { path: "/hw", label: "Hardware", key: "h", menu: null },
-    { path: "/admin", label: "Admin", key: "d", menu: null },
+    { path: "/" + AP_PATH, label: "Arbeitsplätze", key: "a", menu: null },
+    { path: "/" + HW_PATH, label: "Hardware", key: "h", menu: null },
+    { path: "/" + ADM_PATH, label: "Admin", key: "d", menu: null },
   ];
 
   public search: string;
@@ -34,7 +36,7 @@ export class HeadComponent implements AfterViewInit {
   ) {}
 
   @HostListener("document:keydown", ["$event"])
-  public handleKeyboardEvent(event: KeyboardEvent) {
+  public handleKeyboardEvent(event: KeyboardEvent): void {
     if (event.altKey) {
       this.navLinks.forEach((nav) => {
         if (nav.key === event.key) {
@@ -42,7 +44,7 @@ export class HeadComponent implements AfterViewInit {
           if (this.navigationService.isPage(nav.path)) {
             console.debug("on page");
             console.dir(this.menuBtn);
-            // eslint-disable-next-line no-underscore-dangle
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
             this.menuBtn._elementRef.nativeElement.click();
           } else {
             console.debug("navigate");
@@ -61,17 +63,17 @@ export class HeadComponent implements AfterViewInit {
     this.navLinks[2].menu = this.admenu;
   }
 
-  public navigate(target: string) {
+  public navigate(target: string): void {
     if (!this.navigationService.isPage(target)) {
-      this.router.navigate([target]);
+      void this.router.navigate([target]);
     }
   }
 
-  public backBtn() {
+  public backBtn(): void {
     history.back();
   }
 
-  public forwardBtn() {
+  public forwardBtn(): void {
     history.forward();
   }
 }

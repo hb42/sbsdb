@@ -3,7 +3,7 @@
  */
 import { TransportFilter } from "./transport-filter";
 
-export class TransportFilters {
-  stdFilter = true;
-  filters: TransportFilter[] = [];
+export interface TransportFilters {
+  stdFilter: boolean;
+  filters: TransportFilter[];
 }

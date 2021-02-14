@@ -1,5 +1,5 @@
 import { Component, HostBinding } from "@angular/core";
-import { AppRoutingModule } from "../../app-routing.module";
+import { ADM_FILTER_PATH, ADM_OPTIONS_PATH, ADM_PATH } from "../../app-routing-const";
 import { NavigationService } from "../../shared/navigation.service";
 
 @Component({
@@ -9,8 +9,8 @@ import { NavigationService } from "../../shared/navigation.service";
 })
 export class AdminOptionsComponent {
   @HostBinding("attr.class") public cssClass = "flex-content";
-  public admApFilterPath = "/" + AppRoutingModule.admApfilterPath;
-  public admConfig = "/" + AppRoutingModule.admConfig;
+  public admApFilterPath = "/" + ADM_PATH + "/" + ADM_FILTER_PATH;
+  public admConfig = "/" + ADM_PATH + "/" + ADM_OPTIONS_PATH;
 
   constructor(public navigationService: NavigationService) {}
 }

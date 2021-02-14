@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { ApDataService } from "../../ap/ap-data.service";
 import { ConfigService } from "../../shared/config/config.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 
@@ -25,10 +24,10 @@ export class AdminPanelConfigInputComponent implements OnInit {
 
   ngOnInit(): void {
     // der Startwert fuer das Eingabefeld kommt mit Verzoegerung
-    let initial;
+    let initial: string;
     this.configService
       .getConfig(this.configName)
-      .then((val) => {
+      .then((val: string) => {
         initial = val ?? this.defaultValue;
         console.debug("got config: " + initial);
       })
@@ -38,7 +37,7 @@ export class AdminPanelConfigInputComponent implements OnInit {
           "Error fetching " +
             this.configName +
             ": " +
-            err +
+            (err as string) +
             " @AdminPanelConfigInputComponent#ngOninit"
         );
       })
@@ -48,7 +47,7 @@ export class AdminPanelConfigInputComponent implements OnInit {
       });
   }
 
-  public getErrorMessage() {
+  public getErrorMessage(): string {
     if (this.control.hasError("required")) {
       return "Bitte einen Wert eingeben.";
     }
@@ -59,22 +58,22 @@ export class AdminPanelConfigInputComponent implements OnInit {
     return this.errorMsg(this.control);
   }
 
-  public saveControl() {
-    console.debug("save " + this.control.value);
+  public saveControl(): void {
+    console.debug("save", this.control.value);
     this.configService
       .saveConfig(this.configName, this.control.value)
       .then((rc) => {
-        console.debug(this.configName + " saved rc=" + rc);
+        console.debug(this.configName, "saved rc=", rc);
         this.control.markAsPristine();
       })
       .catch((err) => {
         this.control.setErrors({ saveError: true });
         console.error(
-          "Error saving " +
-            this.configName +
-            ": " +
-            err +
-            " @AdminPanelConfigInputComponent#saveControl"
+          "Error saving",
+          this.configName,
+          ":",
+          err,
+          "@AdminPanelConfigInputComponent#saveControl"
         );
       });
   }
