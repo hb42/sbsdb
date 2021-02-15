@@ -255,7 +255,7 @@ export class ArbeitsplatzService {
    * @param params ParamMap
    */
   public filterFromNavigation(params: string): void {
-    console.debug("## filter from Nav");
+    console.debug("## ApService#filterFromNavigation()");
     console.dir(params);
     // TODO *nav_filt*
     this.filterService.decodeFilter(params);
@@ -495,7 +495,7 @@ export class ArbeitsplatzService {
    * DataSource.filterPredicate().
    */
   private triggerFilter() {
-    console.debug("### trigger filter");
+    console.debug("## ApService#triggerFilter()");
     this.apDataService.apDataSource.filter = `${this.filterChanged++}`;
   }
 
@@ -531,7 +531,7 @@ export class ArbeitsplatzService {
         // const filtStr = JSON.stringify(
         //   this.filterService.convBracket(this.filterService.filterExpression)
         // );
-        console.debug("### FilterChange ###");
+        console.debug("## ApService#filterChange.subscribe()");
         console.debug(filtStr);
         this.nav2filter(filtStr);
         // this.router
@@ -636,12 +636,13 @@ export class ArbeitsplatzService {
   }
 
   public nav2filter(filtStr: string): void {
+    console.debug("## ApService.nav2filter()");
     this.router
       // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
       .navigate(["/" + AP_PATH, { filt: filtStr }])
-      .then(() => console.debug("### test routing OK ###"))
+      .then(() => console.debug("## ApService.nav2filter()  routing OK ###"))
       .catch((reason) => {
-        console.debug("*** test routing ERROR:");
+        console.debug("## ApService.nav2filter()  routing ERROR:");
         console.dir(reason);
       });
   }

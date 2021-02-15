@@ -155,7 +155,7 @@ https://github.com/angular/components/issues/6178
             />
             <button
               mat-button
-              [disabled]="!apService.getColumn(colname).filterControl.dirty"
+              [disabled]="!apService.getColumn(colname).filterControl.value"
               matSuffix
               mat-icon-button
               (click)="apService.getColumn(colname).filterControl.reset()"
@@ -239,7 +239,7 @@ https://github.com/angular/components/issues/6178
             />
             <button
               mat-button
-              [disabled]="!apService.getColumn('apname').filterControl.dirty"
+              [disabled]="!apService.getColumn('apname').filterControl.value"
               matSuffix
               mat-icon-button
               (click)="apService.getColumn('apname').filterControl.reset()"
@@ -287,7 +287,7 @@ https://github.com/angular/components/issues/6178
             />
             <button
               mat-button
-              [disabled]="!apService.getColumn('betrst').filterControl.dirty"
+              [disabled]="!apService.getColumn('betrst').filterControl.value"
               matSuffix
               mat-icon-button
               (click)="apService.getColumn('betrst').filterControl.reset()"
@@ -354,7 +354,7 @@ https://github.com/angular/components/issues/6178
             />
             <button
               mat-button
-              [disabled]="!apService.getColumn('bezeichnung').filterControl.dirty"
+              [disabled]="!apService.getColumn('bezeichnung').filterControl.value"
               matSuffix
               mat-icon-button
               (click)="apService.getColumn('bezeichnung').filterControl.reset()"
@@ -394,7 +394,7 @@ https://github.com/angular/components/issues/6178
             />
             <button
               mat-button
-              [disabled]="!apService.getColumn('ip').filterControl.dirty"
+              [disabled]="!apService.getColumn('ip').filterControl.value"
               matSuffix
               mat-icon-button
               (click)="apService.getColumn('ip').filterControl.reset()"
@@ -440,7 +440,7 @@ https://github.com/angular/components/issues/6178
             />
             <button
               mat-button
-              [disabled]="!apService.getColumn('hardware').filterControl.dirty"
+              [disabled]="!apService.getColumn('hardware').filterControl.value"
               matSuffix
               mat-icon-button
               (click)="apService.getColumn('hardware').filterControl.reset()"

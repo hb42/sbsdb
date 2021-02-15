@@ -111,45 +111,6 @@ export class ApFilterService {
     );
     this.nextKey = maxkey + 1;
     // this.makeElements(this.filterExpression, this.userSettings.apFilter);
-
-    if (this.stdFilter) {
-      this.filterExpression.elements.forEach((el) => {
-        if (!el.term.isBracket()) {
-          const exp = el.term as Expression;
-          const feld = exp.field.fieldName; // string | string[] !!
-          const col = this.columns.find((c) => {
-            // string[]-Vergleich
-            if (feld instanceof Array) {
-              if (c.fieldName instanceof Array) {
-                if (feld.length === c.fieldName.length) {
-                  let io = true;
-                  for (let i = 0; i < c.fieldName.length; i++) {
-                    if (c.fieldName[i] !== feld[i]) {
-                      io = false;
-                    }
-                  }
-                  return io;
-                } else {
-                  return false;
-                }
-              } else {
-                return false;
-              }
-            } else {
-              // string-Vergleich
-              return c.fieldName === feld;
-            }
-          });
-          if (col) {
-            col.filterControl.setValue(exp.compare);
-          }
-        }
-      });
-      this.buildStdFilterExpression();
-    } else {
-      // nur fuer ext. filter noetig (f. std filter implizit)
-      // this.triggerFilter();
-    }
   }
 
   /**
@@ -203,6 +164,7 @@ export class ApFilterService {
    * @private
    */
   public decodeFilter(f: string): void {
+    console.debug("## ApFilterService#decodeFilter()");
     let filter: TransportElement[];
     let std: boolean;
     try {
@@ -216,9 +178,12 @@ export class ApFilterService {
       filter = [];
       std = true;
     }
+    console.debug("## ApFilterService#decodeFilter()  filterExpression.reset()");
     this.filterExpression.reset();
+    console.debug("## ApFilterService#decodeFilter()  makeElements()");
     this.makeElements(this.filterExpression, filter);
     this.stdFilter = std;
+    this.setColumnFilters();
   }
 
   // --- Edit Exxtended Filter ---
@@ -498,6 +463,58 @@ export class ApFilterService {
         this.saveFilters();
         this.triggerFilter();
       }
+    }
+  }
+
+  /**
+   * Werte aus dem aktuellen Filter in die Spalten-Suchfelder eintragen.
+   *
+   * @private
+   */
+  private setColumnFilters() {
+    console.debug("## ApFilterService#setColumnFilter()");
+    if (this.stdFilter && this.columns) {
+      console.debug("## ApFilterService#setColumnFilter()  forEach");
+      this.filterExpression.elements.forEach((el) => {
+        if (!el.term.isBracket()) {
+          const exp = el.term as Expression;
+          const feld = exp.field.fieldName; // string | string[] !!
+          const col = this.columns.find((c) => {
+            // string[]-Vergleich
+            if (feld instanceof Array) {
+              if (c.fieldName instanceof Array) {
+                if (feld.length === c.fieldName.length) {
+                  let io = true;
+                  for (let i = 0; i < c.fieldName.length; i++) {
+                    if (c.fieldName[i] !== feld[i]) {
+                      io = false;
+                    }
+                  }
+                  return io;
+                } else {
+                  return false;
+                }
+              } else {
+                return false;
+              }
+            } else {
+              // string-Vergleich
+              return c.fieldName === feld;
+            }
+          });
+          if (col) {
+            console.debug(
+              "## ApFilterService#setColumnFilter()  column.setValue for " + col.displayName
+            );
+            col.filterControl.setValue(exp.compare);
+          }
+        }
+      });
+      // FIXME ist hier unnoetig??
+      // this.buildStdFilterExpression();
+    } else {
+      // nur fuer ext. filter noetig (f. std filter implizit)
+      // this.triggerFilter();
     }
   }
 
