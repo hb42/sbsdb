@@ -35,7 +35,7 @@ https://github.com/angular/components/issues/6178
       <mat-icon>find_in_page</mat-icon>
     </button>
     <button mat-icon-button title="Als CSV ausgeben"><mat-icon>share</mat-icon></button>
-    <button mat-icon-button title="Neuer Arbeitsplatz">
+    <button mat-icon-button title="Neuer Arbeitsplatz" (click)="apService.test()">
       <mat-icon>add_circle_outline</mat-icon>
     </button>
     <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">

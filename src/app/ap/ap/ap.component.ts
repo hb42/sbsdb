@@ -135,6 +135,9 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       if (encFilter) {
         this.config.getUser().latestApFilter = encFilter;
       }
+      console.debug(
+        "## ApComponent#route.paramMap.subscribe()  ->this.apService.filterFromNavigation(encFilter)"
+      );
       this.apService.filterFromNavigation(encFilter);
       // URL /ap;id=11;tree=bst -> {id: 11, tree: 'bst'}
       // als zweiter Navigationsparameter:

@@ -6,6 +6,8 @@ import { AP_PATH } from "../app-routing-const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { RelOp } from "../shared/filter/rel-op.enum";
+import { TransportElement } from "../shared/filter/transport-element";
+import { TransportElements } from "../shared/filter/transport-elements";
 import { KeyboardService } from "../shared/keyboard.service";
 import { ApColumn } from "./ap-column";
 import { ApDataService } from "./ap-data.service";
@@ -172,18 +174,13 @@ export class ArbeitsplatzService {
   //   );
   // }
 
-  public testApMenu(): void {
-    // console.debug("DEBUG AP-Menue fuer " + ap.apname);
-    // const uniq1 = [...new Set(this.apDataService.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr))].sort();
-    // const uniq2 = [...new Set(this.apDataService.apDataSource.data.map((a) => a.oesearch))].sort();
-    // console.debug("DEBUG end uniq hw+oe");
-    // console.dir(uniq1);
-    // console.dir(uniq2);
-    console.debug("### DEBUG filter columns");
-    this.extFilterColumns.forEach((col) => {
-      console.debug("Filter-Column: " + col.displayName);
-      console.dir(col.selectList);
-    });
+  public test(): void {
+    const te: TransportElement[] = this.filterService.convBracket(
+      this.filterService.filterExpression
+    );
+    const trans: TransportElements = { stdFilter: this.filterService.stdFilter, filter: te };
+    const fStr = JSON.stringify(trans);
+    console.debug("------  TEST  " + fStr);
   }
 
   public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
@@ -258,10 +255,12 @@ export class ArbeitsplatzService {
     console.debug("## ApService#filterFromNavigation()");
     console.dir(params);
     // TODO *nav_filt*
+    console.debug("## ApService#filterFromNavigation()  ->this.filterService.decodeFilter(params)");
     this.filterService.decodeFilter(params);
     // Falls die Tabelle noch nicht geladen ist, wird der Filter nach dem Laden
     // angestossen (-> initTable()).
     if (this.apDataReady) {
+      console.debug("## ApService#filterFromNavigation()  ->this.triggerFilter()");
       this.triggerFilter();
     }
   }
@@ -533,6 +532,7 @@ export class ArbeitsplatzService {
         // );
         console.debug("## ApService#filterChange.subscribe()");
         console.debug(filtStr);
+        console.debug("## ApService#filterChange.subscribe() ->this.nav2filter(filtStr)");
         this.nav2filter(filtStr);
         // this.router
         //   // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
@@ -636,7 +636,7 @@ export class ArbeitsplatzService {
   }
 
   public nav2filter(filtStr: string): void {
-    console.debug("## ApService.nav2filter()");
+    console.debug("## ApService.nav2filter()  navigate to ", filtStr);
     this.router
       // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
       .navigate(["/" + AP_PATH, { filt: filtStr }])

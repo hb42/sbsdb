@@ -84,6 +84,7 @@ export class ApFilterService {
         c.filterControl.valueChanges // FormControl
           .pipe(debounceTime(this.keyDebounce))
           .subscribe(() => {
+            console.debug("## ApFilterService#filterControl.valueChanges @" + c.displayName);
             // this.stdFilterChange();
             this.buildStdFilterExpression();
             this.saveFilterExpression();
@@ -97,6 +98,7 @@ export class ApFilterService {
    * Filter aus den Benutzereinstellungen erstellen
    */
   public initializeFilters(): void {
+    console.debug("## ApFilterService#initializeFilters()");
     // TODO *nav_filt*
     // this.stdFilter = this.userSettings.apStdFilter;
     // this.filterExpression.reset();
@@ -117,6 +119,7 @@ export class ApFilterService {
    * Filter loeschen (triggert valueChange)
    */
   public resetStdFilters(): void {
+    console.debug("## ApFilterService#resetStdFilters()");
     this.columns.forEach((c) => {
       if (c.filterControl && c.filterControl.value) {
         c.filterControl.reset();
@@ -129,6 +132,7 @@ export class ApFilterService {
    * ein event an ArbeitsplatzService gesendet.
    */
   public triggerFilter(): void {
+    console.debug("## ApFilterService#triggerFilter()");
     this.filterChange.emit();
   }
 
@@ -183,6 +187,7 @@ export class ApFilterService {
     console.debug("## ApFilterService#decodeFilter()  makeElements()");
     this.makeElements(this.filterExpression, filter);
     this.stdFilter = std;
+    console.debug("## ApFilterService#decodeFilter()  setColumnFilters()");
     this.setColumnFilters();
   }
 
@@ -428,6 +433,7 @@ export class ApFilterService {
    * Filter-Ausdruck fuer std filter
    */
   private buildStdFilterExpression() {
+    console.debug("## ApFilterService#buildStdFilterExpression()");
     this.filterExpression.reset();
     const and = new LogicalAnd();
     this.columns.forEach((col) => {
@@ -447,6 +453,7 @@ export class ApFilterService {
    * @param type - User/Global
    */
   private setFilterExpression(key: number, type: number) {
+    console.debug("## ApFilterService#setFilterExpression()");
     // TODO +type -> lookup global
     let tf: TransportFilter;
     if (type === ApFilterService.USERFILTER) {
@@ -474,40 +481,53 @@ export class ApFilterService {
   private setColumnFilters() {
     console.debug("## ApFilterService#setColumnFilter()");
     if (this.stdFilter && this.columns) {
+      // this.resetStdFilters();
       console.debug("## ApFilterService#setColumnFilter()  forEach");
+      const cols: Array<{ col: ApColumn; val: string | null }> = this.columns
+        .filter((c) => {
+          return !!(c.filterControl && c.filterControl.value);
+        })
+        .map((cc) => {
+          return { col: cc, val: null };
+        });
       this.filterExpression.elements.forEach((el) => {
         if (!el.term.isBracket()) {
           const exp = el.term as Expression;
           const feld = exp.field.fieldName; // string | string[] !!
-          const col = this.columns.find((c) => {
+          // const col = this.columns.find((c) => {
+          cols.forEach((c) => {
             // string[]-Vergleich
             if (feld instanceof Array) {
-              if (c.fieldName instanceof Array) {
-                if (feld.length === c.fieldName.length) {
+              if (c.col.fieldName instanceof Array) {
+                if (feld.length === c.col.fieldName.length) {
                   let io = true;
-                  for (let i = 0; i < c.fieldName.length; i++) {
-                    if (c.fieldName[i] !== feld[i]) {
+                  for (let i = 0; i < c.col.fieldName.length; i++) {
+                    if (c.col.fieldName[i] !== feld[i]) {
                       io = false;
                     }
                   }
-                  return io;
-                } else {
-                  return false;
+                  if (io) {
+                    c.val = exp.compare;
+                  }
                 }
-              } else {
-                return false;
               }
             } else {
               // string-Vergleich
-              return c.fieldName === feld;
+              if (c.col.fieldName === feld) {
+                c.val = exp.compare;
+              }
             }
           });
-          if (col) {
-            console.debug(
-              "## ApFilterService#setColumnFilter()  column.setValue for " + col.displayName
-            );
-            col.filterControl.setValue(exp.compare);
-          }
+          cols.forEach((c) => {
+            if (c.col.filterControl.value != c.val) {
+              console.debug(
+                "## ApFilterService#setColumnFilter()  column.setValue for " + c.col.displayName
+              );
+              // FIXME das triggert zwar keinen event, dafür erscheint der Wert
+              //       auch nicht im Feld! -> params?
+              c.col.filterControl.setValue(c.val, { emitEvent: false });
+            }
+          });
         }
       });
       // FIXME ist hier unnoetig??
