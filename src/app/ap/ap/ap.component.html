@@ -509,7 +509,7 @@ https://github.com/angular/components/issues/6178
             <div class="ap-detail-content-row">
               <div class="ap-detail-margin ap-detail-standort-text">Standort</div>
               <div class="ap-detail-margin">
-                {{ element.oe.bstNr }}<br />
+                {{ ("000" + element.oe.bstNr).slice(-3) }}<br />
                 {{ element.oe.betriebsstelle }}<br /><br />
                 {{ element.oe.strasse ? element.oe.strasse + " " : ""
                 }}{{ element.oe.hausnr ? element.oe.hausnr : "" }}<br />
@@ -526,7 +526,8 @@ https://github.com/angular/components/issues/6178
                 Verantwortliche OE
               </div>
               <div class="ap-detail-margin">
-                {{ element.verantwOe.bstNr }} - {{ element.verantwOe.betriebsstelle }}
+                {{ ("000" + element.verantwOe.bstNr).slice(-3) }} -
+                {{ element.verantwOe.betriebsstelle }}
               </div>
             </div>
             <div class="ap-detail-content-row">
