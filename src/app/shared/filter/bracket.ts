@@ -76,6 +76,10 @@ export class Bracket implements Term {
     }
   }
 
+  public isEmpty(): boolean {
+    return this.elements.length === 0;
+  }
+
   public isBracket(): boolean {
     return true;
   }

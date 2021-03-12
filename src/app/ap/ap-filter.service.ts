@@ -84,10 +84,8 @@ export class ApFilterService {
         c.filterControl.valueChanges // FormControl
           .pipe(debounceTime(this.keyDebounce))
           .subscribe(() => {
-            console.debug("## ApFilterService#filterControl.valueChanges @" + c.displayName);
             // this.stdFilterChange();
             this.buildStdFilterExpression();
-            this.saveFilterExpression();
             this.triggerFilter();
           });
       }
@@ -98,12 +96,6 @@ export class ApFilterService {
    * Filter aus den Benutzereinstellungen erstellen
    */
   public initializeFilters(): void {
-    console.debug("## ApFilterService#initializeFilters()");
-    // TODO *nav_filt*
-    // this.stdFilter = this.userSettings.apStdFilter;
-    // this.filterExpression.reset();
-    // this.setFilterExpression(ApFilterService.STDFILTER, ApFilterService.USERFILTER);
-
     // letzten gespeicherten Filter setzen (kommt ggf. nochmal via URL)
     this.decodeFilter(this.userSettings.latestApFilter);
 
@@ -119,7 +111,6 @@ export class ApFilterService {
    * Filter loeschen (triggert valueChange)
    */
   public resetStdFilters(): void {
-    console.debug("## ApFilterService#resetStdFilters()");
     this.columns.forEach((c) => {
       if (c.filterControl && c.filterControl.value) {
         c.filterControl.reset();
@@ -132,20 +123,9 @@ export class ApFilterService {
    * ein event an ArbeitsplatzService gesendet.
    */
   public triggerFilter(): void {
-    console.debug("## ApFilterService#triggerFilter()");
     this.filterChange.emit();
   }
 
-  /**
-   * aktuelle filterExpression in den Benutzereinstellungen speichern
-   */
-  public saveFilterExpression(): void {
-    // this.setFilter(ApFilterService.STDFILTER, "", this.convBracket(this.filterExpression));
-    // this.saveFilters();
-    // TODO *nav_filt* hier sollte nichts zu tun sein
-  }
-
-  // TODO *nav_filt*
   /**
    * Aktuellen Filter fuer die Uebergabe via URL codieren
    *
@@ -168,7 +148,6 @@ export class ApFilterService {
    * @private
    */
   public decodeFilter(f: string): void {
-    console.debug("## ApFilterService#decodeFilter()");
     let filter: TransportElement[];
     let std: boolean;
     try {
@@ -182,12 +161,9 @@ export class ApFilterService {
       filter = [];
       std = true;
     }
-    console.debug("## ApFilterService#decodeFilter()  filterExpression.reset()");
     this.filterExpression.reset();
-    console.debug("## ApFilterService#decodeFilter()  makeElements()");
     this.makeElements(this.filterExpression, filter);
     this.stdFilter = std;
-    console.debug("## ApFilterService#decodeFilter()  setColumnFilters()");
     this.setColumnFilters();
   }
 
@@ -202,7 +178,10 @@ export class ApFilterService {
     this.filterExpression.reset();
     this.resetStdFilters();
     this.userSettings.apStdFilter = this.stdFilter;
-    this.triggerFilter();
+    // nur fuer Zurueckschalten auf std noetig
+    if (this.stdFilter) {
+      this.triggerFilter();
+    }
   }
 
   public extFilterList(): TransportFilter[] {
@@ -365,7 +344,6 @@ export class ApFilterService {
   public remove(el: Element): void {
     el.term.up.removeElement(el);
     this.selectedFilter = null;
-    this.saveFilterExpression();
     this.triggerFilter();
   }
 
@@ -412,7 +390,6 @@ export class ApFilterService {
           }
         }
         this.selectedFilter = null;
-        this.saveFilterExpression();
         this.triggerFilter();
       }
     });
@@ -433,7 +410,6 @@ export class ApFilterService {
    * Filter-Ausdruck fuer std filter
    */
   private buildStdFilterExpression() {
-    console.debug("## ApFilterService#buildStdFilterExpression()");
     this.filterExpression.reset();
     const and = new LogicalAnd();
     this.columns.forEach((col) => {
@@ -453,7 +429,6 @@ export class ApFilterService {
    * @param type - User/Global
    */
   private setFilterExpression(key: number, type: number) {
-    console.debug("## ApFilterService#setFilterExpression()");
     // TODO +type -> lookup global
     let tf: TransportFilter;
     if (type === ApFilterService.USERFILTER) {
@@ -465,7 +440,6 @@ export class ApFilterService {
       this.filterExpression.reset();
       this.makeElements(this.filterExpression, tf.filter);
       if (ApFilterService.STDFILTER !== key) {
-        // TODO muss der Filter hier gespeichert werden?
         this.setUserFilter(ApFilterService.STDFILTER, "", tf.filter);
         this.saveFilters();
         this.triggerFilter();
@@ -479,13 +453,11 @@ export class ApFilterService {
    * @private
    */
   private setColumnFilters() {
-    console.debug("## ApFilterService#setColumnFilter()");
     if (this.stdFilter && this.columns) {
       // this.resetStdFilters();
-      console.debug("## ApFilterService#setColumnFilter()  forEach");
       const cols: Array<{ col: ApColumn; val: string | null }> = this.columns
         .filter((c) => {
-          return !!(c.filterControl && c.filterControl.value);
+          return !!c.filterControl;
         })
         .map((cc) => {
           return { col: cc, val: null };
@@ -518,23 +490,13 @@ export class ApFilterService {
               }
             }
           });
-          cols.forEach((c) => {
-            if (c.col.filterControl.value != c.val) {
-              console.debug(
-                "## ApFilterService#setColumnFilter()  column.setValue for " + c.col.displayName
-              );
-              // FIXME das triggert zwar keinen event, dafür erscheint der Wert
-              //       auch nicht im Feld! -> params?
-              c.col.filterControl.setValue(c.val, { emitEvent: false });
-            }
-          });
         }
       });
-      // FIXME ist hier unnoetig??
-      // this.buildStdFilterExpression();
-    } else {
-      // nur fuer ext. filter noetig (f. std filter implizit)
-      // this.triggerFilter();
+      cols.forEach((c) => {
+        if (c.col.filterControl.value != c.val) {
+          c.col.filterControl.setValue(c.val, { emitEvent: false });
+        }
+      });
     }
   }
 

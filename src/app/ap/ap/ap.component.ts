@@ -106,17 +106,13 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     //      d.h. je comp. in der das gebraucht wird .params.subscribe und das Handling an den Service delegieren
     //      (evtl. NaviagatonService ??)
     this.route.paramMap.subscribe((params) => {
-      console.debug("## ApComponent#route.paramMap.subscribe()");
-      // TODO *nav_filt*
       // check params
       let encFilter: string = null;
       if (params && params.has("filt")) {
-        console.debug("## ApComponent#route.paramMap.subscribe()  param exist");
         encFilter = params.get("filt");
         // weitere Parameter muessten hier behandelt werden
         // FIXME (*)
       } else {
-        console.debug("## ApComponent#route.paramMap.subscribe()  no params");
         // keine Parameter -> letzten gesicherten nehmen
         // (Unterstellung: interne Navigation von z.B. HW-Seite)
         // TODO evtl. filter doch noch in userConf, was ist, wenn letzte URL
@@ -126,7 +122,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         //      Ausfuehrung beim Start zu verhindern.
         if (this.config.getUser().latestApFilter) {
           encFilter = this.config.getUser().latestApFilter;
-          console.debug("## ApComponent#route.paramMap.subscribe()  nav to latest filter");
           this.apService.nav2filter(encFilter);
         }
       }
@@ -135,9 +130,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       if (encFilter) {
         this.config.getUser().latestApFilter = encFilter;
       }
-      console.debug(
-        "## ApComponent#route.paramMap.subscribe()  ->this.apService.filterFromNavigation(encFilter)"
-      );
       this.apService.filterFromNavigation(encFilter);
       // URL /ap;id=11;tree=bst -> {id: 11, tree: 'bst'}
       // als zweiter Navigationsparameter:

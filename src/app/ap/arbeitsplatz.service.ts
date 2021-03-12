@@ -9,6 +9,7 @@ import { RelOp } from "../shared/filter/rel-op.enum";
 import { TransportElement } from "../shared/filter/transport-element";
 import { TransportElements } from "../shared/filter/transport-elements";
 import { KeyboardService } from "../shared/keyboard.service";
+import { NavigationService } from "../shared/navigation.service";
 import { ApColumn } from "./ap-column";
 import { ApDataService } from "./ap-data.service";
 import { ApFilterService } from "./ap-filter.service";
@@ -62,6 +63,7 @@ export class ArbeitsplatzService {
     public apDataService: ApDataService,
     public filterService: ApFilterService,
     private keyboardService: KeyboardService,
+    private navigationService: NavigationService,
     private router: Router
   ) {
     console.debug("c'tor ArbeitsplatzService");
@@ -252,15 +254,10 @@ export class ArbeitsplatzService {
    * @param params ParamMap
    */
   public filterFromNavigation(params: string): void {
-    console.debug("## ApService#filterFromNavigation()");
-    console.dir(params);
-    // TODO *nav_filt*
-    console.debug("## ApService#filterFromNavigation()  ->this.filterService.decodeFilter(params)");
     this.filterService.decodeFilter(params);
     // Falls die Tabelle noch nicht geladen ist, wird der Filter nach dem Laden
     // angestossen (-> initTable()).
     if (this.apDataReady) {
-      console.debug("## ApService#filterFromNavigation()  ->this.triggerFilter()");
       this.triggerFilter();
     }
   }
@@ -494,19 +491,16 @@ export class ArbeitsplatzService {
    * DataSource.filterPredicate().
    */
   private triggerFilter() {
-    console.debug("## ApService#triggerFilter()");
     this.apDataService.apDataSource.filter = `${this.filterChanged++}`;
   }
 
   // APs aus der DB holen
   private initTable() {
     this.loading = true;
-    console.debug("### getAps()");
     // Daten aus der DB holen und aufbereiten
     const dataReady: EventEmitter<void> = new EventEmitter() as EventEmitter<void>;
     dataReady.subscribe(() => {
       this.onDataReady();
-      // TODO *filt_nav*
       this.apDataReady = true;
       // Filter erst ausloesen nachdem sie Tabelle vollstaendig geladen ist
       this.triggerFilter();
@@ -516,36 +510,23 @@ export class ArbeitsplatzService {
     }, dataReady);
 
     /*
-     * Filter in MatTable anstossen
-     * Neuen Filter in URL eintragen, die Navigation loest dann den Filter aus.
+     * Geänderten Filter in die URL eintragen
+     * Die Navigation loest dann den Filter aus.
      *
      */
     this.filterChange.subscribe(() => {
-      // DEBUG -vv-
       if (this.apDataReady) {
-        // const filtStr = base64url.encode(
-        //   JSON.stringify(this.filterService.convBracket(this.filterService.filterExpression))
-        // );
-        const filtStr = this.filterService.encodeFilter();
-        // const filtStr = JSON.stringify(
-        //   this.filterService.convBracket(this.filterService.filterExpression)
-        // );
-        console.debug("## ApService#filterChange.subscribe()");
-        console.debug(filtStr);
-        console.debug("## ApService#filterChange.subscribe() ->this.nav2filter(filtStr)");
-        this.nav2filter(filtStr);
-        // this.router
-        //   // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
-        //   .navigate(["/ap", { filt: filtStr }])
-        //   .then(() => console.debug("### test routing OK ###"))
-        //   .catch((reason) => {
-        //     console.debug("*** test routing ERROR:");
-        //     console.dir(reason);
-        //   });
-
-        // DEBUG -^^-
-        // console.debug("### trigger filter");
-        // this.apDataService.apDataSource.filter = "" + this.filterChanged++;
+        // Keine Navigation (und kein History-Eintrag) beim Start des
+        // erweiterten Filters (und bei leerem extd Filter).
+        if (
+          this.filterService.stdFilter ||
+          (!this.filterService.stdFilter && !this.filterService.filterExpression.isEmpty())
+        ) {
+          const filtStr = this.filterService.encodeFilter();
+          this.nav2filter(filtStr);
+        } else {
+          this.triggerFilter();
+        }
       }
     });
     this.filterService.initService(this.columns, this.filterChange);
@@ -636,15 +617,15 @@ export class ArbeitsplatzService {
   }
 
   public nav2filter(filtStr: string): void {
-    console.debug("## ApService.nav2filter()  navigate to ", filtStr);
-    this.router
-      // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
-      .navigate(["/" + AP_PATH, { filt: filtStr }])
-      .then(() => console.debug("## ApService.nav2filter()  routing OK ###"))
-      .catch((reason) => {
-        console.debug("## ApService.nav2filter()  routing ERROR:");
-        console.dir(reason);
-      });
+    this.navigationService.navigateByCmd(["/" + AP_PATH, { filt: filtStr }]);
+    // this.router
+    //   // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
+    //   .navigate(["/" + AP_PATH, { filt: filtStr }])
+    //   .then(() => console.debug("## ApService.nav2filter()  routing OK ###"))
+    //   .catch((reason) => {
+    //     console.debug("## ApService.nav2filter()  routing ERROR:");
+    //     console.dir(reason);
+    //   });
   }
 
   // private fetchPage(page: number, size: number) {

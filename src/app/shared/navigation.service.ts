@@ -1,6 +1,6 @@
 import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router, UrlTree } from "@angular/router";
 import { ErrorService } from "@hb42/lib-client";
 import { filter } from "rxjs/operators";
 import { ConfigService } from "./config/config.service";
@@ -22,9 +22,6 @@ export class NavigationService {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((evt: NavigationEnd) => {
         const last: string = evt.urlAfterRedirects;
-
-        console.debug("## NavigationService " + last);
-        console.dir(evt);
         // last enthaelt alle param: z.B. "/ap;id=42;tree=vlan"
         // Navigation zu diesem String:
         //   this.router.navigateByUrl(this.router.parseUrl("/ap;id=42;tree=vlan"))
@@ -68,12 +65,16 @@ export class NavigationService {
     if (goto == null || goto === "") {
       goto = "/";
     }
-    this.navigate(goto);
+    this.navigateByUrl(goto);
   }
 
-  public navigate(url: string): void {
+  public navigateByUrl(url: string | UrlTree): void {
+    // Navigation nur, wenn sich die URL auch geaendert hat
+    if (url.toString() === this.currentPath) {
+      return;
+    }
     this.router
-      .navigateByUrl(this.router.parseUrl(url))
+      .navigateByUrl(/*this.router.parseUrl(url)*/ url)
       .then((nav) => {
         if (!nav) {
           // canActivate liefert false, also zur Startseite
@@ -81,12 +82,16 @@ export class NavigationService {
         }
       })
       .catch((err) => {
-        console.debug("user navigation error", err);
+        console.error("user navigation error", err);
         // womoeglich ungueltige Daten im User-Profil, also noch ein Versuch
         // mit der Startseite
         this.configService.getUser().path = "";
         void this.router.navigate(["/"]);
       });
+  }
+
+  public navigateByCmd(command: any[]): void {
+    this.navigateByUrl(this.router.createUrlTree(command));
   }
 
   public resetApp(): void {

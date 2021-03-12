@@ -48,7 +48,7 @@ export class HeadComponent implements AfterViewInit {
             this.menuBtn._elementRef.nativeElement.click();
           } else {
             console.debug("navigate");
-            this.navigationService.navigate(nav.path);
+            this.navigationService.navigateByUrl(nav.path);
           }
           event.preventDefault();
           event.stopPropagation();
