@@ -7,7 +7,7 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
@@ -105,20 +105,21 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     // TODO ActivatedRoute ist nur in der jeweiligen component sinnvoll
     //      d.h. je comp. in der das gebraucht wird .params.subscribe und das Handling an den Service delegieren
     //      (evtl. NaviagatonService ??)
-    this.route.params.subscribe((params) => {
+    this.route.paramMap.subscribe((params) => {
       console.debug("## route params changed");
       console.dir(params);
       // URL /ap;id=11;tree=bst -> {id: 11, tree: 'bst'}
       // als zweiter Navigationsparameter:
       //   this.router.navigate(['/ap', { id: 11, tree: 'bst' }]);
       //   <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">test</a>
-      this.apService.urlParams = {
-        tree: params.tree,
-        id  : Number.parseInt(params.id, 10)
-      };
-      if (params.tree && params.tree === "oe") {
-        // this.apService.expandTree(this.apService.urlParams.id);
-      }
+
+      // this.apService.urlParams = {
+      //   tree: params.tree,
+      //   id: Number.parseInt(params.id, 10),
+      // };
+      // if (params.tree && params.tree === "oe") {
+      //   // this.apService.expandTree(this.apService.urlParams.id);
+      // }
     });
   }
 
