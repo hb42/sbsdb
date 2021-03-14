@@ -533,7 +533,15 @@ https://github.com/angular/components/issues/6178
             <div class="ap-detail-content-row">
               <div class="ap-detail-margin">
                 <table>
-                  <th colspan="2">Hardware</th>
+                  <thead>
+                    <th colspan="4">Hardware</th>
+                  </thead>
+                  <thead>
+                    <th>Typ</th>
+                    <th>Hardware</th>
+                    <th>IP</th>
+                    <th>MAC</th>
+                  </thead>
                   <tr *ngFor="let hw of element.hw">
                     <!--                <td *ngIf="!hw.pri">-->
                     <td>
@@ -546,21 +554,25 @@ https://github.com/angular/components/issues/6178
                           : ""
                       }}
                     </td>
-                  </tr>
-                </table>
-              </div>
-              <div class="ap-detail-margin">
-                <table>
-                  <th colspan="2">IP/MAC</th>
-                  <tr *ngFor="let vl of element.vlan">
-                    <td>
-                      {{ vl.bezeichnung }}<br />
-                      {{ apService.apDataService.getIpString(vl.vlan + vl.ip) }}
+                    <td [title]="hw.vlanStr">
+                      {{ hw.ipStr }}
                     </td>
-                    <td>{{ apService.apDataService.getMacString(vl.mac) }}</td>
+                    <td>{{ hw.macStr }}</td>
                   </tr>
                 </table>
               </div>
+              <!--              <div class="ap-detail-margin">-->
+              <!--                <table>-->
+              <!--                  <th colspan="2">IP/MAC</th>-->
+              <!--                  <tr *ngFor="let vl of element.vlan">-->
+              <!--                    <td>-->
+              <!--                      {{ vl.bezeichnung }}<br />-->
+              <!--                      {{ apService.apDataService.getIpString(vl.vlan + vl.ip) }}-->
+              <!--                    </td>-->
+              <!--                    <td>{{ apService.apDataService.getMacString(vl.mac) }}</td>-->
+              <!--                  </tr>-->
+              <!--                </table>-->
+              <!--              </div>-->
               <div class="ap-detail-margin">
                 <table>
                   <th colspan="2">Sonstige Informationen</th>

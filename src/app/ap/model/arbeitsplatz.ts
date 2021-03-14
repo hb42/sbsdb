@@ -1,6 +1,5 @@
 import { Betrst } from "./betrst";
 import { Hardware } from "./hardware";
-import { Netzwerk } from "./netzwerk";
 import { Tag } from "./tag";
 
 export class Arbeitsplatz {
@@ -13,7 +12,7 @@ export class Arbeitsplatz {
   public bemerkung: string;
   public tags: Tag[];
   public hw: Hardware[];
-  public vlan: Netzwerk[];
+  // public vlan: Netzwerk[];
 
   // interne Felder fuer die Darstellung/Suche
   // public typTagsStr: string;
@@ -21,10 +20,10 @@ export class Arbeitsplatz {
   public hwTypStr = ""; // pri HW ohne SerNr
   public hwStr = ""; //        mit SerNr
   public sonstHwStr = ""; // ges. HW fuer die Suche
-  public ipStr = "";
-  public macStr = "";
-  public vlanStr = "";
-  public macsearch = "";
+  public ipStr = ""; // aus pri HW
+  public macStr = ""; //  dto.
+  public vlanStr = ""; // dto.
+  public macsearch = ""; // Suche in allen MACs
   public oesearch = "";
   public oesort = "";
   public voesearch = "";

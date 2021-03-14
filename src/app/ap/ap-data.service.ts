@@ -177,6 +177,11 @@ export class ApDataService {
   private prepAP(ap: Arbeitsplatz) {
     ap.hwStr = ""; // keine undef Felder!
     ap.sonstHwStr = ""; // keine undef Felder!
+    // FIXME IPs zu HW
+    ap.ipStr = ""; // aus priHW
+    ap.macStr = ""; // aus priHW
+    ap.vlanStr = ""; // aus priHW
+    ap.macsearch = ""; // alle MACs
     ap.hw.forEach((h) => {
       if (h.pri) {
         if (h.hwtypFlag !== ApDataService.FREMDE_HW_FLAG) {
@@ -196,33 +201,58 @@ export class ApDataService {
           h.bezeichnung +
           (h.sernr && h.hwtypFlag !== ApDataService.FREMDE_HW_FLAG ? " " + h.sernr : "");
       }
+      h.ipStr = "";
+      h.macStr = "";
+      h.vlanStr = "";
+      if (h.vlan && h.vlan[0]) {
+        h.vlan.forEach((v) => {
+          const dhcp = v.ip === 0 ? " (DHCP)" : "";
+          if (h.ipStr) {
+            h.ipStr += "/ " + this.getIpString(v.vlan + v.ip) + dhcp;
+          } else {
+            h.ipStr = this.getIpString(v.vlan + v.ip) + dhcp;
+          }
+          if (h.macStr) {
+            h.macStr += "/ " + this.getMacString(v.mac);
+          } else {
+            h.macStr = this.getMacString(v.mac);
+          }
+          if (h.vlanStr) {
+            h.vlanStr += "/ " + v.bezeichnung;
+          } else {
+            h.vlanStr = v.bezeichnung;
+          }
+          ap.macsearch += v.mac;
+          if (h.pri) {
+            ap.ipStr = h.ipStr;
+            ap.macStr = h.macStr;
+            ap.vlanStr = h.vlanStr;
+          }
+        });
+      }
     });
 
-    ap.ipStr = "";
-    ap.macStr = "";
-    ap.vlanStr = "";
-    ap.macsearch = "";
-    if (ap.vlan && ap.vlan[0]) {
-      ap.vlan.forEach((v) => {
-        const dhcp = v.ip === 0 ? " (DHCP)" : "";
-        if (ap.ipStr) {
-          ap.ipStr += "/ " + this.getIpString(v.vlan + v.ip) + dhcp;
-        } else {
-          ap.ipStr = this.getIpString(v.vlan + v.ip) + dhcp;
-        }
-        if (ap.macStr) {
-          ap.macStr += "/ " + this.getMacString(v.mac);
-        } else {
-          ap.macStr = this.getMacString(v.mac);
-        }
-        if (ap.vlanStr) {
-          ap.vlanStr += "/ " + v.bezeichnung;
-        } else {
-          ap.vlanStr = v.bezeichnung;
-        }
-        ap.macsearch += v.mac;
-      });
-    }
+    // if (ap.vlan && ap.vlan[0]) {
+    //   ap.vlan.forEach((v) => {
+    //     const dhcp = v.ip === 0 ? " (DHCP)" : "";
+    //     if (ap.ipStr) {
+    //       ap.ipStr += "/ " + this.getIpString(v.vlan + v.ip) + dhcp;
+    //     } else {
+    //       ap.ipStr = this.getIpString(v.vlan + v.ip) + dhcp;
+    //     }
+    //     if (ap.macStr) {
+    //       ap.macStr += "/ " + this.getMacString(v.mac);
+    //     } else {
+    //       ap.macStr = this.getMacString(v.mac);
+    //     }
+    //     if (ap.vlanStr) {
+    //       ap.vlanStr += "/ " + v.bezeichnung;
+    //     } else {
+    //       ap.vlanStr = v.bezeichnung;
+    //     }
+    //     ap.macsearch += v.mac;
+    //   });
+    // }
     // das spart den null-check
     if (!ap.verantwOe) {
       ap.verantwOe = ap.oe;
