@@ -188,6 +188,7 @@ export class ApDataService {
     ap.macStr = ""; // aus priHW
     ap.vlanStr = ""; // aus priHW
     ap.macsearch = ""; // alle MACs
+    /*
     ap.hw.forEach((h) => {
       if (h.pri) {
         if (h.hwtypFlag !== ApDataService.FREMDE_HW_FLAG) {
@@ -237,6 +238,7 @@ export class ApDataService {
         });
       }
     });
+*/
 
     // if (ap.vlan && ap.vlan[0]) {
     //   ap.vlan.forEach((v) => {
@@ -305,6 +307,7 @@ export class ApDataService {
         return a.flag === ApDataService.BOOL_TAG_FLAG ? -1 : 1;
       }
     });
+    /*
     ap.hw.sort((a, b) => {
       if (a.pri) {
         return -1;
@@ -317,5 +320,6 @@ export class ApDataService {
         );
       }
     });
+    */
   }
 }
