@@ -7,10 +7,13 @@ export class Arbeitsplatz {
   public apname: string;
   public bezeichnung: string;
   public aptyp: string;
-  public oe: Betrst;
-  public verantwOe: Betrst;
+  public oeId: number;
+  public verantwOeId: number;
   public bemerkung: string;
   public tags: Tag[];
+
+  public oe: Betrst;
+  public verantwOe: Betrst;
   public hw: Hardware[];
   // public vlan: Netzwerk[];
 

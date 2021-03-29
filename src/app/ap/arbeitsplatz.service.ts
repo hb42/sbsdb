@@ -500,10 +500,12 @@ export class ArbeitsplatzService {
     // Daten aus der DB holen und aufbereiten
     const dataReady: EventEmitter<void> = new EventEmitter() as EventEmitter<void>;
     dataReady.subscribe(() => {
-      this.onDataReady();
-      this.apDataReady = true;
-      // Filter erst ausloesen nachdem sie Tabelle vollstaendig geladen ist
-      this.triggerFilter();
+      if (this.apDataService.dataService.isDataReady()) {
+        this.onDataReady();
+        this.apDataReady = true;
+        // Filter erst ausloesen nachdem sie Tabelle vollstaendig geladen ist
+        this.triggerFilter();
+      }
     });
     void this.apDataService.getAPs(() => {
       this.loading = false;
@@ -534,6 +536,7 @@ export class ArbeitsplatzService {
     // eigener Filter
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.apDataService.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
+      2;
       let valid = this.filterService.filterExpression.validate(
         (ap as unknown) as Record<string, string | Array<string>>
       );

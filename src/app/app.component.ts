@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationService } from "./shared/navigation.service";
+import { InitService } from "./shared/init.service";
 
 @Component({
   selector: "sbsdb-root",
@@ -7,7 +8,7 @@ import { NavigationService } from "./shared/navigation.service";
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
-  constructor(private nav: NavigationService) {
+  constructor(private nav: NavigationService, private init: InitService) {
     console.debug("c'tor AppComponent");
   }
 

@@ -3,6 +3,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { ConfigService } from "../shared/config/config.service";
 import { DataService } from "../shared/data.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
+import { Betrst } from "./model/betrst";
 
 @Injectable({
   providedIn: "root",
@@ -15,7 +16,6 @@ export class ApDataService {
 
   // Daten fuer MatTable
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
-  // AP-Datensaetze je GET
 
   // Web-API calls
   private readonly oeTreeUrl: string;
@@ -23,6 +23,7 @@ export class ApDataService {
   private readonly pageApsUrl: string;
   private readonly singleApUrl: string;
   private readonly countUrl: string;
+  private readonly allBst: string;
 
   // case insensitive alpha sort
   // deutlich schneller als String.localeCompare()
@@ -32,14 +33,15 @@ export class ApDataService {
     sensitivity: "base",
   });
 
-  constructor(private dataService: DataService, private configService: ConfigService) {
+  constructor(public dataService: DataService, private configService: ConfigService) {
     console.debug("c'tor ApDataService");
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
     this.pageApsUrl = this.configService.webservice + "/ap/page/";
     this.singleApUrl = this.configService.webservice + "/ap/id/";
     this.countUrl = this.configService.webservice + "/ap/count";
-    this.apDataSource.data = [];
+    this.allBst = this.configService.webservice + "/betrst/all";
+    this.apDataSource.data = this.dataService.apList;
   }
 
   /**`
@@ -49,6 +51,8 @@ export class ApDataService {
    * @param ready - event nach dem letzten Block
    */
   public async getAPs(each: () => void, ready: EventEmitter<void>): Promise<void> {
+    // zunaechst die OEs holen
+    void this.getBst(ready);
     // Groesse der einzelnen Bloecke
     const pageSize =
       Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
@@ -73,27 +77,29 @@ export class ApDataService {
           fetched++;
           if (fetched === count) {
             console.debug("fetch page READY");
+            this.dataService.apListReady = true;
             ready.emit();
             // this.onDataReady();
           }
         }
       );
     }
+  }
 
-    // const data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise(); // 1. Teil, vollstaendiger record
-    // this.dataService.get(this.allApsUrl).subscribe(
-    //   (next) => {},
-    //   (err) => {},
-    //   () => {}
-    // );
-
-    // const calls: Array<Observable<Array<Arbeitsplatz>>> = [];
-    // for (let page = 0; page < count; page++) {
-    //   calls.push(this.dataService.get(this.pageApsUrl + page));
-    // }
-    // return forkJoin(calls);
-
-    // return this.dataService.get(this.pageApsUrl + page);
+  public getBst(ready: EventEmitter<void>): void {
+    this.dataService
+      .get(this.allBst)
+      .toPromise()
+      .then(
+        (bst: Betrst[]) => {
+          this.dataService.bstList = bst;
+          this.dataService.bstListReady = true;
+          ready.emit();
+        },
+        (err) => {
+          console.error("ERROR loading OE-Data ", err);
+        }
+      );
   }
 
   public getMacString(mac: string): string {
@@ -253,10 +259,26 @@ export class ApDataService {
     //     ap.macsearch += v.mac;
     //   });
     // }
-    // das spart den null-check
-    if (!ap.verantwOe) {
+    const oe = this.dataService.bstList.find((bst) => ap.oeId === bst.bstId);
+    if (oe) {
+      ap.oe = oe;
+    } else {
+      // TODO leere OE anhaengen
+    }
+    if (ap.verantwOeId) {
+      const voe = this.dataService.bstList.find((bst) => ap.verantwOeId === bst.bstId);
+      if (voe) {
+        ap.verantwOe = voe;
+      } else {
+        // TODO leere OE anhaengen
+      }
+    } else {
       ap.verantwOe = ap.oe;
     }
+    // // das spart den null-check
+    // if (!ap.verantwOe) {
+    //   ap.verantwOe = ap.oe;
+    // }
     ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
     ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
     ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
