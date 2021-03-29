@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, HostBinding, HostListener, ViewChild } from "@angular/core";
 import { MatMenu } from "@angular/material/menu";
 import { Router } from "@angular/router";
-import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";
 import { ADM_PATH, AP_PATH, HW_PATH } from "../../app-routing-const";
 import { ConfigService } from "../config/config.service";
 import { NavigationService } from "../navigation.service";
@@ -31,8 +30,7 @@ export class HeadComponent implements AfterViewInit {
   constructor(
     private router: Router,
     public navigationService: NavigationService,
-    public configService: ConfigService,
-    public apService: ArbeitsplatzService
+    public configService: ConfigService
   ) {}
 
   @HostListener("document:keydown", ["$event"])
