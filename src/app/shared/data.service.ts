@@ -8,8 +8,8 @@ import { HwKonfig } from "../ap/model/hw-konfig";
 import { ConfigService } from "./config/config.service";
 
 @Injectable({
-              providedIn: "root"
-            })
+  providedIn: "root",
+})
 export class DataService {
   public static defaultpageSize = 200;
   public static TAG_DISPLAY_NAME = "TAG";
@@ -50,8 +50,8 @@ export class DataService {
   // deutlich schneller als String.localeCompare()
   //  -> result = this.collator.compare(a, b)
   public collator = new Intl.Collator("de", {
-    numeric    : true,
-    sensitivity: "base"
+    numeric: true,
+    sensitivity: "base",
   });
 
   private aplistfetched = false;

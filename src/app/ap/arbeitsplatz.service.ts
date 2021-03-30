@@ -537,7 +537,7 @@ export class ArbeitsplatzService {
       ...new Set(
         //  (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
         this.apDataSource.data.flatMap((ap: Arbeitsplatz) =>
-                                         ap.tags.map((t1: Tag) => `${t1.bezeichnung};${t1.flag}`)
+          ap.tags.map((t1: Tag) => `${t1.bezeichnung};${t1.flag}`)
         )
       ),
     ].sort();
@@ -557,13 +557,13 @@ export class ArbeitsplatzService {
           Number(tag[1]) === DataService.BOOL_TAG_FLAG
             ? [RelOp.exist, RelOp.notexist]
             : [
-              RelOp.startswith,
-              RelOp.endswith,
-              RelOp.like,
-              RelOp.notlike,
-              RelOp.exist,
-              RelOp.notexist
-            ],
+                RelOp.startswith,
+                RelOp.endswith,
+                RelOp.like,
+                RelOp.notlike,
+                RelOp.exist,
+                RelOp.notexist,
+              ],
           null
         )
       );
@@ -581,8 +581,8 @@ export class ArbeitsplatzService {
     await this.getBst();
     // Groesse der einzelnen Bloecke
     const pageSize =
-            Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
-            DataService.defaultpageSize;
+      Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
+      DataService.defaultpageSize;
     // Anzahl der Datensaetze
     const recs = (await this.dataService.get(this.dataService.countApUrl).toPromise()) as number;
     // zu holende Seiten

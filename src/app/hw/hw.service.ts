@@ -5,8 +5,8 @@ import { Hardware } from "../ap/model/hardware";
 import { ConfigService } from "../shared/config/config.service";
 
 @Injectable({
-              providedIn: "root"
-            })
+  providedIn: "root",
+})
 export class HwService {
   constructor(public dataService: DataService, private configService: ConfigService) {
     console.debug("c'tor HwService ");
@@ -52,8 +52,8 @@ export class HwService {
       }
     );
     const pageSize =
-            Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
-            DataService.defaultpageSize;
+      Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
+      DataService.defaultpageSize;
     // Anzahl der Datensaetze
     const recs = (await this.dataService.get(this.dataService.countHwUrl).toPromise()) as number;
     // zu holende Seiten

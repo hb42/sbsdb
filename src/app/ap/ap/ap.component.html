@@ -549,9 +549,14 @@ https://github.com/angular/components/issues/6178
                     </td>
                     <td>
                       {{
-                      hw.hwKonfig.hwTypFlag !== fremdeHwFlag
-                        ? hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung + " [" + hw.sernr + "]"
-                        : ""
+                        hw.hwKonfig.hwTypFlag !== fremdeHwFlag
+                          ? hw.hwKonfig.hersteller +
+                            " - " +
+                            hw.hwKonfig.bezeichnung +
+                            " [" +
+                            hw.sernr +
+                            "]"
+                          : ""
                       }}
                     </td>
                     <td [title]="hw.vlanStr">

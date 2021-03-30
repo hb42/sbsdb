@@ -100,7 +100,7 @@ export class AdminPanelConfigComponent implements OnInit {
     this.blocksize = new FormControl("" + DataService.defaultpageSize.toString(), [
       // eslint-disable-next-line @typescript-eslint/unbound-method
       Validators.required,
-      this.blocksizeValidator
+      this.blocksizeValidator,
     ]);
     this.blocksize.statusChanges.pipe(debounceTime(200)).subscribe(() => {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
