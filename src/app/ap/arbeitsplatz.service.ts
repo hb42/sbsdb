@@ -301,7 +301,7 @@ export class ArbeitsplatzService {
           [
             ...new Set(
               this.apDataSource.data.map((a) =>
-                                           this.userSettings.showStandort ? a.verantwOe.betriebsstelle : a.oe.betriebsstelle
+                this.userSettings.showStandort ? a.verantwOe.betriebsstelle : a.oe.betriebsstelle
               )
             ),
           ].sort()
