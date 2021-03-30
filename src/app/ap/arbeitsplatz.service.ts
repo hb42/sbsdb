@@ -11,18 +11,16 @@ import { TransportElements } from "../shared/filter/transport-elements";
 import { KeyboardService } from "../shared/keyboard.service";
 import { NavigationService } from "../shared/navigation.service";
 import { ApColumn } from "./ap-column";
-import { ApDataService } from "./ap-data.service";
 import { ApFilterService } from "./ap-filter.service";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { Tag } from "./model/tag";
+import { DataService } from "../shared/data.service";
+import { Betrst } from "./model/betrst";
+import { MatTableDataSource } from "@angular/material/table";
 
 @Injectable({ providedIn: "root" })
 export class ArbeitsplatzService {
-  // public treeControl = new NestedTreeControl<OeTreeItem>((node) => node.children);
-  // public dataSource = new MatTreeNestedDataSource<OeTreeItem>();
-
-  // public expandedRow: Arbeitsplatz;
-  // public selection: SelectionModel<Arbeitsplatz>;
+  public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
   // DEBUG Zeilenumbruch in den Tabellenzellen (drin lassen??)
   public tableWrapCell = false;
@@ -50,20 +48,20 @@ export class ArbeitsplatzService {
     new Set() -> nur eindeutige - ... -> zu Array
     -> https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array#9229932
     die beiden folgenden Arrays brauchen ca. 0.005 - 0.008 Sekunden => Listen bei Bedarf erzeugen
- const uniq1 = [ ...new Set(this.apDataService.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr)) ].sort();
- const uniq2 = [ ...new Set(this.apDataService.apDataSource.data.map((a) => a.oesearch)) ].sort();
+ const uniq1 = [ ...new Set(this.apDataSource.data.filter((a) => !!a.hwTypStr).map((a2) => a2.hwTypStr)) ].sort();
+ const uniq2 = [ ...new Set(this.apDataSource.data.map((a) => a.oesearch)) ].sort();
   */
 
-  private filterChange: EventEmitter<void> = new EventEmitter() as EventEmitter<void>;
+  private filterChange: EventEmitter<void> = new EventEmitter<void>();
   private filterChanged = 1;
   private apDataReady = false;
 
   constructor(
     private configService: ConfigService,
-    public apDataService: ApDataService,
     public filterService: ApFilterService,
     private keyboardService: KeyboardService,
     private navigationService: NavigationService,
+    private dataService: DataService,
     private router: Router
   ) {
     console.debug("c'tor ArbeitsplatzService");
@@ -107,15 +105,14 @@ export class ArbeitsplatzService {
   }
 
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
-    this.apDataService.apDataSource.sort = sort;
-    this.apDataService.apDataSource.paginator = paginator;
+    this.apDataSource.sort = sort;
+    this.apDataSource.paginator = paginator;
 
-    this.apDataService.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
+    this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
     if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
-      this.apDataService.apDataSource.sort.active = this.userSettings.apSortColumn;
-      this.apDataService.apDataSource.sort.direction =
-        this.userSettings.apSortDirection === "asc" ? "" : "asc";
-      const sortheader = this.apDataService.apDataSource.sort.sortables.get(
+      this.apDataSource.sort.active = this.userSettings.apSortColumn;
+      this.apDataSource.sort.direction = this.userSettings.apSortDirection === "asc" ? "" : "asc";
+      const sortheader = this.apDataSource.sort.sortables.get(
         this.userSettings.apSortColumn
       ) as MatSortHeader;
       // this.sort.sort(sortheader);
@@ -124,29 +121,6 @@ export class ArbeitsplatzService {
       sortheader._handleClick();
     }
   }
-
-  // public applyUserSettings() {
-  //   // Nur ausfuehren, wenn AP-Daten schon geladen (= nur AP-Component wurde neu erstellt)
-  //   // Beim Start des Service wird diese fn in getAps() aufgerufen, weil die Component evtl.
-  //   // schon fertig ist bevor alle Daten geladen wurden, dann wird der Aufruf aus der Component
-  //   // ignoriert. .paginator wird in der Component gesetzt => falls paginator noch nicht exxistiert
-  //   // muss die Component das hier erledigen.
-  //   if (this.apDataService.apDataSource.data && this.apDataService.apDataSource.paginator) {
-  //     this.apDataService.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
-  //     if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
-  //       this.apDataService.apDataSource.sort.active = this.userSettings.apSortColumn;
-  //       this.apDataService.apDataSource.sort.direction =
-  //         this.userSettings.apSortDirection === "asc" ? "" : "asc";
-  //       const sortheader = this.apDataService.apDataSource.sort.sortables.get(
-  //         this.userSettings.apSortColumn
-  //       ) as MatSortHeader;
-  //       // this.sort.sort(sortheader);
-  //       // FIXME Hack -> ApComponent#handleSort
-  //       sortheader._handleClick();
-  //     }
-  //     this.filterService.initializeFilters();
-  //   }
-  // }
 
   public onSort(event: Sort): void {
     this.userSettings.apSortColumn = event.active;
@@ -165,17 +139,6 @@ export class ArbeitsplatzService {
     event.stopPropagation();
   }
 
-  // public bstTooltip(ap: Arbeitsplatz): string {
-  //   return (
-  //     "OE: " +
-  //     ap.oe.bstNr +
-  //     "\n\n" +
-  //     (ap.oe.strasse ? ap.oe.strasse + " " + (ap.oe.hausnr ? ap.oe.hausnr : "") + "\n" : "") +
-  //     (ap.oe.plz ? ap.oe.plz + " " + (ap.oe.ort ? ap.oe.ort : "") + "\n" : "") +
-  //     (ap.oe.oeff ? "\n" + ap.oe.oeff : "")
-  //   );
-  // }
-
   public test(): void {
     const te: TransportElement[] = this.filterService.convBracket(
       this.filterService.filterExpression
@@ -187,7 +150,7 @@ export class ArbeitsplatzService {
 
   public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
     const col = this.getColumn("aptyp");
-    col.filterControl.setValue(ap.aptyp);
+    col.filterControl.setValue(ap.apTypBezeichnung);
     col.filterControl.markAsDirty();
     event.stopPropagation();
   }
@@ -202,24 +165,24 @@ export class ArbeitsplatzService {
   /** Whether the number of selected elements matches the total number of rows. */
   public isAllSelected(): boolean {
     // TODO leerer Filter? / empty array -> true
-    return this.apDataService.apDataSource.filteredData.every((ap) => ap.selected);
+    return this.apDataSource.filteredData.every((ap) => ap.selected);
     // const numSelected = this.selection.selected.length;
-    // const numRows = this.apDataService.apDataSource.filteredData.length;
+    // const numRows = this.apDataSource.filteredData.length;
     // return numSelected == numRows;
   }
 
   public isSelected(): boolean {
-    return this.apDataService.apDataSource.filteredData.some((ap) => ap.selected);
+    return this.apDataSource.filteredData.some((ap) => ap.selected);
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   public masterToggle(): void {
     const toggle = !this.isAllSelected();
-    this.apDataService.apDataSource.filteredData.forEach((row) => (row.selected = toggle));
+    this.apDataSource.filteredData.forEach((row) => (row.selected = toggle));
     this.filterService.triggerFilter();
     // this.isAllSelected()
     //   ? this.selection.clear()
-    //   : this.apDataService.apDataSource.filteredData.forEach((row) => this.selection.select(row));
+    //   : this.apDataSource.filteredData.forEach((row) => this.selection.select(row));
   }
 
   public rowToggle(row: Arbeitsplatz): void {
@@ -229,16 +192,16 @@ export class ArbeitsplatzService {
 
   public selectCount(): number {
     let count = 0;
-    this.apDataService.apDataSource.filteredData.forEach((row) => (row.selected ? count++ : 0));
+    this.apDataSource.filteredData.forEach((row) => (row.selected ? count++ : 0));
     return count;
   }
 
   public expandAllRows(): void {
-    this.apDataService.apDataSource.filteredData.forEach((row) => (row.expanded = true));
+    this.apDataSource.filteredData.forEach((row) => (row.expanded = true));
   }
 
   public collapseAllRows(): void {
-    this.apDataService.apDataSource.filteredData.forEach((row) => (row.expanded = false));
+    this.apDataSource.filteredData.forEach((row) => (row.expanded = false));
   }
 
   /**
@@ -282,13 +245,13 @@ export class ArbeitsplatzService {
         this, // hat typ [dropdown], hat typ nicht [dropdown]
         "aptyp",
         () => "Typ",
-        () => "aptyp",
-        () => "aptyp",
+        () => "apTypBezeichnung",
+        () => "apTypBezeichnung",
         "t",
         true,
         ApColumn.LCASE,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.apDataService.apDataSource.data.map((a) => a.aptyp))].sort()
+        () => [...new Set(this.apDataSource.data.map((a) => a.apTypBezeichnung))].sort()
       )
     );
     // this.columns.push(
@@ -305,7 +268,7 @@ export class ArbeitsplatzService {
     //     () =>
     //       [
     //         // @ts-ignore (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
-    //         ...new Set(this.apDataService.apDataSource.data.flatMap((ap) => ap.subTypes)),
+    //         ...new Set(this.apDataSource.data.flatMap((ap) => ap.subTypes)),
     //       ].sort() as Array<string>
     //   )
     // );
@@ -337,8 +300,8 @@ export class ArbeitsplatzService {
         () =>
           [
             ...new Set(
-              this.apDataService.apDataSource.data.map((a) =>
-                this.userSettings.showStandort ? a.verantwOe.betriebsstelle : a.oe.betriebsstelle
+              this.apDataSource.data.map((a) =>
+                                           this.userSettings.showStandort ? a.verantwOe.betriebsstelle : a.oe.betriebsstelle
               )
             ),
           ].sort()
@@ -415,7 +378,7 @@ export class ArbeitsplatzService {
         false,
         ApColumn.LCASE,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.apDataService.apDataSource.data.map((a) => a.vlanStr))].sort()
+        () => [...new Set(this.apDataSource.data.map((a) => a.vlanStr))].sort()
       )
     );
     this.columns.push(
@@ -491,25 +454,25 @@ export class ArbeitsplatzService {
    * DataSource.filterPredicate().
    */
   private triggerFilter() {
-    this.apDataService.apDataSource.filter = `${this.filterChanged++}`;
+    this.apDataSource.filter = `${this.filterChanged++}`;
   }
 
   // APs aus der DB holen
   private initTable() {
     this.loading = true;
     // Daten aus der DB holen und aufbereiten
-    const dataReady: EventEmitter<void> = new EventEmitter() as EventEmitter<void>;
-    dataReady.subscribe(() => {
-      if (this.apDataService.dataService.isDataReady()) {
-        this.onDataReady();
-        this.apDataReady = true;
-        // Filter erst ausloesen nachdem sie Tabelle vollstaendig geladen ist
-        this.triggerFilter();
-      }
-    });
-    void this.apDataService.getAPs(() => {
+    // const dataReady: EventEmitter<void> = new EventEmitter<void>();
+    this.dataService.dataReady.subscribe(() => {
       this.loading = false;
-    }, dataReady);
+      this.apDataSource.data = this.dataService.apList;
+      this.onDataReady();
+      this.apDataReady = true;
+      // Filter erst ausloesen nachdem sie Tabelle vollstaendig geladen ist
+      this.triggerFilter();
+    });
+    void this.getAPs(() => {
+      this.loading = true;
+    });
 
     /*
      * Geänderten Filter in die URL eintragen
@@ -535,7 +498,7 @@ export class ArbeitsplatzService {
 
     // eigener Filter
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.apDataService.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
+    this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
       2;
       let valid = this.filterService.filterExpression.validate(
         (ap as unknown) as Record<string, string | Array<string>>
@@ -554,7 +517,7 @@ export class ArbeitsplatzService {
     this.filterService.initializeFilters();
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
-    this.apDataService.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
+    this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
       const col = this.getColumn(id);
       if (col) {
         return col.sortString(ap);
@@ -562,103 +525,19 @@ export class ArbeitsplatzService {
         return "";
       }
     };
-    // const pagesize: number = await this.configService.getConfig(ConfigService.AP_PAGE_SIZE);
-    // const defaultpagesize = 100;
-    // let page = 0;
-
-    // const data = await this.http.get<Arbeitsplatz[]>(this.pageApsUrl + page).toPromise(); // 1. Teil, vollstaendiger record
-
-    // const count = 15;
-    // for (let page = 0; page < count; page++) {
-    //   this.apDataService.getAPs(page).subscribe(
-    //     (aps) => {
-    //       aps.forEach((ap) => this.prepAP(ap));
-    //       this.apDataService.apDataSource.data = [...this.apDataService.apDataSource.data, ...aps];
-    //     },
-    //     (err) => {
-    //       console.error("ERROR loading AP-Data " + err);
-    //     },
-    //     () => {
-    //       this.loading = false;
-    //       if (page === count - 1) {
-    //         this.onDataReady();
-    //       }
-    //     }
-    //   );
-    // }
-
-    // for (let page = 0; page < 20; page++) {
-    //   this.apDataService.getAPs(page).subscribe(
-    //     (next) => {
-    //       next.forEach((ap) => {
-    //         this.prepAP(ap);
-    //       });
-    //       this.apDataService.apDataSource.data = [...this.apDataService.apDataSource.data, ...next];
-    //       this.loading = false; // nach erstem Teil immer false
-    //     },
-    //     (err) => {
-    //       console.error("ERROR loading AP-Data " + err);
-    //     },
-    //     () => {
-    //       this.onDataReady();
-    //     }
-    //   );
-    // }
-
-    // setTimeout(() => {
-    //   data.forEach((ap) => {
-    //     this.prepAP(ap);
-    //   });
-    //   this.apDataService.apDataSource.data = data;
-    //   this.loading = false;
-    // }, 0);
-
-    // TODO klappt?
-    // this.applyUserSettings();
-
-    // this.fetchPage(++page, pagesize || defaultpagesize); // Rest holen
   }
 
   public nav2filter(filtStr: string): void {
     this.navigationService.navigateByCmd(["/" + AP_PATH, { filt: filtStr }]);
-    // this.router
-    //   // .navigate(["/ap", { std: this.filterService.stdFilter, filt: filtStr }])
-    //   .navigate(["/" + AP_PATH, { filt: filtStr }])
-    //   .then(() => console.debug("## ApService.nav2filter()  routing OK ###"))
-    //   .catch((reason) => {
-    //     console.debug("## ApService.nav2filter()  routing ERROR:");
-    //     console.dir(reason);
-    //   });
   }
-
-  // private fetchPage(page: number, size: number) {
-  //   console.debug("load page " + page + ", size " + size);
-  //   this.http
-  //     .get<Arbeitsplatz[]>(this.pageApsUrl + page)
-  //     .toPromise()
-  //     .then((dat) => {
-  //       // setTimeout(() => {
-  //       dat.forEach((ap) => {
-  //         this.prepAP(ap);
-  //       });
-  //       this.apDataService.apDataSource.data = [...this.apDataService.apDataSource.data, ...dat];
-  //       // }, 0);
-  //       if (dat.length === size) {
-  //         this.fetchPage(++page, size); // recursion!
-  //       } else {
-  //         // alle Seiten geladen
-  //         this.onDataReady();
-  //       }
-  //     });
-  // }
 
   private onDataReady() {
     // alle vorhandenen tags
     const tags = [
       ...new Set(
         //  (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
-        this.apDataService.apDataSource.data.flatMap((ap: Arbeitsplatz) =>
-          ap.tags.map((t1: Tag) => `${t1.bezeichnung};${t1.flag}`)
+        this.apDataSource.data.flatMap((ap: Arbeitsplatz) =>
+                                         ap.tags.map((t1: Tag) => `${t1.bezeichnung};${t1.flag}`)
         )
       ),
     ].sort();
@@ -668,48 +547,141 @@ export class ArbeitsplatzService {
       this.columns.push(
         new ApColumn(
           this,
-          ApDataService.TAG_DISPLAY_NAME + tag[0],
-          () => ApDataService.TAG_DISPLAY_NAME + ": " + tag[0],
-          () => ApDataService.TAG_DISPLAY_NAME + ": " + tag[0],
-          () => ApDataService.TAG_DISPLAY_NAME + ": " + tag[0],
+          DataService.TAG_DISPLAY_NAME + tag[0],
+          () => DataService.TAG_DISPLAY_NAME + ": " + tag[0],
+          () => DataService.TAG_DISPLAY_NAME + ": " + tag[0],
+          () => DataService.TAG_DISPLAY_NAME + ": " + tag[0],
           "",
           false,
           ApColumn.LCASE,
-          Number(tag[1]) === ApDataService.BOOL_TAG_FLAG
+          Number(tag[1]) === DataService.BOOL_TAG_FLAG
             ? [RelOp.exist, RelOp.notexist]
             : [
-                RelOp.startswith,
-                RelOp.endswith,
-                RelOp.like,
-                RelOp.notlike,
-                RelOp.exist,
-                RelOp.notexist,
-              ],
+              RelOp.startswith,
+              RelOp.endswith,
+              RelOp.like,
+              RelOp.notlike,
+              RelOp.exist,
+              RelOp.notexist
+            ],
           null
         )
       );
     });
   }
 
-  // private sortAP(ap: Arbeitsplatz) {
-  //   ap.tags.sort((a, b) => {
-  //     if (a.flag === b.flag) {
-  //       return this.collator.compare(a.bezeichnung, b.bezeichnung);
-  //     } else {
-  //       return a.flag === ArbeitsplatzService.TAG_FLAG ? -1 : 1;
-  //     }
-  //   });
-  //   ap.hw.sort((a, b) => {
-  //     if (a.pri) {
-  //       return -1;
-  //     } else if (b.pri) {
-  //       return 1;
-  //     } else {
-  //       return this.collator.compare(
-  //         a.hwtyp + a.hersteller + a.bezeichnung + a.sernr,
-  //         b.hwtyp + b.hersteller + b.bezeichnung + b.sernr
-  //       );
-  //     }
-  //   });
-  // }
+  /**`
+   * Arbeitsplaetze parallel, in Bloecken von ConfigService.AP_PAGE_SIZE holen.
+   *
+   * @param each - callback wenn alle Bloecke fertig ist
+   * @param ready - event nach dem letzten Block
+   */
+  public async getAPs(each: () => void): Promise<void> {
+    // zunaechst die OEs holen
+    await this.getBst();
+    // Groesse der einzelnen Bloecke
+    const pageSize =
+            Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
+            DataService.defaultpageSize;
+    // Anzahl der Datensaetze
+    const recs = (await this.dataService.get(this.dataService.countApUrl).toPromise()) as number;
+    // zu holende Seiten
+    const count = Math.ceil(recs / pageSize);
+    let fetched = 0;
+    for (let page = 0; page < count; page++) {
+      this.dataService.get(`${this.dataService.pageApsUrl}${page}/${pageSize}`).subscribe(
+        (aps: Arbeitsplatz[]) => {
+          console.debug("fetch AP page #", page, " size=", aps.length);
+          aps.forEach((ap) => this.prepAP(ap));
+          this.dataService.apList = [...this.dataService.apList, ...aps];
+          // this.apDataSource.data = [...this.apDataSource.data, ...aps];
+        },
+        (err) => {
+          console.error("ERROR loading AP-Data ", err);
+        },
+        () => {
+          each();
+          fetched++;
+          if (fetched === count) {
+            this.apDataSource.data = this.dataService.apList;
+            console.debug("fetch page READY");
+            this.dataService.apListFetched.emit();
+            // ready.emit();
+            // this.onDataReady();
+          }
+        }
+      );
+    }
+  }
+
+  public getBst(): Promise<void> {
+    return this.dataService
+      .get(this.dataService.allBstUrl)
+      .toPromise()
+      .then(
+        (bst: Betrst[]) => {
+          console.debug("fetch Betrst size=", bst.length);
+          this.dataService.bstList = bst;
+          this.dataService.bstListReady.emit();
+        },
+        (err) => {
+          console.error("ERROR loading OE-Data ", err);
+        }
+      );
+  }
+
+  private prepAP(ap: Arbeitsplatz) {
+    ap.hwStr = ""; // keine undef Felder!
+    ap.sonstHwStr = ""; // keine undef Felder!
+    ap.hw = [];
+
+    ap.ipStr = ""; // aus priHW
+    ap.macStr = ""; // aus priHW
+    ap.vlanStr = ""; // aus priHW
+    ap.macsearch = ""; // alle MACs
+
+    const oe = this.dataService.bstList.find((bst) => ap.oeId === bst.bstId);
+    if (oe) {
+      ap.oe = oe;
+    } else {
+      // TODO leere OE anhaengen
+    }
+    if (ap.verantwOeId) {
+      const voe = this.dataService.bstList.find((bst) => ap.verantwOeId === bst.bstId);
+      if (voe) {
+        ap.verantwOe = voe;
+      } else {
+        // TODO leere OE anhaengen
+      }
+    } else {
+      ap.verantwOe = ap.oe;
+    }
+
+    ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
+    ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
+    ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
+    ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
+
+    // ap.subTypes = [];
+    ap.tags.forEach((tag) => {
+      // if (tag.flag === ApDataService.BOOL_TAG_FLAG) {
+      //   ap.subTypes.push(tag.bezeichnung);
+      // } else {
+      //   ap[ApDataService.TAG_DISPLAY_NAME + ": " + tag.bezeichnung] = tag.text;
+      // }
+      ap[DataService.TAG_DISPLAY_NAME + ": " + tag.bezeichnung] =
+        tag.flag === DataService.BOOL_TAG_FLAG ? tag.flag : tag.text;
+    });
+    this.sortAP(ap);
+  }
+
+  private sortAP(ap: Arbeitsplatz) {
+    ap.tags.sort((a, b) => {
+      if (a.flag === b.flag) {
+        return this.dataService.collator.compare(a.bezeichnung, b.bezeichnung);
+      } else {
+        return a.flag === DataService.BOOL_TAG_FLAG ? -1 : 1;
+      }
+    });
+  }
 }

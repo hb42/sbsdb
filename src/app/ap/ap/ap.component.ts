@@ -7,7 +7,7 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
-  ViewChild,
+  ViewChild
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
@@ -15,8 +15,8 @@ import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
-import { ApDataService } from "../ap-data.service";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
+import { DataService } from "../../shared/data.service";
 
 @Component({
   selector: "sbsdb-ap",
@@ -44,13 +44,14 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   public subscription: Subscription;
 
   // const importieren
-  public fremdeHwFlag = ApDataService.FREMDE_HW_FLAG;
-  public aptypeFlag = ApDataService.BOOL_TAG_FLAG;
+  public fremdeHwFlag = DataService.FREMDE_HW_FLAG;
+  public aptypeFlag = DataService.BOOL_TAG_FLAG;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private config: ConfigService,
+    private dataService: DataService,
     public apService: ArbeitsplatzService,
     public dialog: MatDialog
   ) {

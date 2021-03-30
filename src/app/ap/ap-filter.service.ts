@@ -22,6 +22,7 @@ import { ApFilterEditListData } from "./ap-filter-edit-list/ap-filter-edit-list-
 import { ApFilterEditListComponent } from "./ap-filter-edit-list/ap-filter-edit-list.component";
 import { ApFilterEditData } from "./ap-filter-edit/ap-filter-edit-data";
 import { ApFilterEditComponent } from "./ap-filter-edit/ap-filter-edit.component";
+import { DataService } from "../shared/data.service";
 
 @Injectable({ providedIn: "root" })
 export class ApFilterService {
@@ -52,15 +53,11 @@ export class ApFilterService {
   // Filtereingaben bremsen
   private readonly keyDebounce = 500;
 
-  // case insensitive alpha sort
-  // deutlich schneller als String.localeCompare()
-  //  -> result = this.collator.compare(a, b)
-  private collator = new Intl.Collator("de", {
-    numeric: true,
-    sensitivity: "base",
-  });
-
-  constructor(private configService: ConfigService, public dialog: MatDialog) {
+  constructor(
+    private configService: ConfigService,
+    private dataService: DataService,
+    public dialog: MatDialog
+  ) {
     console.debug("c'tor ApFilterService");
     this.userSettings = configService.getUser();
   }
@@ -188,12 +185,12 @@ export class ApFilterService {
     const filters = this.userSettings.apFilter.filters.filter(
       (tf) => tf.key !== ApFilterService.STDFILTER
     );
-    filters.sort((a, b) => this.collator.compare(a.name, b.name));
+    filters.sort((a, b) => this.dataService.collator.compare(a.name, b.name));
     return filters;
   }
 
   public extGlobalFilterList(): TransportFilter[] {
-    this.globalFilters.sort((a, b) => this.collator.compare(a.name, b.name));
+    this.globalFilters.sort((a, b) => this.dataService.collator.compare(a.name, b.name));
     return this.globalFilters;
   }
   public selectFilter(evt: MatSelectChange): void {

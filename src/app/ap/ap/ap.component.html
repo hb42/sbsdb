@@ -58,7 +58,7 @@ https://github.com/angular/components/issues/6178
     </div>
     <table
       mat-table
-      [dataSource]="apService.apDataService.apDataSource"
+      [dataSource]="apService.apDataSource"
       matSort
       multiTemplateDataRows
       (matSortChange)="apService.onSort($event)"
@@ -200,7 +200,7 @@ https://github.com/angular/components/issues/6178
                   : ''
               "
             >
-              {{ element.aptyp }}
+              {{ element.apTypBezeichnung }}
             </span>
           </div>
 
@@ -545,13 +545,13 @@ https://github.com/angular/components/issues/6178
                   <tr *ngFor="let hw of element.hw">
                     <!--                <td *ngIf="!hw.pri">-->
                     <td>
-                      {{ hw.hwtyp }}
+                      {{ hw.hwKonfig.hwTypBezeichnung }}
                     </td>
                     <td>
                       {{
-                        hw.hwtypFlag !== fremdeHwFlag
-                          ? hw.hersteller + " - " + hw.bezeichnung + " [" + hw.sernr + "]"
-                          : ""
+                      hw.hwKonfig.hwTypFlag !== fremdeHwFlag
+                        ? hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung + " [" + hw.sernr + "]"
+                        : ""
                       }}
                     </td>
                     <td [title]="hw.vlanStr">
@@ -567,9 +567,9 @@ https://github.com/angular/components/issues/6178
               <!--                  <tr *ngFor="let vl of element.vlan">-->
               <!--                    <td>-->
               <!--                      {{ vl.bezeichnung }}<br />-->
-              <!--                      {{ apService.apDataService.getIpString(vl.vlan + vl.ip) }}-->
+              <!--                      {{ apService.getIpString(vl.vlan + vl.ip) }}-->
               <!--                    </td>-->
-              <!--                    <td>{{ apService.apDataService.getMacString(vl.mac) }}</td>-->
+              <!--                    <td>{{ apService.getMacString(vl.mac) }}</td>-->
               <!--                  </tr>-->
               <!--                </table>-->
               <!--              </div>-->
@@ -592,8 +592,8 @@ https://github.com/angular/components/issues/6178
       <ng-container matColumnDef="footer">
         <td mat-footer-cell *matFooterCellDef [colSpan]="apService.displayedColumns.length">
           <div>
-            {{ apService.apDataService.apDataSource.filteredData.length }} APs von
-            {{ apService.apDataService.apDataSource.data.length }}
+            {{ apService.apDataSource.filteredData.length }} APs von
+            {{ apService.apDataSource.data.length }}
           </div>
           <div class="fill"></div>
           <div style="font-size: 10px">
@@ -633,7 +633,7 @@ https://github.com/angular/components/issues/6178
 <!--<ng-template #pagInsert>-->
 <div #pagInsert style="display: flex; flex: auto; margin-left: 10px">
   Ausgewählt: {{ apService.selectCount() }} von
-  {{ apService.apDataService.apDataSource.filteredData.length }}
+  {{ apService.apDataSource.filteredData.length }}
 </div>
 <!--</ng-template>-->
 
@@ -726,8 +726,8 @@ https://github.com/angular/components/issues/6178
 
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">
-    <button mat-menu-item (click)="apService.testApMenu()">Test1</button>
+    <button mat-menu-item (click)="apService.test()">Test1</button>
     <button mat-menu-item>Test2</button>
-    <button mat-menu-item *ngIf="ap.aptyp.indexOf('Thin') !== -1">Test3 TC</button>
+    <button mat-menu-item *ngIf="ap.apTypBezeichnung.indexOf('Thin') !== -1">Test3 TC</button>
   </ng-template>
 </mat-menu>

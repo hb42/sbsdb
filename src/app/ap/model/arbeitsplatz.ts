@@ -1,11 +1,11 @@
 import { Betrst } from "./betrst";
 import { Tag } from "./tag";
+import { Hardware } from "./hardware";
 
 export class Arbeitsplatz {
   public apId: number;
   public apname: string;
   public bezeichnung: string;
-  public aptyp: string;
   public oeId: number;
   public verantwOeId: number;
   public bemerkung: string;
@@ -21,7 +21,7 @@ export class Arbeitsplatz {
 
   public oe: Betrst;
   public verantwOe: Betrst;
-  // public hw: Hardware[];
+  public hw: Hardware[] = [];
   // public vlan: Netzwerk[];
 
   // interne Felder fuer die Darstellung/Suche

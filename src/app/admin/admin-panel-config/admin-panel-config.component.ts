@@ -1,8 +1,8 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { debounceTime } from "rxjs/operators";
-import { ApDataService } from "../../ap/ap-data.service";
 import { ConfigService } from "../../shared/config/config.service";
+import { DataService } from "../../shared/data.service";
 
 @Component({
   selector: "sbsdb-admin-panel-config",
@@ -18,7 +18,7 @@ export class AdminPanelConfigComponent implements OnInit {
   public blocksize: FormControl;
   public blocksizeLabel = "Blockgröße der AP-Liste";
   public blocksizePlaceholder = "100";
-  public blocksizeDefaultValue = ApDataService.defaultpageSize;
+  public blocksizeDefaultValue = DataService.defaultpageSize;
   public blocksizeConfigName = ConfigService.AP_PAGE_SIZE;
   public blocksizeNote =
     "Die Arbeitsplatzliste wird beim Starten der Anwendung im Hintergrund geladen. Um das zu " +
@@ -97,10 +97,10 @@ export class AdminPanelConfigComponent implements OnInit {
     //     this.blocksize.markAsPristine();
     //   });
 
-    this.blocksize = new FormControl("" + ApDataService.defaultpageSize.toString(), [
+    this.blocksize = new FormControl("" + DataService.defaultpageSize.toString(), [
       // eslint-disable-next-line @typescript-eslint/unbound-method
       Validators.required,
-      this.blocksizeValidator,
+      this.blocksizeValidator
     ]);
     this.blocksize.statusChanges.pipe(debounceTime(200)).subscribe(() => {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
