@@ -15,6 +15,7 @@ import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
+import { ApHeaderCellComponent } from "../ap-header-cell/ap-header-cell.component";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 import { DataService } from "../../shared/data.service";
 
@@ -22,30 +23,19 @@ import { DataService } from "../../shared/data.service";
   selector: "sbsdb-ap",
   templateUrl: "./ap.component.html",
   styleUrls: ["./ap.component.scss"],
-  animations: [
-    trigger("detailExpand", [
-      state("collapsed", style({ height: "0px", minHeight: "0", display: "none" })),
-      state("expanded", style({ height: "*" })),
-      transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
-    ]),
-  ],
 })
 export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding("attr.class") public cssClass = "flex-panel flex-content-fix";
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
-  @ViewChild("firstfilter") public firstFilter: ElementRef<HTMLInputElement>;
-  @ViewChild("lastfilter") public lastFilter: ElementRef<HTMLInputElement>;
+  @ViewChild("firstfilter") public firstFilter: ApHeaderCellComponent; //ElementRef<HTMLInputElement>;
+  @ViewChild("lastfilter") public lastFilter: ApHeaderCellComponent;
 
   @ViewChild("pagInsert", { read: ElementRef }) pagInsert: ElementRef<Element>;
   @ViewChild(MatPaginator, { read: ElementRef }) pagElement: ElementRef<Element>;
 
   public subscription: Subscription;
-
-  // const importieren
-  public fremdeHwFlag = DataService.FREMDE_HW_FLAG;
-  public aptypeFlag = DataService.BOOL_TAG_FLAG;
 
   constructor(
     private route: ActivatedRoute,
@@ -172,13 +162,13 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public focusFirstFilter(): void {
     if (this.firstFilter) {
-      this.firstFilter.nativeElement.focus();
+      this.firstFilter.focus();
     }
   }
 
   public focusLastFilter(): void {
     if (this.lastFilter) {
-      this.lastFilter.nativeElement.focus();
+      this.lastFilter.focus();
     }
   }
 

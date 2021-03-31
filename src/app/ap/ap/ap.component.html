@@ -1,31 +1,5 @@
-<!--<div class="flex-row" >-->
-<!--  <div class="flex-panel treePanel">-->
-<!--    <sbsdb-ap-tree></sbsdb-ap-tree>-->
-<!--  </div>-->
-<!--  <div fb-splitter ></div>-->
-<!--  <div class="flex-panel flex-max listPanel">-->
-<!--    <sbsdb-ap-list></sbsdb-ap-list>-->
-<!--  </div>-->
-<!--</div>-->
-
-<!--<mat-sidenav-container id="container" >-->
-<!--  <mat-sidenav mode="side" opened id="sidenav">-->
-<!--    <sbsdb-ap-tree></sbsdb-ap-tree>-->
-<!--  </mat-sidenav>-->
-<!--  <mat-sidenav-content>Main content</mat-sidenav-content>-->
-<!--</mat-sidenav-container>-->
-
-<!-- custom filter:
-https://stackoverflow.com/questions/48276404/filtering-specific-column-in-angular-material-table-in-angular-5
-table:
-https://blog.angular-university.io/angular-material-data-table/
-https://github.com/angular/components/issues/6178
--->
 <div class="flex-col">
   <sbsdb-head>
-    <!--    <mat-button-toggle mat-icon-button title="Erweiterte Suche" [checked]="apService.stdFilter" (change)="extendedFilter()">-->
-    <!--      <mat-icon>find_in_page</mat-icon>-->
-    <!--    </mat-button-toggle>-->
     <button
       mat-icon-button
       title="Erweiterte Suche"
@@ -43,19 +17,17 @@ https://github.com/angular/components/issues/6178
     </button>
   </sbsdb-head>
 
-  <!--<div class="flex-col">-->
-  <!-- table + paginator -->
-  <!--  <sbsdb-ap-filter> &lt;!&ndash; DEBUG &ndash;&gt;-->
-  <!--  </sbsdb-ap-filter>-->
   <sbsdb-ap-filter
     *ngIf="!apService.filterService.stdFilter"
     [data]="apService.filterService.filterElement"
   ></sbsdb-ap-filter>
+
   <div class="flex-content">
-    <!-- table -->
+    <!-- empty table -->
     <div class="spinner-container" *ngIf="apService.loading">
       <mat-spinner></mat-spinner>
     </div>
+    <!-- TABLE begin -->
     <table
       mat-table
       [dataSource]="apService.apDataSource"
@@ -66,14 +38,15 @@ https://github.com/angular/components/issues/6178
     >
       <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
+      <!-- COLUMN checkbox begin -->
       <ng-container matColumnDef="select">
+        <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <button
             style="font-size: 18px; width: 16px"
             mat-icon-button
             (click)="apService.toggleSelection()"
           >
-            <!--            *ngIf="apService.filterService.stdFilter"-->
             <mat-icon
               inline
               title="Nur Ausgewählte anzeigen"
@@ -100,6 +73,7 @@ https://github.com/angular/components/issues/6178
           >
           </mat-checkbox>
         </th>
+        <!-- DATA -->
         <td mat-cell *matCellDef="let row">
           <mat-checkbox
             (click)="$event.stopPropagation()"
@@ -109,75 +83,30 @@ https://github.com/angular/components/issues/6178
           >
           </mat-checkbox>
         </td>
-        <!--        <th mat-header-cell *matHeaderCellDef>-->
-        <!--          <mat-checkbox (change)="$event ? apService.masterToggle() : null"-->
-        <!--                        [checked]="apService.selection.hasValue() && apService.isAllSelected()"-->
-        <!--                        [indeterminate]="apService.selection.hasValue() && !apService.isAllSelected()"-->
-        <!--                        color="primary">-->
-        <!--          </mat-checkbox>-->
-        <!--        </th>-->
-        <!--        <td mat-cell *matCellDef="let row">-->
-        <!--          <mat-checkbox (click)="$event.stopPropagation()"-->
-        <!--                        (change)="$event ? apService.selection.toggle(row) : null"-->
-        <!--                        [checked]="apService.selection.isSelected(row)"-->
-        <!--                        color="primary">-->
-        <!--          </mat-checkbox>-->
-        <!--        </td>-->
       </ng-container>
-      <ng-container matColumnDef="aptyp" *ngIf="'aptyp'; let colname">
-        <!-- sticky -->
+      <!-- COLUMN checkbox end -->
+
+      <!-- COLUMN aptyp begin -->
+      <ng-container matColumnDef="aptyp">
+        <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string
-              [text]="apService.getColumn(colname).displayName"
-              [accel]="apService.getColumn(colname).accelerator"
-            ></sbsdb-accelerator-string>
-          </span>
-          <!--          <div class="select-filter">-->
-          <mat-form-field
-            floatLabel="never"
-            class="filter-s"
-            *ngIf="apService.filterService.stdFilter"
-          >
-            <!--              <mat-label>Filter</mat-label>-->
-            <!--              <mat-select [formControl]="apService.typFilter" multiple>-->
-            <!--                <mat-option *ngFor="let typ of apService.typtagSelect" [value]="typ.id">{{typ.select}}</mat-option>-->
-            <!--              </mat-select>-->
-            <input
-              matInput
-              [formControl]="apService.getColumn(colname).filterControl"
-              [tabIndex]="apService.displayedColumns.indexOf(colname) + 1"
-              #firstfilter
-              (keydown.shift.tab)="
-                focusLastFilter(); $event.preventDefault(); $event.stopPropagation()
-              "
-              title="Filter (Alt+F)"
-            />
-            <button
-              mat-button
-              [disabled]="!apService.getColumn(colname).filterControl.value"
-              matSuffix
-              mat-icon-button
-              (click)="apService.getColumn(colname).filterControl.reset()"
-              class="select-filter-reset-btn"
-            >
-              <mat-icon class="select-filter-reset-icn">close</mat-icon>
-            </button>
-          </mat-form-field>
-          <!--          </div>-->
+          <sbsdb-ap-header-cell
+            #firstfilter
+            (keydown.shift.tab)="
+              focusLastFilter(); $event.preventDefault(); $event.stopPropagation()
+            "
+            [column]="apService.getColumn('aptyp')"
+            [showFilter]="apService.filterService.stdFilter"
+            [tabindex]="apService.displayedColumns.indexOf('aptyp') + 1"
+          ></sbsdb-ap-header-cell>
         </th>
+        <!-- DATA -->
         <td
           mat-cell
           *matCellDef="let element"
           class="aptyp highlight-when-expanded"
           (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
-          <!--          <button mat-button class="highlight-when-expanded"-->
-          <!--                  (click)="apService.typFilter.setValue(element.aptyp); apService.typFilter.markAsDirty(); $event.stopPropagation()"-->
-          <!--                  color="primary"-->
-          <!--          >-->
-          <!--            {{element.aptyp}}-->
-          <!--          </button>-->
           <div
             [class.md-primary-color]="apService.linkcolor2 && apService.sortLinks"
             [class.md-accent-color]="!apService.linkcolor2 && apService.sortLinks"
@@ -203,51 +132,21 @@ https://github.com/angular/components/issues/6178
               {{ element.apTypBezeichnung }}
             </span>
           </div>
-
-          <!--          <div class="aptyp-btn">-->
-          <!--            <button mat-icon-button color="accent"-->
-          <!--                    (click)="apService.expandedRow = apService.expandedRow === element ? null : element">-->
-          <!--              <mat-icon *ngIf="apService.expandedRow === element">arrow_drop_down</mat-icon>-->
-          <!--              <mat-icon *ngIf="apService.expandedRow !== element">arrow_right</mat-icon>-->
-          <!--            </button>-->
-          <!-- <div>{{element.aptyp}}</div> -->
-          <!-- class="md-primary-color" -->
-          <!--          </div>-->
-          <!--          <div class="aptyp-tag">{{element.typTagsStr}}</div>-->
         </td>
       </ng-container>
+      <!-- COLUMN aptyp end -->
 
+      <!-- COLUMN apname begin -->
       <ng-container matColumnDef="apname">
-        <!-- sticky -->
+        <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string
-              [text]="sortHeading('apname')"
-              [accel]="sortAccel('apname')"
-            ></sbsdb-accelerator-string>
-          </span>
-          <mat-form-field
-            floatLabel="never"
-            class="filter-s"
-            *ngIf="apService.filterService.stdFilter"
-          >
-            <!--            <mat-label>Filter</mat-label>-->
-            <input
-              matInput
-              [formControl]="apService.getColumn('apname').filterControl"
-              [tabIndex]="apService.displayedColumns.indexOf('apname') + 1"
-            />
-            <button
-              mat-button
-              [disabled]="!apService.getColumn('apname').filterControl.value"
-              matSuffix
-              mat-icon-button
-              (click)="apService.getColumn('apname').filterControl.reset()"
-            >
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
+          <sbsdb-ap-header-cell
+            [column]="apService.getColumn('apname')"
+            [showFilter]="apService.filterService.stdFilter"
+            [tabindex]="apService.displayedColumns.indexOf('apname') + 1"
+          ></sbsdb-ap-header-cell>
         </th>
+        <!-- DATA -->
         <td
           mat-cell
           *matCellDef="let element"
@@ -257,62 +156,26 @@ https://github.com/angular/components/issues/6178
           <div (mouseenter)="apService.tooltipOnEllipsis($event)">{{ element.apname }}</div>
         </td>
       </ng-container>
+      <!-- COLUMN apname end -->
 
-      <ng-container matColumnDef="betrst" *ngIf="'betrst'; let colname">
+      <!-- COLUMN betrst begin -->
+      <ng-container matColumnDef="betrst">
+        <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">
-            <!--            <sbsdb-accelerator-string [text]="apService.getColumn(colname).displayName" [accel]="apService.getColumn(colname).accelerator"></sbsdb-accelerator-string>-->
-            <!-- die ngIf-Bedingung ist noetig, damit eine Aenderung am Text erkannt wird -->
-            <sbsdb-accelerator-string
-              [text]="apService.getColumn(colname).displayName"
-              [accel]="apService.getColumn(colname).accelerator"
-              *ngIf="apService.userSettings.showStandort"
-            ></sbsdb-accelerator-string>
-            <sbsdb-accelerator-string
-              [text]="apService.getColumn(colname).displayName"
-              [accel]="apService.getColumn(colname).accelerator"
-              *ngIf="!apService.userSettings.showStandort"
-            ></sbsdb-accelerator-string>
-          </span>
-          <mat-form-field
-            floatLabel="never"
-            class="filter-s"
-            *ngIf="apService.filterService.stdFilter"
-          >
-            <!--            <mat-label>Filter</mat-label>-->
-            <input
-              matInput
-              [formControl]="apService.getColumn('betrst').filterControl"
-              [tabIndex]="apService.displayedColumns.indexOf('betrst') + 1"
-            />
-            <button
-              mat-button
-              [disabled]="!apService.getColumn('betrst').filterControl.value"
-              matSuffix
-              mat-icon-button
-              (click)="apService.getColumn('betrst').filterControl.reset()"
-            >
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
+          <sbsdb-ap-header-cell
+            [column]="apService.getColumn('betrst')"
+            [labelChange]="apService.userSettings.showStandort"
+            [showFilter]="apService.filterService.stdFilter"
+            [tabindex]="apService.displayedColumns.indexOf('betrst') + 1"
+          ></sbsdb-ap-header-cell>
         </th>
+        <!-- DATA -->
         <td
           mat-cell
           *matCellDef="let element"
           class="highlight-when-expanded"
           (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
-          <!--            [matTooltip]="apService.bstTooltip(element)"-->
-          <!--            matTooltipClass="bst-tooltip"-->
-          <!--            matTooltipShowDelay="1500"-->
-          <!--            matTooltipHideDelay="100"-->
-          <!--            (click)="bstTooltip.show(0)"-->
-          <!--          <a mat-button class="highlight-when-expanded"-->
-          <!--                  (click)="apService.resetFilters(); apService.bstFilter.setValue(element.oe.betriebsstelle); apService.bstFilter.markAsDirty(); $event.stopPropagation()"-->
-          <!--                  color="primary"-->
-          <!--          >-->
-          <!--            {{element.oe.betriebsstelle}}-->
-          <!--          </a>-->
           <div
             [class.md-primary-color]="apService.linkcolor2 && apService.sortLinks"
             [class.md-accent-color]="!apService.linkcolor2 && apService.sortLinks"
@@ -332,37 +195,19 @@ https://github.com/angular/components/issues/6178
           </div>
         </td>
       </ng-container>
+      <!-- COLUMN betrst end -->
 
+      <!-- COLUMN bezeichnung begin -->
       <ng-container matColumnDef="bezeichnung">
+        <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string
-              [text]="sortHeading('bezeichnung')"
-              [accel]="sortAccel('bezeichnung')"
-            ></sbsdb-accelerator-string>
-          </span>
-          <mat-form-field
-            floatLabel="never"
-            class="filter-s"
-            *ngIf="apService.filterService.stdFilter"
-          >
-            <!--            <mat-label>Filter</mat-label>-->
-            <input
-              matInput
-              [formControl]="apService.getColumn('bezeichnung').filterControl"
-              [tabIndex]="apService.displayedColumns.indexOf('bezeichnung') + 1"
-            />
-            <button
-              mat-button
-              [disabled]="!apService.getColumn('bezeichnung').filterControl.value"
-              matSuffix
-              mat-icon-button
-              (click)="apService.getColumn('bezeichnung').filterControl.reset()"
-            >
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
+          <sbsdb-ap-header-cell
+            [column]="apService.getColumn('bezeichnung')"
+            [showFilter]="apService.filterService.stdFilter"
+            [tabindex]="apService.displayedColumns.indexOf('bezeichnung') + 1"
+          ></sbsdb-ap-header-cell>
         </th>
+        <!-- DATA -->
         <td
           mat-cell
           *matCellDef="let element"
@@ -372,37 +217,19 @@ https://github.com/angular/components/issues/6178
           <div (mouseenter)="apService.tooltipOnEllipsis($event)">{{ element.bezeichnung }}</div>
         </td>
       </ng-container>
+      <!-- COLUMN bezeichnung end -->
 
+      <!-- COLUMN IP begin -->
       <ng-container matColumnDef="ip">
+        <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string
-              [text]="sortHeading('ip')"
-              [accel]="sortAccel('ip')"
-            ></sbsdb-accelerator-string>
-          </span>
-          <mat-form-field
-            floatLabel="never"
-            class="filter-s"
-            *ngIf="apService.filterService.stdFilter"
-          >
-            <!--            <mat-label>Filter</mat-label>-->
-            <input
-              matInput
-              [formControl]="apService.getColumn('ip').filterControl"
-              [tabIndex]="apService.displayedColumns.indexOf('ip') + 1"
-            />
-            <button
-              mat-button
-              [disabled]="!apService.getColumn('ip').filterControl.value"
-              matSuffix
-              mat-icon-button
-              (click)="apService.getColumn('ip').filterControl.reset()"
-            >
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
+          <sbsdb-ap-header-cell
+            [column]="apService.getColumn('ip')"
+            [showFilter]="apService.filterService.stdFilter"
+            [tabindex]="apService.displayedColumns.indexOf('ip') + 1"
+          ></sbsdb-ap-header-cell>
         </th>
+        <!-- DATA -->
         <td
           mat-cell
           *matCellDef="let element"
@@ -416,55 +243,35 @@ https://github.com/angular/components/issues/6178
           </div>
         </td>
       </ng-container>
+      <!-- COLUMN IP end -->
 
+      <!-- COLUMN hardware begin -->
       <ng-container matColumnDef="hardware">
+        <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <span mat-sort-header class="sort-header">
-            <sbsdb-accelerator-string
-              [text]="sortHeading('hardware')"
-              [accel]="sortAccel('hardware')"
-            ></sbsdb-accelerator-string>
-          </span>
-          <mat-form-field
-            floatLabel="never"
-            class="filter-s"
-            *ngIf="apService.filterService.stdFilter"
-          >
-            <!--            <mat-label>Filter</mat-label>-->
-            <input
-              matInput
-              [formControl]="apService.getColumn('hardware').filterControl"
-              [tabIndex]="apService.displayedColumns.indexOf('hardware') + 1"
-              #lastfilter
-              (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation()"
-            />
-            <button
-              mat-button
-              [disabled]="!apService.getColumn('hardware').filterControl.value"
-              matSuffix
-              mat-icon-button
-              (click)="apService.getColumn('hardware').filterControl.reset()"
-            >
-              <mat-icon>close</mat-icon>
-            </button>
-          </mat-form-field>
+          <sbsdb-ap-header-cell
+            #lastfilter
+            (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation()"
+            [column]="apService.getColumn('hardware')"
+            [showFilter]="apService.filterService.stdFilter"
+            [tabindex]="apService.displayedColumns.indexOf('hardware') + 1"
+          ></sbsdb-ap-header-cell>
         </th>
+        <!-- DATA -->
         <td
           mat-cell
           *matCellDef="let element"
           (click)="apService.clickForDetails ? apService.expandApRow(element, $event) : ''"
         >
-          <!--            title="{{element.hwStr}}"-->
           <div (mouseenter)="apService.tooltipOnEllipsis($event)">{{ element.hwStr }}</div>
         </td>
       </ng-container>
+      <!-- COLUMN hardware end -->
 
+      <!-- COLUMN menu begin -->
       <ng-container matColumnDef="menu">
-        <!-- stickyEnd -->
+        <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <!--          <button mat-icon-button [matMenuTriggerFor]="tableMenu" [color]="apService.linkcolor">-->
-          <!--            <mat-icon>menu</mat-icon>-->
-          <!--          </button>-->
           <button
             style="font-size: 18px; height: 1px"
             mat-icon-button
@@ -480,6 +287,7 @@ https://github.com/angular/components/issues/6178
             <mat-icon inline title="Alle zuklappen" color="primary">maximize </mat-icon>
           </button>
         </th>
+        <!-- DATA -->
         <td mat-cell *matCellDef="let element">
           <button
             mat-icon-button
@@ -487,13 +295,13 @@ https://github.com/angular/components/issues/6178
             [matMenuTriggerData]="{ ap: element }"
             [color]="apService.linkcolor"
           >
-            <!--                  (click) = "$event.stopPropagation()"-->
             <mat-icon>more_vert</mat-icon>
           </button>
         </td>
       </ng-container>
+      <!-- COLUMN menu end -->
 
-      <!-- details template -->
+      <!-- COLUMN details template begin -->
       <ng-container matColumnDef="apdetails">
         <td
           mat-cell
@@ -501,97 +309,99 @@ https://github.com/angular/components/issues/6178
           [colSpan]="apService.displayedColumns.length"
           class="ap-detail-cell"
         >
-          <!--            *ngIf="apService.expandedRow === element"-->
-          <div
-            [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'"
-            class="ap-detail-content"
-          >
-            <div class="ap-detail-content-row">
-              <div class="ap-detail-margin ap-detail-standort-text">Standort</div>
-              <div class="ap-detail-margin">
-                {{ ("000" + element.oe.bstNr).slice(-3) }}<br />
-                {{ element.oe.betriebsstelle }}<br /><br />
-                {{ element.oe.strasse ? element.oe.strasse + " " : ""
-                }}{{ element.oe.hausnr ? element.oe.hausnr : "" }}<br />
-                {{ element.oe.plz ? element.oe.plz + " " : ""
-                }}{{ element.oe.ort ? element.oe.ort : "" }}
-              </div>
-              <div class="ap-detail-margin"></div>
-              <div *ngIf="element.oe.oeff" class="ap-detail-margin ap-detail-oeff">
-                Öffnungszeiten<br />{{ element.oe.oeff }}
-              </div>
-            </div>
-            <div class="ap-detail-content-row">
-              <div *ngIf="element.verantwOe" class="ap-detail-margin ap-detail-standort-text">
-                Verantwortliche OE
-              </div>
-              <div class="ap-detail-margin">
-                {{ ("000" + element.verantwOe.bstNr).slice(-3) }} -
-                {{ element.verantwOe.betriebsstelle }}
-              </div>
-            </div>
-            <div class="ap-detail-content-row">
-              <div class="ap-detail-margin">
-                <table>
-                  <thead>
-                    <th colspan="4">Hardware</th>
-                  </thead>
-                  <thead>
-                    <th>Typ</th>
-                    <th>Hardware</th>
-                    <th>IP</th>
-                    <th>MAC</th>
-                  </thead>
-                  <tr *ngFor="let hw of element.hw">
-                    <!--                <td *ngIf="!hw.pri">-->
-                    <td>
-                      {{ hw.hwKonfig.hwTypBezeichnung }}
-                    </td>
-                    <td>
-                      {{
-                        hw.hwKonfig.hwTypFlag !== fremdeHwFlag
-                          ? hw.hwKonfig.hersteller +
-                            " - " +
-                            hw.hwKonfig.bezeichnung +
-                            " [" +
-                            hw.sernr +
-                            "]"
-                          : ""
-                      }}
-                    </td>
-                    <td [title]="hw.vlanStr">
-                      {{ hw.ipStr }}
-                    </td>
-                    <td>{{ hw.macStr }}</td>
-                  </tr>
-                </table>
-              </div>
-              <!--              <div class="ap-detail-margin">-->
-              <!--                <table>-->
-              <!--                  <th colspan="2">IP/MAC</th>-->
-              <!--                  <tr *ngFor="let vl of element.vlan">-->
-              <!--                    <td>-->
-              <!--                      {{ vl.bezeichnung }}<br />-->
-              <!--                      {{ apService.getIpString(vl.vlan + vl.ip) }}-->
-              <!--                    </td>-->
-              <!--                    <td>{{ apService.getMacString(vl.mac) }}</td>-->
-              <!--                  </tr>-->
-              <!--                </table>-->
-              <!--              </div>-->
-              <div class="ap-detail-margin">
-                <table>
-                  <th colspan="2">Sonstige Informationen</th>
-                  <tr *ngFor="let tag of element.tags">
-                    <td [colSpan]="tag.flag === aptypeFlag ? 2 : 1">{{ tag.bezeichnung }}</td>
-                    <td *ngIf="tag.flag !== aptypeFlag">{{ tag.text }}</td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <div class="ap-detail-bemerk">{{ element.bemerkung }}</div>
-          </div>
+          <sbsdb-ap-detail-cell [element]="element"></sbsdb-ap-detail-cell>
+          <!--          &lt;!&ndash;            *ngIf="apService.expandedRow === element"&ndash;&gt;-->
+          <!--          <div-->
+          <!--            [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'"-->
+          <!--            class="ap-detail-content"-->
+          <!--          >-->
+          <!--            <div class="ap-detail-content-row">-->
+          <!--              <div class="ap-detail-margin ap-detail-standort-text">Standort</div>-->
+          <!--              <div class="ap-detail-margin">-->
+          <!--                {{ ("000" + element.oe.bstNr).slice(-3) }}<br />-->
+          <!--                {{ element.oe.betriebsstelle }}<br /><br />-->
+          <!--                {{ element.oe.strasse ? element.oe.strasse + " " : ""-->
+          <!--                }}{{ element.oe.hausnr ? element.oe.hausnr : "" }}<br />-->
+          <!--                {{ element.oe.plz ? element.oe.plz + " " : ""-->
+          <!--                }}{{ element.oe.ort ? element.oe.ort : "" }}-->
+          <!--              </div>-->
+          <!--              <div class="ap-detail-margin"></div>-->
+          <!--              <div *ngIf="element.oe.oeff" class="ap-detail-margin ap-detail-oeff">-->
+          <!--                Öffnungszeiten<br />{{ element.oe.oeff }}-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--            <div class="ap-detail-content-row">-->
+          <!--              <div *ngIf="element.verantwOe" class="ap-detail-margin ap-detail-standort-text">-->
+          <!--                Verantwortliche OE-->
+          <!--              </div>-->
+          <!--              <div class="ap-detail-margin">-->
+          <!--                {{ ("000" + element.verantwOe.bstNr).slice(-3) }} - -->
+          <!--                {{ element.verantwOe.betriebsstelle }}-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--            <div class="ap-detail-content-row">-->
+          <!--              <div class="ap-detail-margin">-->
+          <!--                <table>-->
+          <!--                  <thead>-->
+          <!--                    <th colspan="4">Hardware</th>-->
+          <!--                  </thead>-->
+          <!--                  <thead>-->
+          <!--                    <th>Typ</th>-->
+          <!--                    <th>Hardware</th>-->
+          <!--                    <th>IP</th>-->
+          <!--                    <th>MAC</th>-->
+          <!--                  </thead>-->
+          <!--                  <tr *ngFor="let hw of element.hw">-->
+          <!--                    &lt;!&ndash;                <td *ngIf="!hw.pri">&ndash;&gt;-->
+          <!--                    <td>-->
+          <!--                      {{ hw.hwKonfig.hwTypBezeichnung }}-->
+          <!--                    </td>-->
+          <!--                    <td>-->
+          <!--                      {{-->
+          <!--                        hw.hwKonfig.hwTypFlag !== fremdeHwFlag-->
+          <!--                          ? hw.hwKonfig.hersteller +-->
+          <!--                            " - " +-->
+          <!--                            hw.hwKonfig.bezeichnung +-->
+          <!--                            " [" +-->
+          <!--                            hw.sernr +-->
+          <!--                            "]"-->
+          <!--                          : ""-->
+          <!--                      }}-->
+          <!--                    </td>-->
+          <!--                    <td [title]="hw.vlanStr">-->
+          <!--                      {{ hw.ipStr }}-->
+          <!--                    </td>-->
+          <!--                    <td>{{ hw.macStr }}</td>-->
+          <!--                  </tr>-->
+          <!--                </table>-->
+          <!--              </div>-->
+          <!--              &lt;!&ndash;              <div class="ap-detail-margin">&ndash;&gt;-->
+          <!--              &lt;!&ndash;                <table>&ndash;&gt;-->
+          <!--              &lt;!&ndash;                  <th colspan="2">IP/MAC</th>&ndash;&gt;-->
+          <!--              &lt;!&ndash;                  <tr *ngFor="let vl of element.vlan">&ndash;&gt;-->
+          <!--              &lt;!&ndash;                    <td>&ndash;&gt;-->
+          <!--              &lt;!&ndash;                      {{ vl.bezeichnung }}<br />&ndash;&gt;-->
+          <!--              &lt;!&ndash;                      {{ apService.getIpString(vl.vlan + vl.ip) }}&ndash;&gt;-->
+          <!--              &lt;!&ndash;                    </td>&ndash;&gt;-->
+          <!--              &lt;!&ndash;                    <td>{{ apService.getMacString(vl.mac) }}</td>&ndash;&gt;-->
+          <!--              &lt;!&ndash;                  </tr>&ndash;&gt;-->
+          <!--              &lt;!&ndash;                </table>&ndash;&gt;-->
+          <!--              &lt;!&ndash;              </div>&ndash;&gt;-->
+          <!--              <div class="ap-detail-margin">-->
+          <!--                <table>-->
+          <!--                  <th colspan="2">Sonstige Informationen</th>-->
+          <!--                  <tr *ngFor="let tag of element.tags">-->
+          <!--                    <td [colSpan]="tag.flag === aptypeFlag ? 2 : 1">{{ tag.bezeichnung }}</td>-->
+          <!--                    <td *ngIf="tag.flag !== aptypeFlag">{{ tag.text }}</td>-->
+          <!--                  </tr>-->
+          <!--                </table>-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--            <div class="ap-detail-bemerk">{{ element.bemerkung }}</div>-->
+          <!--          </div>-->
         </td>
       </ng-container>
+      <!-- COLUMN details template end -->
 
       <!-- footer template -->
       <ng-container matColumnDef="footer">
@@ -607,6 +417,7 @@ https://github.com/angular/components/issues/6178
         </td>
       </ng-container>
 
+      <!-- ROW details template begin -->
       <tr mat-header-row *matHeaderRowDef="apService.displayedColumns; sticky: true"></tr>
       <tr
         mat-row
@@ -621,8 +432,9 @@ https://github.com/angular/components/issues/6178
         class="ap-detail-row"
         [class.ap-detail-content-expanded]="element.expanded"
       ></tr>
-      <!--      <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true" ></tr>-->
+      <!-- ROW details template end -->
     </table>
+    <!-- TABLE end-->
   </div>
 
   <!-- ?? background: linear-gradient(to top, #fd3232 0%, #ce0000 100%); -->
@@ -635,6 +447,10 @@ https://github.com/angular/components/issues/6178
   ></mat-paginator>
 </div>
 
+<!-- Infos zum Filter im paginator
+     TODO es funktioniert, aber Formatierung und Positionierung sind noch nicht optimal
+          das Zusammenspiel mit <sbsdb-status> ist auch noch offen
+     -->
 <!--<ng-template #pagInsert>-->
 <div #pagInsert style="display: flex; flex: auto; margin-left: 10px">
   Ausgewählt: {{ apService.selectCount() }} von
@@ -644,6 +460,7 @@ https://github.com/angular/components/issues/6178
 
 <sbsdb-status [bottom]="20" [left]="20" [text]="apService.statusText"></sbsdb-status>
 
+<!-- Header-Menue -->
 <mat-menu #tableMenu="matMenu">
   <ng-template matMenuContent>
     <!--    <button mat-menu-item class="menue-entry" (click)="extendedFilter()">-->
@@ -729,6 +546,7 @@ https://github.com/angular/components/issues/6178
   </ng-template>
 </mat-menu>
 
+<!-- Zeilen-Menue -->
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">
     <button mat-menu-item (click)="apService.test()">Test1</button>

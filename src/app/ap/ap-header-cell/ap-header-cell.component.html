@@ -1,0 +1,25 @@
+<span mat-sort-header class="sort-header">
+  <!-- die ngIf-Bedingung ist noetig, weil eine Aenderung am Text nicht erkannt wird -->
+  <sbsdb-accelerator-string
+    [text]="column.displayName"
+    [accel]="column.accelerator"
+    *ngIf="labelChange"
+  ></sbsdb-accelerator-string>
+  <sbsdb-accelerator-string
+    [text]="column.displayName"
+    [accel]="column.accelerator"
+    *ngIf="!labelChange"
+  ></sbsdb-accelerator-string>
+</span>
+<mat-form-field floatLabel="never" [class]="fieldClass()" *ngIf="showFilter">
+  <input matInput [formControl]="column.filterControl" [tabIndex]="tabindex" />
+  <button
+    mat-button
+    [disabled]="!column.filterControl.value"
+    matSuffix
+    mat-icon-button
+    (click)="column.filterControl.reset()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>

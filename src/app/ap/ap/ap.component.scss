@@ -15,11 +15,6 @@ $listMinWidth: 100px;
   min-width: $listMinWidth;
 }
 
-/* mat-table head*/
-.sort-header {
-  line-height: 3em;
-}
-
 .spinner-container {
   height: 36px;
   width: 39px;
@@ -66,19 +61,6 @@ table:not(.wrap-cell) .mat-cell > div {
 //  border-top: 1px solid #e0e0e0;
 //}
 
-/* Filter-Felder */
-.filter-xs {
-  width: 80px;
-}
-
-.filter-s {
-  width: 160px;
-}
-
-.filter-m {
-  width: 200px;
-}
-
 /* Spalten */
 .mat-column-apname {
   width: 180px;
@@ -120,19 +102,6 @@ table:not(.wrap-cell) .mat-cell > div {
 /* Filter mit select box */
 .select-filter {
   white-space: nowrap;
-}
-
-.select-filter-reset-btn {
-  width: 1.5em;
-  height: 1.5em;
-  line-height: 1.125em;
-}
-
-.select-filter-reset-icn {
-  height: 1.125em;
-  width: 1.125em;
-  line-height: 1.125;
-  font-size: inherit;
 }
 
 /* AP-Typ */

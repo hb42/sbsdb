@@ -31,6 +31,8 @@ import { FootComponent } from "./shared/foot/foot.component";
 import { HeadComponent } from "./shared/head/head.component";
 import { MatPaginatorIntlDe } from "./shared/mat.paginator.intl.de";
 import { StatusComponent } from "./shared/status/status.component";
+import { ApHeaderCellComponent } from './ap/ap-header-cell/ap-header-cell.component';
+import { ApDetailCellComponent } from './ap/ap-detail-cell/ap-detail-cell.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -72,6 +74,8 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     AdminPanelApFilterComponent,
     AdminPanelConfigComponent,
     AdminPanelConfigInputComponent,
+    ApHeaderCellComponent,
+    ApDetailCellComponent,
   ],
   imports: [
     BrowserModule,

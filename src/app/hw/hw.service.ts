@@ -80,8 +80,8 @@ export class HwService {
   }
 
   private prepareData(): void {
-    let macsearch = "";
     this.dataService.hwList.forEach((hw) => {
+      let macsearch = "";
       hw.hwKonfig = this.dataService.hwKonfigList.find((h) => h.id === hw.hwKonfigId);
       hw.ipStr = "";
       hw.macStr = "";
