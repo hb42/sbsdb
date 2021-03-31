@@ -1,15 +1,136 @@
 <div class="flex-col">
   <sbsdb-head>
-    <!-- TODO HW-Menue -->
+    <button mat-icon-button title="Erweiterte Suche">
+      <!--      (click)="apService.filterService.toggleExtendedFilter()"-->
+      <!--      [class.ext-filter-button-select]="!apService.filterService.stdFilter"-->
+      <mat-icon>find_in_page</mat-icon>
+    </button>
+    <button mat-icon-button title="Als CSV ausgeben"><mat-icon>share</mat-icon></button>
+    <button mat-icon-button title="Neuer Arbeitsplatz">
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+    <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">
+      <mat-icon>menu</mat-icon>
+    </button>
   </sbsdb-head>
 
-  <div class="flex-row">
-    <div class="flex-panel treePanel">
-      <sbsdb-hw-tree></sbsdb-hw-tree>
+  <div class="flex-content">
+    <!-- empty table -->
+    <div class="spinner-container" *ngIf="hwService.loading">
+      <mat-spinner></mat-spinner>
     </div>
-    <div fb-splitter></div>
-    <div class="flex-panel flex-max listPanel">
-      <sbsdb-hw-list></sbsdb-hw-list>
-    </div>
+    <!-- TABLE begin -->
+    <table
+      mat-table
+      [dataSource]="hwService.hwDataSource"
+      matSort
+      multiTemplateDataRows
+      (matSortChange)="hwService.onSort($event)"
+      [class.wrap-cell]="hwService.tableWrapCell"
+    >
+      <ng-container matColumnDef="select">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef></th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox [checked]="row.selected" color="primary"> </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="kategorie">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>Kategorie</th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          {{ element.hwKonfig.apKatBezeichnung }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="typ">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>Typ</th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          {{ element.hwKonfig.hwTypBezeichnung }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="bezeichnung">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>Bezeichnung</th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          {{ element.hwKonfig.hersteller }} - {{ element.hwKonfig.bezeichnung }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="sernr">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>Serien-Nr.</th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          {{ element.sernr }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="anschdat">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>Anschaffungs-Datum</th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          {{ element.anschDat }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="anschwert">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>Anschaffungs-Wert</th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          {{ element.anschWert }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="invnr">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>Inventar-Nr.</th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          {{ element.invNr }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ap">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>Arbeitsplatz</th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          {{ element.apId }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="menu">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef></th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element"></td>
+      </ng-container>
+
+      <!-- ROW details template begin -->
+      <tr mat-header-row *matHeaderRowDef="hwService.columns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let element; columns: hwService.columns" class="ap-row"></tr>
+      <!--  details    <tr-->
+      <!--        mat-row-->
+      <!--        *matRowDef="let element; columns: ['apdetails']"-->
+      <!--        class="ap-detail-row"-->
+      <!--        [class.ap-detail-content-expanded]="element.expanded"-->
+      <!--      ></tr>-->
+      <!-- ROW details template end -->
+    </table>
   </div>
+
+  <!-- Header-Menue -->
+  <mat-menu #tableMenu="matMenu">
+    <ng-template matMenuContent>
+      <!--    <button mat-menu-item class="menue-entry" (click)="extendedFilter()">-->
+      <!--      <mat-icon>find_in_page</mat-icon>-->
+      <!--      Erweiterte Suche-->
+      <!--    </button>-->
+      <button mat-menu-item class="menue-entry">
+        <mat-icon>close</mat-icon>
+        Alle Filter löschen
+      </button>
+    </ng-template>
+  </mat-menu>
 </div>

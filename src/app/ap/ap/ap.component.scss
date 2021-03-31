@@ -15,52 +15,6 @@ $listMinWidth: 100px;
   min-width: $listMinWidth;
 }
 
-.spinner-container {
-  height: 36px;
-  width: 39px;
-  margin-left: 300px;
-  position: fixed;
-}
-
-.spinner-container mat-spinner {
-  margin: 130px auto 0 auto;
-}
-
-.mat-header-cell {
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-/* Standard fuer Tabelle/Zellen */
-td.mat-cell,
-td.mat-footer-cell,
-th.mat-header-cell {
-  padding-right: 15px;
-}
-
-table.mat-table {
-  table-layout: fixed;
-  width: 100%;
-  //white-space: nowrap;
-}
-
-// Zeilenumbruch in der Zelle Umschalten
-table:not(.wrap-cell) .mat-cell > div {
-  white-space: nowrap;
-}
-
-.mat-cell > div,
-.mat-cell > a {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-}
-
-// so koennte der fixe Teil der Tabelle angesprochen werden
-//.mat-table-sticky {
-//  border-top: 1px solid #e0e0e0;
-//}
-
 /* Spalten */
 .mat-column-apname {
   width: 180px;

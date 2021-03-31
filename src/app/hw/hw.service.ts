@@ -1,4 +1,7 @@
 import { Injectable } from "@angular/core";
+import { Sort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { HwKonfig } from "../ap/model/hw-konfig";
 import { Hardware } from "../ap/model/hardware";
@@ -8,12 +11,41 @@ import { ConfigService } from "../shared/config/config.service";
   providedIn: "root",
 })
 export class HwService {
+  public hwDataSource: MatTableDataSource<Hardware> = new MatTableDataSource<Hardware>();
+  public loading = false;
+  public userSettings: UserSession;
+
+  // DEBUG Zeilenumbruch in der Zelle umschalten
+  public tableWrapCell = false;
+
+  public columns = [
+    "select",
+    "kategorie",
+    "typ",
+    "bezeichnung",
+    "sernr",
+    "anschdat",
+    "anschwert",
+    "invnr",
+    "ap",
+    "menu",
+  ];
+
   constructor(public dataService: DataService, private configService: ConfigService) {
     console.debug("c'tor HwService ");
+    this.userSettings = configService.getUser();
     setTimeout(() => {
       this.init();
     }, 0);
   }
+
+  public onSort(event: Sort): void {
+    // TODO Felder anlegen
+    // this.userSettings.hwSortColumn = event.active;
+    // this.userSettings.hwSortDirection = event.direction;
+  }
+
+  // --- fetch data ---
 
   private init(): void {
     const readyCheck = () => {
@@ -26,6 +58,7 @@ export class HwService {
         // alle relevanten Listen sind da: HwKonfig in HW eintragen
         // und HW in AP eintragen
         this.prepareData();
+        this.hwDataSource.data = this.dataService.hwList;
         // apList ist damit komplett (stoesst dataService.dataReady an)
         this.dataService.apListReady.emit();
       }

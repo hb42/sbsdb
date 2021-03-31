@@ -23,4 +23,8 @@ export class Hardware {
   public ipStr = "";
   public macStr = "";
   public vlanStr = "";
+
+  // Darstellung
+  public expanded?: boolean;
+  public selected?: boolean;
 }
