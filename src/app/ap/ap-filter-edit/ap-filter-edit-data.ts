@@ -1,10 +1,12 @@
 import { Field } from "../../shared/filter/field";
 import { RelOp } from "../../shared/filter/rel-op.enum";
-import { ApColumn } from "../ap-column";
+import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
+import { SbsdbColumn } from "../../shared/table/sbsdb-column";
+import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 export interface ApFilterEditData {
   f: Field | null;
   o: RelOp | null;
   c: string | null;
-  columns: ApColumn[];
+  columns: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>[];
 }

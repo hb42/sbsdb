@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit } from "@angular/core";
-import { ApColumn } from "../ap-column";
+import { AfterViewInit, Component, ElementRef, Input } from "@angular/core";
+import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 
 /**
  * header cell fuer MatTable mit Sort-Indikator und
@@ -14,7 +14,7 @@ export class ApHeaderCellComponent implements AfterViewInit {
   /**
    * Daten der Spalte incl. FormControll fuer Input
    */
-  @Input() public column: ApColumn;
+  @Input() public column: SbsdbColumn<unknown, unknown>;
   /**
    * Falls der Ueberschriftentext per Programm geaendert werden soll, kann hier
    * eine boolean-Variable angegeben werden, die die Veraenderung anstoesst
@@ -24,10 +24,6 @@ export class ApHeaderCellComponent implements AfterViewInit {
    * boolean-Variable, die die Anzeige des Input steuert
    */
   @Input() public showFilter: boolean;
-  /**
-   * Tab-Index des Feldes
-   */
-  @Input() public tabindex: number;
   /**
    * Groesse des Input: XS, S, M
    */

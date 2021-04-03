@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { Component, Input, OnInit } from "@angular/core";
 import { DataService } from "../../shared/data.service";
-import { Arbeitsplatz } from "../model/arbeitsplatz";
+import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 
 @Component({
   selector: "sbsdb-ap-detail-cell",

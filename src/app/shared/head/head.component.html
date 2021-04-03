@@ -28,53 +28,15 @@
       [disabled]="rla.isActive"
       [class.disabled-button]="rla.isActive"
     >
-      <!--      *ngIf="!navigationService.currentPath.startsWith(link.path)"-->
+      <!--      <mat-spinner-->
+      <!--        diameter="30"-->
+      <!--        style="position: fixed; margin: 4px 0 0 20px"-->
+      <!--        *ngIf="(link.ap && navigationService.apLoading) || (link.hw && navigationService.hwLoading)"-->
+      <!--      ></mat-spinner>-->
       <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
     </button>
     <span class="spacer2"></span>
   </div>
-  <mat-menu #apmenu="matMenu">
-    <button mat-menu-item>
-      <mat-icon>dialpad</mat-icon>
-      <span>Neuer Arbeitsplatz</span>
-    </button>
-    <button mat-menu-item disabled>
-      <mat-icon>voicemail</mat-icon>
-      <span>Test</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>notifications_off</mat-icon>
-      <span>Ausgabe als CSV</span>
-    </button>
-  </mat-menu>
-  <mat-menu #hwmenu="matMenu">
-    <button mat-menu-item>
-      <mat-icon>dialpad</mat-icon>
-      <span>Neue Hardware</span>
-    </button>
-    <button mat-menu-item disabled>
-      <mat-icon>voicemail</mat-icon>
-      <span>Test</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>notifications_off</mat-icon>
-      <span>Ausgabe als CSV</span>
-    </button>
-  </mat-menu>
-  <mat-menu #admenu="matMenu">
-    <button mat-menu-item>
-      <mat-icon>dialpad</mat-icon>
-      <span>Admin</span>
-    </button>
-    <button mat-menu-item disabled>
-      <mat-icon>voicemail</mat-icon>
-      <span>Test</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>notifications_off</mat-icon>
-      <span>Ausgabe als CSV</span>
-    </button>
-  </mat-menu>
   <span class="spacer"></span>
 
   <!--  Navigation ?? -->
@@ -86,32 +48,8 @@
   <!--  </button>-->
 
   <span class="spacer"></span>
-  <!--  <button mat-button (click)="navigate('/ap')">Arbeitsplätze</button>-->
-  <!--  <button mat-button (click)="navigate('/hw')">Hardware</button>-->
-  <!--  <button mat-button (click)="navigate('/admin')">Admin</button>-->
-
-  <!--  <mat-form-field style="font-size: 14px">-->
-  <!--    <input matInput type="search" placeholder="Suche" [(ngModel)]="search">-->
-  <!--    <button mat-button [disabled]="!search" matSuffix mat-icon-button (click)="search=''">-->
-  <!--      <mat-icon>close</mat-icon>-->
-  <!--    </button>-->
-  <!--  </mat-form-field>-->
-
-  <!--  <button mat-button color="accent"-->
-  <!--          (click)="apService.apDataSource.filter = search">Suche-->
-  <!--  </button>-->
   <div class="fill"></div>
 
   <!-- hier kann die jeweilige Seite ihre Menues einhaengen -->
   <ng-content></ng-content>
-
-  <!--  <div class="fill"></div>-->
-  <!--  &lt;!&ndash;  style="font-size: 11px"&ndash;&gt;-->
-  <!--  <button mat-button style="font-size: 11px"-->
-  <!--          [mat-menu-trigger-for]="mainmenu"-->
-  <!--  > {{configService.version.displayname}} {{configService.version.version}}</button>-->
-  <!--  <span class="spacer"></span>-->
-  <!--  <button mat-icon-button [mat-menu-trigger-for]="mainmenu">-->
-  <!--    <mat-icon>menu</mat-icon>-->
-  <!--  </button>-->
 </mat-toolbar>

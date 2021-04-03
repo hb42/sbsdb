@@ -17,12 +17,14 @@ import { TransportElement } from "../shared/filter/transport-element";
 import { TransportElements } from "../shared/filter/transport-elements";
 import { TransportExpression } from "../shared/filter/transport-expression";
 import { TransportFilter } from "../shared/filter/transport-filter";
-import { ApColumn } from "./ap-column";
+import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
+import { SbsdbColumn } from "../shared/table/sbsdb-column";
 import { ApFilterEditListData } from "./ap-filter-edit-list/ap-filter-edit-list-data";
 import { ApFilterEditListComponent } from "./ap-filter-edit-list/ap-filter-edit-list.component";
 import { ApFilterEditData } from "./ap-filter-edit/ap-filter-edit-data";
 import { ApFilterEditComponent } from "./ap-filter-edit/ap-filter-edit.component";
 import { DataService } from "../shared/data.service";
+import { ArbeitsplatzService } from "./arbeitsplatz.service";
 
 @Injectable({ providedIn: "root" })
 export class ApFilterService {
@@ -47,7 +49,7 @@ export class ApFilterService {
   private globNextKey = ApFilterService.STDFILTER + 1;
 
   // wird in initService() von apService geliefert
-  private columns: ApColumn[];
+  private columns: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>[];
   private filterChange: EventEmitter<void>;
 
   // Filtereingaben bremsen
@@ -68,7 +70,10 @@ export class ApFilterService {
    * @param col - Array der Tabellen-Spalten
    * @param evt - Eventhandler fuer Aenderungen am Filter
    */
-  public initService(col: ApColumn[], evt: EventEmitter<void>): void {
+  public initService(
+    col: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>[],
+    evt: EventEmitter<void>
+  ): void {
     this.columns = col;
     this.filterChange = evt;
 
@@ -452,7 +457,10 @@ export class ApFilterService {
   private setColumnFilters() {
     if (this.stdFilter && this.columns) {
       // this.resetStdFilters();
-      const cols: Array<{ col: ApColumn; val: string | null }> = this.columns
+      const cols: Array<{
+        col: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>;
+        val: string | null;
+      }> = this.columns
         .filter((c) => {
           return !!c.filterControl;
         })

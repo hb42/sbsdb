@@ -36,70 +36,154 @@
           <mat-checkbox [checked]="row.selected" color="primary"> </mat-checkbox>
         </td>
       </ng-container>
-      <ng-container matColumnDef="kategorie">
+
+      <ng-container matColumnDef="kategorie" *ngIf="hwService.getColumn('kategorie'); let column">
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>Kategorie</th>
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-ap-header-cell
+            #firstfilter
+            (keydown.shift.tab)="
+              focusLastFilter(); $event.preventDefault(); $event.stopPropagation()
+            "
+            [column]="column"
+            [showFilter]="hwService.stdFilter"
+            size="XS"
+          ></sbsdb-ap-header-cell>
+        </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
-          {{ element.hwKonfig.apKatBezeichnung }}
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="hwService.expandHwRow(row, $event)"
+        >
+          {{ column.displayText(row) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="typ">
+
+      <ng-container matColumnDef="typ" *ngIf="hwService.getColumn('typ'); let column">
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>Typ</th>
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-ap-header-cell
+            [column]="column"
+            [showFilter]="hwService.stdFilter"
+            size="XS"
+          ></sbsdb-ap-header-cell>
+        </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
-          {{ element.hwKonfig.hwTypBezeichnung }}
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="hwService.expandHwRow(row, $event)"
+        >
+          {{ column.displayText(row) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="bezeichnung">
+
+      <ng-container
+        matColumnDef="bezeichnung"
+        *ngIf="hwService.getColumn('bezeichnung'); let column"
+      >
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>Bezeichnung</th>
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-ap-header-cell
+            [column]="column"
+            [showFilter]="hwService.stdFilter"
+          ></sbsdb-ap-header-cell>
+        </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
-          {{ element.hwKonfig.hersteller }} - {{ element.hwKonfig.bezeichnung }}
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="hwService.expandHwRow(row, $event)"
+        >
+          {{ column.displayText(row) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="sernr">
+
+      <ng-container matColumnDef="sernr" *ngIf="hwService.getColumn('sernr'); let column">
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>Serien-Nr.</th>
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-ap-header-cell
+            [column]="column"
+            [showFilter]="hwService.stdFilter"
+          ></sbsdb-ap-header-cell>
+        </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
-          {{ element.sernr }}
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="hwService.expandHwRow(row, $event)"
+        >
+          {{ column.displayText(row) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="anschdat">
+
+      <ng-container matColumnDef="anschdat" *ngIf="hwService.getColumn('anschdat'); let column">
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>Anschaffungs-Datum</th>
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-ap-header-cell
+            [column]="column"
+            [showFilter]="hwService.stdFilter"
+            size="XS"
+          ></sbsdb-ap-header-cell>
+        </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
-          {{ element.anschDat }}
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="hwService.expandHwRow(row, $event)"
+        >
+          {{ column.displayText(row) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="anschwert">
+
+      <ng-container matColumnDef="anschwert" *ngIf="hwService.getColumn('anschwert'); let column">
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>Anschaffungs-Wert</th>
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-ap-header-cell
+            [column]="column"
+            [showFilter]="hwService.stdFilter"
+            size="XS"
+          ></sbsdb-ap-header-cell>
+        </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
-          {{ element.anschWert }}
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="hwService.expandHwRow(row, $event)"
+        >
+          {{ column.displayText(row) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="invnr">
+
+      <ng-container matColumnDef="ap" *ngIf="hwService.getColumn('ap'); let column">
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>Inventar-Nr.</th>
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-ap-header-cell
+            #lastfilter
+            (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation()"
+            [column]="column"
+            [showFilter]="hwService.stdFilter"
+            size="M"
+          ></sbsdb-ap-header-cell>
+        </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
-          {{ element.invNr }}
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="hwService.expandHwRow(row, $event)"
+        >
+          {{ column.displayText(row) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="ap">
-        <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>Arbeitsplatz</th>
-        <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
-          {{ element.apId }}
-        </td>
-      </ng-container>
+
       <ng-container matColumnDef="menu">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef></th>
@@ -108,8 +192,8 @@
       </ng-container>
 
       <!-- ROW details template begin -->
-      <tr mat-header-row *matHeaderRowDef="hwService.columns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let element; columns: hwService.columns" class="ap-row"></tr>
+      <tr mat-header-row *matHeaderRowDef="hwService.displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let element; columns: hwService.displayedColumns" class="ap-row"></tr>
       <!--  details    <tr-->
       <!--        mat-row-->
       <!--        *matRowDef="let element; columns: ['apdetails']"-->
@@ -119,6 +203,15 @@
       <!-- ROW details template end -->
     </table>
   </div>
+
+  <!-- Paginator -->
+  <mat-paginator
+    [pageSizeOptions]="[100, 250, 500, 1000]"
+    showFirstLastButtons
+    (page)="hwService.onPage($event)"
+    class="paginator"
+    color="primary"
+  ></mat-paginator>
 
   <!-- Header-Menue -->
   <mat-menu #tableMenu="matMenu">

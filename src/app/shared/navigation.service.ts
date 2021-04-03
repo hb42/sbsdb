@@ -9,6 +9,9 @@ import { ConfigService } from "./config/config.service";
 export class NavigationService {
   public currentPath = "";
 
+  public apLoading = false;
+  public hwLoading = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,

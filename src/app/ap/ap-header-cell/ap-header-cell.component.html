@@ -12,7 +12,7 @@
   ></sbsdb-accelerator-string>
 </span>
 <mat-form-field floatLabel="never" [class]="fieldClass()" *ngIf="showFilter">
-  <input matInput [formControl]="column.filterControl" [tabIndex]="tabindex" />
+  <input matInput [formControl]="column.filterControl" [tabIndex]="column.tabIndex" />
   <button
     mat-button
     [disabled]="!column.filterControl.value"

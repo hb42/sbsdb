@@ -1,11 +1,10 @@
+import { Arbeitsplatz } from "./arbeitsplatz";
 import { Netzwerk } from "./netzwerk";
 import { HwKonfig } from "./hw-konfig";
 
 export class Hardware {
   public id: number;
-  // public hersteller: string;
-  // public bezeichnung: string;
-  public anschDat: Date; // TODO Datentyp ist noch zu testen!
+  public anschDat: Date;
   public anschWert: number;
   public invNr: string;
   public smbiosgiud: string;
@@ -19,10 +18,16 @@ export class Hardware {
   public hwKonfigId: number;
   public hwKonfig: HwKonfig;
   public apId: number;
+  public ap: Arbeitsplatz;
+
+  public bezeichnung: string;
+  public hwTypBezeichnung: string;
+  public apKatBezeichnung: string;
   public vlans: Netzwerk[];
   public ipStr = "";
   public macStr = "";
   public vlanStr = "";
+  public apStr = "";
 
   // Darstellung
   public expanded?: boolean;

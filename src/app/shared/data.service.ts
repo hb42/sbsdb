@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Betrst } from "../ap/model/betrst";
-import { Arbeitsplatz } from "../ap/model/arbeitsplatz";
-import { Hardware } from "../ap/model/hardware";
-import { HwKonfig } from "../ap/model/hw-konfig";
+import { Betrst } from "./model/betrst";
+import { Arbeitsplatz } from "./model/arbeitsplatz";
+import { Hardware } from "./model/hardware";
+import { HwKonfig } from "./model/hw-konfig";
 import { ConfigService } from "./config/config.service";
 
 @Injectable({

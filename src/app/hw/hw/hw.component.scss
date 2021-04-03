@@ -15,3 +15,36 @@ $listMinWidth: 100px;
   width: $listWidth;
   min-width: $listMinWidth;
 }
+
+/* Paginator */
+.paginator {
+  height: 56px;
+  background-color: var(--md-light-gray-background-color);
+}
+
+/* Spalten */
+.mat-column-select,
+.mat-column-menu {
+  width: 25px;
+}
+.mat-column-kategorie {
+  width: 140px;
+}
+.mat-column-typ {
+  width: 140px;
+}
+.mat-column-bezeichnung {
+  width: 20%;
+}
+.mat-column-sernr {
+  width: 180px;
+}
+.mat-column-anschdat {
+  width: 100px;
+}
+.mat-column-anschwert {
+  width: 100px;
+}
+.mat-column-ap {
+  width: 30%;
+}

@@ -50,7 +50,7 @@ $listMinWidth: 100px;
 
 .mat-column-select,
 .mat-column-menu {
-  width: 20px;
+  width: 25px;
 }
 
 /* Filter mit select box */
@@ -59,28 +59,28 @@ $listMinWidth: 100px;
 }
 
 /* AP-Typ */
-.aptyp {
-  flex-direction: column;
-  align-items: flex-start;
-}
-.aptyp-tag {
-  font-size: 12px;
-  margin-top: 3px;
-}
-
-.aptyp-btn {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  height: 34px;
-}
-.aptyp-btn mat-icon {
-  font-size: 30px;
-}
-
-.aptyp-btn button {
-  text-align: left;
-}
+//.aptyp {
+//  flex-direction: column;
+//  align-items: flex-start;
+//}
+//.aptyp-tag {
+//  font-size: 12px;
+//  margin-top: 3px;
+//}
+//
+//.aptyp-btn {
+//  display: flex;
+//  flex-direction: row;
+//  align-items: baseline;
+//  height: 34px;
+//}
+//.aptyp-btn mat-icon {
+//  font-size: 30px;
+//}
+//
+//.aptyp-btn button {
+//  text-align: left;
+//}
 
 /* AP-Details */
 // muss hier definiert werden und nicht global
