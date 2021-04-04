@@ -9,6 +9,8 @@ import { Netzwerk } from "../model/netzwerk";
 export class SbsdbColumn<C, E> {
   public static LCASE = 0;
   public static IP = 1;
+  public static DATE = 2;
+  public static NUMBER = 3;
 
   private readonly filtercontrol: FormControl = null;
 
@@ -77,6 +79,10 @@ export class SbsdbColumn<C, E> {
     return this.tabindex;
   }
 
+  public get typeKey(): number {
+    return this.typekey;
+  }
+
   public get filterControl(): FormControl {
     return this.filtercontrol;
   }
@@ -119,13 +125,19 @@ export class SbsdbColumn<C, E> {
     const field: unknown = obj[this.sortFieldName];
     let s: string;
     let v: Netzwerk[];
+    let d: Date;
     switch (this.typekey) {
       case SbsdbColumn.LCASE:
-        s = field as string;
+        s = (field as string) ?? "";
         return s.toLowerCase();
       case SbsdbColumn.IP:
         v = field as Netzwerk[];
         return v && v[0] ? v[0].vlan + v[0].ip : 0;
+      case SbsdbColumn.DATE:
+        d = (field as Date) ?? new Date(0);
+        return d.valueOf();
+      case SbsdbColumn.NUMBER:
+        return field as number;
     }
   }
 
@@ -135,10 +147,10 @@ export class SbsdbColumn<C, E> {
    * Kann wegen Parameter nicht, wie die restlichen callbacks,
    * als "get" deklariert werden.
    *
-   * @param elem - Datensatz
+   * @param row - Datensatz
    */
-  public displayText(elem: E): string | null {
-    return SbsdbColumn.callback(this.displaytext, this.context, elem) as string;
+  public displayText(row: E): string | null {
+    return SbsdbColumn.callback(this.displaytext, this.context, row) as string;
   }
 
   /**

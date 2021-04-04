@@ -1,16 +1,16 @@
 import { AfterViewInit, Component, ElementRef, Input } from "@angular/core";
-import { SbsdbColumn } from "../../shared/table/sbsdb-column";
+import { SbsdbColumn } from "../sbsdb-column";
 
 /**
  * header cell fuer MatTable mit Sort-Indikator und
  * Eingabefeld fuer Spaltenfilter
  */
 @Component({
-  selector: "sbsdb-ap-header-cell",
-  templateUrl: "./ap-header-cell.component.html",
-  styleUrls: ["./ap-header-cell.component.scss"],
+  selector: "sbsdb-header-cell",
+  templateUrl: "./header-cell.component.html",
+  styleUrls: ["./header-cell.component.scss"],
 })
-export class ApHeaderCellComponent implements AfterViewInit {
+export class HeaderCellComponent implements AfterViewInit {
   /**
    * Daten der Spalte incl. FormControll fuer Input
    */

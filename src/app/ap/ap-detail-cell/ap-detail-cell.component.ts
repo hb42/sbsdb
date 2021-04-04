@@ -1,7 +1,8 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { DataService } from "../../shared/data.service";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
+import { ArbeitsplatzService } from "../arbeitsplatz.service";
 
 @Component({
   selector: "sbsdb-ap-detail-cell",
@@ -22,7 +23,7 @@ export class ApDetailCellComponent {
   public fremdeHwFlag = DataService.FREMDE_HW_FLAG;
   public aptypeFlag = DataService.BOOL_TAG_FLAG;
 
-  constructor() {
+  constructor(public apService: ArbeitsplatzService) {
     // nop
   }
 }

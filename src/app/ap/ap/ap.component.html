@@ -90,14 +90,14 @@
       <ng-container matColumnDef="aptyp" *ngIf="apService.getColumn('aptyp'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <sbsdb-ap-header-cell
+          <sbsdb-header-cell
             #firstfilter
             (keydown.shift.tab)="
               focusLastFilter(); $event.preventDefault(); $event.stopPropagation()
             "
             [column]="column"
             [showFilter]="apService.filterService.stdFilter"
-          ></sbsdb-ap-header-cell>
+          ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
         <td
@@ -115,10 +115,10 @@
       <ng-container matColumnDef="apname" *ngIf="apService.getColumn('apname'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <sbsdb-ap-header-cell
+          <sbsdb-header-cell
             [column]="column"
             [showFilter]="apService.filterService.stdFilter"
-          ></sbsdb-ap-header-cell>
+          ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
         <td
@@ -136,11 +136,11 @@
       <ng-container matColumnDef="betrst" *ngIf="apService.getColumn('betrst'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <sbsdb-ap-header-cell
+          <sbsdb-header-cell
             [column]="column"
             [labelChange]="apService.userSettings.showStandort"
             [showFilter]="apService.filterService.stdFilter"
-          ></sbsdb-ap-header-cell>
+          ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
         <td
@@ -161,10 +161,10 @@
       >
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <sbsdb-ap-header-cell
+          <sbsdb-header-cell
             [column]="column"
             [showFilter]="apService.filterService.stdFilter"
-          ></sbsdb-ap-header-cell>
+          ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
         <td
@@ -182,10 +182,10 @@
       <ng-container matColumnDef="ip" *ngIf="apService.getColumn('ip'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <sbsdb-ap-header-cell
+          <sbsdb-header-cell
             [column]="column"
             [showFilter]="apService.filterService.stdFilter"
-          ></sbsdb-ap-header-cell>
+          ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
         <td mat-cell *matCellDef="let row" (click)="apService.expandApRow(row, $event)">
@@ -203,12 +203,12 @@
       <ng-container matColumnDef="hardware" *ngIf="apService.getColumn('hardware'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
-          <sbsdb-ap-header-cell
+          <sbsdb-header-cell
             #lastfilter
             (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation()"
             [column]="column"
             [showFilter]="apService.filterService.stdFilter"
-          ></sbsdb-ap-header-cell>
+          ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
         <td mat-cell *matCellDef="let row" (click)="apService.expandApRow(row, $event)">

@@ -1,15 +1,15 @@
 import { formatCurrency, formatDate } from "@angular/common";
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
-import { HwKonfig } from "../shared/model/hw-konfig";
 import { Hardware } from "../shared/model/hardware";
-import { ConfigService } from "../shared/config/config.service";
+import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
 
@@ -26,12 +26,19 @@ export class HwService {
 
   public stdFilter = true; // TODO evtl. in FilterService auslagern
 
-  // DEBUG Zeilenumbruch in der Zelle umschalten
+  // Zeilenumbruch in der Zelle umschalten
   public tableWrapCell = false;
+
+  private filterChanged = 1;
+  // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
+  // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
+  //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
+  private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     public dataService: DataService,
     public navigationService: NavigationService,
+    // private apService: ArbeitsplatzService,
     private configService: ConfigService
   ) {
     console.debug("c'tor HwService ");
@@ -40,19 +47,21 @@ export class HwService {
     setTimeout(() => {
       this.init();
     }, 0);
+
+    this.navigationService.navToAp.subscribe((dat) => {
+      this.filterFor(dat.col, dat.search);
+    });
   }
 
   public onSort(event: Sort): void {
-    // TODO Felder anlegen
-    // this.userSettings.hwSortColumn = event.active;
-    // this.userSettings.hwSortDirection = event.direction;
+    this.userSettings.hwSortColumn = event.active;
+    this.userSettings.hwSortDirection = event.direction;
   }
 
   public onPage(event: PageEvent): void {
-    // TODO Felder anlegen
-    // if (event.pageSize !== this.userSettings.apPageSize) {
-    //   this.userSettings.apPageSize = event.pageSize;
-    // }
+    if (event.pageSize !== this.userSettings.apPageSize) {
+      this.userSettings.apPageSize = event.pageSize;
+    }
   }
 
   public expandHwRow(hw: Hardware, event: Event): void {
@@ -75,19 +84,37 @@ export class HwService {
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
     this.hwDataSource.sort = sort;
     this.hwDataSource.paginator = paginator;
-    // TODO an HW anpassen || "sbsdbTable" ?
-    // this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
-    // if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
-    //   this.apDataSource.sort.active = this.userSettings.apSortColumn;
-    //   this.apDataSource.sort.direction = this.userSettings.apSortDirection === "asc" ? "" : "asc";
-    //   const sortheader = this.apDataSource.sort.sortables.get(
-    //     this.userSettings.apSortColumn
-    //   ) as MatSortHeader;
-    //   // this.sort.sort(sortheader);
-    //   // FIXME Hack -> ApComponent#handleSort
-    //   // eslint-disable-next-line no-underscore-dangle
-    //   sortheader._handleClick();
-    // }
+    this.setDataToTable.emit();
+    this.hwDataSource.paginator.pageSize = this.userSettings.hwPageSize;
+    if (this.userSettings.hwSortColumn && this.userSettings.hwSortDirection) {
+      this.hwDataSource.sort.active = this.userSettings.hwSortColumn;
+      this.hwDataSource.sort.direction = this.userSettings.hwSortDirection === "asc" ? "" : "asc";
+      const sortheader = this.hwDataSource.sort.sortables.get(
+        this.userSettings.hwSortColumn
+      ) as MatSortHeader;
+      this.hwDataSource.sort.sort(sortheader);
+      // FIXME Hack -> ApComponent#handleSort
+      // eslint-disable-next-line no-underscore-dangle
+      // sortheader._handleClick();
+    }
+  }
+
+  public gotoAp(hw: Hardware): void {
+    this.navigationService.navToAp.emit({ col: "apname", search: hw.ap.apname });
+  }
+
+  public filterFor(column: string, search: string | number): void {
+    const col = this.getColumn(column);
+    if (col.typeKey === SbsdbColumn.LCASE) {
+      search = ((search as string) ?? "").toLowerCase();
+    }
+    if (col) {
+      // this.filterService.filterFor(col, search, RelOp.like);
+    } else {
+      // this.filterService.filterExpression.reset();
+      // this.filterService.stdFilter = true;
+      // this.filterService.triggerFilter();
+    }
   }
 
   private buildColumns() {
@@ -182,8 +209,8 @@ export class HwService {
         "n",
         true,
         5,
-        SbsdbColumn.LCASE, // vermutlich eigener key f. DatumSort
-        [RelOp.equal], // gleichDat, groesserDat, kleinerDat
+        SbsdbColumn.DATE,
+        [RelOp.equalDat, RelOp.gtDat, RelOp.ltDat],
         null
       )
     );
@@ -198,8 +225,8 @@ export class HwService {
         "w",
         true,
         6,
-        SbsdbColumn.LCASE, // vermutlich eigener key f. NumSort
-        [RelOp.equal], // gleichNum, groesserNum, kleinerNum
+        SbsdbColumn.NUMBER,
+        [RelOp.equalNum, RelOp.gtNum, RelOp.ltNum],
         null
       )
     );
@@ -267,12 +294,41 @@ export class HwService {
         null
       )
     );
+    // fuer Suche nach Index
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "hwid",
+        () => "HW-Index",
+        () => "id",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        SbsdbColumn.NUMBER,
+        [RelOp.equalNum, RelOp.gtNum, RelOp.ltNum],
+        null
+      )
+    );
+
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 
-  // --- fetch data ---
+  /**
+   * Filter ausloesen
+   *
+   * DataTable reagiert auf Aenderungen an DataSource.filter, hier wird nur ein Wert
+   * hochgezaehlt, der eigentliche Filter kommt per URl. Das Filtern passiert in
+   * DataSource.filterPredicate().
+   */
+  private triggerFilter() {
+    this.hwDataSource.filter = `${this.filterChanged++}`;
+  }
 
   private init(): void {
+    // event handling
+
     const readyCheck = () => {
       if (
         this.dataService.isApListFetched() &&
@@ -283,7 +339,7 @@ export class HwService {
         // alle relevanten Listen sind da: HwKonfig in HW eintragen
         // und HW in AP eintragen
         this.prepareData();
-        this.hwDataSource.data = this.dataService.hwList;
+        this.setDataToTable.emit();
         // apList ist damit komplett (stoesst dataService.dataReady an)
         this.dataService.apListReady.emit();
       }
@@ -292,9 +348,31 @@ export class HwService {
     this.dataService.hwKonfigListReady.subscribe(readyCheck);
     this.dataService.hwListReady.subscribe(readyCheck);
     this.dataService.apListFetched.subscribe(readyCheck);
+
+    // alle Daten muessen geladen sein und die HwComponent muss
+    // fertig initialisiert sein (-> fn setViewParams)
+    this.setDataToTable.subscribe(() => {
+      if (this.hwDataSource.paginator) {
+        this.hwDataSource.data = this.dataService.hwList;
+        this.triggerFilter();
+      }
+    });
+
     // fetch KW-Konfig-Table + HW-Table
     void this.fetchData();
+
+    // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
+    this.hwDataSource.sortingDataAccessor = (hw: Hardware, id: string) => {
+      const col = this.getColumn(id);
+      if (col) {
+        return col.sortString(hw);
+      } else {
+        return "";
+      }
+    };
   }
+
+  // --- fetch data ---
 
   private async fetchData(): Promise<void> {
     this.dataService.get(this.dataService.allHwKonfig).subscribe(
@@ -373,7 +451,7 @@ export class HwService {
         const ap = this.dataService.apList.find((a) => a.apId === hw.apId);
         if (ap) {
           hw.ap = ap;
-          hw.apStr = ap.apname + " / " + ap.oe.betriebsstelle + " / " + ap.bezeichnung;
+          hw.apStr = ap.apname + " | " + ap.oe.betriebsstelle + " | " + ap.bezeichnung;
           ap.hw.push(hw);
           ap.macsearch = macsearch;
           if (hw.pri) {

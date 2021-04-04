@@ -9,6 +9,7 @@ import { RelOp } from "../shared/filter/rel-op.enum";
 import { TransportElement } from "../shared/filter/transport-element";
 import { TransportElements } from "../shared/filter/transport-elements";
 import { KeyboardService } from "../shared/keyboard.service";
+import { Hardware } from "../shared/model/hardware";
 import { NavigationService } from "../shared/navigation.service";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
 import { ApFilterService } from "./ap-filter.service";
@@ -21,6 +22,7 @@ import { MatTableDataSource } from "@angular/material/table";
 @Injectable({ providedIn: "root" })
 export class ArbeitsplatzService {
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
+  // MAT_PAGINATOR_DEFAULT_OPTIONS: InjectionToken<MatPaginatorDefaultOptions>;
 
   // DEBUG Zeilenumbruch in den Tabellenzellen (drin lassen??)
   public tableWrapCell = false;
@@ -47,6 +49,10 @@ export class ArbeitsplatzService {
 
   private filterChange: EventEmitter<void> = new EventEmitter<void>();
   private filterChanged = 1;
+  // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
+  // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
+  //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
+  private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
   private apDataReady = false;
 
   constructor(
@@ -66,6 +72,10 @@ export class ArbeitsplatzService {
     setTimeout(() => {
       this.initTable();
     }, 0);
+
+    this.navigationService.navToAp.subscribe((dat) => {
+      this.filterFor(dat.col, dat.search);
+    });
   }
 
   public getColumnIndex(name: string): number {
@@ -83,6 +93,7 @@ export class ArbeitsplatzService {
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
     this.apDataSource.sort = sort;
     this.apDataSource.paginator = paginator;
+    this.setDataToTable.emit();
 
     this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
     if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
@@ -91,10 +102,10 @@ export class ArbeitsplatzService {
       const sortheader = this.apDataSource.sort.sortables.get(
         this.userSettings.apSortColumn
       ) as MatSortHeader;
-      // this.sort.sort(sortheader);
+      this.apDataSource.sort.sort(sortheader);
       // FIXME Hack -> ApComponent#handleSort
       // eslint-disable-next-line no-underscore-dangle
-      sortheader._handleClick();
+      // sortheader._handleClick();
     }
   }
 
@@ -122,6 +133,25 @@ export class ArbeitsplatzService {
     const trans: TransportElements = { stdFilter: this.filterService.stdFilter, filter: te };
     const fStr = JSON.stringify(trans);
     console.debug("------  TEST  " + fStr);
+  }
+
+  public gotoHw(hw: Hardware): void {
+    this.navigationService.navToHw.emit({ col: "hwid", search: hw.id });
+  }
+
+  public filterFor(column: string, search: string | number): void {
+    const col = this.getColumn(column);
+    if (col.typeKey === SbsdbColumn.LCASE) {
+      search = ((search as string) ?? "").toLowerCase();
+    }
+    if (col) {
+      this.filterService.filterFor(col, search, RelOp.like);
+    } else {
+      this.filterService.filterExpression.reset();
+      this.filterService.stdFilter = true;
+      this.filterService.triggerFilter();
+      // console.error("ArbeitsplatzService#filterForCol: Column " + column + " not found!");
+    }
   }
 
   public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
@@ -445,15 +475,21 @@ export class ArbeitsplatzService {
   // APs aus der DB holen
   private initTable() {
     this.loading = true;
+    // alle Daten muessen geladen sein und die ApComponent muss
+    // fertig initialisiert sein (-> fn setViewParams)
+    this.setDataToTable.subscribe(() => {
+      if (this.apDataSource.paginator) {
+        this.apDataSource.data = this.dataService.apList;
+        this.triggerFilter();
+      }
+    });
     // Daten aus der DB holen und aufbereiten
     // const dataReady: EventEmitter<void> = new EventEmitter<void>();
     this.dataService.dataReady.subscribe(() => {
       this.loading = false;
-      this.apDataSource.data = this.dataService.apList;
       this.onDataReady();
       this.apDataReady = true;
-      // Filter erst ausloesen nachdem sie Tabelle vollstaendig geladen ist
-      this.triggerFilter();
+      this.setDataToTable.emit(); // s.o.
     });
     void this.getAPs(() => {
       this.loading = true;
@@ -484,7 +520,6 @@ export class ArbeitsplatzService {
     // eigener Filter
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
-      2;
       let valid = this.filterService.filterExpression.validate(
         (ap as unknown) as Record<string, string | Array<string>>
       );
@@ -590,7 +625,6 @@ export class ArbeitsplatzService {
           each();
           fetched++;
           if (fetched === count) {
-            this.apDataSource.data = this.dataService.apList;
             console.debug("fetch page READY");
             this.dataService.apListFetched.emit();
             // ready.emit();

@@ -1,4 +1,3 @@
-import { animate, state, style, transition, trigger } from "@angular/animations";
 import {
   AfterViewInit,
   Component,
@@ -10,12 +9,12 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
-import { ApHeaderCellComponent } from "../ap-header-cell/ap-header-cell.component";
+import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
 import { ArbeitsplatzService } from "../arbeitsplatz.service";
 import { DataService } from "../../shared/data.service";
 
@@ -29,8 +28,8 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
-  @ViewChild("firstfilter") public firstFilter: ApHeaderCellComponent; //ElementRef<HTMLInputElement>;
-  @ViewChild("lastfilter") public lastFilter: ApHeaderCellComponent;
+  @ViewChild("firstfilter") public firstFilter: HeaderCellComponent; //ElementRef<HTMLInputElement>;
+  @ViewChild("lastfilter") public lastFilter: HeaderCellComponent;
 
   @ViewChild("pagInsert", { read: ElementRef }) pagInsert: ElementRef<Element>;
   @ViewChild(MatPaginator, { read: ElementRef }) pagElement: ElementRef<Element>;
@@ -99,29 +98,32 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     this.route.paramMap.subscribe((params) => {
       // check params
       let encFilter: string = null;
-      if (params && params.has("filt")) {
-        encFilter = params.get("filt");
-        // weitere Parameter muessten hier behandelt werden
-        // FIXME (*)
+      if (params) {
+        if (params.has("filt")) {
+          encFilter = params.get("filt");
+          this.config.getUser().latestApFilter = encFilter;
+          this.apService.filterFromNavigation(encFilter);
+        } else if (params.has("apname")) {
+          // FIXME das hier hat den Nachteil, dass so zwei Eintraege in der History eingetragen werden:
+          //       (1) /ap;apname=xx und vom Filter (2) /ap;filt=xxx
+          //       besser direkt ueber apService aufrufen
+          //       [der Code bleibt erst mal drin, fuer den Fall, dass das noch nuetzlich wird]
+          this.apService.filterFor("apname", params.get("apname"));
+        }
       } else {
         // keine Parameter -> letzten gesicherten nehmen
         // (Unterstellung: interne Navigation von z.B. HW-Seite)
         // TODO evtl. filter doch noch in userConf, was ist, wenn letzte URL
         //      vor Prog-Ende HWpage? Dann wuerde der letzte Filter verloren
         //      gehen. Evtl. encoded wg. Platz. Filter aus conf wuerde dann nur
-        //      lateestUrlParams geladen, das sollte reichen um doppelte
+        //      aus UrlParams geladen, das sollte reichen um doppelte
         //      Ausfuehrung beim Start zu verhindern.
         if (this.config.getUser().latestApFilter) {
           encFilter = this.config.getUser().latestApFilter;
           this.apService.nav2filter(encFilter);
         }
       }
-      // FIXME die folgenden Zeilen in den ersten Teil des if (*) ??
-      // param merken
-      if (encFilter) {
-        this.config.getUser().latestApFilter = encFilter;
-      }
-      this.apService.filterFromNavigation(encFilter);
+
       // URL /ap;id=11;tree=bst -> {id: 11, tree: 'bst'}
       // als zweiter Navigationsparameter:
       //   this.router.navigate(['/ap', { id: 11, tree: 'bst' }]);
@@ -140,6 +142,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   public ngAfterViewInit(): void {
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
+
     setTimeout(() => {
       // Benutzereinstellungen setzen
       this.apService.setViewParams(this.sort, this.paginator);

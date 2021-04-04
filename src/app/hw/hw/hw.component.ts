@@ -9,7 +9,7 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
-import { ApHeaderCellComponent } from "../../ap/ap-header-cell/ap-header-cell.component";
+import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
 import { HwService } from "../hw.service";
 
 @Component({
@@ -22,8 +22,8 @@ export class HwComponent implements AfterViewInit, OnInit {
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
-  @ViewChild("firstfilter") public firstFilter: ApHeaderCellComponent;
-  @ViewChild("lastfilter") public lastFilter: ApHeaderCellComponent;
+  @ViewChild("firstfilter") public firstFilter: HeaderCellComponent;
+  @ViewChild("lastfilter") public lastFilter: HeaderCellComponent;
 
   constructor(public dialog: MatDialog, public hwService: HwService) {
     console.debug("c'tor HwComponent");

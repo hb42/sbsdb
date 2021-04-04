@@ -14,4 +14,12 @@ export interface UserSettings {
   apSortDirection?: string;
   apPageSize?: number;
   searchSonstHw?: boolean;
+  // HW-Page
+  hwColumnFilters?: ColumnFilter[];
+  hwExtFilter?: string;
+  hwFilter?: TransportFilters;
+  latestHwFilter?: string;
+  hwSortColumn?: string;
+  hwSortDirection?: string;
+  hwPageSize?: number;
 }

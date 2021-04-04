@@ -1,5 +1,5 @@
 import { Location } from "@angular/common";
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router, UrlTree } from "@angular/router";
 import { ErrorService } from "@hb42/lib-client";
 import { filter } from "rxjs/operators";
@@ -11,6 +11,15 @@ export class NavigationService {
 
   public apLoading = false;
   public hwLoading = false;
+
+  public navToAp: EventEmitter<{ col: string; search: string | number }> = new EventEmitter<{
+    col: string;
+    search: string | number;
+  }>();
+  public navToHw: EventEmitter<{ col: string; search: string | number }> = new EventEmitter<{
+    col: string;
+    search: string | number;
+  }>();
 
   constructor(
     private router: Router,

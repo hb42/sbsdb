@@ -10,7 +10,7 @@
     </div>
     <div class="ap-detail-margin"></div>
     <div *ngIf="element.oe.oeff" class="ap-detail-margin ap-detail-oeff">
-      Öffnungszeiten<br />{{ element.oe.oeff }}
+      <span>Öffnungszeiten</span><br />{{ element.oe.oeff }}
     </div>
   </div>
   <div class="ap-detail-content-row">
@@ -39,11 +39,16 @@
             {{ hw.hwKonfig.hwTypBezeichnung }}
           </td>
           <td>
-            {{
-              hw.hwKonfig.hwTypFlag !== fremdeHwFlag
-                ? hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung + " [" + hw.sernr + "]"
-                : ""
-            }}
+            <span *ngIf="hw.hwKonfig.hwTypFlag !== fremdeHwFlag">
+              {{ hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung }}
+              [<a
+                mat-button
+                color="primary"
+                class="textLink"
+                (click)="apService.gotoHw(hw); $event.stopPropagation()"
+                >{{ hw.sernr }}</a
+              >]
+            </span>
           </td>
           <td [title]="hw.vlanStr">
             {{ hw.ipStr }}

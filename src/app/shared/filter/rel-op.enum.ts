@@ -12,4 +12,12 @@ export enum RelOp {
   notinlistA = "UNGLEICH ",
   exist = "VORHANDEN",
   notexist = "NICHT VORHANDEN",
+  equalNum = "GLEICH",
+  notequalNum = "UNGLEICH",
+  gtNum = "GRÖSSER ALS",
+  ltNum = "KLEINER ALS",
+  equalDat = "GLEICH",
+  notequalDat = "UNGLEICH",
+  gtDat = "GRÖSSER ALS",
+  ltDat = "KLEINER ALS",
 }

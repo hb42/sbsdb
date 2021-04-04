@@ -12,12 +12,14 @@ import { Field } from "../shared/filter/field";
 import { LogicalAnd } from "../shared/filter/logical-and";
 import { LogicalOperator } from "../shared/filter/logical-operator";
 import { LogicalOr } from "../shared/filter/logical-or";
+import { RelOp } from "../shared/filter/rel-op.enum";
 import { RelationalOperator } from "../shared/filter/relational-operator";
 import { TransportElement } from "../shared/filter/transport-element";
 import { TransportElements } from "../shared/filter/transport-elements";
 import { TransportExpression } from "../shared/filter/transport-expression";
 import { TransportFilter } from "../shared/filter/transport-filter";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
+import { Hardware } from "../shared/model/hardware";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
 import { ApFilterEditListData } from "./ap-filter-edit-list/ap-filter-edit-list-data";
 import { ApFilterEditListComponent } from "./ap-filter-edit-list/ap-filter-edit-list.component";
@@ -49,7 +51,7 @@ export class ApFilterService {
   private globNextKey = ApFilterService.STDFILTER + 1;
 
   // wird in initService() von apService geliefert
-  private columns: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>[];
+  private columns: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz | Hardware>[];
   private filterChange: EventEmitter<void>;
 
   // Filtereingaben bremsen
@@ -71,7 +73,7 @@ export class ApFilterService {
    * @param evt - Eventhandler fuer Aenderungen am Filter
    */
   public initService(
-    col: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>[],
+    col: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz | Hardware>[],
     evt: EventEmitter<void>
   ): void {
     this.columns = col;
@@ -125,7 +127,9 @@ export class ApFilterService {
    * ein event an ArbeitsplatzService gesendet.
    */
   public triggerFilter(): void {
-    this.filterChange.emit();
+    if (this.filterChange) {
+      this.filterChange.emit();
+    }
   }
 
   /**
@@ -167,6 +171,22 @@ export class ApFilterService {
     this.makeElements(this.filterExpression, filter);
     this.stdFilter = std;
     this.setColumnFilters();
+  }
+
+  public filterFor(
+    col: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz | Hardware>,
+    search: string | number,
+    op: RelOp
+  ): void {
+    this.filterExpression.reset();
+    this.stdFilter = false;
+    const expr: Expression = new Expression(
+      new Field(col.fieldName, col.displayName),
+      new RelationalOperator(op),
+      search.toString()
+    );
+    this.filterExpression.addElement(new LogicalAnd(), expr);
+    this.triggerFilter();
   }
 
   // --- Edit Exxtended Filter ---
@@ -458,7 +478,7 @@ export class ApFilterService {
     if (this.stdFilter && this.columns) {
       // this.resetStdFilters();
       const cols: Array<{
-        col: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>;
+        col: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz | Hardware>;
         val: string | null;
       }> = this.columns
         .filter((c) => {

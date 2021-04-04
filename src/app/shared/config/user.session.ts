@@ -43,6 +43,12 @@ export class UserSession {
     this.settings.apSortDirection = this.settings.apSortDirection ?? "";
     this.settings.apPageSize = this.settings.apPageSize ?? 100;
     this.settings.searchSonstHw = !!this.settings.searchSonstHw;
+    this.settings.hwColumnFilters = this.settings.hwColumnFilters ?? [];
+    this.settings.hwFilter = this.settings.hwFilter ?? { stdFilter: true, filters: [] };
+    this.settings.latestHwFilter = this.settings.latestHwFilter ?? "";
+    this.settings.hwSortColumn = this.settings.hwSortColumn ?? "";
+    this.settings.hwSortDirection = this.settings.hwSortDirection ?? "";
+    this.settings.hwPageSize = this.settings.hwPageSize ?? 100;
   }
 
   // Benutzerrechte sind R/O
@@ -66,12 +72,23 @@ export class UserSession {
     this.change();
   }
 
+  // AP
+
   public get showStandort(): boolean {
     return this.settings.showStandort;
   }
 
   public set showStandort(o: boolean) {
     this.settings.showStandort = o;
+    this.change();
+  }
+
+  public get searchSonstHw(): boolean {
+    return this.settings.searchSonstHw;
+  }
+
+  public set searchSonstHw(sh: boolean) {
+    this.settings.searchSonstHw = sh;
     this.change();
   }
 
@@ -131,12 +148,61 @@ export class UserSession {
     this.change();
   }
 
-  public get searchSonstHw(): boolean {
-    return this.settings.searchSonstHw;
+  // HW
+
+  public get hwSortColumn(): string {
+    return this.settings.hwSortColumn;
   }
 
-  public set searchSonstHw(sh: boolean) {
-    this.settings.searchSonstHw = sh;
+  public set hwSortColumn(col: string) {
+    this.settings.hwSortColumn = col;
+    this.change();
+  }
+
+  public get hwSortDirection(): string {
+    return this.settings.hwSortDirection;
+  }
+
+  public set hwSortDirection(dir: string) {
+    this.settings.hwSortDirection = dir;
+    this.change();
+  }
+
+  public get hwPageSize(): number {
+    return this.settings.hwPageSize;
+  }
+
+  public set hwPageSize(pg: number) {
+    this.settings.hwPageSize = pg;
+    this.change();
+  }
+
+  // HW Filter
+
+  public get hwFilter(): TransportFilters {
+    return this.settings.hwFilter;
+  }
+
+  public set hwFilter(filt: TransportFilters) {
+    this.settings.hwFilter = filt;
+    this.change();
+  }
+
+  public get latestHwFilter(): string {
+    return this.settings.latestHwFilter;
+  }
+
+  public set latestHwFilter(filt: string) {
+    this.settings.latestHwFilter = filt;
+    this.change();
+  }
+
+  public get hwStdFilter(): boolean {
+    return this.settings.hwFilter.stdFilter;
+  }
+
+  public set hwStdFilter(ex: boolean) {
+    this.settings.hwFilter.stdFilter = ex;
     this.change();
   }
 

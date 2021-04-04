@@ -52,6 +52,14 @@ export class RelationalOperator {
         this.execute = RelationalOperator.notExist;
         this.name = op;
         break;
+      case RelOp.equalNum:
+      case RelOp.notequalNum:
+      case RelOp.gtNum:
+      case RelOp.ltNum:
+      case RelOp.equalDat:
+      case RelOp.notequalDat:
+      case RelOp.gtDat:
+      case RelOp.ltDat:
       default:
         this.execute = RelationalOperator.noop;
         this.name = RelOp.nop;

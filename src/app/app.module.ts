@@ -31,7 +31,7 @@ import { FootComponent } from "./shared/foot/foot.component";
 import { HeadComponent } from "./shared/head/head.component";
 import { MatPaginatorIntlDe } from "./shared/mat.paginator.intl.de";
 import { StatusComponent } from "./shared/status/status.component";
-import { ApHeaderCellComponent } from "./ap/ap-header-cell/ap-header-cell.component";
+import { HeaderCellComponent } from "./shared/table/header-cell/header-cell.component";
 import { ApDetailCellComponent } from "./ap/ap-detail-cell/ap-detail-cell.component";
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 
@@ -75,7 +75,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     AdminPanelApFilterComponent,
     AdminPanelConfigComponent,
     AdminPanelConfigInputComponent,
-    ApHeaderCellComponent,
+    HeaderCellComponent,
     ApDetailCellComponent,
     TooltipOnEllipsisDirective,
   ],
