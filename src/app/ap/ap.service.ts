@@ -1,10 +1,12 @@
 import { EventEmitter, Injectable } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { Router } from "@angular/router";
 import { AP_PATH } from "../app-routing-const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
+import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
 import { TransportElement } from "../shared/filter/transport-element";
 import { TransportElements } from "../shared/filter/transport-elements";
@@ -20,9 +22,8 @@ import { Betrst } from "../shared/model/betrst";
 import { MatTableDataSource } from "@angular/material/table";
 
 @Injectable({ providedIn: "root" })
-export class ArbeitsplatzService {
+export class ApService {
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
-  // MAT_PAGINATOR_DEFAULT_OPTIONS: InjectionToken<MatPaginatorDefaultOptions>;
 
   // DEBUG Zeilenumbruch in den Tabellenzellen (drin lassen??)
   public tableWrapCell = false;
@@ -35,10 +36,10 @@ export class ArbeitsplatzService {
   public loading = false;
   // public typtagSelect: TypTag[];
 
-  public columns: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>[] = [];
+  public columns: SbsdbColumn<ApService, Arbeitsplatz>[] = [];
 
   public displayedColumns: string[];
-  public extFilterColumns: SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>[];
+  public extFilterColumns: SbsdbColumn<ApService, Arbeitsplatz>[];
   /* fuer select list: Liste ohne Duplikate fuer ein Feld (nicht bei allen sinnvoll -> aptyp, oe, voe, tags, hwtyp, vlan(?))
     new Set() -> nur eindeutige - ... -> zu Array
     -> https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array#9229932
@@ -56,8 +57,9 @@ export class ArbeitsplatzService {
   private apDataReady = false;
 
   constructor(
-    private configService: ConfigService,
     public filterService: ApFilterService,
+    public editFilterService: EditFilterService,
+    private configService: ConfigService,
     private keyboardService: KeyboardService,
     private navigationService: NavigationService,
     private dataService: DataService,
@@ -81,7 +83,7 @@ export class ArbeitsplatzService {
   public getColumnIndex(name: string): number {
     return this.columns.findIndex((c) => c.columnName === name);
   }
-  public getColumn(name: string): SbsdbColumn<ArbeitsplatzService, Arbeitsplatz> {
+  public getColumn(name: string): SbsdbColumn<ApService, Arbeitsplatz> {
     const idx = this.getColumnIndex(name);
     if (idx >= 0 && idx < this.columns.length) {
       return this.columns[idx];
@@ -141,7 +143,7 @@ export class ArbeitsplatzService {
 
   public filterFor(column: string, search: string | number): void {
     const col = this.getColumn(column);
-    if (col.typeKey === SbsdbColumn.LCASE) {
+    if (col.typeKey === SbsdbColumn.STRING) {
       search = ((search as string) ?? "").toLowerCase();
     }
     if (col) {
@@ -233,7 +235,7 @@ export class ArbeitsplatzService {
 
   private buildColumns() {
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this,
         "select",
         () => null,
@@ -249,7 +251,7 @@ export class ArbeitsplatzService {
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // hat typ [dropdown], hat typ nicht [dropdown]
         "aptyp",
         () => "Typ",
@@ -259,13 +261,13 @@ export class ArbeitsplatzService {
         "t",
         true,
         1,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.apDataSource.data.map((a) => a.apTypBezeichnung))].sort()
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // beginnt, endet, enthaelt, enthaelt nicht
         "apname",
         () => "AP-Name",
@@ -275,13 +277,13 @@ export class ArbeitsplatzService {
         "n",
         true,
         2,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // BST extra? / string beginnt, endet, enthaelt, enthaelt nicht / dropdown?
         "betrst",
         () => (this.userSettings.showStandort ? "Standort" : "Verantw. OE"),
@@ -292,7 +294,7 @@ export class ArbeitsplatzService {
         "o",
         true,
         3,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.inlist, RelOp.notinlist, RelOp.like, RelOp.notlike],
         () =>
           [
@@ -305,7 +307,7 @@ export class ArbeitsplatzService {
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // enthaelt, enthaelt nicht
         "bezeichnung",
         () => "Bezeichnung",
@@ -315,13 +317,13 @@ export class ArbeitsplatzService {
         "b",
         true,
         4,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
         // dropdown VLAN? -> eigene Spalte
         "ip",
@@ -338,7 +340,7 @@ export class ArbeitsplatzService {
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
         // dropdown VLAN? -> eigene Spalte
         "ipfilt",
@@ -349,13 +351,13 @@ export class ArbeitsplatzService {
         "",
         false,
         0,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
         // dropdown VLAN? -> eigene Spalte
         "mac",
@@ -372,7 +374,7 @@ export class ArbeitsplatzService {
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
         // dropdown VLAN? -> eigene Spalte
         "vlan",
@@ -383,13 +385,13 @@ export class ArbeitsplatzService {
         "",
         false,
         0,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.apDataSource.data.map((a) => a.vlanStr))].sort()
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // enthaelt, enthaelt nicht/ Hersteller|Typenbezeichnung|SerNr enthaelt, enthaelt nicht, start,end
         // (hersteller + bezeichnung) -> eigene Spalte
         "hardware",
@@ -404,13 +406,13 @@ export class ArbeitsplatzService {
         "w",
         true,
         6,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.like, RelOp.notlike],
         null
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this,
         "sonsthw",
         () => "Sonstige Hardware",
@@ -420,13 +422,13 @@ export class ArbeitsplatzService {
         "",
         false,
         0,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.like, RelOp.notlike],
         null
       )
     );
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this,
         "menu",
         () => null,
@@ -443,7 +445,7 @@ export class ArbeitsplatzService {
     );
 
     this.columns.push(
-      new SbsdbColumn<ArbeitsplatzService, Arbeitsplatz>(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
         this, // bemerkung -> enthaelt
         "bemerkung",
         () => "Bemerkung",
@@ -453,7 +455,7 @@ export class ArbeitsplatzService {
         "",
         false,
         0,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.like, RelOp.notlike],
         null
       )
@@ -556,7 +558,7 @@ export class ArbeitsplatzService {
     const tags = [
       ...new Set(
         //  (flatmap ist ES10, wird aber von FF, Chrome, Edge schon unterstuetzt)
-        this.apDataSource.data.flatMap((ap: Arbeitsplatz) =>
+        this.dataService.apList.flatMap((ap: Arbeitsplatz) =>
           ap.tags.map((t1: Tag) => `${t1.bezeichnung};${t1.flag}`)
         )
       ),
@@ -575,7 +577,7 @@ export class ArbeitsplatzService {
           "",
           false,
           0,
-          SbsdbColumn.LCASE,
+          SbsdbColumn.STRING,
           Number(tag[1]) === DataService.BOOL_TAG_FLAG
             ? [RelOp.exist, RelOp.notexist]
             : [

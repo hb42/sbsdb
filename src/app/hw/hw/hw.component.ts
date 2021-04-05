@@ -27,6 +27,7 @@ export class HwComponent implements AfterViewInit, OnInit {
 
   constructor(public dialog: MatDialog, public hwService: HwService) {
     console.debug("c'tor HwComponent");
+    this.hwService.editFilterService.setFilterService(this.hwService.hwFilterService);
   }
 
   public ngAfterViewInit(): void {

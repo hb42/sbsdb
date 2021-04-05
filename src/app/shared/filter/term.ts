@@ -8,7 +8,7 @@ export interface Term {
   up: Bracket | null;
 
   // Ausdruck fuer einen  Datensatz auswerten
-  validate(record: Record<string, string | Array<string>>): boolean;
+  validate(record: Record<string, string | Array<string> | number | Date>): boolean;
 
   // fuer die schnelle Unterscheidung
   isBracket(): boolean;

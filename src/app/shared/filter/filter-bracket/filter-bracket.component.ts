@@ -1,20 +1,20 @@
 import { Component, Input } from "@angular/core";
-import { Bracket } from "../../shared/filter/bracket";
-import { Element } from "../../shared/filter/element";
-import { ApFilterService } from "../ap-filter.service";
+import { Bracket } from "../bracket";
+import { EditFilterService } from "../edit-filter.service";
+import { Element } from "../element";
 
 @Component({
-  selector: "sbsdb-ap-filter-bracket",
-  templateUrl: "./ap-filter-bracket.component.html",
-  styleUrls: ["./ap-filter-bracket.component.scss"],
+  selector: "sbsdb-filter-bracket",
+  templateUrl: "./filter-bracket.component.html",
+  styleUrls: ["./filter-bracket.component.scss"],
 })
-export class ApFilterBracketComponent {
+export class FilterBracketComponent {
   @Input() public element: Element;
 
   public highlight = false;
   private menuopen = false;
 
-  constructor(public apFilterService: ApFilterService) {}
+  constructor(public editFilter: EditFilterService) {}
 
   public menuOpen(): void {
     this.menuopen = true;

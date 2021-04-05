@@ -7,7 +7,7 @@ import { RelationalOperator } from "../filter/relational-operator";
 import { Netzwerk } from "../model/netzwerk";
 
 export class SbsdbColumn<C, E> {
-  public static LCASE = 0;
+  public static STRING = 0;
   public static IP = 1;
   public static DATE = 2;
   public static NUMBER = 3;
@@ -127,7 +127,7 @@ export class SbsdbColumn<C, E> {
     let v: Netzwerk[];
     let d: Date;
     switch (this.typekey) {
-      case SbsdbColumn.LCASE:
+      case SbsdbColumn.STRING:
         s = (field as string) ?? "";
         return s.toLowerCase();
       case SbsdbColumn.IP:

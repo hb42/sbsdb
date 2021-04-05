@@ -5,16 +5,22 @@
       <mat-form-field class="abstand">
         <mat-label>Gespeicherte Filter</mat-label>
         <mat-select
-          [(value)]="apFilter.selectedFilter"
-          (selectionChange)="apFilter.selectFilter($event)"
+          [(value)]="editFilter.filterService.selectedFilter"
+          (selectionChange)="editFilter.filterService.selectFilter($event)"
         >
           <mat-optgroup label="Vordefinierte Filter">
-            <mat-option *ngFor="let filt of apFilter.extGlobalFilterList()" [value]="filt">
+            <mat-option
+              *ngFor="let filt of editFilter.filterService.extGlobalFilterList()"
+              [value]="filt"
+            >
               {{ filt.name }}
             </mat-option>
           </mat-optgroup>
           <mat-optgroup label="Benutzerdefinierte Filter">
-            <mat-option *ngFor="let filt of apFilter.extFilterList()" [value]="filt">
+            <mat-option
+              *ngFor="let filt of editFilter.filterService.extFilterList()"
+              [value]="filt"
+            >
               {{ filt.name }}
             </mat-option>
           </mat-optgroup>
@@ -26,9 +32,10 @@
         color="primary"
         title="Aktuellen Filter speichern"
         [disabled]="
-          apFilter.filterExpression.elements.length === 0 || apFilter.selectedFilter !== null
+          editFilter.filterService.filterExpression.elements.length === 0 ||
+          editFilter.filterService.selectedFilter !== null
         "
-        (click)="apFilter.addFilter()"
+        (click)="editFilter.filterService.addFilter()"
       >
         <mat-icon>save_alt</mat-icon>
       </button>
@@ -36,59 +43,60 @@
         mat-icon-button
         color="primary"
         title="Ausgewählten Filter aus der Liste löschen"
-        [disabled]="apFilter.selectedFilter === null || apFilter.selectedFilter.type > 0"
-        (click)="apFilter.deleteFilter()"
+        [disabled]="
+          editFilter.filterService.selectedFilter === null ||
+          editFilter.filterService.selectedFilter.type > 0
+        "
+        (click)="editFilter.filterService.deleteFilter()"
       >
         <mat-icon>delete</mat-icon>
       </button>
       <button
-        *ngIf="apFilter.userSettings.isAdmin"
+        *ngIf="editFilter.filterService.userSettings.isAdmin"
         mat-icon-button
         color="primary"
         [title]="
-          apFilter.selectedFilter && apFilter.selectedFilter.type === 0
+          editFilter.filterService.selectedFilter &&
+          editFilter.filterService.selectedFilter.type === 0
             ? 'Filter zu Vordefinierten verschieben'
             : 'Filter zu Benutzerdefinierten verschieben'
         "
-        [disabled]="apFilter.selectedFilter === null"
-        (click)="apFilter.moveFilter()"
+        [disabled]="editFilter.filterService.selectedFilter === null"
+        (click)="editFilter.filterService.moveFilter()"
       >
         <mat-icon>swap_vert</mat-icon>
       </button>
-      <div style="float: right" (click)="apFilter.toggleExtendedFilter()">
+      <div style="float: right" (click)="editFilter.filterService.toggleExtendedFilter()">
         <button mat-icon-button title="Schließen">
           <mat-icon>close</mat-icon>
         </button>
       </div>
       <!--      <button-->
-      <!--        *ngIf="apFilter.userSettings.isAdmin"-->
+      <!--        *ngIf="editFilter.filterService.userSettings.isAdmin"-->
       <!--        mat-icon-button-->
       <!--        color="accent"-->
       <!--        title="Aktuelle Suche für alle Benutzer speichern"-->
       <!--        [disabled]="-->
-      <!--          apFilter.filterExpression.elements.length === 0 ||-->
-      <!--          (apFilter.selectedFilter !== null && apFilter.selectedFilter.type > 0)-->
+      <!--          editFilter.filterService.filterExpression.elements.length === 0 ||-->
+      <!--          (editFilter.filterService.selectedFilter !== null && editFilter.filterService.selectedFilter.type > 0)-->
       <!--        "-->
-      <!--        (click)="apFilter.addGlobalFilter()"-->
+      <!--        (click)="editFilter.filterService.addGlobalFilter()"-->
       <!--      >-->
       <!--        <mat-icon>save_alt</mat-icon>-->
       <!--      </button>-->
       <!--      <button-->
-      <!--        *ngIf="apFilter.userSettings.isAdmin"-->
+      <!--        *ngIf="editFilter.filterService.userSettings.isAdmin"-->
       <!--        mat-icon-button-->
       <!--        color="accent"-->
       <!--        title="Ausgewählte globale Suche aus der Liste löschen"-->
-      <!--        [disabled]="apFilter.selectedFilter === null || apFilter.selectedFilter.type === 0"-->
-      <!--        (click)="apFilter.deleteGlobalFilter()"-->
+      <!--        [disabled]="editFilter.filterService.selectedFilter === null || editFilter.filterService.selectedFilter.type === 0"-->
+      <!--        (click)="editFilter.filterService.deleteGlobalFilter()"-->
       <!--      >-->
       <!--        <mat-icon>delete</mat-icon>-->
       <!--      </button>-->
     </div>
   </div>
   <div mat-card-content>
-    <sbsdb-ap-filter-bracket
-      [element]="data"
-      title="zum Bearbeiten klicken"
-    ></sbsdb-ap-filter-bracket>
+    <sbsdb-filter-bracket [element]="data" title="zum Bearbeiten klicken"></sbsdb-filter-bracket>
   </div>
 </mat-card>

@@ -17,10 +17,10 @@
     </button>
   </sbsdb-head>
 
-  <sbsdb-ap-filter
+  <sbsdb-filter
     *ngIf="!apService.filterService.stdFilter"
     [data]="apService.filterService.filterElement"
-  ></sbsdb-ap-filter>
+  ></sbsdb-filter>
 
   <div class="flex-content">
     <!-- empty table -->

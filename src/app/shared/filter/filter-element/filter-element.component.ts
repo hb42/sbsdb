@@ -1,20 +1,19 @@
 import { Component, Input } from "@angular/core";
-
-import { Element } from "../../shared/filter/element";
-import { ApFilterService } from "../ap-filter.service";
+import { EditFilterService } from "../edit-filter.service";
+import { Element } from "../element";
 
 @Component({
-  selector: "sbsdb-ap-filter-element",
-  templateUrl: "./ap-filter-element.component.html",
-  styleUrls: ["./ap-filter-element.component.scss"],
+  selector: "sbsdb-filter-element",
+  templateUrl: "./filter-element.component.html",
+  styleUrls: ["./filter-element.component.scss"],
 })
-export class ApFilterElementComponent {
+export class FilterElementComponent {
   @Input() public element: Element;
 
   public highlight = false;
   private menuopen = false;
 
-  constructor(public apFilterService: ApFilterService) {}
+  constructor(public editFilter: EditFilterService) {}
 
   public menuOpen(): void {
     this.menuopen = true;

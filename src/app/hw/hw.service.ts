@@ -6,12 +6,13 @@ import { MatTableDataSource } from "@angular/material/table";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
+import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
-import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { Hardware } from "../shared/model/hardware";
 import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
+import { HwFilterService } from "./hw-filter.service";
 
 @Injectable({
   providedIn: "root",
@@ -38,7 +39,8 @@ export class HwService {
   constructor(
     public dataService: DataService,
     public navigationService: NavigationService,
-    // private apService: ArbeitsplatzService,
+    public editFilterService: EditFilterService,
+    public hwFilterService: HwFilterService,
     private configService: ConfigService
   ) {
     console.debug("c'tor HwService ");
@@ -48,7 +50,7 @@ export class HwService {
       this.init();
     }, 0);
 
-    this.navigationService.navToAp.subscribe((dat) => {
+    this.navigationService.navToHw.subscribe((dat) => {
       this.filterFor(dat.col, dat.search);
     });
   }
@@ -105,7 +107,7 @@ export class HwService {
 
   public filterFor(column: string, search: string | number): void {
     const col = this.getColumn(column);
-    if (col.typeKey === SbsdbColumn.LCASE) {
+    if (col.typeKey === SbsdbColumn.STRING) {
       search = ((search as string) ?? "").toLowerCase();
     }
     if (col) {
@@ -145,7 +147,7 @@ export class HwService {
         "k",
         true,
         1,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.hwDataSource.data.map((h) => h.apKatBezeichnung))].sort()
       )
@@ -161,7 +163,7 @@ export class HwService {
         "t",
         true,
         2,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.hwDataSource.data.map((h) => h.hwTypBezeichnung))].sort()
       )
@@ -177,7 +179,7 @@ export class HwService {
         "b",
         true,
         3,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -193,7 +195,7 @@ export class HwService {
         "s",
         true,
         4,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -241,7 +243,7 @@ export class HwService {
         "p",
         true,
         7,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -273,7 +275,7 @@ export class HwService {
         "",
         false,
         0,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -289,7 +291,7 @@ export class HwService {
         "",
         false,
         0,
-        SbsdbColumn.LCASE,
+        SbsdbColumn.STRING,
         [RelOp.like, RelOp.notlike],
         null
       )

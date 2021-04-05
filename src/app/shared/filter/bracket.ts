@@ -31,7 +31,7 @@ export class Bracket implements Term {
     return rc + this.brRight;
   }
 
-  public validate(record: Record<string, string | Array<string>>): boolean {
+  public validate(record: Record<string, string | Array<string> | number | Date>): boolean {
     return this.elements.reduce(
       (prev, curr) =>
         curr.operator

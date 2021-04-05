@@ -8,6 +8,6 @@ export class TransportExpression {
     public fName: string | string[], // Feldname
     public dName: string, // Anzeigename des Felds
     public op: RelOp, // relationaler Operator
-    public comp: string // Vergleichstring
+    public comp: string | number | Date // Vergleichstring
   ) {}
 }

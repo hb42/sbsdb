@@ -11,6 +11,7 @@ export class ConfigService {
   // Name in der Config-DB
   public static AP_PAGE_SIZE = "ap.pagesize";
   public static AP_FILTERS = "ap.filters";
+  public static HW_FILTERS = "hw.filters";
 
   public version: Version;
 

@@ -12,11 +12,11 @@ import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin
 import { AdminPanelConfigInputComponent } from "./admin/admin-panel-config-input/admin-panel-config-input.component";
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminComponent } from "./admin/admin/admin.component";
-import { ApFilterBracketComponent } from "./ap/ap-filter-bracket/ap-filter-bracket.component";
-import { ApFilterEditListComponent } from "./ap/ap-filter-edit-list/ap-filter-edit-list.component";
-import { ApFilterEditComponent } from "./ap/ap-filter-edit/ap-filter-edit.component";
-import { ApFilterElementComponent } from "./ap/ap-filter-element/ap-filter-element.component";
-import { ApFilterComponent } from "./ap/ap-filter/ap-filter.component";
+import { FilterBracketComponent } from "./shared/filter/filter-bracket/filter-bracket.component";
+import { FilterEditListComponent } from "./shared/filter/filter-edit-list/filter-edit-list.component";
+import { FilterEditComponent } from "./shared/filter/filter-edit/filter-edit.component";
+import { FilterElementComponent } from "./shared/filter/filter-element/filter-element.component";
+import { FilterComponent } from "./shared/filter/filter/filter.component";
 import { ApComponent } from "./ap/ap/ap.component";
 import { AppMaterialModule } from "./app-material.module";
 import { AppRoutingModule } from "./app-routing.module";
@@ -66,11 +66,11 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     AdminComponent,
     StatusComponent,
     AcceleratorStringComponent,
-    ApFilterComponent,
-    ApFilterElementComponent,
-    ApFilterBracketComponent,
-    ApFilterEditComponent,
-    ApFilterEditListComponent,
+    FilterComponent,
+    FilterElementComponent,
+    FilterBracketComponent,
+    FilterEditComponent,
+    FilterEditListComponent,
     AdminOptionsComponent,
     AdminPanelApFilterComponent,
     AdminPanelConfigComponent,

@@ -9,13 +9,13 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
+import { MatPaginator } from "@angular/material/paginator";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
-import { ArbeitsplatzService } from "../arbeitsplatz.service";
+import { ApService } from "../ap.service";
 import { DataService } from "../../shared/data.service";
 
 @Component({
@@ -41,10 +41,11 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private config: ConfigService,
     private dataService: DataService,
-    public apService: ArbeitsplatzService,
+    public apService: ApService,
     public dialog: MatDialog
   ) {
     console.debug("c'tor ApComponent");
+    this.apService.editFilterService.setFilterService(this.apService.filterService);
   }
 
   // focus first filter

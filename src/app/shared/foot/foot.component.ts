@@ -1,5 +1,5 @@
 import { Component, HostBinding } from "@angular/core";
-import { ArbeitsplatzService } from "../../ap/arbeitsplatz.service";
+import { ApService } from "../../ap/ap.service";
 import { ConfigService } from "../config/config.service";
 
 @Component({
@@ -11,5 +11,5 @@ export class FootComponent {
   @HostBinding("attr.class") public cssClass = "flex-panel";
 
   // TODO apService muss hier wieder raus - Footer notwendig?
-  constructor(public configService: ConfigService, public apService: ArbeitsplatzService) {}
+  constructor(public configService: ConfigService, public apService: ApService) {}
 }

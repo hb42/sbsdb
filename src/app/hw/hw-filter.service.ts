@@ -2,12 +2,14 @@ import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
+import { DataService } from "../shared/data.service";
 import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { TransportFilters } from "../shared/filter/transport-filters";
-import { DataService } from "../shared/data.service";
 
-@Injectable({ providedIn: "root" })
-export class ApFilterService extends BaseFilterService {
+@Injectable({
+  providedIn: "root",
+})
+export class HwFilterService extends BaseFilterService {
   public userSettings: UserSession;
 
   constructor(
@@ -21,15 +23,15 @@ export class ApFilterService extends BaseFilterService {
   }
 
   public getLatestUserFilter(): string {
-    return this.userSettings.latestApFilter;
+    return this.userSettings.latestHwFilter;
   }
   public getUserFilterList(): TransportFilters {
-    return this.userSettings.apFilter;
+    return this.userSettings.hwFilter;
   }
   public setLatestUserStdFilter(std: boolean): void {
-    this.userSettings.apStdFilter = std;
+    this.userSettings.hwStdFilter = std;
   }
   public getGlobalFiltersName(): string {
-    return ConfigService.AP_FILTERS;
+    return ConfigService.HW_FILTERS;
   }
 }
