@@ -372,6 +372,7 @@ export class HwService {
         return "";
       }
     };
+    this.hwFilterService.initService(this.columns, this.hwDataSource);
   }
 
   // --- fetch data ---

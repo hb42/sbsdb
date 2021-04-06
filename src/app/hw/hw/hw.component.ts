@@ -10,6 +10,10 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
+import { ActivatedRoute } from "@angular/router";
+import { ApService } from "../../ap/ap.service";
+import { ConfigService } from "../../shared/config/config.service";
+import { DataService } from "../../shared/data.service";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
 import { HwService } from "../hw.service";
 
@@ -26,7 +30,12 @@ export class HwComponent implements AfterViewInit, OnInit {
   @ViewChild("firstfilter") public firstFilter: HeaderCellComponent;
   @ViewChild("lastfilter") public lastFilter: HeaderCellComponent;
 
-  constructor(public dialog: MatDialog, public hwService: HwService) {
+  constructor(
+    private route: ActivatedRoute,
+    private config: ConfigService,
+    public dialog: MatDialog,
+    public hwService: HwService
+  ) {
     console.debug("c'tor HwComponent");
     this.hwService.editFilterService.setFilterService(this.hwService.hwFilterService);
   }
@@ -81,7 +90,41 @@ export class HwComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-    console.debug("onInit HwComponent");
+    /*  verschiedene parameter
+    https://stackoverflow.com/questions/49738911/angular-5-routing-to-same-component-but-different-param-not-working
+     */
+    // TODO ActivatedRoute ist nur in der jeweiligen component sinnvoll
+    //      d.h. je comp. in der das gebraucht wird .params.subscribe und das Handling an den Service delegieren
+    //      (evtl. NaviagatonService ??)
+    this.route.paramMap.subscribe((params) => {
+      // check params
+      let encFilter: string = null;
+      if (params) {
+        if (params.has("filt")) {
+          encFilter = params.get("filt");
+          this.config.getUser().latestHwFilter = encFilter;
+          this.hwService.hwFilterService.filterFromNavigation(encFilter);
+        } else if (params.has("hwid")) {
+          // FIXME das hier hat den Nachteil, dass so zwei Eintraege in der History eingetragen werden:
+          //       (1) /ap;apname=xx und vom Filter (2) /ap;filt=xxx
+          //       besser direkt ueber apService aufrufen
+          //       [der Code bleibt erst mal drin, fuer den Fall, dass das noch nuetzlich wird]
+          this.hwService.filterFor("hwid", Number.parseInt(params.get("hwid"), 10));
+        }
+      } else {
+        // keine Parameter -> letzten gesicherten nehmen
+        // (Unterstellung: interne Navigation von z.B. HW-Seite)
+        // TODO evtl. filter doch noch in userConf, was ist, wenn letzte URL
+        //      vor Prog-Ende HWpage? Dann wuerde der letzte Filter verloren
+        //      gehen. Evtl. encoded wg. Platz. Filter aus conf wuerde dann nur
+        //      aus UrlParams geladen, das sollte reichen um doppelte
+        //      Ausfuehrung beim Start zu verhindern.
+        if (this.config.getUser().latestApFilter) {
+          encFilter = this.config.getUser().latestApFilter;
+          this.hwService.hwFilterService.nav2filter(encFilter);
+        }
+      }
+    });
   }
 
   public focusFirstFilter(): void {

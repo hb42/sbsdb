@@ -2,10 +2,13 @@ import { formatDate, formatNumber } from "@angular/common";
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
+import { MatTableDataSource } from "@angular/material/table";
 import { Base64 } from "js-base64";
 import { debounceTime } from "rxjs/operators";
+import { AP_PATH } from "../../app-routing-const";
 import { ConfigService } from "../config/config.service";
 import { UserSession } from "../config/user.session";
+import { NavigationService } from "../navigation.service";
 import { Bracket } from "./bracket";
 import { Element } from "./element";
 import { Expression } from "./expression";
@@ -43,6 +46,8 @@ export abstract class BaseFilterService {
 
   public userSettings: UserSession;
 
+  public dataReady = true; // muss vom jew. tableService gesetzt werden
+
   private nextKey = BaseFilterService.STDFILTER + 1;
 
   private globalFilters: TransportFilter[] = [];
@@ -50,29 +55,17 @@ export abstract class BaseFilterService {
 
   // wird in initService() von apService geliefert
   private columns: SbsdbColumn<unknown, unknown>[];
-  private filterChange: EventEmitter<void>;
+  private filterChange: EventEmitter<void> = new EventEmitter<void>();
+  private filterChanged = 1;
+  private dataTable: MatTableDataSource<unknown>;
 
   // Filtereingaben bremsen
   private readonly keyDebounce = 500;
 
-  public filterPredicate = (row: unknown, filter: string): boolean => {
-    let valid = this.filterExpression.validate(
-      row as Record<string, string | Array<string> | number | Date>
-    );
-    if (!valid) {
-      row["selected"] = false;
-      // console.debug("## ausgefiltert ##");
-    }
-    // nur ausgewählte anzeigen
-    if (valid && this.showSelected) {
-      valid = row["selected"] as boolean;
-    }
-    return valid;
-  };
-
   protected constructor(
     protected configService: ConfigService,
     protected dataService: DataService,
+    protected navigationService: NavigationService,
     protected dialog: MatDialog
   ) {
     console.debug("c'tor BaseFilterService");
@@ -83,13 +76,32 @@ export abstract class BaseFilterService {
    * Startparameter setzen (-> Ap/HwService)
    *
    * @param col - Array der Tabellen-Spalten
-   * @param evt - Eventhandler fuer Aenderungen am Filter
+   * @param dataTable - MatTableDataSource
    */
-  public initService(col: SbsdbColumn<unknown, unknown>[], evt: EventEmitter<void>): void {
+  public initService(
+    col: SbsdbColumn<unknown, unknown>[],
+    dataTable: MatTableDataSource<unknown>
+  ): void {
     this.columns = col;
-    this.filterChange = evt;
+    this.dataTable = dataTable;
+    // this.filterChange = evt;
 
     void this.readGlobalFilters();
+
+    this.dataTable.filterPredicate = (row: unknown, filter: string): boolean => {
+      let valid = this.filterExpression.validate(
+        row as Record<string, string | Array<string> | number | Date>
+      );
+      if (!valid) {
+        row["selected"] = false;
+        // console.debug("## ausgefiltert ##");
+      }
+      // nur ausgewählte anzeigen
+      if (valid && this.showSelected) {
+        valid = row["selected"] as boolean;
+      }
+      return valid;
+    };
 
     // Aenderung an Filter-Feldern in den Benutzereinstellungen speichern
     // und Filter triggern
@@ -104,12 +116,10 @@ export abstract class BaseFilterService {
           });
       }
     });
-  }
 
-  /**
-   * Filter aus den Benutzereinstellungen erstellen
-   */
-  public initializeFilters(): void {
+    /*
+     * Filter aus den Benutzereinstellungen erstellen
+     */
     // letzten gespeicherten Filter setzen (kommt ggf. nochmal via URL)
     this.decodeFilter(this.getLatestUserFilter());
     // this.decodeFilter(this.userSettings.latestApFilter);
@@ -139,8 +149,46 @@ export abstract class BaseFilterService {
    * ein event an ArbeitsplatzService gesendet.
    */
   public triggerFilter(): void {
-    if (this.filterChange) {
-      this.filterChange.emit();
+    // if (this.filterChange) {
+    //   this.filterChange.emit();
+    // }
+    if (this.dataReady) {
+      // Keine Navigation (und kein History-Eintrag) beim Start des
+      // erweiterten Filters (und bei leerem extd Filter).
+      if (this.stdFilter || (!this.stdFilter && !this.filterExpression.isEmpty())) {
+        const filtStr = this.encodeFilter();
+        this.nav2filter(filtStr);
+      } else {
+        this.triggerColumnFilter();
+      }
+    }
+  }
+
+  /**
+   * Filter ausloesen
+   *
+   * DataTable reagiert auf Aenderungen an DataSource.filter, hier wird nur ein Wert
+   * hochgezaehlt, der eigentliche Filter kommt per URl. Das Filtern passiert in
+   * DataSource.filterPredicate().
+   */
+  public triggerColumnFilter(): void {
+    this.dataTable.filter = `${this.filterChanged++}`;
+  }
+
+  public nav2filter(filtStr: string): void {
+    this.navigationService.navigateByCmd([this.getUrl(), { filt: filtStr }]);
+  }
+
+  /**
+   * Parameter aus der URL als Filter setzen.
+   * @param params ParamMap
+   */
+  public filterFromNavigation(params: string): void {
+    this.decodeFilter(params);
+    // Falls die Tabelle noch nicht geladen ist, wird der Filter nach dem Laden
+    // angestossen (-> initTable()).
+    if (this.dataReady) {
+      this.triggerColumnFilter();
     }
   }
 
@@ -523,6 +571,8 @@ export abstract class BaseFilterService {
               // string-Vergleich fuer Feld-Namen
               if (c.col.fieldName === feld) {
                 if (c.col.typeKey === SbsdbColumn.DATE) {
+                  // FIXME das fliegt bei einer Teileingabe auf die Nase
+                  //       Unterscheidung zw. Col-Field und ExtFilter
                   c.val = formatDate(exp.compare as Date, "mediumDate", "de");
                 } else if (c.col.typeKey === SbsdbColumn.NUMBER) {
                   c.val = formatNumber(exp.compare as number, "de");
@@ -699,4 +749,5 @@ export abstract class BaseFilterService {
   abstract getUserFilterList(): TransportFilters;
   abstract setLatestUserStdFilter(std: boolean): void;
   abstract getGlobalFiltersName(): string;
+  abstract getUrl(): string;
 }

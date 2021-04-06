@@ -48,8 +48,8 @@ export class ApService {
  const uniq2 = [ ...new Set(this.apDataSource.data.map((a) => a.oesearch)) ].sort();
   */
 
-  private filterChange: EventEmitter<void> = new EventEmitter<void>();
-  private filterChanged = 1;
+  // private filterChange: EventEmitter<void> = new EventEmitter<void>();
+  // private filterChanged = 1;
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
@@ -217,21 +217,21 @@ export class ApService {
    */
   public toggleSelection(): void {
     this.filterService.showSelected = !this.filterService.showSelected;
-    this.triggerFilter();
+    this.filterService.triggerColumnFilter();
   }
 
   /**
    * Parameter aus der URL als Filter setzen.
    * @param params ParamMap
    */
-  public filterFromNavigation(params: string): void {
-    this.filterService.decodeFilter(params);
-    // Falls die Tabelle noch nicht geladen ist, wird der Filter nach dem Laden
-    // angestossen (-> initTable()).
-    if (this.apDataReady) {
-      this.triggerFilter();
-    }
-  }
+  // public filterFromNavigation(params: string): void {
+  //   this.filterService.decodeFilter(params);
+  //   // Falls die Tabelle noch nicht geladen ist, wird der Filter nach dem Laden
+  //   // angestossen (-> initTable()).
+  //   if (this.apDataReady) {
+  //     this.filterService.triggerColumnFilter();
+  //   }
+  // }
 
   private buildColumns() {
     this.columns.push(
@@ -463,17 +463,6 @@ export class ApService {
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 
-  /**
-   * Filter ausloesen
-   *
-   * DataTable reagiert auf Aenderungen an DataSource.filter, hier wird nur ein Wert
-   * hochgezaehlt, der eigentliche Filter kommt per URl. Das Filtern passiert in
-   * DataSource.filterPredicate().
-   */
-  private triggerFilter() {
-    this.apDataSource.filter = `${this.filterChanged++}`;
-  }
-
   // APs aus der DB holen
   private initTable() {
     this.loading = true;
@@ -482,7 +471,7 @@ export class ApService {
     this.setDataToTable.subscribe(() => {
       if (this.apDataSource.paginator) {
         this.apDataSource.data = this.dataService.apList;
-        this.triggerFilter();
+        this.filterService.triggerColumnFilter();
       }
     });
     // Daten aus der DB holen und aufbereiten
@@ -490,7 +479,7 @@ export class ApService {
     this.dataService.dataReady.subscribe(() => {
       this.loading = false;
       this.onDataReady();
-      this.apDataReady = true;
+      this.apDataReady = this.filterService.dataReady = true;
       this.setDataToTable.emit(); // s.o.
     });
     void this.getAPs(() => {
@@ -502,25 +491,25 @@ export class ApService {
      * Die Navigation loest dann den Filter aus.
      *
      */
-    this.filterChange.subscribe(() => {
-      if (this.apDataReady) {
-        // Keine Navigation (und kein History-Eintrag) beim Start des
-        // erweiterten Filters (und bei leerem extd Filter).
-        if (
-          this.filterService.stdFilter ||
-          (!this.filterService.stdFilter && !this.filterService.filterExpression.isEmpty())
-        ) {
-          const filtStr = this.filterService.encodeFilter();
-          this.nav2filter(filtStr);
-        } else {
-          this.triggerFilter();
-        }
-      }
-    });
-    this.filterService.initService(this.columns, this.filterChange);
+    // this.filterChange.subscribe(() => {
+    //   if (this.apDataReady) {
+    //     // Keine Navigation (und kein History-Eintrag) beim Start des
+    //     // erweiterten Filters (und bei leerem extd Filter).
+    //     if (
+    //       this.filterService.stdFilter ||
+    //       (!this.filterService.stdFilter && !this.filterService.filterExpression.isEmpty())
+    //     ) {
+    //       const filtStr = this.filterService.encodeFilter();
+    //       this.nav2filter(filtStr);
+    //     } else {
+    //       this.triggerColumnFilter();
+    //     }
+    //   }
+    // });
+    this.filterService.initService(this.columns, this.apDataSource);
 
     // eigener Filter
-    this.apDataSource.filterPredicate = this.filterService.filterPredicate;
+    // this.apDataSource.filterPredicate = this.filterService.filterPredicate;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
     //   let valid = this.filterService.filterExpression.validate(
@@ -537,7 +526,7 @@ export class ApService {
     //   return valid;
     // };
 
-    this.filterService.initializeFilters();
+    // this.filterService.initializeFilters();
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
@@ -550,9 +539,9 @@ export class ApService {
     };
   }
 
-  public nav2filter(filtStr: string): void {
-    this.navigationService.navigateByCmd(["/" + AP_PATH, { filt: filtStr }]);
-  }
+  // public nav2filter(filtStr: string): void {
+  //   this.navigationService.navigateByCmd(["/" + AP_PATH, { filt: filtStr }]);
+  // }
 
   private onDataReady() {
     // alle vorhandenen tags

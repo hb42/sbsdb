@@ -104,7 +104,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         if (params.has("filt")) {
           encFilter = params.get("filt");
           this.config.getUser().latestApFilter = encFilter;
-          this.apService.filterFromNavigation(encFilter);
+          this.apService.filterService.filterFromNavigation(encFilter);
         } else if (params.has("apname")) {
           // FIXME das hier hat den Nachteil, dass so zwei Eintraege in der History eingetragen werden:
           //       (1) /ap;apname=xx und vom Filter (2) /ap;filt=xxx
@@ -122,7 +122,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         //      Ausfuehrung beim Start zu verhindern.
         if (this.config.getUser().latestApFilter) {
           encFilter = this.config.getUser().latestApFilter;
-          this.apService.nav2filter(encFilter);
+          this.apService.filterService.nav2filter(encFilter);
         }
       }
 

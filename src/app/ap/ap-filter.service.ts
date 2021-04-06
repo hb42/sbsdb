@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { AP_PATH } from "../app-routing-const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { TransportFilters } from "../shared/filter/transport-filters";
 import { DataService } from "../shared/data.service";
+import { NavigationService } from "../shared/navigation.service";
 
 @Injectable({ providedIn: "root" })
 export class ApFilterService extends BaseFilterService {
@@ -13,9 +15,10 @@ export class ApFilterService extends BaseFilterService {
   constructor(
     public configService: ConfigService,
     public dataService: DataService,
+    public navigationService: NavigationService,
     public dialog: MatDialog
   ) {
-    super(configService, dataService, dialog);
+    super(configService, dataService, navigationService, dialog);
     console.debug("c'tor ApFilterService");
     this.userSettings = configService.getUser();
   }
@@ -31,5 +34,8 @@ export class ApFilterService extends BaseFilterService {
   }
   public getGlobalFiltersName(): string {
     return ConfigService.AP_FILTERS;
+  }
+  public getUrl(): string {
+    return "/" + AP_PATH;
   }
 }
