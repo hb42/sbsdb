@@ -27,7 +27,6 @@ import { FilterEditData } from "./filter-edit/filter-edit-data";
 import { FilterEditComponent } from "./filter-edit/filter-edit.component";
 import { DataService } from "../data.service";
 
-// @Injectable({ providedIn: "root" })
 export abstract class BaseFilterService {
   public static STDFILTER = -1;
   public static USERFILTER = 0;
@@ -55,6 +54,21 @@ export abstract class BaseFilterService {
 
   // Filtereingaben bremsen
   private readonly keyDebounce = 500;
+
+  public filterPredicate = (row: unknown, filter: string): boolean => {
+    let valid = this.filterExpression.validate(
+      row as Record<string, string | Array<string> | number | Date>
+    );
+    if (!valid) {
+      row["selected"] = false;
+      // console.debug("## ausgefiltert ##");
+    }
+    // nur ausgewählte anzeigen
+    if (valid && this.showSelected) {
+      valid = row["selected"] as boolean;
+    }
+    return valid;
+  };
 
   protected constructor(
     protected configService: ConfigService,

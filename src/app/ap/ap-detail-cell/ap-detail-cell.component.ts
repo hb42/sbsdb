@@ -23,8 +23,7 @@ export class ApDetailCellComponent {
   public fremdeHwFlag = DataService.FREMDE_HW_FLAG;
   public aptypeFlag = DataService.BOOL_TAG_FLAG;
 
-  // FIXME warum ist apService undefined?
   constructor(public apService: ApService) {
-    console.debug("c'tor ApDetailComponent");
+    // noop
   }
 }

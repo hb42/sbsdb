@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   HostBinding,
+  HostListener,
   Injectable,
   OnInit,
   ViewChild,
@@ -30,6 +31,36 @@ export class HwComponent implements AfterViewInit, OnInit {
     this.hwService.editFilterService.setFilterService(this.hwService.hwFilterService);
   }
 
+  // focus first filter
+  @HostListener("document:keydown.alt.f", ["$event"])
+  public handleKeyboardEvent(event: KeyboardEvent): void {
+    this.focusFirstFilter();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  // Spalten via Keyboard sortieren
+  @HostListener("document:keydown", ["$event"])
+  public handleApKeys(event: KeyboardEvent): void {
+    if (event.altKey && !event.shiftKey && !event.ctrlKey) {
+      // Extended Filter => alt-e
+      if (event.key === "e") {
+        this.hwService.hwFilterService.toggleExtendedFilter();
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        const colIdx = this.hwService.columns.findIndex(
+          (c) => c.accelerator && c.accelerator === event.key
+        );
+        if (colIdx >= 0) {
+          this.sort.sort(this.sort.sortables.get(this.hwService.columns[colIdx].columnName));
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }
+    }
+  }
+
   public ngAfterViewInit(): void {
     console.debug("afterViewInit HwComponent");
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
@@ -37,7 +68,7 @@ export class HwComponent implements AfterViewInit, OnInit {
     setTimeout(() => {
       // Benutzereinstellungen setzen
       this.hwService.setViewParams(this.sort, this.paginator);
-      // this.focusFirstFilter();
+      this.focusFirstFilter();
       //
       // const at = this.pagElement.nativeElement.getElementsByClassName("mat-paginator-container");
       // const before = this.pagElement.nativeElement.getElementsByClassName(

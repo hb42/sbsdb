@@ -73,12 +73,13 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
           // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
           //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
           //       -> https://github.com/angular/components/issues/10242
-          // this.sort.sort(this.sort.sortables.get(this.apService.columns[colIdx].name));
-          const sortHeader = this.sort.sortables.get(
-            this.apService.columns[colIdx].columnName
-          ) as MatSortHeader;
-          // eslint-disable-next-line no-underscore-dangle
-          sortHeader._handleClick();
+          //       angular v11.2.5: scheint endlich zu funktionieren (beobachten!)
+          this.sort.sort(this.sort.sortables.get(this.apService.columns[colIdx].columnName));
+          // const sortHeader = this.sort.sortables.get(
+          //   this.apService.columns[colIdx].columnName
+          // ) as MatSortHeader;
+          // // eslint-disable-next-line no-underscore-dangle
+          // sortHeader._handleClick();
           event.preventDefault();
           event.stopPropagation();
         }

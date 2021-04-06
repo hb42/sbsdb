@@ -520,21 +520,22 @@ export class ApService {
     this.filterService.initService(this.columns, this.filterChange);
 
     // eigener Filter
+    this.apDataSource.filterPredicate = this.filterService.filterPredicate;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
-      let valid = this.filterService.filterExpression.validate(
-        (ap as unknown) as Record<string, string | Array<string>>
-      );
-      if (!valid) {
-        ap.selected = false;
-        // console.debug("## ausgefiltert ##");
-      }
-      // nur ausgewählte anzeigen
-      if (valid && this.filterService.showSelected) {
-        valid = ap.selected;
-      }
-      return valid;
-    };
+    // this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
+    //   let valid = this.filterService.filterExpression.validate(
+    //     (ap as unknown) as Record<string, string | Array<string>>
+    //   );
+    //   if (!valid) {
+    //     ap.selected = false;
+    //     // console.debug("## ausgefiltert ##");
+    //   }
+    //   // nur ausgewählte anzeigen
+    //   if (valid && this.filterService.showSelected) {
+    //     valid = ap.selected;
+    //   }
+    //   return valid;
+    // };
 
     this.filterService.initializeFilters();
 
