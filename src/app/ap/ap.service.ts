@@ -471,6 +471,8 @@ export class ApService {
     this.setDataToTable.subscribe(() => {
       if (this.apDataSource.paginator) {
         this.apDataSource.data = this.dataService.apList;
+        // this.filterService.initService(this.columns, this.apDataSource);
+        // this.filterService.dataReady = true;
         this.filterService.triggerColumnFilter();
       }
     });
@@ -479,8 +481,8 @@ export class ApService {
     this.dataService.dataReady.subscribe(() => {
       this.loading = false;
       this.onDataReady();
-      this.apDataReady = this.filterService.dataReady = true;
       this.setDataToTable.emit(); // s.o.
+      this.apDataReady = this.filterService.dataReady = true;
     });
     void this.getAPs(() => {
       this.loading = true;

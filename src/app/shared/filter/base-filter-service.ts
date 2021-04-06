@@ -46,7 +46,7 @@ export abstract class BaseFilterService {
 
   public userSettings: UserSession;
 
-  public dataReady = true; // muss vom jew. tableService gesetzt werden
+  public dataReady = false; // muss vom jew. tableService gesetzt werden
 
   private nextKey = BaseFilterService.STDFILTER + 1;
 
@@ -573,9 +573,9 @@ export abstract class BaseFilterService {
                 if (c.col.typeKey === SbsdbColumn.DATE) {
                   // FIXME das fliegt bei einer Teileingabe auf die Nase
                   //       Unterscheidung zw. Col-Field und ExtFilter
-                  c.val = formatDate(exp.compare as Date, "mediumDate", "de");
+                  c.val = exp.compare as string; // formatDate(exp.compare as Date, "mediumDate", "de");
                 } else if (c.col.typeKey === SbsdbColumn.NUMBER) {
-                  c.val = formatNumber(exp.compare as number, "de");
+                  c.val = exp.compare as string; // formatNumber(exp.compare as number, "de");
                 } else {
                   c.val = exp.compare as string;
                 }

@@ -356,6 +356,7 @@ export class HwService {
     this.setDataToTable.subscribe(() => {
       if (this.hwDataSource.paginator) {
         this.hwDataSource.data = this.dataService.hwList;
+        this.hwFilterService.dataReady = true;
         this.triggerFilter();
       }
     });
