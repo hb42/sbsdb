@@ -3,6 +3,7 @@ import { Field } from "./field";
 import { RelOp } from "./rel-op.enum";
 import { RelationalOperator } from "./relational-operator";
 import { Term } from "./term";
+import { SbsdbColumn } from "../table/sbsdb-column";
 
 /**
  * Einzelner relationaler Ausdruck in einem Filter
@@ -28,28 +29,15 @@ export class Expression implements Term {
         : (this.compareString = "");
     }
   }
-  public readonly type; // Datentyp des Vergleichs: string, number, date
-
   private compareString = "";
 
   constructor(
     public field: Field,
     public operator: RelationalOperator,
-    private comp: string | number | Date
+    private comp: string | number | Date,
+    public type: number
   ) {
     this.compare = comp;
-    this.type = typeof comp;
-    if (this.type === "object") {
-      if (comp instanceof Date) {
-        this.type = "date";
-      }
-    }
-    if (this.type !== "string" && this.type !== "number" && this.type !== "date") {
-      console.error("Fehler in Expression: Vergleich mit undefiniertem Datentyp:");
-      console.dir(comp);
-      this.compare = comp.toString(); // Fallback: Wert wird wie String behandelt
-      this.type = "string";
-    }
   }
 
   public toString(): string {
@@ -58,7 +46,7 @@ export class Expression implements Term {
 
   public validate(record: Record<string, string | Array<string> | number | Date>): boolean {
     let compValue: string | number | Date;
-    if (this.type === "string") {
+    if (this.type === SbsdbColumn.STRING) {
       // mehrere Felder vergleichen ist nur bei String-Vergleich sinnvoll
       const fields: string[] = Array.isArray(this.field.fieldName)
         ? this.field.fieldName
@@ -70,18 +58,17 @@ export class Expression implements Term {
           ""
         );
       }
-    } else if (this.type === "number" || this.type === "date") {
+    } else {
       const field = this.field.fieldName as string;
       // eslint-disable-next-line no-prototype-builtins
       if (record.hasOwnProperty(field)) {
-        compValue = record[field] as number | Date;
+        compValue = record[field] as string | number | Date;
       } else {
-        compValue = this.type === "number" ? 0 : new Date(0);
+        compValue =
+          this.type === SbsdbColumn.NUMBER ? 0 : this.type === SbsdbColumn.DATE ? new Date(0) : "";
       }
-    } else {
-      return false;
     }
-    return this.operator.execute(compValue, this.compare);
+    return this.operator.execute(compValue, this.compare, this.type);
   }
 
   public isBracket(): boolean {

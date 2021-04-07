@@ -3,11 +3,14 @@
  * z.B. groesser, beginnt mit, enthaelt
  */
 import { RelOp } from "./rel-op.enum";
+import { formatCurrency, formatDate } from "@angular/common";
+import { SbsdbColumn } from "../table/sbsdb-column";
 
 export class RelationalOperator {
   public execute: (
     fieldContent: string | Array<string> | number | Date,
-    compare: string | number | Date
+    compare: string | number | Date,
+    type: number
   ) => boolean;
   private readonly name: string;
 
@@ -82,16 +85,46 @@ export class RelationalOperator {
     return true;
   };
 
-  private static like = (fieldContent: string, compare: string): boolean => {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+  private static fieldToString(fieldContent: string | number | Date, type: number): string {
+    if (fieldContent) {
+      let contentStr: string;
+      if (type === SbsdbColumn.NUMBER) {
+        try {
+          contentStr = formatCurrency(fieldContent as number, "de", "€");
+        } catch {
+          contentStr = "";
+        }
+      } else if (type === SbsdbColumn.DATE) {
+        try {
+          contentStr = formatDate(fieldContent, "mediumDate", "de");
+        } catch {
+          contentStr = "";
+        }
+      } else {
+        //alles außer number oder Date wird als string behandelt
+        contentStr = fieldContent.toString();
+      }
+      return contentStr.toLocaleLowerCase();
+    } else {
+      return "";
+    }
+  }
+
+  // LIKE vergleicht immer als string!
+  private static like = (
+    fieldContent: string | number | Date,
+    compare: string,
+    type: number
+  ): boolean => {
     compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent.includes(compare);
+    const fc = RelationalOperator.fieldToString(fieldContent, type);
+    return fc.includes(compare);
   };
 
-  private static notlike = (fieldContent: string, compare: string): boolean => {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+  // NOTLIKE vergleicht immer als string!
+  private static notlike = (fieldContent: string, compare: string, type: number): boolean => {
     compare = compare ? compare.toLocaleLowerCase() : "";
-    return !fieldContent.includes(compare);
+    return !RelationalOperator.fieldToString(fieldContent, type).includes(compare);
   };
 
   private static equal = (fieldContent: string, compare: string): boolean => {

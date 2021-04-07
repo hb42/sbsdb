@@ -239,7 +239,8 @@ export abstract class BaseFilterService {
     const expr: Expression = new Expression(
       new Field(col.fieldName, col.displayName),
       new RelationalOperator(op),
-      search.toString()
+      search.toString(),
+      0 // FIXME hier muss Wert aus Column rein!
     );
     this.filterExpression.addElement(new LogicalAnd(), expr);
     this.triggerFilter();
@@ -461,7 +462,7 @@ export abstract class BaseFilterService {
           ex.compare = result.c;
         } else {
           // new
-          ex = new Expression(result.f, new RelationalOperator(result.o), result.c);
+          ex = null; // FIXME new Expression(result.f, new RelationalOperator(result.o), result.c);
           if (up) {
             // einziger Ausdruck f. Klammer
             up.addElement(null, ex);
@@ -570,15 +571,15 @@ export abstract class BaseFilterService {
             } else {
               // string-Vergleich fuer Feld-Namen
               if (c.col.fieldName === feld) {
-                if (c.col.typeKey === SbsdbColumn.DATE) {
-                  // FIXME das fliegt bei einer Teileingabe auf die Nase
-                  //       Unterscheidung zw. Col-Field und ExtFilter
-                  c.val = exp.compare as string; // formatDate(exp.compare as Date, "mediumDate", "de");
-                } else if (c.col.typeKey === SbsdbColumn.NUMBER) {
-                  c.val = exp.compare as string; // formatNumber(exp.compare as number, "de");
-                } else {
-                  c.val = exp.compare as string;
-                }
+                // FIXME das fliegt bei einer Teileingabe auf die Nase
+                //       Unterscheidung zw. Col-Field und ExtFilter
+                // if (c.col.typeKey === SbsdbColumn.DATE) {
+                //   c.val = formatDate(exp.compare as Date, "mediumDate", "de");
+                // } else if (c.col.typeKey === SbsdbColumn.NUMBER) {
+                //   c.val = formatNumber(exp.compare as number, "de");
+                // } else {
+                c.val = exp.compare as string;
+                // }
               }
             }
           });
@@ -696,7 +697,8 @@ export abstract class BaseFilterService {
         const ex = new Expression(
           new Field(tr.elem.fName, tr.elem.dName),
           new RelationalOperator(tr.elem.op),
-          tr.elem.comp
+          tr.elem.comp,
+          0 // FIXME hier muss Wert aus Column rein
         );
         b.addElement(op, ex);
       }

@@ -164,7 +164,7 @@ export class SbsdbColumn<C, E> {
         ? new RelationalOperator(RelOp.like)
         : new RelationalOperator(RelOp.notlike);
       const f: Field = new Field(this.fieldName, this.displayName);
-      return new Expression(f, op, filter.text);
+      return new Expression(f, op, filter.text, this.typeKey);
     } else {
       return null;
     }
