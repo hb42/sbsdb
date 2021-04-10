@@ -2,15 +2,16 @@
  * Relationale Operatoren im Filter
  * z.B. groesser, beginnt mit, enthaelt
  */
-import { RelOp } from "./rel-op.enum";
 import { formatCurrency, formatDate } from "@angular/common";
-import { SbsdbColumn } from "../table/sbsdb-column";
+import { ParseDate, StringToNumber } from "../helper";
+import { ColumnType } from "../table/column-type.enum";
+import { RelOp } from "./rel-op.enum";
 
 export class RelationalOperator {
   public execute: (
     fieldContent: string | Array<string> | number | Date,
     compare: string | number | Date,
-    type: number
+    type: ColumnType
   ) => boolean;
   private readonly name: string;
 
@@ -37,41 +38,17 @@ export class RelationalOperator {
       case RelOp.endswith:
         this.execute = RelationalOperator.endsWith;
         break;
-      case RelOp.inlistA:
-        this.execute = RelationalOperator.inList;
-        break;
-      case RelOp.notinlistA:
-        this.execute = RelationalOperator.notInList;
-        break;
       case RelOp.exist:
         this.execute = RelationalOperator.exist;
         break;
       case RelOp.notexist:
         this.execute = RelationalOperator.notExist;
         break;
-      case RelOp.equalNum:
-        this.execute = RelationalOperator.equalNum;
-        break;
-      case RelOp.notequalNum:
-        this.execute = RelationalOperator.notequalNum;
-        break;
       case RelOp.gtNum:
         this.execute = RelationalOperator.gtNum;
         break;
       case RelOp.ltNum:
         this.execute = RelationalOperator.ltNum;
-        break;
-      case RelOp.equalDat:
-        this.execute = RelationalOperator.equalDat;
-        break;
-      case RelOp.notequalDat:
-        this.execute = RelationalOperator.notequalDat;
-        break;
-      case RelOp.gtDat:
-        this.execute = RelationalOperator.gtDat;
-        break;
-      case RelOp.ltDat:
-        this.execute = RelationalOperator.ltDat;
         break;
       default:
         this.execute = RelationalOperator.noop;
@@ -80,21 +57,27 @@ export class RelationalOperator {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private static noop = (fieldContent: string, compare: string): boolean => {
+  private static noop = (): boolean => {
     return true;
   };
 
-  private static fieldToString(fieldContent: string | number | Date, type: number): string {
+  // Die folgenden Number-Vergleiche verwenden den "naiver" Ansatz, dass Fliesskommazahlen
+  // auf einfache Weise vergleichbar sind (was nicht der Fall ist!). Da hier nur Integer-
+  // Werte oder normale Euro-Betraege verglichen werden, sollte das aber reichen.
+  //
+  // Der Vergleichswert stammt aus einem Input und kommt daher immer als String an. Fuer
+  // Vergleich mit number|Date muss er deshalb konvertiert werden.
+
+  private static fieldToString(fieldContent: string | number, type: number): string {
     if (fieldContent) {
       let contentStr: string;
-      if (type === SbsdbColumn.NUMBER) {
+      if (type === ColumnType.NUMBER) {
         try {
           contentStr = formatCurrency(fieldContent as number, "de", "€");
         } catch {
           contentStr = "";
         }
-      } else if (type === SbsdbColumn.DATE) {
+      } else if (type === ColumnType.DATE) {
         try {
           contentStr = formatDate(fieldContent, "mediumDate", "de");
         } catch {
@@ -111,97 +94,112 @@ export class RelationalOperator {
   }
 
   // LIKE vergleicht immer als string!
-  private static like = (
-    fieldContent: string | number | Date,
+  private static like = (fieldContent: string | number, compare: string, type: number): boolean => {
+    compare = compare ? compare.toLocaleLowerCase() : "";
+    return RelationalOperator.fieldToString(fieldContent, type).includes(compare);
+  };
+  // NOTLIKE vergleicht immer als string!
+  private static notlike = (
+    fieldContent: string | number,
     compare: string,
     type: number
   ): boolean => {
     compare = compare ? compare.toLocaleLowerCase() : "";
-    const fc = RelationalOperator.fieldToString(fieldContent, type);
-    return fc.includes(compare);
-  };
-
-  // NOTLIKE vergleicht immer als string!
-  private static notlike = (fieldContent: string, compare: string, type: number): boolean => {
-    compare = compare ? compare.toLocaleLowerCase() : "";
     return !RelationalOperator.fieldToString(fieldContent, type).includes(compare);
   };
-
-  private static equal = (fieldContent: string, compare: string): boolean => {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent === compare;
+  // string, number, date
+  private static equal = (
+    fieldContent: string | number,
+    compare: string,
+    type: number
+  ): boolean => {
+    if (type === ColumnType.STRING || type === ColumnType.IP) {
+      let fc = fieldContent as string;
+      fc = fc ? fc.toLocaleLowerCase() : "";
+      compare = compare ? compare.toLocaleLowerCase() : "";
+      return fc === compare;
+    } else if (type === ColumnType.DATE) {
+      compare = compare ? compare : "";
+      return new Date(fieldContent).valueOf() == ParseDate(compare).valueOf();
+    } else if (type === ColumnType.NUMBER) {
+      return fieldContent === StringToNumber(compare);
+    } else {
+      return false;
+    }
   };
-
-  private static notequal = (fieldContent: string, compare: string): boolean => {
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent !== compare;
+  // string, number, date
+  private static notequal = (
+    fieldContent: string | number,
+    compare: string,
+    type: number
+  ): boolean => {
+    if (type === ColumnType.STRING || type === ColumnType.IP) {
+      let fc = fieldContent as string;
+      fc = fc ? fc.toLocaleLowerCase() : "";
+      compare = compare ? compare.toLocaleLowerCase() : "";
+      return fc !== compare;
+    } else if (type === ColumnType.DATE) {
+      compare = compare ? compare : "";
+      return new Date(fieldContent).valueOf() != ParseDate(compare).valueOf();
+    } else if (type === ColumnType.NUMBER) {
+      return fieldContent !== StringToNumber(compare);
+    } else {
+      return false;
+    }
   };
-
-  private static startsWith = (fieldContent: string, compare: string): boolean => {
+  // string
+  private static startsWith = (fieldContent: string, compare: string, type: number): boolean => {
+    if (type !== ColumnType.STRING && type !== ColumnType.IP) {
+      return false;
+    }
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return fieldContent.startsWith(compare);
   };
-
-  private static endsWith = (fieldContent: string, compare: string): boolean => {
+  // string
+  private static endsWith = (fieldContent: string, compare: string, type: number): boolean => {
+    if (type !== ColumnType.STRING && type !== ColumnType.IP) {
+      return false;
+    }
     fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
     compare = compare ? compare.toLocaleLowerCase() : "";
     return fieldContent.endsWith(compare);
   };
-
-  private static inList = (fieldContent: Array<string>, compare: string): boolean => {
-    return fieldContent.indexOf(compare) >= 0;
-  };
-
-  private static notInList = (fieldContent: Array<string>, compare: string): boolean => {
-    return fieldContent.indexOf(compare) === -1;
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private static exist = (fieldContent: string, compare: string): boolean => {
+  // alle
+  private static exist = (fieldContent: string | number | null): boolean => {
     return !!fieldContent;
   };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private static notExist = (fieldContent: string, compare: string): boolean => {
+  // alle
+  private static notExist = (fieldContent: string | number | null): boolean => {
     return !fieldContent;
   };
-
-  // Die folgenden Number-Vergleiche verwenden den "naiver" Ansatz, dass Fliesskommazahlen
-  // auf einfache Weise vergleichbar sind (was nicht der Fall ist!). Da hier nur Integer-
-  // Werte oder normale Euro-Betraege verglichen werden, sollte das aber reichen.
-  private static equalNum = (fieldContent: number, compare: number): boolean => {
-    return fieldContent === compare;
+  // number, date
+  private static gtNum = (
+    fieldContent: number | string,
+    compare: string,
+    type: number
+  ): boolean => {
+    if (type === ColumnType.DATE) {
+      return new Date(fieldContent).valueOf() > ParseDate(compare).valueOf();
+    } else if (type === ColumnType.NUMBER) {
+      return (fieldContent as number) > StringToNumber(compare);
+    } else {
+      return false;
+    }
   };
-
-  private static notequalNum = (fieldContent: number, compare: number): boolean => {
-    return fieldContent != compare;
-  };
-
-  private static gtNum = (fieldContent: number, compare: number): boolean => {
-    return fieldContent > compare;
-  };
-
-  private static ltNum = (fieldContent: number, compare: number): boolean => {
-    return fieldContent < compare;
-  };
-
-  private static equalDat = (fieldContent: Date, compare: Date): boolean => {
-    return fieldContent.valueOf() === compare.valueOf();
-  };
-
-  private static notequalDat = (fieldContent: Date, compare: Date): boolean => {
-    return fieldContent.valueOf() != compare.valueOf();
-  };
-
-  private static gtDat = (fieldContent: Date, compare: Date): boolean => {
-    return fieldContent.valueOf() > compare.valueOf();
-  };
-
-  private static ltDat = (fieldContent: Date, compare: Date): boolean => {
-    return fieldContent.valueOf() < compare.valueOf();
+  // number, date
+  private static ltNum = (
+    fieldContent: number | string,
+    compare: string,
+    type: number
+  ): boolean => {
+    if (type === ColumnType.DATE) {
+      return new Date(fieldContent).valueOf() < ParseDate(compare).valueOf();
+    } else if (type === ColumnType.NUMBER) {
+      return (fieldContent as number) < StringToNumber(compare);
+    } else {
+      return false;
+    }
   };
 
   public toString(): string {

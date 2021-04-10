@@ -1,8 +1,11 @@
 <div class="flex-col">
   <sbsdb-head>
-    <button mat-icon-button title="Erweiterte Suche (Alt+E)">
-      <!--      (click)="apService.filterService.toggleExtendedFilter()"-->
-      <!--      [class.ext-filter-button-select]="!apService.filterService.stdFilter"-->
+    <button
+      mat-icon-button
+      title="Erweiterte Suche (Alt+E)"
+      (click)="hwService.hwFilterService.toggleExtendedFilter()"
+      [class.ext-filter-button-select]="!hwService.hwFilterService.stdFilter"
+    >
       <mat-icon>find_in_page</mat-icon>
     </button>
     <button mat-icon-button title="Als CSV ausgeben"><mat-icon>share</mat-icon></button>
@@ -13,6 +16,11 @@
       <mat-icon>menu</mat-icon>
     </button>
   </sbsdb-head>
+
+  <sbsdb-filter
+    *ngIf="!hwService.hwFilterService.stdFilter"
+    [data]="hwService.hwFilterService.filterElement"
+  ></sbsdb-filter>
 
   <div class="flex-content">
     <!-- empty table -->
@@ -37,7 +45,7 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="kategorie" *ngIf="hwService.getColumn('kategorie'); let column">
+      <ng-container matColumnDef="kategorie" *ngIf="getColumn('kategorie'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
@@ -46,7 +54,7 @@
               focusLastFilter(); $event.preventDefault(); $event.stopPropagation()
             "
             [column]="column"
-            [showFilter]="hwService.stdFilter"
+            [showFilter]="hwService.hwFilterService.stdFilter"
             size="XS"
           ></sbsdb-header-cell>
         </th>
@@ -61,12 +69,12 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="typ" *ngIf="hwService.getColumn('typ'); let column">
+      <ng-container matColumnDef="typ" *ngIf="getColumn('typ'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
             [column]="column"
-            [showFilter]="hwService.stdFilter"
+            [showFilter]="hwService.hwFilterService.stdFilter"
             size="XS"
           ></sbsdb-header-cell>
         </th>
@@ -81,15 +89,12 @@
         </td>
       </ng-container>
 
-      <ng-container
-        matColumnDef="bezeichnung"
-        *ngIf="hwService.getColumn('bezeichnung'); let column"
-      >
+      <ng-container matColumnDef="bezeichnung" *ngIf="getColumn('bezeichnung'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
             [column]="column"
-            [showFilter]="hwService.stdFilter"
+            [showFilter]="hwService.hwFilterService.stdFilter"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -103,12 +108,12 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="sernr" *ngIf="hwService.getColumn('sernr'); let column">
+      <ng-container matColumnDef="sernr" *ngIf="getColumn('sernr'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
             [column]="column"
-            [showFilter]="hwService.stdFilter"
+            [showFilter]="hwService.hwFilterService.stdFilter"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -122,54 +127,44 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="anschdat" *ngIf="hwService.getColumn('anschdat'); let column">
+      <ng-container matColumnDef="anschdat" *ngIf="getColumn('anschdat'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
             [column]="column"
-            [showFilter]="hwService.stdFilter"
+            [showFilter]="hwService.hwFilterService.stdFilter"
             size="XS"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
-        <td
-          mat-cell
-          *matCellDef="let row"
-          class="highlight-when-expanded"
-          (click)="hwService.expandHwRow(row, $event)"
-        >
+        <td mat-cell *matCellDef="let row" (click)="hwService.expandHwRow(row, $event)">
           <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="anschwert" *ngIf="hwService.getColumn('anschwert'); let column">
+      <ng-container matColumnDef="anschwert" *ngIf="getColumn('anschwert'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
             [column]="column"
-            [showFilter]="hwService.stdFilter"
+            [showFilter]="hwService.hwFilterService.stdFilter"
             size="XS"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
-        <td
-          mat-cell
-          *matCellDef="let row"
-          class="highlight-when-expanded"
-          (click)="hwService.expandHwRow(row, $event)"
-        >
+        <td mat-cell *matCellDef="let row" (click)="hwService.expandHwRow(row, $event)">
           <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="ap" *ngIf="hwService.getColumn('ap'); let column">
+      <ng-container matColumnDef="ap" *ngIf="getColumn('ap'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
             #lastfilter
             (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation()"
             [column]="column"
-            [showFilter]="hwService.stdFilter"
+            [showFilter]="hwService.hwFilterService.stdFilter"
             size="M"
           ></sbsdb-header-cell>
         </th>
@@ -177,7 +172,6 @@
         <td
           mat-cell
           *matCellDef="let row"
-          class="highlight-when-expanded"
           (click)="hwService.expandHwRow(row, $event); $event.stopPropagation()"
         >
           <div sbsdbTooltipOnEllipsis *ngIf="row.ap">
@@ -200,16 +194,34 @@
         <td mat-cell *matCellDef="let element"></td>
       </ng-container>
 
+      <!-- COLUMN details template begin -->
+      <ng-container matColumnDef="hwdetails">
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [colSpan]="hwService.displayedColumns.length"
+          class="detail-cell-cell"
+        >
+          <sbsdb-hw-detail-cell [element]="element"></sbsdb-hw-detail-cell>
+        </td>
+      </ng-container>
+      <!-- COLUMN details template end -->
+
       <!-- ROW details template begin -->
       <tr mat-header-row *matHeaderRowDef="hwService.displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let element; columns: hwService.displayedColumns" class="ap-row"></tr>
-      <!--  details    <tr-->
-      <!--        mat-row-->
-      <!--        *matRowDef="let element; columns: ['apdetails']"-->
-      <!--        class="ap-detail-row"-->
-      <!--        [class.ap-detail-content-expanded]="element.expanded"-->
-      <!--      ></tr>-->
-      <!-- ROW details template end -->
+      <tr
+        mat-row
+        *matRowDef="let element; columns: hwService.displayedColumns"
+        class="table-row table-row-clickable"
+        [class.detail-cell-expanded]="element.expanded"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="let element; columns: ['hwdetails']"
+        class="detail-cell-row"
+        [class.detail-cell-content-expanded]="element.expanded"
+      ></tr>
+      <!--       ROW details template end -->
     </table>
   </div>
 

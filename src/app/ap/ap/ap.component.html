@@ -87,7 +87,7 @@
       <!-- COLUMN checkbox end -->
 
       <!-- COLUMN aptyp begin -->
-      <ng-container matColumnDef="aptyp" *ngIf="apService.getColumn('aptyp'); let column">
+      <ng-container matColumnDef="aptyp" *ngIf="getColumn('aptyp'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
@@ -112,7 +112,7 @@
       <!-- COLUMN aptyp end -->
 
       <!-- COLUMN apname begin -->
-      <ng-container matColumnDef="apname" *ngIf="apService.getColumn('apname'); let column">
+      <ng-container matColumnDef="apname" *ngIf="getColumn('apname'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
@@ -133,7 +133,7 @@
       <!-- COLUMN apname end -->
 
       <!-- COLUMN betrst begin -->
-      <ng-container matColumnDef="betrst" *ngIf="apService.getColumn('betrst'); let column">
+      <ng-container matColumnDef="betrst" *ngIf="getColumn('betrst'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
@@ -155,10 +155,7 @@
       <!-- COLUMN betrst end -->
 
       <!-- COLUMN bezeichnung begin -->
-      <ng-container
-        matColumnDef="bezeichnung"
-        *ngIf="apService.getColumn('bezeichnung'); let column"
-      >
+      <ng-container matColumnDef="bezeichnung" *ngIf="getColumn('bezeichnung'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
@@ -179,7 +176,7 @@
       <!-- COLUMN bezeichnung end -->
 
       <!-- COLUMN IP begin -->
-      <ng-container matColumnDef="ip" *ngIf="apService.getColumn('ip'); let column">
+      <ng-container matColumnDef="ip" *ngIf="getColumn('ip'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
@@ -200,7 +197,7 @@
       <!-- COLUMN IP end -->
 
       <!-- COLUMN hardware begin -->
-      <ng-container matColumnDef="hardware" *ngIf="apService.getColumn('hardware'); let column">
+      <ng-container matColumnDef="hardware" *ngIf="getColumn('hardware'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
@@ -256,7 +253,7 @@
           mat-cell
           *matCellDef="let element"
           [colSpan]="apService.displayedColumns.length"
-          class="ap-detail-cell"
+          class="detail-cell-cell"
         >
           <sbsdb-ap-detail-cell [element]="element"></sbsdb-ap-detail-cell>
         </td>
@@ -282,14 +279,14 @@
       <tr
         mat-row
         *matRowDef="let element; columns: apService.displayedColumns"
-        class="ap-row ap-row-clickable"
-        [class.ap-detail-expanded]="element.expanded"
+        class="table-row table-row-clickable"
+        [class.detail-cell-expanded]="element.expanded"
       ></tr>
       <tr
         mat-row
         *matRowDef="let element; columns: ['apdetails']"
-        class="ap-detail-row"
-        [class.ap-detail-content-expanded]="element.expanded"
+        class="detail-cell-row"
+        [class.detail-cell-content-expanded]="element.expanded"
       ></tr>
       <!-- ROW details template end -->
     </table>

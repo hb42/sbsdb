@@ -102,7 +102,7 @@ export class NavigationService {
       });
   }
 
-  public navigateByCmd(command: any[]): void {
+  public navigateByCmd(command: unknown[]): void {
     this.navigateByUrl(this.router.createUrlTree(command));
   }
 

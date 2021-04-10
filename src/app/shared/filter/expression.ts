@@ -1,9 +1,9 @@
+import { ColumnType } from "../table/column-type.enum";
 import { Bracket } from "./bracket";
 import { Field } from "./field";
 import { RelOp } from "./rel-op.enum";
 import { RelationalOperator } from "./relational-operator";
 import { Term } from "./term";
-import { SbsdbColumn } from "../table/sbsdb-column";
 
 /**
  * Einzelner relationaler Ausdruck in einem Filter
@@ -34,8 +34,7 @@ export class Expression implements Term {
   constructor(
     public field: Field,
     public operator: RelationalOperator,
-    private comp: string | number | Date,
-    public type: number
+    private comp: string | number | Date // public type: number
   ) {
     this.compare = comp;
   }
@@ -46,7 +45,7 @@ export class Expression implements Term {
 
   public validate(record: Record<string, string | Array<string> | number | Date>): boolean {
     let compValue: string | number | Date;
-    if (this.type === SbsdbColumn.STRING) {
+    if (this.field.type === ColumnType.STRING || this.field.type === ColumnType.IP) {
       // mehrere Felder vergleichen ist nur bei String-Vergleich sinnvoll
       const fields: string[] = Array.isArray(this.field.fieldName)
         ? this.field.fieldName
@@ -62,13 +61,12 @@ export class Expression implements Term {
       const field = this.field.fieldName as string;
       // eslint-disable-next-line no-prototype-builtins
       if (record.hasOwnProperty(field)) {
-        compValue = record[field] as string | number | Date;
+        compValue = record[field] as number | Date;
       } else {
-        compValue =
-          this.type === SbsdbColumn.NUMBER ? 0 : this.type === SbsdbColumn.DATE ? new Date(0) : "";
+        compValue = this.field.type === ColumnType.NUMBER ? 0 : new Date(0);
       }
     }
-    return this.operator.execute(compValue, this.compare, this.type);
+    return this.operator.execute(compValue, this.compare, this.field.type);
   }
 
   public isBracket(): boolean {

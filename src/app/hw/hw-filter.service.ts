@@ -21,7 +21,7 @@ export class HwFilterService extends BaseFilterService {
     public dialog: MatDialog
   ) {
     super(configService, dataService, navigationService, dialog);
-    console.debug("c'tor ApFilterService");
+    console.debug("c'tor HwFilterService");
     this.userSettings = configService.getUser();
   }
 

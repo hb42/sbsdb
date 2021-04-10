@@ -10,13 +10,14 @@ import {
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
-import { MatSort, MatSortHeader } from "@angular/material/sort";
+import { MatSort } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ConfigService } from "../../shared/config/config.service";
+import { GetColumn } from "../../shared/helper";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
+import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { ApService } from "../ap.service";
-import { DataService } from "../../shared/data.service";
 
 @Component({
   selector: "sbsdb-ap",
@@ -40,7 +41,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private config: ConfigService,
-    private dataService: DataService,
     public apService: ApService,
     public dialog: MatDialog
   ) {
@@ -110,7 +110,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
           //       (1) /ap;apname=xx und vom Filter (2) /ap;filt=xxx
           //       besser direkt ueber apService aufrufen
           //       [der Code bleibt erst mal drin, fuer den Fall, dass das noch nuetzlich wird]
-          this.apService.filterFor("apname", params.get("apname"));
+          this.apService.filterService.filterFor("apname", params.get("apname"));
         }
       } else {
         // keine Parameter -> letzten gesicherten nehmen
@@ -178,7 +178,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public sortHeading(column: string): string {
-    const col = this.apService.getColumn(column);
+    const col = GetColumn(column, this.apService.columns);
     if (col) {
       return col.displayName;
     } else {
@@ -187,11 +187,15 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public sortAccel(column: string): string {
-    const col = this.apService.getColumn(column);
+    const col = GetColumn(column, this.apService.columns);
     if (col) {
       return col.accelerator;
     } else {
       return "";
     }
+  }
+
+  public getColumn(name: string): SbsdbColumn<unknown, unknown> {
+    return GetColumn(name, this.apService.columns);
   }
 }

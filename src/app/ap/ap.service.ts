@@ -1,25 +1,25 @@
 import { EventEmitter, Injectable } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
-import { AP_PATH } from "../app-routing-const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
+import { DataService } from "../shared/data.service";
 import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
 import { TransportElement } from "../shared/filter/transport-element";
 import { TransportElements } from "../shared/filter/transport-elements";
+import { GetColumn } from "../shared/helper";
 import { KeyboardService } from "../shared/keyboard.service";
+import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
+import { Betrst } from "../shared/model/betrst";
 import { Hardware } from "../shared/model/hardware";
+import { Tag } from "../shared/model/tag";
 import { NavigationService } from "../shared/navigation.service";
+import { ColumnType } from "../shared/table/column-type.enum";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
 import { ApFilterService } from "./ap-filter.service";
-import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
-import { Tag } from "../shared/model/tag";
-import { DataService } from "../shared/data.service";
-import { Betrst } from "../shared/model/betrst";
-import { MatTableDataSource } from "@angular/material/table";
 
 @Injectable({ providedIn: "root" })
 export class ApService {
@@ -76,21 +76,21 @@ export class ApService {
     }, 0);
 
     this.navigationService.navToAp.subscribe((dat) => {
-      this.filterFor(dat.col, dat.search);
+      this.filterService.filterFor(dat.col, dat.search);
     });
   }
 
-  public getColumnIndex(name: string): number {
-    return this.columns.findIndex((c) => c.columnName === name);
-  }
-  public getColumn(name: string): SbsdbColumn<ApService, Arbeitsplatz> {
-    const idx = this.getColumnIndex(name);
-    if (idx >= 0 && idx < this.columns.length) {
-      return this.columns[idx];
-    } else {
-      return null;
-    }
-  }
+  // public getColumnIndex(name: string): number {
+  //   return this.columns.findIndex((c) => c.columnName === name);
+  // }
+  // public getColumn(name: string): SbsdbColumn<ApService, Arbeitsplatz> {
+  //   const idx = this.getColumnIndex(name);
+  //   if (idx >= 0 && idx < this.columns.length) {
+  //     return this.columns[idx];
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
     this.apDataSource.sort = sort;
@@ -141,30 +141,30 @@ export class ApService {
     this.navigationService.navToHw.emit({ col: "hwid", search: hw.id });
   }
 
-  public filterFor(column: string, search: string | number): void {
-    const col = this.getColumn(column);
-    if (col.typeKey === SbsdbColumn.STRING) {
-      search = ((search as string) ?? "").toLowerCase();
-    }
-    if (col) {
-      this.filterService.filterFor(col, search, RelOp.like);
-    } else {
-      this.filterService.filterExpression.reset();
-      this.filterService.stdFilter = true;
-      this.filterService.triggerFilter();
-      // console.error("ArbeitsplatzService#filterForCol: Column " + column + " not found!");
-    }
-  }
+  // public filterFor(column: string, search: string | number): void {
+  //   const col = GetColumn(column, this.columns);
+  //   if (col.typeKey === ColumnType.STRING) {
+  //     search = ((search as string) ?? "").toLowerCase();
+  //   }
+  //   if (col) {
+  //     this.filterService.filterFor(col, search, RelOp.like);
+  //   } else {
+  //     this.filterService.filterExpression.reset();
+  //     this.filterService.stdFilter = true;
+  //     this.filterService.triggerFilter();
+  //     // console.error("ArbeitsplatzService#filterForCol: Column " + column + " not found!");
+  //   }
+  // }
 
   public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
-    const col = this.getColumn("aptyp");
+    const col = GetColumn("aptyp", this.columns);
     col.filterControl.setValue(ap.apTypBezeichnung);
     col.filterControl.markAsDirty();
     event.stopPropagation();
   }
 
   public filterByBetrst(ap: Arbeitsplatz, event: Event): void {
-    const col = this.getColumn("betrst");
+    const col = GetColumn("betrst", this.columns);
     col.filterControl.setValue(ap[col.sortFieldName]);
     col.filterControl.markAsDirty();
     event.stopPropagation();
@@ -261,7 +261,7 @@ export class ApService {
         "t",
         true,
         1,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.apDataSource.data.map((a) => a.apTypBezeichnung))].sort()
       )
@@ -277,7 +277,7 @@ export class ApService {
         "n",
         true,
         2,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -294,8 +294,8 @@ export class ApService {
         "o",
         true,
         3,
-        SbsdbColumn.STRING,
-        [RelOp.inlist, RelOp.notinlist, RelOp.like, RelOp.notlike],
+        ColumnType.STRING,
+        [RelOp.like, RelOp.notlike],
         () =>
           [
             ...new Set(
@@ -317,7 +317,7 @@ export class ApService {
         "b",
         true,
         4,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -334,7 +334,7 @@ export class ApService {
         "i",
         true,
         5,
-        SbsdbColumn.IP,
+        ColumnType.IP,
         [RelOp.like, RelOp.notlike],
         null
       )
@@ -351,7 +351,7 @@ export class ApService {
         "",
         false,
         0,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -368,7 +368,7 @@ export class ApService {
         "",
         false,
         0,
-        SbsdbColumn.IP,
+        ColumnType.IP,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -385,7 +385,7 @@ export class ApService {
         "",
         false,
         0,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.apDataSource.data.map((a) => a.vlanStr))].sort()
       )
@@ -406,7 +406,7 @@ export class ApService {
         "w",
         true,
         6,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
         null
       )
@@ -422,7 +422,7 @@ export class ApService {
         "",
         false,
         0,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
         null
       )
@@ -455,7 +455,7 @@ export class ApService {
         "",
         false,
         0,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
         null
       )
@@ -488,51 +488,11 @@ export class ApService {
       this.loading = true;
     });
 
-    /*
-     * Geänderten Filter in die URL eintragen
-     * Die Navigation loest dann den Filter aus.
-     *
-     */
-    // this.filterChange.subscribe(() => {
-    //   if (this.apDataReady) {
-    //     // Keine Navigation (und kein History-Eintrag) beim Start des
-    //     // erweiterten Filters (und bei leerem extd Filter).
-    //     if (
-    //       this.filterService.stdFilter ||
-    //       (!this.filterService.stdFilter && !this.filterService.filterExpression.isEmpty())
-    //     ) {
-    //       const filtStr = this.filterService.encodeFilter();
-    //       this.nav2filter(filtStr);
-    //     } else {
-    //       this.triggerColumnFilter();
-    //     }
-    //   }
-    // });
     this.filterService.initService(this.columns, this.apDataSource);
-
-    // eigener Filter
-    // this.apDataSource.filterPredicate = this.filterService.filterPredicate;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // this.apDataSource.filterPredicate = (ap: Arbeitsplatz, filter: string) => {
-    //   let valid = this.filterService.filterExpression.validate(
-    //     (ap as unknown) as Record<string, string | Array<string>>
-    //   );
-    //   if (!valid) {
-    //     ap.selected = false;
-    //     // console.debug("## ausgefiltert ##");
-    //   }
-    //   // nur ausgewählte anzeigen
-    //   if (valid && this.filterService.showSelected) {
-    //     valid = ap.selected;
-    //   }
-    //   return valid;
-    // };
-
-    // this.filterService.initializeFilters();
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
     this.apDataSource.sortingDataAccessor = (ap: Arbeitsplatz, id: string) => {
-      const col = this.getColumn(id);
+      const col = GetColumn(id, this.columns);
       if (col) {
         return col.sortString(ap);
       } else {
@@ -540,10 +500,6 @@ export class ApService {
       }
     };
   }
-
-  // public nav2filter(filtStr: string): void {
-  //   this.navigationService.navigateByCmd(["/" + AP_PATH, { filt: filtStr }]);
-  // }
 
   private onDataReady() {
     // alle vorhandenen tags
@@ -569,7 +525,7 @@ export class ApService {
           "",
           false,
           0,
-          SbsdbColumn.STRING,
+          ColumnType.STRING,
           Number(tag[1]) === DataService.BOOL_TAG_FLAG
             ? [RelOp.exist, RelOp.notexist]
             : [

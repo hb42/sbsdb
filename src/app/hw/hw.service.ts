@@ -8,9 +8,11 @@ import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
+import { GetColumn } from "../shared/helper";
 import { Hardware } from "../shared/model/hardware";
 import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
+import { ColumnType } from "../shared/table/column-type.enum";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
 import { HwFilterService } from "./hw-filter.service";
 
@@ -51,7 +53,7 @@ export class HwService {
     }, 0);
 
     this.navigationService.navToHw.subscribe((dat) => {
-      this.filterFor(dat.col, dat.search);
+      this.hwFilterService.filterFor(dat.col, dat.search);
     });
   }
 
@@ -71,18 +73,6 @@ export class HwService {
     event.stopPropagation();
   }
 
-  public getColumnIndex(name: string): number {
-    return this.columns.findIndex((c) => c.columnName === name);
-  }
-  public getColumn(name: string): SbsdbColumn<HwService, Hardware> {
-    const idx = this.getColumnIndex(name);
-    if (idx >= 0 && idx < this.columns.length) {
-      return this.columns[idx];
-    } else {
-      return null;
-    }
-  }
-
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
     this.hwDataSource.sort = sort;
     this.hwDataSource.paginator = paginator;
@@ -95,9 +85,6 @@ export class HwService {
         this.userSettings.hwSortColumn
       ) as MatSortHeader;
       this.hwDataSource.sort.sort(sortheader);
-      // FIXME Hack -> ApComponent#handleSort
-      // eslint-disable-next-line no-underscore-dangle
-      // sortheader._handleClick();
     }
   }
 
@@ -105,19 +92,22 @@ export class HwService {
     this.navigationService.navToAp.emit({ col: "apname", search: hw.ap.apname });
   }
 
-  public filterFor(column: string, search: string | number): void {
-    const col = this.getColumn(column);
-    if (col.typeKey === SbsdbColumn.STRING) {
-      search = ((search as string) ?? "").toLowerCase();
-    }
-    if (col) {
-      // this.filterService.filterFor(col, search, RelOp.like);
-    } else {
-      // this.filterService.filterExpression.reset();
-      // this.filterService.stdFilter = true;
-      // this.filterService.triggerFilter();
-    }
-  }
+  // public filterFor(column: string, search: string | number): void {
+  //   const col = GetColumn(column, this.columns);
+  //   let op = RelOp.like;
+  //   if (col) {
+  //     if (col.typeKey === ColumnType.STRING || col.typeKey === ColumnType.IP) {
+  //       search = ((search as string) ?? "").toLowerCase();
+  //     } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
+  //       op = RelOp.equal;
+  //     }
+  //     this.hwFilterService.filterFor(col, search, op);
+  //   } else {
+  //     this.hwFilterService.filterExpression.reset();
+  //     this.hwFilterService.stdFilter = true;
+  //     this.hwFilterService.triggerFilter();
+  //   }
+  // }
 
   private buildColumns() {
     this.columns.push(
@@ -147,7 +137,7 @@ export class HwService {
         "k",
         true,
         1,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.hwDataSource.data.map((h) => h.apKatBezeichnung))].sort()
       )
@@ -163,7 +153,7 @@ export class HwService {
         "t",
         true,
         2,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
         () => [...new Set(this.hwDataSource.data.map((h) => h.hwTypBezeichnung))].sort()
       )
@@ -179,7 +169,7 @@ export class HwService {
         "b",
         true,
         3,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -195,7 +185,7 @@ export class HwService {
         "s",
         true,
         4,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -207,12 +197,12 @@ export class HwService {
         () => "Ansch.-Datum",
         () => "anschDat",
         () => "anschDat",
-        (h: Hardware) => formatDate(h.anschDat, "mediumDate", "de"),
+        (h: Hardware) => (h.anschDat.valueOf() ? formatDate(h.anschDat, "mediumDate", "de") : ""),
         "n",
         true,
         5,
-        SbsdbColumn.DATE,
-        [RelOp.equalDat, RelOp.gtDat, RelOp.ltDat],
+        ColumnType.DATE,
+        [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
         null
       )
     );
@@ -223,12 +213,12 @@ export class HwService {
         () => "Ansch.-Wert",
         () => "anschWert",
         () => "anschWert",
-        (h: Hardware) => formatCurrency(h.anschWert, "de", "€"),
+        (h: Hardware) => (h.anschWert ? formatCurrency(h.anschWert, "de", "€") : ""),
         "w",
         true,
         6,
-        SbsdbColumn.NUMBER,
-        [RelOp.equalNum, RelOp.gtNum, RelOp.ltNum],
+        ColumnType.NUMBER,
+        [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
         null
       )
     );
@@ -243,7 +233,7 @@ export class HwService {
         "p",
         true,
         7,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -275,7 +265,7 @@ export class HwService {
         "",
         false,
         0,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
         null
       )
@@ -291,7 +281,7 @@ export class HwService {
         "",
         false,
         0,
-        SbsdbColumn.STRING,
+        ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
         null
       )
@@ -308,8 +298,8 @@ export class HwService {
         "",
         false,
         0,
-        SbsdbColumn.NUMBER,
-        [RelOp.equalNum, RelOp.gtNum, RelOp.ltNum],
+        ColumnType.NUMBER,
+        null, // [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
         null
       )
     );
@@ -344,6 +334,7 @@ export class HwService {
         this.setDataToTable.emit();
         // apList ist damit komplett (stoesst dataService.dataReady an)
         this.dataService.apListReady.emit();
+        this.hwFilterService.dataReady = true;
       }
     };
     this.dataService.bstListReady.subscribe(readyCheck);
@@ -356,7 +347,6 @@ export class HwService {
     this.setDataToTable.subscribe(() => {
       if (this.hwDataSource.paginator) {
         this.hwDataSource.data = this.dataService.hwList;
-        this.hwFilterService.dataReady = true;
         this.triggerFilter();
       }
     });
@@ -366,7 +356,7 @@ export class HwService {
 
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
     this.hwDataSource.sortingDataAccessor = (hw: Hardware, id: string) => {
-      const col = this.getColumn(id);
+      const col = GetColumn(id, this.columns);
       if (col) {
         return col.sortString(hw);
       } else {
@@ -429,6 +419,7 @@ export class HwService {
       hw.bezeichnung = hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung;
       hw.apKatBezeichnung = hw.hwKonfig.apKatBezeichnung;
       hw.hwTypBezeichnung = hw.hwKonfig.hwTypBezeichnung;
+      hw.anschDat = new Date(hw.anschDat);
       if (hw.vlans && hw.vlans[0]) {
         hw.vlans.forEach((v) => {
           const dhcp = v.ip === 0 ? " (DHCP)" : "";

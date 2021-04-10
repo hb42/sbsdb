@@ -1,29 +1,29 @@
-<div [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'" class="ap-detail-content">
-  <div class="ap-detail-content-row">
-    <div class="ap-detail-margin ap-detail-standort-text">Standort</div>
-    <div class="ap-detail-margin">
+<div [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'" class="detail-cell-content">
+  <div class="detail-cell-content-row">
+    <div class="detail-cell-margin detail-cell-standort-text">Standort</div>
+    <div class="detail-cell-margin">
       {{ ("000" + element.oe.bstNr).slice(-3) }}<br />
       {{ element.oe.betriebsstelle }}<br /><br />
       {{ element.oe.strasse ? element.oe.strasse + " " : ""
       }}{{ element.oe.hausnr ? element.oe.hausnr : "" }}<br />
       {{ element.oe.plz ? element.oe.plz + " " : "" }}{{ element.oe.ort ? element.oe.ort : "" }}
     </div>
-    <div class="ap-detail-margin"></div>
-    <div *ngIf="element.oe.oeff" class="ap-detail-margin ap-detail-oeff">
+    <div class="detail-cell-margin"></div>
+    <div *ngIf="element.oe.oeff" class="detail-cell-margin detail-cell-oeff">
       <span>Öffnungszeiten</span><br />{{ element.oe.oeff }}
     </div>
   </div>
-  <div class="ap-detail-content-row">
-    <div *ngIf="element.verantwOe" class="ap-detail-margin ap-detail-standort-text">
+  <div class="detail-cell-content-row">
+    <div *ngIf="element.verantwOe" class="detail-cell-margin detail-cell-standort-text">
       Verantwortliche OE
     </div>
-    <div class="ap-detail-margin">
+    <div class="detail-cell-margin">
       {{ ("000" + element.verantwOe.bstNr).slice(-3) }} -
       {{ element.verantwOe.betriebsstelle }}
     </div>
   </div>
-  <div class="ap-detail-content-row">
-    <div class="ap-detail-margin">
+  <div class="detail-cell-content-row">
+    <div class="detail-cell-margin">
       <table>
         <thead>
           <th colspan="4">Hardware</th>
@@ -57,7 +57,7 @@
         </tr>
       </table>
     </div>
-    <div class="ap-detail-margin">
+    <div class="detail-cell-margin">
       <table>
         <th colspan="2">Sonstige Informationen</th>
         <tr *ngFor="let tag of element.tags">
@@ -67,5 +67,5 @@
       </table>
     </div>
   </div>
-  <div class="ap-detail-bemerk">{{ element.bemerkung }}</div>
+  <div class="detail-cell-bemerk">{{ element.bemerkung }}</div>
 </div>

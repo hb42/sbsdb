@@ -1,7 +1,7 @@
 // -> https://material.angular.io/guide/theming
 @import "~@angular/material/theming";
 // Plus imports for other components in your app.
-@import "app/ap/ap-theme";
+@import "app/shared/table-theme";
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -165,7 +165,7 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
 
 @mixin custom-theme($theme) {
   @include material-colors($theme);
-  @include ap-theme($theme);
+  @include table-theme($theme);
 }
 @include custom-theme($sbsdb-app-theme);
 

@@ -1,18 +1,23 @@
-import { formatDate, formatNumber } from "@angular/common";
-import { EventEmitter, Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatTableDataSource } from "@angular/material/table";
 import { Base64 } from "js-base64";
 import { debounceTime } from "rxjs/operators";
-import { AP_PATH } from "../../app-routing-const";
 import { ConfigService } from "../config/config.service";
 import { UserSession } from "../config/user.session";
+import { DataService } from "../data.service";
+import { GetColumn } from "../helper";
 import { NavigationService } from "../navigation.service";
+import { ColumnType } from "../table/column-type.enum";
+import { SbsdbColumn } from "../table/sbsdb-column";
 import { Bracket } from "./bracket";
 import { Element } from "./element";
 import { Expression } from "./expression";
 import { Field } from "./field";
+import { FilterEditListData } from "./filter-edit-list/filter-edit-list-data";
+import { FilterEditListComponent } from "./filter-edit-list/filter-edit-list.component";
+import { FilterEditData } from "./filter-edit/filter-edit-data";
+import { FilterEditComponent } from "./filter-edit/filter-edit.component";
 import { LogicalAnd } from "./logical-and";
 import { LogicalOperator } from "./logical-operator";
 import { LogicalOr } from "./logical-or";
@@ -23,12 +28,6 @@ import { TransportElements } from "./transport-elements";
 import { TransportExpression } from "./transport-expression";
 import { TransportFilter } from "./transport-filter";
 import { TransportFilters } from "./transport-filters";
-import { SbsdbColumn } from "../table/sbsdb-column";
-import { FilterEditListData } from "./filter-edit-list/filter-edit-list-data";
-import { FilterEditListComponent } from "./filter-edit-list/filter-edit-list.component";
-import { FilterEditData } from "./filter-edit/filter-edit-data";
-import { FilterEditComponent } from "./filter-edit/filter-edit.component";
-import { DataService } from "../data.service";
 
 export abstract class BaseFilterService {
   public static STDFILTER = -1;
@@ -55,7 +54,6 @@ export abstract class BaseFilterService {
 
   // wird in initService() von apService geliefert
   private columns: SbsdbColumn<unknown, unknown>[];
-  private filterChange: EventEmitter<void> = new EventEmitter<void>();
   private filterChanged = 1;
   private dataTable: MatTableDataSource<unknown>;
 
@@ -88,7 +86,7 @@ export abstract class BaseFilterService {
 
     void this.readGlobalFilters();
 
-    this.dataTable.filterPredicate = (row: unknown, filter: string): boolean => {
+    this.dataTable.filterPredicate = (row: unknown): boolean => {
       let valid = this.filterExpression.validate(
         row as Record<string, string | Array<string> | number | Date>
       );
@@ -233,17 +231,30 @@ export abstract class BaseFilterService {
     this.setColumnFilters();
   }
 
-  public filterFor(col: SbsdbColumn<unknown, unknown>, search: string | number, op: RelOp): void {
-    this.filterExpression.reset();
-    this.stdFilter = false;
-    const expr: Expression = new Expression(
-      new Field(col.fieldName, col.displayName),
-      new RelationalOperator(op),
-      search.toString(),
-      0 // FIXME hier muss Wert aus Column rein!
-    );
-    this.filterExpression.addElement(new LogicalAnd(), expr);
-    this.triggerFilter();
+  // public filterFor(col: SbsdbColumn<unknown, unknown>, search: string | number, op: RelOp): void {
+  public filterFor(colName: string, search: string | number): void {
+    const col = GetColumn(colName, this.columns);
+    let op = RelOp.like;
+    if (col) {
+      if (col.typeKey === ColumnType.STRING || col.typeKey === ColumnType.IP) {
+        search = ((search as string) ?? "").toLowerCase();
+      } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
+        op = RelOp.equal;
+      }
+      this.filterExpression.reset();
+      this.stdFilter = false;
+      const expr: Expression = new Expression(
+        new Field(col.fieldName, col.displayName, col.typeKey),
+        new RelationalOperator(op),
+        search.toString()
+      );
+      this.filterExpression.addElement(new LogicalAnd(), expr);
+      this.triggerFilter();
+    } else {
+      this.filterExpression.reset();
+      this.stdFilter = true;
+      this.triggerFilter();
+    }
   }
 
   // --- Edit Exxtended Filter ---
@@ -442,7 +453,7 @@ export abstract class BaseFilterService {
     op: LogicalOperator | null,
     ex: Expression | null
   ): void {
-    const field = ex ? new Field(ex.field.fieldName, ex.field.displayName) : null;
+    const field = ex ? new Field(ex.field.fieldName, ex.field.displayName, ex.field.type) : null;
     const oper = ex ? ex.operator.op : null;
     const comp = ex ? ex.compare : null;
 
@@ -462,7 +473,8 @@ export abstract class BaseFilterService {
           ex.compare = result.c;
         } else {
           // new
-          ex = null; // FIXME new Expression(result.f, new RelationalOperator(result.o), result.c);
+          // const type = GetColumn(result.f.columnName, this.columns).typeKey;
+          ex = new Expression(result.f, new RelationalOperator(result.o), result.c);
           if (up) {
             // einziger Ausdruck f. Klammer
             up.addElement(null, ex);
@@ -695,10 +707,9 @@ export abstract class BaseFilterService {
         this.makeElements(br, tr.elem);
       } else {
         const ex = new Expression(
-          new Field(tr.elem.fName, tr.elem.dName),
+          new Field(tr.elem.fName, tr.elem.dName, tr.elem.type),
           new RelationalOperator(tr.elem.op),
-          tr.elem.comp,
-          0 // FIXME hier muss Wert aus Column rein
+          tr.elem.comp
         );
         b.addElement(op, ex);
       }
@@ -742,6 +753,7 @@ export abstract class BaseFilterService {
       ? new TransportExpression(
           exp.field.fieldName,
           exp.field.displayName,
+          exp.field.type,
           exp.operator.op,
           exp.compare
         )

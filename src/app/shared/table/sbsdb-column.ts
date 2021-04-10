@@ -5,13 +5,9 @@ import { Field } from "../filter/field";
 import { RelOp } from "../filter/rel-op.enum";
 import { RelationalOperator } from "../filter/relational-operator";
 import { Netzwerk } from "../model/netzwerk";
+import { ColumnType } from "./column-type.enum";
 
 export class SbsdbColumn<C, E> {
-  public static STRING = 0;
-  public static IP = 1;
-  public static DATE = 2;
-  public static NUMBER = 3;
-
   private readonly filtercontrol: FormControl = null;
 
   /*
@@ -79,7 +75,7 @@ export class SbsdbColumn<C, E> {
     return this.tabindex;
   }
 
-  public get typeKey(): number {
+  public get typeKey(): ColumnType {
     return this.typekey;
   }
 
@@ -107,7 +103,7 @@ export class SbsdbColumn<C, E> {
     private accel: string, //
     private showcolumn: boolean,
     private tabindex: number, // fuer Filterfelder und Reihenfolge
-    private typekey: number,
+    private typekey: ColumnType,
     private op: RelOp[] | null, // erlaubte Verknuepfungen
     private selectlist: (() => string[]) | null // soweit sinnvoll: no dup list fuer das Feld
   ) {
@@ -127,16 +123,16 @@ export class SbsdbColumn<C, E> {
     let v: Netzwerk[];
     let d: Date;
     switch (this.typekey) {
-      case SbsdbColumn.STRING:
+      case ColumnType.STRING:
         s = (field as string) ?? "";
         return s.toLowerCase();
-      case SbsdbColumn.IP:
+      case ColumnType.IP:
         v = field as Netzwerk[];
         return v && v[0] ? v[0].vlan + v[0].ip : 0;
-      case SbsdbColumn.DATE:
+      case ColumnType.DATE:
         d = (field as Date) ?? new Date(0);
         return d.valueOf();
-      case SbsdbColumn.NUMBER:
+      case ColumnType.NUMBER:
         return field as number;
     }
   }
@@ -163,8 +159,8 @@ export class SbsdbColumn<C, E> {
       const op: RelationalOperator = filter.inc
         ? new RelationalOperator(RelOp.like)
         : new RelationalOperator(RelOp.notlike);
-      const f: Field = new Field(this.fieldName, this.displayName);
-      return new Expression(f, op, filter.text, this.typeKey);
+      const f: Field = new Field(this.fieldName, this.displayName, this.typekey);
+      return new Expression(f, op, filter.text);
     } else {
       return null;
     }
@@ -177,7 +173,7 @@ export class SbsdbColumn<C, E> {
     const text = this.filterControl.value as string;
     if (text) {
       const t = SbsdbColumn.checkSearchString(text);
-      if (this.typekey === SbsdbColumn.IP) {
+      if (this.typekey === ColumnType.IP) {
         t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
       }
       return t;

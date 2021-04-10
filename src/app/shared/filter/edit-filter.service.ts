@@ -7,7 +7,6 @@ import { BaseFilterService } from "./base-filter-service";
 export class EditFilterService {
   public filterService: BaseFilterService;
 
-  constructor() {}
   public setFilterService(svc: BaseFilterService): void {
     this.filterService = svc;
   }

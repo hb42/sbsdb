@@ -3,7 +3,6 @@ import {
   Component,
   HostBinding,
   HostListener,
-  Injectable,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -11,10 +10,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { ActivatedRoute } from "@angular/router";
-import { ApService } from "../../ap/ap.service";
 import { ConfigService } from "../../shared/config/config.service";
-import { DataService } from "../../shared/data.service";
+import { GetColumn } from "../../shared/helper";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
+import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { HwService } from "../hw.service";
 
 @Component({
@@ -109,7 +108,7 @@ export class HwComponent implements AfterViewInit, OnInit {
           //       (1) /ap;apname=xx und vom Filter (2) /ap;filt=xxx
           //       besser direkt ueber apService aufrufen
           //       [der Code bleibt erst mal drin, fuer den Fall, dass das noch nuetzlich wird]
-          this.hwService.filterFor("hwid", Number.parseInt(params.get("hwid"), 10));
+          this.hwService.hwFilterService.filterFor("hwid", Number.parseInt(params.get("hwid"), 10));
         }
       } else {
         // keine Parameter -> letzten gesicherten nehmen
@@ -137,5 +136,9 @@ export class HwComponent implements AfterViewInit, OnInit {
     if (this.lastFilter) {
       this.lastFilter.focus();
     }
+  }
+
+  public getColumn(name: string): SbsdbColumn<unknown, unknown> {
+    return GetColumn(name, this.hwService.columns);
   }
 }
