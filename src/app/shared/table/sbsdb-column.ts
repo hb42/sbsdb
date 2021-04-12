@@ -19,7 +19,9 @@ export class SbsdbColumn<C, E> {
    * @param text - Filtertext
    */
   private static checkSearchString(text: string): ColumnFilter {
-    let str = text ? text.toLowerCase() : "";
+    // FIXME ohne toLowerCase??
+    let str = text ?? "";
+    // let str = text ? text.toLowerCase() : "";
     let incl = true;
     if (str.startsWith("!")) {
       str = str.slice(1);
@@ -155,15 +157,30 @@ export class SbsdbColumn<C, E> {
    */
   public getFilterExpression(): Expression {
     const filter: ColumnFilter = this.valueChange();
+    let op: RelationalOperator;
     if (filter) {
-      const op: RelationalOperator = filter.inc
-        ? new RelationalOperator(RelOp.like)
-        : new RelationalOperator(RelOp.notlike);
+      if (this.isDropdown()) {
+        op = new RelationalOperator(RelOp.inlist);
+      } else {
+        op = filter.inc
+          ? new RelationalOperator(RelOp.like)
+          : new RelationalOperator(RelOp.notlike);
+      }
       const f: Field = new Field(this.fieldName, this.displayName, this.typekey);
       return new Expression(f, op, filter.text);
     } else {
       return null;
     }
+  }
+
+  /**
+   * Test, ob Input oder Dropdown im StdFilter angezeigt werden soll.
+   *
+   * Bedingung fuer Dropdown: column.selectlist ist vorhanden und der erste
+   * Operatar ist RelOp.inList.
+   */
+  public isDropdown(): boolean {
+    return this.selectList && this.operators && this.operators[0] === RelOp.inlist;
   }
 
   /**

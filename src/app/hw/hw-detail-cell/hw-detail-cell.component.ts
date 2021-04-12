@@ -18,5 +18,7 @@ import { HwService } from "../hw.service";
 export class HwDetailCellComponent {
   @Input() public element: Hardware;
 
-  constructor(hwService: HwService) {}
+  constructor(public hwService: HwService) {
+    // noop
+  }
 }

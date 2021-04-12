@@ -38,7 +38,11 @@ export class HeaderCellComponent implements AfterViewInit {
 
   public ngAfterViewInit(): void {
     this.nativeElement = this.elementRef.nativeElement as HTMLElement;
-    this.input = this.nativeElement.querySelector("input");
+    if (this.column.isDropdown()) {
+      this.input = this.nativeElement.querySelector("mat-select");
+    } else {
+      this.input = this.nativeElement.querySelector("input");
+    }
   }
 
   /**

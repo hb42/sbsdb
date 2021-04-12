@@ -1,0 +1,30 @@
+<button
+  style="font-size: 18px; width: 16px"
+  mat-icon-button
+  (click)="filterService.toggleSelection()"
+>
+  <mat-icon
+    inline
+    title="Nur Ausgewählte anzeigen"
+    *ngIf="!filterService.showSelected"
+    color="primary"
+    >filter_alt
+    <!--              check_circle_outline-->
+  </mat-icon>
+  <mat-icon
+    inline
+    title="Auch nicht Ausgewählte anzeigen"
+    *ngIf="filterService.showSelected"
+    color="primary"
+    >unpublished
+    <!--              check_circle-->
+  </mat-icon>
+</button>
+<mat-checkbox
+  (change)="$event ? filterService.masterToggle() : null"
+  [checked]="filterService.isAllSelected()"
+  [indeterminate]="filterService.isSelected() && !filterService.isAllSelected()"
+  color="primary"
+  title="alle auwählen"
+>
+</mat-checkbox>

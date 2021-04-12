@@ -3,7 +3,9 @@
     <div class="detail-cell-margin">
       <table>
         <thead>
-          <th colspan="2">Konfiguration</th>
+          <tr>
+            <th colspan="2">Konfiguration</th>
+          </tr>
         </thead>
         <tr>
           <td>Kategorie</td>
@@ -27,26 +29,28 @@
         </tr>
         <tr>
           <td>RAM</td>
-          <td>{{ element.hwKonfig.ram }}</td>
+          <td>{{ hwService.formatMbSize(element.hwKonfig.ram) }}</td>
         </tr>
         <tr>
           <td>HD</td>
-          <td>{{ element.hwKonfig.hd }}</td>
+          <td>{{ hwService.formatMbSize(element.hwKonfig.hd) }}</td>
         </tr>
         <tr>
-          <td>Video</td>
+          <td>Grafik</td>
           <td>{{ element.hwKonfig.video }}</td>
         </tr>
         <tr>
           <td>Sonstiges</td>
-          <td>{{ element.hwKonfig.sonst }}</td>
+          <td class="detail-cell-bemerk-td">{{ element.hwKonfig.sonst }}</td>
         </tr>
       </table>
     </div>
     <div class="detail-cell-margin">
       <table>
         <thead>
-          <th colspan="2">Hardware</th>
+          <tr>
+            <th colspan="2">Hardware</th>
+          </tr>
         </thead>
         <tr>
           <td>Serien-Nr.</td>
@@ -58,11 +62,11 @@
         </tr>
         <tr>
           <td>Ansch.-Datum</td>
-          <td>{{ element.anschDat }}</td>
+          <td>{{ element.anschDat | date: "mediumDate" }}</td>
         </tr>
         <tr>
           <td>Ansch.-Wert</td>
-          <td>{{ element.anschWert }}</td>
+          <td>{{ element.anschWert | currency: "EUR":"€" }}</td>
         </tr>
         <tr>
           <td>SMBIOSGUID</td>
@@ -72,30 +76,24 @@
           <td>Wartung-Fa.</td>
           <td>{{ element.wartungFa }}</td>
         </tr>
-        <tr>
-          <td>Wartung Bemerk.</td>
-          <td>{{ element.wartungBem }}</td>
-        </tr>
-        <tr>
-          <td>Bemerkung</td>
-          <td>{{ element.bemerkung }}</td>
-        </tr>
       </table>
     </div>
     <div class="detail-cell-margin">
-      <table>
+      <table *ngIf="element.vlans.length > 0">
         <thead>
-          <th colspan="3">IP</th>
+          <tr>
+            <th>MAC</th>
+            <th>IP</th>
+            <th>VLAN</th>
+          </tr>
         </thead>
-        <th>MAC</th>
-        <th>IP</th>
-        <th>VLAN</th>
         <tr *ngFor="let ip of element.vlans">
-          <td>{{ ip.mac }}</td>
-          <td>{{ ip.ip }}</td>
+          <td>{{ ip.macStr }}</td>
+          <td>{{ ip.ipStr }}</td>
           <td>{{ ip.bezeichnung }}</td>
         </tr>
       </table>
     </div>
   </div>
+  <div class="detail-cell-bemerk">{{ element.bemerkung }}</div>
 </div>

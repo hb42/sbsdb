@@ -7,6 +7,7 @@ import { ConfigService } from "../config/config.service";
 import { UserSession } from "../config/user.session";
 import { DataService } from "../data.service";
 import { GetColumn } from "../helper";
+import { BaseTableRow } from "../model/base-table-row";
 import { NavigationService } from "../navigation.service";
 import { ColumnType } from "../table/column-type.enum";
 import { SbsdbColumn } from "../table/sbsdb-column";
@@ -132,6 +133,17 @@ export abstract class BaseFilterService {
   }
 
   /**
+   * Alle Filter loeschen
+   */
+  public resetFilters(): void {
+    if (this.stdFilter) {
+      this.resetStdFilters();
+    } else {
+      this.toggleExtendedFilter();
+    }
+  }
+
+  /**
    * Filter loeschen (triggert valueChange)
    */
   public resetStdFilters(): void {
@@ -231,13 +243,12 @@ export abstract class BaseFilterService {
     this.setColumnFilters();
   }
 
-  // public filterFor(col: SbsdbColumn<unknown, unknown>, search: string | number, op: RelOp): void {
   public filterFor(colName: string, search: string | number): void {
     const col = GetColumn(colName, this.columns);
     let op = RelOp.like;
     if (col) {
       if (col.typeKey === ColumnType.STRING || col.typeKey === ColumnType.IP) {
-        search = ((search as string) ?? "").toLowerCase();
+        search = (search as string) ?? "";
       } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
         op = RelOp.equal;
       }
@@ -489,6 +500,63 @@ export abstract class BaseFilterService {
     });
   }
 
+  // --- select checkbox ---
+
+  /**
+   * toggle "nur Ausgewaehlte anzeigen"
+   */
+  public toggleSelection(): void {
+    this.showSelected = !this.showSelected;
+    this.triggerColumnFilter();
+  }
+  /** Whether the number of selected elements matches the total number of rows. */
+  public isAllSelected(): boolean {
+    // TODO leerer Filter? / empty array -> true
+    if (this.dataReady) {
+      return this.dataTable.filteredData.every((row: BaseTableRow) => row.selected);
+    } else {
+      return false;
+    }
+  }
+
+  public isSelected(): boolean {
+    if (this.dataReady) {
+      return this.dataTable.filteredData.some((row: BaseTableRow) => row.selected);
+    } else {
+      return false;
+    }
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  public masterToggle(): void {
+    const toggle = !this.isAllSelected();
+    this.dataTable.filteredData.forEach((row: BaseTableRow) => (row.selected = toggle));
+    this.triggerFilter();
+  }
+
+  public rowToggle(row: BaseTableRow): void {
+    row.selected = !row.selected;
+    this.triggerFilter();
+  }
+
+  public selectCount(): number {
+    let count = 0;
+    if (this.dataReady) {
+      this.dataTable.filteredData.forEach((row: BaseTableRow) => (row.selected ? count++ : 0));
+    }
+    return count;
+  }
+
+  // --- expand/colpase all ---
+
+  public expandAllRows(): void {
+    this.dataTable.filteredData.forEach((row: BaseTableRow) => (row.expanded = true));
+  }
+
+  public collapseAllRows(): void {
+    this.dataTable.filteredData.forEach((row: BaseTableRow) => (row.expanded = false));
+  }
+
   private async readGlobalFilters() {
     const blob: unknown = await this.configService.getConfig(this.getGlobalFiltersName());
     if (blob && blob instanceof Array) {
@@ -563,7 +631,6 @@ export abstract class BaseFilterService {
         if (!el.term.isBracket()) {
           const exp = el.term as Expression;
           const feld = exp.field.fieldName; // string | string[] !!
-          // const col = this.columns.find((c) => {
           cols.forEach((c) => {
             // string[]-Vergleich
             if (feld instanceof Array) {

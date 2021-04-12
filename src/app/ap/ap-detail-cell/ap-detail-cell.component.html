@@ -26,13 +26,15 @@
     <div class="detail-cell-margin">
       <table>
         <thead>
-          <th colspan="4">Hardware</th>
-        </thead>
-        <thead>
-          <th>Typ</th>
-          <th>Hardware</th>
-          <th>IP</th>
-          <th>MAC</th>
+          <tr>
+            <th colspan="4">Hardware</th>
+          </tr>
+          <tr>
+            <th>Typ</th>
+            <th>Hardware</th>
+            <th>IP</th>
+            <th>MAC</th>
+          </tr>
         </thead>
         <tr *ngFor="let hw of element.hw">
           <td>
@@ -59,7 +61,11 @@
     </div>
     <div class="detail-cell-margin">
       <table>
-        <th colspan="2">Sonstige Informationen</th>
+        <thead>
+          <tr>
+            <th colspan="2">Sonstige Informationen</th>
+          </tr>
+        </thead>
         <tr *ngFor="let tag of element.tags">
           <td [colSpan]="tag.flag === aptypeFlag ? 2 : 1">{{ tag.bezeichnung }}</td>
           <td *ngIf="tag.flag !== aptypeFlag">{{ tag.text }}</td>

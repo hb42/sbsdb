@@ -12,13 +12,29 @@
   ></sbsdb-accelerator-string>
 </span>
 <mat-form-field floatLabel="never" [class]="fieldClass()" *ngIf="showFilter">
-  <input matInput [formControl]="column.filterControl" [tabIndex]="column.tabIndex" />
+  <input
+    matInput
+    [formControl]="column.filterControl"
+    [tabIndex]="column.tabIndex"
+    *ngIf="!column.isDropdown()"
+  />
+  <mat-select
+    [formControl]="column.filterControl"
+    *ngIf="column.isDropdown()"
+    [tabIndex]="column.tabIndex"
+  >
+    <!-- liefert undefined als value -->
+    <mat-option>&lt;alle&gt;</mat-option>
+    <mat-option *ngFor="let sel of column.selectList" [value]="sel">
+      {{ sel }}
+    </mat-option>
+  </mat-select>
   <button
     mat-button
     [disabled]="!column.filterControl.value"
     matSuffix
     mat-icon-button
-    (click)="column.filterControl.reset()"
+    (click)="$event.preventDefault(); $event.stopPropagation(); column.filterControl.reset()"
   >
     <mat-icon>close</mat-icon>
   </button>

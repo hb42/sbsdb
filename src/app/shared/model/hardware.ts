@@ -1,14 +1,14 @@
 import { Arbeitsplatz } from "./arbeitsplatz";
+import { BaseTableRow } from "./base-table-row";
 import { Netzwerk } from "./netzwerk";
 import { HwKonfig } from "./hw-konfig";
 
-export class Hardware {
+export class Hardware implements BaseTableRow {
   public id: number;
   public anschDat: Date;
   public anschWert: number;
   public invNr: string;
   public smbiosgiud: string;
-  public wartungBem: string;
   public wartungFa: string;
   public bemerkung: string;
   public sernr: string;

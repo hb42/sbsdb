@@ -105,21 +105,17 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
           encFilter = params.get("filt");
           this.config.getUser().latestApFilter = encFilter;
           this.apService.filterService.filterFromNavigation(encFilter);
-        } else if (params.has("apname")) {
+        } else if (params.has("apid")) {
           // FIXME das hier hat den Nachteil, dass so zwei Eintraege in der History eingetragen werden:
-          //       (1) /ap;apname=xx und vom Filter (2) /ap;filt=xxx
+          //       (1) /ap;apid=xx und vom Filter (2) /ap;filt=xxx
           //       besser direkt ueber apService aufrufen
-          //       [der Code bleibt erst mal drin, fuer den Fall, dass das noch nuetzlich wird]
-          this.apService.filterService.filterFor("apname", params.get("apname"));
+          // FIXME funktioniert nicht wenn die Anwendung hiermit gestartet wird. Dann wird in filterFor
+          //       auf noch nicht initialisierte Columns zugegriffen. Da waere eine Verzoegerung noetig
+          //       bis filterService.dataReady. Sieht momentan nach Henne-Ei-Problem aus ...
+          //       => wenn mal Zeit ist
+          // this.apService.filterService.filterFor("apid", Number.parseInt(params.get("apid"), 10));
         }
       } else {
-        // keine Parameter -> letzten gesicherten nehmen
-        // (Unterstellung: interne Navigation von z.B. HW-Seite)
-        // TODO evtl. filter doch noch in userConf, was ist, wenn letzte URL
-        //      vor Prog-Ende HWpage? Dann wuerde der letzte Filter verloren
-        //      gehen. Evtl. encoded wg. Platz. Filter aus conf wuerde dann nur
-        //      aus UrlParams geladen, das sollte reichen um doppelte
-        //      Ausfuehrung beim Start zu verhindern.
         if (this.config.getUser().latestApFilter) {
           encFilter = this.config.getUser().latestApFilter;
           this.apService.filterService.nav2filter(encFilter);

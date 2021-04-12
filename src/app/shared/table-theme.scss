@@ -65,6 +65,8 @@
   .detail-cell-content td,
   .detail-cell-content th {
     border: solid 1px var(--md-details-border-color);
+    border-left: none;
+    border-right: none;
     padding: 4px 15px;
   }
 
@@ -102,6 +104,10 @@
     white-space: pre-wrap;
     margin-top: 25px;
     margin-bottom: 25px;
+  }
+
+  .detail-cell-bemerk-td {
+    white-space: pre-wrap;
   }
 
   /* extended Filter */

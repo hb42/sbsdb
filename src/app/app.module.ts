@@ -35,6 +35,9 @@ import { HeaderCellComponent } from "./shared/table/header-cell/header-cell.comp
 import { ApDetailCellComponent } from "./ap/ap-detail-cell/ap-detail-cell.component";
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 import { HwDetailCellComponent } from './hw/hw-detail-cell/hw-detail-cell.component';
+import { SelectHeaderComponent } from './shared/filter/select-header/select-header.component';
+import { SelectRowComponent } from './shared/filter/select-row/select-row.component';
+import { ExpandHeaderComponent } from './shared/filter/expand-header/expand-header.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -80,6 +83,9 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     ApDetailCellComponent,
     TooltipOnEllipsisDirective,
     HwDetailCellComponent,
+    SelectHeaderComponent,
+    SelectRowComponent,
+    ExpandHeaderComponent,
   ],
   imports: [
     BrowserModule,

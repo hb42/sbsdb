@@ -170,69 +170,6 @@ export class ApService {
     event.stopPropagation();
   }
 
-  /** Whether the number of selected elements matches the total number of rows. */
-  public isAllSelected(): boolean {
-    // TODO leerer Filter? / empty array -> true
-    return this.apDataSource.filteredData.every((ap) => ap.selected);
-    // const numSelected = this.selection.selected.length;
-    // const numRows = this.apDataSource.filteredData.length;
-    // return numSelected == numRows;
-  }
-
-  public isSelected(): boolean {
-    return this.apDataSource.filteredData.some((ap) => ap.selected);
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  public masterToggle(): void {
-    const toggle = !this.isAllSelected();
-    this.apDataSource.filteredData.forEach((row) => (row.selected = toggle));
-    this.filterService.triggerFilter();
-    // this.isAllSelected()
-    //   ? this.selection.clear()
-    //   : this.apDataSource.filteredData.forEach((row) => this.selection.select(row));
-  }
-
-  public rowToggle(row: Arbeitsplatz): void {
-    row.selected = !row.selected;
-    this.filterService.triggerFilter();
-  }
-
-  public selectCount(): number {
-    let count = 0;
-    this.apDataSource.filteredData.forEach((row) => (row.selected ? count++ : 0));
-    return count;
-  }
-
-  public expandAllRows(): void {
-    this.apDataSource.filteredData.forEach((row) => (row.expanded = true));
-  }
-
-  public collapseAllRows(): void {
-    this.apDataSource.filteredData.forEach((row) => (row.expanded = false));
-  }
-
-  /**
-   * toggle "nur Ausgewaehlte anzeigen"
-   */
-  public toggleSelection(): void {
-    this.filterService.showSelected = !this.filterService.showSelected;
-    this.filterService.triggerColumnFilter();
-  }
-
-  /**
-   * Parameter aus der URL als Filter setzen.
-   * @param params ParamMap
-   */
-  // public filterFromNavigation(params: string): void {
-  //   this.filterService.decodeFilter(params);
-  //   // Falls die Tabelle noch nicht geladen ist, wird der Filter nach dem Laden
-  //   // angestossen (-> initTable()).
-  //   if (this.apDataReady) {
-  //     this.filterService.triggerColumnFilter();
-  //   }
-  // }
-
   private buildColumns() {
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
@@ -263,7 +200,7 @@ export class ApService {
         1,
         ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.apDataSource.data.map((a) => a.apTypBezeichnung))].sort()
+        () => [...new Set(this.dataService.apList.map((a) => a.apTypBezeichnung))].sort()
       )
     );
     this.columns.push(
@@ -295,12 +232,35 @@ export class ApService {
         true,
         3,
         ColumnType.STRING,
-        [RelOp.like, RelOp.notlike],
+        [RelOp.like, RelOp.notlike, RelOp.inlist, RelOp.notinlist],
         () =>
           [
             ...new Set(
               this.apDataSource.data.map((a) =>
-                this.userSettings.showStandort ? a.verantwOe.betriebsstelle : a.oe.betriebsstelle
+                this.userSettings.showStandort ? a.oesearch : a.voesearch
+              )
+            ),
+          ].sort()
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
+        this, // BST extra? / string beginnt, endet, enthaelt, enthaelt nicht / dropdown?
+        "betrstExt",
+        () => (this.userSettings.showStandort ? "Verantw. OE" : "Standort"),
+        () => (this.userSettings.showStandort ? "voesearch" : "oesearch"),
+        () => (this.userSettings.showStandort ? "voesort" : "oesort"),
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.like, RelOp.notlike, RelOp.inlist, RelOp.notinlist],
+        () =>
+          [
+            ...new Set(
+              this.apDataSource.data.map((a) =>
+                this.userSettings.showStandort ? a.voesearch : a.oesearch
               )
             ),
           ].sort()
@@ -460,6 +420,24 @@ export class ApService {
         null
       )
     );
+    // fuer Suche nach Index
+    this.columns.push(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
+        this,
+        "apid",
+        () => "AP-Index",
+        () => "apId",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.NUMBER,
+        null,
+        null
+      )
+    );
+
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 

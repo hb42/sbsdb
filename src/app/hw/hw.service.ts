@@ -1,4 +1,4 @@
-import { formatCurrency, formatDate } from "@angular/common";
+import { formatCurrency, formatDate, formatNumber } from "@angular/common";
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
@@ -89,25 +89,31 @@ export class HwService {
   }
 
   public gotoAp(hw: Hardware): void {
-    this.navigationService.navToAp.emit({ col: "apname", search: hw.ap.apname });
+    this.navigationService.navToAp.emit({ col: "apid", search: hw.ap.apId });
   }
 
-  // public filterFor(column: string, search: string | number): void {
-  //   const col = GetColumn(column, this.columns);
-  //   let op = RelOp.like;
-  //   if (col) {
-  //     if (col.typeKey === ColumnType.STRING || col.typeKey === ColumnType.IP) {
-  //       search = ((search as string) ?? "").toLowerCase();
-  //     } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
-  //       op = RelOp.equal;
-  //     }
-  //     this.hwFilterService.filterFor(col, search, op);
-  //   } else {
-  //     this.hwFilterService.filterExpression.reset();
-  //     this.hwFilterService.stdFilter = true;
-  //     this.hwFilterService.triggerFilter();
-  //   }
-  // }
+  /**
+   * Felder RAM + HD formatieren
+   * Die Felder enthalten i.d.R. einen Integer-Wert, der die Groesse in MB angibt.
+   * Da die Felder als String gespeichert werden, sind auch andere Eingaben moeglich.
+   * Sofern es sich um einen reinen Zahlwert handelt wird er als Zahl mit Tausender-
+   * Trennung formatiert. Alles andere wird nur durchgereicht.
+   *
+   * @param num
+   */
+  public formatMbSize(num: string): string {
+    const isnumber = /^[+-]?\d+$/;
+    num = num ? num.trim() : "";
+    if (isnumber.test(num)) {
+      return formatNumber(Number.parseFloat(num), "de", "1.0-0") + " MB";
+    } else {
+      return num;
+    }
+  }
+
+  public test(hw: Hardware): void {
+    console.dir(hw);
+  }
 
   private buildColumns() {
     this.columns.push(
@@ -286,6 +292,86 @@ export class HwService {
         null
       )
     );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "prozessor",
+        () => "Prozessor",
+        () => "hwKonfig.prozessor",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "ram",
+        () => "RAM",
+        () => "hwKonfig.ram",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "hd",
+        () => "Festplatte",
+        () => "hwKonfig.hd",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "video",
+        () => "Grafik",
+        () => "hwKonfig.video",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.like, RelOp.notlike],
+        null
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "sonst",
+        () => "Sonstiges",
+        () => "hwKonfig.sonst",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.like, RelOp.notlike],
+        null
+      )
+    );
     // fuer Suche nach Index
     this.columns.push(
       new SbsdbColumn<HwService, Hardware>(
@@ -320,7 +406,7 @@ export class HwService {
 
   private init(): void {
     // event handling
-
+    this.loading = true;
     const readyCheck = () => {
       if (
         this.dataService.isApListFetched() &&
@@ -334,6 +420,7 @@ export class HwService {
         this.setDataToTable.emit();
         // apList ist damit komplett (stoesst dataService.dataReady an)
         this.dataService.apListReady.emit();
+        this.loading = false;
         this.hwFilterService.dataReady = true;
       }
     };
@@ -411,8 +498,8 @@ export class HwService {
 
   private prepareData(): void {
     this.dataService.hwList.forEach((hw) => {
-      let macsearch = "";
       hw.hwKonfig = this.dataService.hwKonfigList.find((h) => h.id === hw.hwKonfigId);
+      let macsearch = "";
       hw.ipStr = "";
       hw.macStr = "";
       hw.vlanStr = "";
@@ -423,21 +510,11 @@ export class HwService {
       if (hw.vlans && hw.vlans[0]) {
         hw.vlans.forEach((v) => {
           const dhcp = v.ip === 0 ? " (DHCP)" : "";
-          if (hw.ipStr) {
-            hw.ipStr += "/ " + this.dataService.getIpString(v.vlan + v.ip) + dhcp;
-          } else {
-            hw.ipStr = this.dataService.getIpString(v.vlan + v.ip) + dhcp;
-          }
-          if (hw.macStr) {
-            hw.macStr += "/ " + this.dataService.getMacString(v.mac);
-          } else {
-            hw.macStr = this.dataService.getMacString(v.mac);
-          }
-          if (hw.vlanStr) {
-            hw.vlanStr += "/ " + v.bezeichnung;
-          } else {
-            hw.vlanStr = v.bezeichnung;
-          }
+          v.ipStr = this.dataService.getIpString(v.vlan + v.ip) + dhcp;
+          v.macStr = this.dataService.getMacString(v.mac);
+          hw.ipStr += hw.ipStr ? "/ " + v.ipStr : v.ipStr;
+          hw.macStr += hw.macStr ? "/ " + v.macStr : v.macStr;
+          hw.vlanStr += hw.vlanStr ? "/ " + v.bezeichnung : v.bezeichnung;
           macsearch += v.mac;
         });
       }
@@ -460,9 +537,9 @@ export class HwService {
               (hw.sernr && hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG
                 ? " [" + hw.sernr + "]"
                 : "");
-            ap.ipStr = hw.ipStr;
-            ap.macStr = hw.macStr;
-            ap.vlanStr = hw.vlanStr;
+            ap.ipStr += ap.ipStr ? "/ " + hw.ipStr : hw.ipStr;
+            ap.macStr += ap.macStr ? "/ " + hw.macStr : hw.macStr;
+            ap.vlanStr += ap.vlanStr ? "/ " + hw.vlanStr : hw.vlanStr;
           } else {
             // fuer die Suche in sonstiger HW
             ap.sonstHwStr +=

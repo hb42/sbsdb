@@ -5,4 +5,7 @@ export class Netzwerk {
   public netmask: number;
   public ip: number;
   public mac: string;
+
+  public ipStr: string;
+  public macStr: string;
 }

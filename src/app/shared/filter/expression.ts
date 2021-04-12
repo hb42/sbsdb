@@ -52,16 +52,15 @@ export class Expression implements Term {
         : [this.field.fieldName];
       if (record) {
         compValue = fields.reduce(
-          // eslint-disable-next-line no-prototype-builtins
-          (prev, curr) => (prev += record.hasOwnProperty(curr) ? record[curr] : ""),
+          (prev, curr) => (prev += this.getFieldContent(record, curr) ?? ""),
           ""
         );
       }
     } else {
       const field = this.field.fieldName as string;
-      // eslint-disable-next-line no-prototype-builtins
-      if (record.hasOwnProperty(field)) {
-        compValue = record[field] as number | Date;
+      const val = this.getFieldContent(record, field);
+      if (val) {
+        compValue = val as number | Date;
       } else {
         compValue = this.field.type === ColumnType.NUMBER ? 0 : new Date(0);
       }
@@ -71,5 +70,24 @@ export class Expression implements Term {
 
   public isBracket(): boolean {
     return false;
+  }
+
+  /**
+   * Feldinhalt holen
+   *
+   * Der Feldname kann in der Form "feld1.feld2 ..." fuer den Zugriff auf "Unterobjekte"
+   * angegeben werden.
+   *
+   * @param record - Datensatz
+   * @param fieldname - Feldname(en)
+   * @private
+   */
+  private getFieldContent(record: unknown, fieldname: string): unknown {
+    return (
+      fieldname
+        .split(".")
+        // eslint-disable-next-line no-prototype-builtins
+        .reduce((prev, curr) => (prev.hasOwnProperty(curr) ? prev[curr] : undefined), record)
+    );
   }
 }

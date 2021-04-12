@@ -1,8 +1,9 @@
+import { BaseTableRow } from "./base-table-row";
 import { Betrst } from "./betrst";
 import { Tag } from "./tag";
 import { Hardware } from "./hardware";
 
-export class Arbeitsplatz {
+export class Arbeitsplatz implements BaseTableRow {
   public apId: number;
   public apname: string;
   public bezeichnung: string;
@@ -30,7 +31,7 @@ export class Arbeitsplatz {
   public hwTypStr = ""; // pri HW ohne SerNr
   public hwStr = ""; //        mit SerNr
   public sonstHwStr = ""; // ges. HW fuer die Suche
-  public ipStr = ""; // aus pri HW
+  public ipStr = ""; // alle IPs
   public macStr = ""; //  dto.
   public vlanStr = ""; // dto.
   public macsearch = ""; // Suche in allen MACs

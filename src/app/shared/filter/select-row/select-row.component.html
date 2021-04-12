@@ -1,0 +1,7 @@
+<mat-checkbox
+  (click)="$event.stopPropagation()"
+  (change)="$event ? filterService.rowToggle(row) : null"
+  [checked]="row.selected"
+  color="primary"
+>
+</mat-checkbox>

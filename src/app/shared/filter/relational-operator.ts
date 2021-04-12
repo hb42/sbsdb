@@ -8,6 +8,8 @@ import { ColumnType } from "../table/column-type.enum";
 import { RelOp } from "./rel-op.enum";
 
 export class RelationalOperator {
+  // public static LIST_ALL = "<alle>";
+
   public execute: (
     fieldContent: string | Array<string> | number | Date,
     compare: string | number | Date,
@@ -107,7 +109,7 @@ export class RelationalOperator {
     compare = compare ? compare.toLocaleLowerCase() : "";
     return !RelationalOperator.fieldToString(fieldContent, type).includes(compare);
   };
-  // string, number, date
+  // string, number, date - equal is case sensitive!
   private static equal = (
     fieldContent: string | number,
     compare: string,
@@ -115,8 +117,10 @@ export class RelationalOperator {
   ): boolean => {
     if (type === ColumnType.STRING || type === ColumnType.IP) {
       let fc = fieldContent as string;
-      fc = fc ? fc.toLocaleLowerCase() : "";
-      compare = compare ? compare.toLocaleLowerCase() : "";
+      fc = fc ?? "";
+      compare = compare ?? "";
+      // fc = fc ? fc.toLocaleLowerCase() : "";
+      // compare = compare ? compare.toLocaleLowerCase() : "";
       return fc === compare;
     } else if (type === ColumnType.DATE) {
       compare = compare ? compare : "";
@@ -127,7 +131,7 @@ export class RelationalOperator {
       return false;
     }
   };
-  // string, number, date
+  // string, number, date - notequal is case sensitive!
   private static notequal = (
     fieldContent: string | number,
     compare: string,
@@ -135,8 +139,8 @@ export class RelationalOperator {
   ): boolean => {
     if (type === ColumnType.STRING || type === ColumnType.IP) {
       let fc = fieldContent as string;
-      fc = fc ? fc.toLocaleLowerCase() : "";
-      compare = compare ? compare.toLocaleLowerCase() : "";
+      fc = fc ?? "";
+      compare = compare ?? "";
       return fc !== compare;
     } else if (type === ColumnType.DATE) {
       compare = compare ? compare : "";
