@@ -65,3 +65,22 @@ export function StringToNumber(input: string): number {
   input = input ? input.replace(".", "").replace(",", ".").trim() : "";
   return isnumber.test(input) ? Number.parseFloat(input) : NaN;
 }
+
+/**
+ * Feldinhalt holen
+ *
+ * Der Feldname kann in der Form "feld1.feld2 ..." fuer den Zugriff auf "Unterobjekte"
+ * angegeben werden.
+ *
+ * @param record - Datensatz
+ * @param fieldname - Feldname(en)
+ * @private
+ */
+export function GetFieldContent(record: unknown, fieldname: string): unknown {
+  return (
+    fieldname
+      .split(".")
+      // eslint-disable-next-line no-prototype-builtins
+      .reduce((prev, curr) => (prev.hasOwnProperty(curr) ? prev[curr] : undefined), record)
+  );
+}

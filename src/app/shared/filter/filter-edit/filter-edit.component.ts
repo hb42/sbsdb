@@ -1,8 +1,8 @@
 import { Component, HostListener, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { SbsdbColumn } from "../../table/sbsdb-column";
 import { Field } from "../field";
 import { RelOp } from "../rel-op.enum";
-import { SbsdbColumn } from "../../table/sbsdb-column";
 import { FilterEditData } from "./filter-edit-data";
 
 @Component({
@@ -56,6 +56,12 @@ export class FilterEditComponent {
   }
 
   public compareAsList(): boolean {
-    return this.data.o && (this.data.o === RelOp.inlist || this.data.o === RelOp.notinlist);
+    return (
+      this.data.o &&
+      (this.data.o === RelOp.inlist ||
+        this.data.o === RelOp.notinlist ||
+        this.data.o === RelOp.inlistlike ||
+        this.data.o === RelOp.notinlistlike)
+    );
   }
 }

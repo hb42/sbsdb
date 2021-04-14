@@ -4,6 +4,7 @@ import { Expression } from "../filter/expression";
 import { Field } from "../filter/field";
 import { RelOp } from "../filter/rel-op.enum";
 import { RelationalOperator } from "../filter/relational-operator";
+import { GetFieldContent } from "../helper";
 import { Netzwerk } from "../model/netzwerk";
 import { ColumnType } from "./column-type.enum";
 
@@ -120,7 +121,7 @@ export class SbsdbColumn<C, E> {
    * @param obj - Datensatz
    */
   public sortString(obj: unknown): string | number {
-    const field: unknown = obj[this.sortFieldName];
+    const field: unknown = GetFieldContent(obj, this.sortFieldName);
     let s: string;
     let v: Netzwerk[];
     let d: Date;

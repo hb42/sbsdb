@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   HostBinding,
   HostListener,
   OnDestroy,
@@ -32,8 +31,8 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("firstfilter") public firstFilter: HeaderCellComponent; //ElementRef<HTMLInputElement>;
   @ViewChild("lastfilter") public lastFilter: HeaderCellComponent;
 
-  @ViewChild("pagInsert", { read: ElementRef }) pagInsert: ElementRef<Element>;
-  @ViewChild(MatPaginator, { read: ElementRef }) pagElement: ElementRef<Element>;
+  // @ViewChild("pagInsert", { read: TemplateRef }) pagInsert: TemplateRef<Element>;
+  // @ViewChild(MatPaginator, { read: ElementRef }) pagElement: ElementRef<Element>;
 
   public subscription: Subscription;
 
@@ -63,6 +62,14 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       // Extended Filter => alt-e
       if (event.key === "e") {
         this.apService.filterService.toggleExtendedFilter();
+        event.preventDefault();
+        event.stopPropagation();
+      } else if (event.key == "l") {
+        this.apService.filterService.resetFilters();
+        event.preventDefault();
+        event.stopPropagation();
+      } else if (event.key == "x") {
+        this.apService.filterService.toCsv();
         event.preventDefault();
         event.stopPropagation();
       } else {
@@ -146,11 +153,11 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       this.apService.setViewParams(this.sort, this.paginator);
       this.focusFirstFilter();
 
-      const at = this.pagElement.nativeElement.getElementsByClassName("mat-paginator-container");
-      const before = this.pagElement.nativeElement.getElementsByClassName(
-        "mat-paginator-page-size"
-      );
-      at[0].insertBefore(this.pagInsert.nativeElement, before[0]);
+      //   const at = this.pagElement.nativeElement.getElementsByClassName("mat-paginator-container");
+      //   const before = this.pagElement.nativeElement.getElementsByClassName(
+      //     "mat-paginator-page-size"
+      //   );
+      //   at[0].insertBefore(this.pagInsert.elementRef.nativeElement, before[0]);
     }, 0);
   }
 

@@ -81,7 +81,7 @@ $hb-blue-alt: (
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $sbsdb-app-primary: mat-palette($hb-blue); //$mat-deep-orange);
-$sbsdb-app-accent: mat-palette($mat-orange, A200, A100, A400); // 700, 500, 900); //$mat-indigo
+$sbsdb-app-accent: mat-palette($mat-deep-orange, A200, A100, A400); // 700, 500, 900); //$mat-indigo
 
 // The warn palette is optional (defaults to red).
 $sbsdb-app-warn: mat-palette($mat-red);
@@ -153,9 +153,9 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   :root {
     // red = 0; blue = 240 / google-material #500: indigo = 230; orange = 35; deep orange = 14; cyan = 186; blue = 206; red = 4
     // sehr helle Hintergrundfarbe passend zu $primary
-    --md-details-background-color: hsl(4, 100%, 99%);
+    --md-details-background-color: hsl(240, 100%, 99%);
     // helle Hintergrundfarbe passend zu $primary
-    --md-details-background-color-highlight: hsl(4, 100%, 96%);
+    --md-details-background-color-highlight: hsl(240, 100%, 96%);
     --md-details-border-color: #c0c0c0;
     --md-light-gray-background-color: #f9f9f9; // hellgrauer Hintergrund
     --md-row-active-background-color: #efefef; // grauer Hintergrund f. :hover-Effekt

@@ -21,9 +21,11 @@ export class RelationalOperator {
     this.name = op;
     switch (op) {
       case RelOp.like:
+      case RelOp.inlistlike:
         this.execute = RelationalOperator.like;
         break;
       case RelOp.notlike:
+      case RelOp.notinlistlike:
         this.execute = RelationalOperator.notlike;
         break;
       case RelOp.equal:

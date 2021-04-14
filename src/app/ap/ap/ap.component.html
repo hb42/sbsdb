@@ -8,21 +8,28 @@
     >
       <mat-icon>find_in_page</mat-icon>
     </button>
-    <button mat-icon-button title="Als CSV ausgeben">
-      <!--      <mat-icon>share</mat-icon>-->
-      <mat-icon>open_in_new</mat-icon>
+    <button
+      mat-icon-button
+      title="Alle Filter löschen (Alt+L)"
+      (click)="apService.filterService.resetFilters()"
+    >
+      <mat-icon>search_off</mat-icon>
     </button>
+    <span class="menu-spacer">|</span>
+    <button
+      mat-icon-button
+      title="Als CSV ausgeben (Alt+X)"
+      (click)="apService.filterService.toCsv()"
+    >
+      <!--      <mat-icon>share</mat-icon>-->
+      <mat-icon>file_download</mat-icon>
+    </button>
+    <span class="menu-spacer">|</span>
     <button mat-icon-button title="Neuer Arbeitsplatz" (click)="apService.test()">
       <!--      <mat-icon>add_circle_outline</mat-icon>-->
       <mat-icon>desktop_mac</mat-icon>
     </button>
-    <button
-      mat-icon-button
-      title="Alle Filter löschen"
-      (click)="apService.filterService.resetFilters()"
-    >
-      <mat-icon>backspace</mat-icon>
-    </button>
+    <span class="spacer"></span>
     <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">
       <mat-icon>menu</mat-icon>
     </button>
@@ -76,6 +83,7 @@
             "
             [column]="column"
             [showFilter]="apService.filterService.stdFilter"
+            size="S"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -97,6 +105,7 @@
           <sbsdb-header-cell
             [column]="column"
             [showFilter]="apService.filterService.stdFilter"
+            size="S"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -119,6 +128,7 @@
             [column]="column"
             [labelChange]="apService.userSettings.showStandort"
             [showFilter]="apService.filterService.stdFilter"
+            size="L"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -140,6 +150,7 @@
           <sbsdb-header-cell
             [column]="column"
             [showFilter]="apService.filterService.stdFilter"
+            size="L"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -266,19 +277,14 @@
     (page)="apService.onPage($event)"
     class="paginator"
     color="primary"
+    [sbsdbPaginatorStatus]="pagInsert"
   ></mat-paginator>
 </div>
 
-<!-- Infos zum Filter im paginator
-     TODO es funktioniert, aber Formatierung und Positionierung sind noch nicht optimal
-          das Zusammenspiel mit <sbsdb-status> ist auch noch offen
-     -->
-<!--<ng-template #pagInsert>-->
-<div #pagInsert style="display: flex; flex: auto; margin-left: 10px">
-  Ausgewählt: {{ apService.filterService.selectCount() }} von
-  {{ apService.apDataSource.filteredData.length }}
+<!-- Infos zum Filter in paginator einfuegen -->
+<div #pagInsert>
+  <div class="status-item">{{ apService.filterService.filterCount() }}</div>
 </div>
-<!--</ng-template>-->
 
 <sbsdb-status [bottom]="20" [left]="20" [text]="apService.statusText"></sbsdb-status>
 

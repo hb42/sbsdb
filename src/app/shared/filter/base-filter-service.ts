@@ -56,7 +56,7 @@ export abstract class BaseFilterService {
   // wird in initService() von apService geliefert
   private columns: SbsdbColumn<unknown, unknown>[];
   private filterChanged = 1;
-  private dataTable: MatTableDataSource<unknown>;
+  protected dataTable: MatTableDataSource<unknown>;
 
   // Filtereingaben bremsen
   private readonly keyDebounce = 500;
@@ -539,12 +539,16 @@ export abstract class BaseFilterService {
     this.triggerFilter();
   }
 
-  public selectCount(): number {
-    let count = 0;
+  public filterCount(): string {
+    let all = 0;
+    let flt = 0;
+    let sel = 0;
     if (this.dataReady) {
-      this.dataTable.filteredData.forEach((row: BaseTableRow) => (row.selected ? count++ : 0));
+      this.dataTable.filteredData.forEach((row: BaseTableRow) => (row.selected ? sel++ : 0));
+      all = this.dataTable.data.length;
+      flt = this.dataTable.filteredData.length;
     }
-    return count;
+    return `${flt} gefiltert aus ${all} (${sel} ausgewählt)`;
   }
 
   // --- expand/colpase all ---
@@ -555,6 +559,13 @@ export abstract class BaseFilterService {
 
   public collapseAllRows(): void {
     this.dataTable.filteredData.forEach((row: BaseTableRow) => (row.expanded = false));
+  }
+
+  // --- output ---
+
+  public toCsv(): void {
+    // TODO was und wie als CSV/Excel ausgeben?
+    console.debug("output to CSV not yet implemented");
   }
 
   private async readGlobalFilters() {

@@ -38,6 +38,7 @@ import { HwDetailCellComponent } from './hw/hw-detail-cell/hw-detail-cell.compon
 import { SelectHeaderComponent } from './shared/filter/select-header/select-header.component';
 import { SelectRowComponent } from './shared/filter/select-row/select-row.component';
 import { ExpandHeaderComponent } from './shared/filter/expand-header/expand-header.component';
+import { PaginatorStatusDirective } from './shared/table/paginator-status.directive';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -86,6 +87,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     SelectHeaderComponent,
     SelectRowComponent,
     ExpandHeaderComponent,
+    PaginatorStatusDirective,
   ],
   imports: [
     BrowserModule,

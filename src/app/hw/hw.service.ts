@@ -137,15 +137,15 @@ export class HwService {
         this,
         "kategorie",
         () => "Kategorie",
-        () => "apKatBezeichnung",
-        () => "apKatBezeichnung",
-        (h: Hardware) => h.apKatBezeichnung,
+        () => "hwKonfig.apKatBezeichnung",
+        () => "hwKonfig.apKatBezeichnung",
+        (h: Hardware) => h.hwKonfig.apKatBezeichnung,
         "k",
         true,
         1,
         ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.hwDataSource.data.map((h) => h.apKatBezeichnung))].sort()
+        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.apKatBezeichnung))].sort()
       )
     );
     this.columns.push(
@@ -153,31 +153,108 @@ export class HwService {
         this,
         "typ",
         () => "Typ",
-        () => "hwTypBezeichnung",
-        () => "hwTypBezeichnung",
-        (h: Hardware) => h.hwTypBezeichnung,
+        () => "hwKonfig.hwTypBezeichnung",
+        () => "hwKonfig.hwTypBezeichnung",
+        (h: Hardware) => h.hwKonfig.hwTypBezeichnung,
         "t",
         true,
         2,
         ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.hwDataSource.data.map((h) => h.hwTypBezeichnung))].sort()
+        () => {
+          if (this.hwFilterService.stdFilter) {
+            // Inhalt der Dropdown im Listheader:
+            // Enthaelt nur die Werte, die zum Inhalt des Filterfeldes von 'kategorie' passen.
+            // Zusaetzlich den Inhalt der aktuellen Auswahl anhaengen, weil bei Aenderung in
+            // 'kategorie' der Wert sonst nicht mehr in der Liste vorhanden waere und deshalb
+            // trotz eines vorhanden Filterwertes (in filterControl.value) nichts angezeigt
+            // wuerde, d.h. der Filter wirkt, aber der Benutzer kann ihn nicht sehen.
+            const a = this.hwDataSource.data
+              .filter((h1) => {
+                const val = GetColumn("kategorie", this.columns).filterControl.value as string;
+                return val ? h1.hwKonfig.apKatBezeichnung === val : true;
+              })
+              .map((h2) => h2.hwKonfig.hwTypBezeichnung);
+            if (GetColumn("typ", this.columns).filterControl.value) {
+              a.push(GetColumn("typ", this.columns).filterControl.value as string);
+            }
+            return [...new Set(a)].sort();
+          } else {
+            return [
+              ...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.hwTypBezeichnung)),
+            ].sort();
+          }
+        }
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "konfiguration",
+        () => "Konfiguration",
+        () => "konfiguration",
+        () => "konfiguration",
+        (h: Hardware) => h.konfiguration,
+        "o",
+        true,
+        3,
+        ColumnType.STRING,
+        [
+          RelOp.inlist,
+          RelOp.notinlist,
+          RelOp.startswith,
+          RelOp.endswith,
+          RelOp.like,
+          RelOp.notlike,
+        ],
+        () => {
+          if (this.hwFilterService.stdFilter) {
+            const a = this.hwDataSource.data
+              .filter((h1) => {
+                const val = GetColumn("typ", this.columns).filterControl.value as string;
+                return val ? h1.hwKonfig.hwTypBezeichnung === val : true;
+              })
+              .map((h2) => h2.konfiguration);
+            if (GetColumn("konfiguration", this.columns).filterControl.value) {
+              a.push(GetColumn("konfiguration", this.columns).filterControl.value as string);
+            }
+            return [...new Set(a)].sort();
+          } else {
+            return [...new Set(this.hwDataSource.data.map((h) => h.konfiguration))].sort();
+          }
+        }
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "hersteller",
+        () => "Hersteller",
+        () => "hwKonfig.hersteller",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.inlist, RelOp.notinlist],
+        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.hersteller))].sort()
       )
     );
     this.columns.push(
       new SbsdbColumn<HwService, Hardware>(
         this,
         "bezeichnung",
-        () => "Bezeichnung",
-        () => "bezeichnung",
-        () => "bezeichnung",
-        (h: Hardware) => h.bezeichnung,
-        "b",
-        true,
-        3,
+        () => "Typ-Bezeichnung",
+        () => "hwKonfig.bezeichnung",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
         ColumnType.STRING,
-        [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-        null
+        [RelOp.inlist, RelOp.notinlist],
+        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.bezeichnung))].sort()
       )
     );
     this.columns.push(
@@ -503,9 +580,9 @@ export class HwService {
       hw.ipStr = "";
       hw.macStr = "";
       hw.vlanStr = "";
-      hw.bezeichnung = hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung;
-      hw.apKatBezeichnung = hw.hwKonfig.apKatBezeichnung;
-      hw.hwTypBezeichnung = hw.hwKonfig.hwTypBezeichnung;
+      hw.konfiguration = hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung;
+      // hw.apKatBezeichnung = hw.hwKonfig.apKatBezeichnung;
+      // hw.hwTypBezeichnung = hw.hwKonfig.hwTypBezeichnung;
       hw.anschDat = new Date(hw.anschDat);
       if (hw.vlans && hw.vlans[0]) {
         hw.vlans.forEach((v) => {
@@ -528,7 +605,7 @@ export class HwService {
           ap.macsearch = macsearch;
           if (hw.pri) {
             if (hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG) {
-              ap.hwTypStr = hw.bezeichnung;
+              ap.hwTypStr = hw.konfiguration;
             }
             ap.hwStr =
               hw.hwKonfig.hersteller +

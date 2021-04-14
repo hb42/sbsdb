@@ -35,10 +35,10 @@ export class Arbeitsplatz implements BaseTableRow {
   public macStr = ""; //  dto.
   public vlanStr = ""; // dto.
   public macsearch = ""; // Suche in allen MACs
-  public oesearch = "";
-  public oesort = "";
-  public voesearch = "";
-  public voesort = "";
+  // public oesearch = "";
+  // public oesort = "";
+  // public voesearch = "";
+  // public voesort = "";
   // public subTypes: string[] = [];
 
   // Darstellung

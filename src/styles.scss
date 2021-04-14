@@ -204,3 +204,22 @@ table:not(.wrap-cell) .mat-cell > div {
 //.mat-table-sticky {
 //  border-top: 1px solid #e0e0e0;
 //}
+
+.spacer {
+  min-width: 25px;
+}
+.spacer2 {
+  margin-right: 10px;
+}
+.spacer3 {
+  margin-right: 25px;
+}
+.menu-spacer {
+  color: rgba(0,0,0,0.22);
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.status-item {
+  padding: 0 10px;
+}

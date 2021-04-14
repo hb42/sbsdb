@@ -141,34 +141,19 @@ export class ApService {
     this.navigationService.navToHw.emit({ col: "hwid", search: hw.id });
   }
 
-  // public filterFor(column: string, search: string | number): void {
-  //   const col = GetColumn(column, this.columns);
-  //   if (col.typeKey === ColumnType.STRING) {
-  //     search = ((search as string) ?? "").toLowerCase();
-  //   }
-  //   if (col) {
-  //     this.filterService.filterFor(col, search, RelOp.like);
-  //   } else {
-  //     this.filterService.filterExpression.reset();
-  //     this.filterService.stdFilter = true;
-  //     this.filterService.triggerFilter();
-  //     // console.error("ArbeitsplatzService#filterForCol: Column " + column + " not found!");
-  //   }
+  // public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
+  //   const col = GetColumn("aptyp", this.columns);
+  //   col.filterControl.setValue(ap.apTypBezeichnung);
+  //   col.filterControl.markAsDirty();
+  //   event.stopPropagation();
   // }
-
-  public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
-    const col = GetColumn("aptyp", this.columns);
-    col.filterControl.setValue(ap.apTypBezeichnung);
-    col.filterControl.markAsDirty();
-    event.stopPropagation();
-  }
-
-  public filterByBetrst(ap: Arbeitsplatz, event: Event): void {
-    const col = GetColumn("betrst", this.columns);
-    col.filterControl.setValue(ap[col.sortFieldName]);
-    col.filterControl.markAsDirty();
-    event.stopPropagation();
-  }
+  //
+  // public filterByBetrst(ap: Arbeitsplatz, event: Event): void {
+  //   const col = GetColumn("betrst", this.columns);
+  //   col.filterControl.setValue(ap[col.sortFieldName]);
+  //   col.filterControl.markAsDirty();
+  //   event.stopPropagation();
+  // }
 
   private buildColumns() {
     this.columns.push(
@@ -224,8 +209,8 @@ export class ApService {
         this, // BST extra? / string beginnt, endet, enthaelt, enthaelt nicht / dropdown?
         "betrst",
         () => (this.userSettings.showStandort ? "Standort" : "Verantw. OE"),
-        () => (this.userSettings.showStandort ? "oesearch" : "voesearch"),
-        () => (this.userSettings.showStandort ? "oesort" : "voesort"),
+        () => (this.userSettings.showStandort ? "oe.fullname" : "verantwOe.fullname"),
+        () => (this.userSettings.showStandort ? "oe.betriebsstelle" : "verantwOe.betriebsstelle"),
         (a: Arbeitsplatz) =>
           this.userSettings.showStandort ? a.oe.betriebsstelle : a.verantwOe.betriebsstelle,
         "o",
@@ -237,7 +222,7 @@ export class ApService {
           [
             ...new Set(
               this.apDataSource.data.map((a) =>
-                this.userSettings.showStandort ? a.oesearch : a.voesearch
+                this.userSettings.showStandort ? a.oe.fullname : a.verantwOe.fullname
               )
             ),
           ].sort()
@@ -245,11 +230,11 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // BST extra? / string beginnt, endet, enthaelt, enthaelt nicht / dropdown?
+        this,
         "betrstExt",
         () => (this.userSettings.showStandort ? "Verantw. OE" : "Standort"),
-        () => (this.userSettings.showStandort ? "voesearch" : "oesearch"),
-        () => (this.userSettings.showStandort ? "voesort" : "oesort"),
+        () => (this.userSettings.showStandort ? "verantwOe.fullname" : "oe.fullname"),
+        () => null,
         () => null,
         "",
         false,
@@ -260,7 +245,59 @@ export class ApService {
           [
             ...new Set(
               this.apDataSource.data.map((a) =>
-                this.userSettings.showStandort ? a.voesearch : a.oesearch
+                this.userSettings.showStandort ? a.verantwOe.fullname : a.oe.fullname
+              )
+            ),
+          ].sort()
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
+        this,
+        "hierstandort",
+        () =>
+          this.userSettings.showStandort
+            ? "Standort incl. unterstellte"
+            : "Verantw. OE incl. unterstellte",
+        () => (this.userSettings.showStandort ? "oe.hierarchy" : "verantwOe.hierarchy"),
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.inlistlike, RelOp.notinlistlike],
+        () =>
+          [
+            ...new Set(
+              this.apDataSource.data.map((a) =>
+                this.userSettings.showStandort ? a.verantwOe.fullname : a.oe.fullname
+              )
+            ),
+          ].sort()
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
+        this,
+        "hierverantwoe",
+        () =>
+          this.userSettings.showStandort
+            ? "Verantw. OE incl. unterstellte"
+            : "Standort incl. unterstellte",
+        () => (this.userSettings.showStandort ? "verantwOe.hierarchy" : "oe.hierarchy"),
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.inlistlike, RelOp.notinlistlike],
+        () =>
+          [
+            ...new Set(
+              this.apDataSource.data.map((a) =>
+                this.userSettings.showStandort ? a.oe.fullname : a.verantwOe.fullname
               )
             ),
           ].sort()
@@ -571,12 +608,44 @@ export class ApService {
         (bst: Betrst[]) => {
           console.debug("fetch Betrst size=", bst.length);
           this.dataService.bstList = bst;
+          this.prepBst();
           this.dataService.bstListReady.emit();
         },
         (err) => {
           console.error("ERROR loading OE-Data ", err);
         }
       );
+  }
+
+  // OE-Hierarchie aufbauen
+  // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
+  private prepBst() {
+    this.dataService.bstList.forEach((bst) => {
+      // idx 0 -> BST "Reserve" => 0 als parent == kein parent
+      bst.fullname = `00${bst.bstNr}`.slice(-3) + " " + bst.betriebsstelle;
+      if (bst.parentId) {
+        const parent = this.dataService.bstList.find((b) => b.bstId === bst.parentId);
+        if (parent) {
+          bst.parent = parent;
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(bst);
+        } else {
+          bst.parent = null;
+        }
+      }
+    });
+    this.dataService.bstList.forEach((bst) => {
+      bst.hierarchy = bst.fullname;
+      if (bst.parent) {
+        let p = bst.parent;
+        while (p) {
+          bst.hierarchy = p.fullname + "/" + bst.hierarchy;
+          p = p.parent;
+        }
+      }
+    });
   }
 
   private prepAP(ap: Arbeitsplatz) {
@@ -606,10 +675,10 @@ export class ApService {
       ap.verantwOe = ap.oe;
     }
 
-    ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
-    ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
-    ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
-    ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
+    // ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
+    // ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
+    // ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
+    // ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
 
     // ap.subTypes = [];
     ap.tags.forEach((tag) => {

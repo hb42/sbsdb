@@ -20,9 +20,9 @@ export class Hardware implements BaseTableRow {
   public apId: number;
   public ap: Arbeitsplatz;
 
-  public bezeichnung: string;
-  public hwTypBezeichnung: string;
-  public apKatBezeichnung: string;
+  public konfiguration: string;
+  // public hwTypBezeichnung: string;
+  // public apKatBezeichnung: string;
   public vlans: Netzwerk[];
   public ipStr = "";
   public macStr = "";

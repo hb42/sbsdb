@@ -57,12 +57,14 @@ export class HeaderCellComponent implements AfterViewInit {
    * class fuer das Eingabefeld
    */
   public fieldClass(): string {
-    this.size = this.size ?? "S";
+    this.size = this.size ?? "M";
     switch (this.size.toUpperCase()) {
       case "XS":
         return "filter-xs";
       case "M":
         return "filter-m";
+      case "L":
+        return "filter-l";
       default:
         return "filter-s";
     }

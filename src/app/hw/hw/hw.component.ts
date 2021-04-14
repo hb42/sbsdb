@@ -56,6 +56,14 @@ export class HwComponent implements AfterViewInit, OnInit {
         this.hwService.hwFilterService.toggleExtendedFilter();
         event.preventDefault();
         event.stopPropagation();
+      } else if (event.key == "l") {
+        this.hwService.hwFilterService.resetFilters();
+        event.preventDefault();
+        event.stopPropagation();
+      } else if (event.key == "x") {
+        this.hwService.hwFilterService.toCsv();
+        event.preventDefault();
+        event.stopPropagation();
       } else {
         const colIdx = this.hwService.columns.findIndex(
           (c) => c.accelerator && c.accelerator === event.key

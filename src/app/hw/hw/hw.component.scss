@@ -1,20 +1,3 @@
-// Dimensionen fuer Baum und Liste
-$treeWidth: 350px;
-$treeMinWidth: 100px;
-
-$listWidth: 100%;
-$listMinWidth: 100px;
-
-
-.treePanel {
-  width: $treeWidth;
-  min-width: $treeMinWidth;
-}
-
-.listPanel {
-  width: $listWidth;
-  min-width: $listMinWidth;
-}
 
 /* Mat-Button als normaler Text */
 .textLink {
@@ -41,7 +24,7 @@ $listMinWidth: 100px;
 .mat-column-typ {
   width: 140px;
 }
-.mat-column-bezeichnung {
+.mat-column-konfiguration {
   width: 20%;
 }
 .mat-column-sernr {

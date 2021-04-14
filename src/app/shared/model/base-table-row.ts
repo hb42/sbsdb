@@ -1,5 +1,5 @@
-export class BaseTableRow {
+export interface BaseTableRow {
   // Darstellung
-  public expanded?: boolean;
-  public selected?: boolean;
+  expanded?: boolean;
+  selected?: boolean;
 }

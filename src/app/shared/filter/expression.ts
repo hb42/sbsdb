@@ -1,3 +1,4 @@
+import { GetFieldContent } from "../helper";
 import { ColumnType } from "../table/column-type.enum";
 import { Bracket } from "./bracket";
 import { Field } from "./field";
@@ -52,13 +53,13 @@ export class Expression implements Term {
         : [this.field.fieldName];
       if (record) {
         compValue = fields.reduce(
-          (prev, curr) => (prev += this.getFieldContent(record, curr) ?? ""),
+          (prev, curr) => (prev += GetFieldContent(record, curr) ?? ""),
           ""
         );
       }
     } else {
       const field = this.field.fieldName as string;
-      const val = this.getFieldContent(record, field);
+      const val = GetFieldContent(record, field);
       if (val) {
         compValue = val as number | Date;
       } else {
@@ -70,24 +71,5 @@ export class Expression implements Term {
 
   public isBracket(): boolean {
     return false;
-  }
-
-  /**
-   * Feldinhalt holen
-   *
-   * Der Feldname kann in der Form "feld1.feld2 ..." fuer den Zugriff auf "Unterobjekte"
-   * angegeben werden.
-   *
-   * @param record - Datensatz
-   * @param fieldname - Feldname(en)
-   * @private
-   */
-  private getFieldContent(record: unknown, fieldname: string): unknown {
-    return (
-      fieldname
-        .split(".")
-        // eslint-disable-next-line no-prototype-builtins
-        .reduce((prev, curr) => (prev.hasOwnProperty(curr) ? prev[curr] : undefined), record)
-    );
   }
 }

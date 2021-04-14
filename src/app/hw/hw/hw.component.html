@@ -8,25 +8,31 @@
     >
       <mat-icon>find_in_page</mat-icon>
     </button>
-    <button mat-icon-button title="Als CSV ausgeben">
-      <!--      <mat-icon>share</mat-icon>-->
-      <mat-icon>archive</mat-icon>
-    </button>
-    <button mat-icon-button title="Neue Hardware-Konfiguration">
-      <!--      <mat-icon>add_circle_outline</mat-icon>-->
-      <mat-icon>devices</mat-icon>
-    </button>
-    <button mat-icon-button title="Neue Geräte">
-      <mat-icon>devices_other</mat-icon>
-    </button>
     <button
       mat-icon-button
-      title="Alle Filter löschen"
+      title="Alle Filter löschen (Alt+L)"
       (click)="hwService.hwFilterService.resetFilters()"
     >
-      <mat-icon>backspace</mat-icon>
+      <mat-icon>search_off</mat-icon>
     </button>
-
+    <span class="menu-spacer">|</span>
+    <button
+      mat-icon-button
+      title="Als CSV ausgeben (Alt+X)"
+      (click)="hwService.hwFilterService.toCsv()"
+    >
+      <!--      <mat-icon>share</mat-icon>-->
+      <mat-icon>file_download</mat-icon>
+    </button>
+    <span class="menu-spacer">|</span>
+    <button mat-icon-button title="Neue Hardware-Konfiguration">
+      <!--      <mat-icon>add_circle_outline</mat-icon>-->
+      <mat-icon>account_tree</mat-icon>
+    </button>
+    <button mat-icon-button title="Neue Geräte">
+      <mat-icon>important_devices</mat-icon>
+    </button>
+    <span class="spacer"></span>
     <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">
       <mat-icon>menu</mat-icon>
     </button>
@@ -75,7 +81,7 @@
             "
             [column]="column"
             [showFilter]="hwService.hwFilterService.stdFilter"
-            size="XS"
+            size="S"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -95,7 +101,7 @@
           <sbsdb-header-cell
             [column]="column"
             [showFilter]="hwService.hwFilterService.stdFilter"
-            size="XS"
+            size="S"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -109,12 +115,13 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="bezeichnung" *ngIf="getColumn('bezeichnung'); let column">
+      <ng-container matColumnDef="konfiguration" *ngIf="getColumn('konfiguration'); let column">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef>
           <sbsdb-header-cell
             [column]="column"
             [showFilter]="hwService.hwFilterService.stdFilter"
+            size="L"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -185,7 +192,7 @@
             (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation()"
             [column]="column"
             [showFilter]="hwService.hwFilterService.stdFilter"
-            size="M"
+            size="L"
           ></sbsdb-header-cell>
         </th>
         <!-- DATA -->
@@ -263,7 +270,15 @@
     (page)="hwService.onPage($event)"
     class="paginator"
     color="primary"
+    [sbsdbPaginatorStatus]="pagInsert"
   ></mat-paginator>
+
+  <!-- Infos zum Filter in paginator einfuegen -->
+  <div #pagInsert>
+    <div class="status-item">{{ hwService.hwFilterService.filterCount() }}</div>
+    |
+    <div class="status-item">{{ hwService.hwFilterService.zugeordneteHw() }}</div>
+  </div>
 
   <!-- Header-Menue -->
   <mat-menu #tableMenu="matMenu">
