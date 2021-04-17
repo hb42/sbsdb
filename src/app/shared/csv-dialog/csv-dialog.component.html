@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Felder für die Ausgabe auswählen</h2>
+<div class="all-checkbox">
+  <mat-checkbox [(ngModel)]="data.all" labelPosition="before"> Alle Felder ausgeben </mat-checkbox>
+</div>
+<div mat-dialog-content>
+  <div>
+    <mat-selection-list [(ngModel)]="data.resultList" [disabled]="data.all">
+      <mat-list-option *ngFor="let field of data.fields" [value]="field">{{
+        field.displayName
+      }}</mat-list-option>
+    </mat-selection-list>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button color="primary" mat-dialog-close>Abbrechen</button>
+  <button mat-flat-button color="primary" [mat-dialog-close]="data" type="submit">OK</button>
+</div>

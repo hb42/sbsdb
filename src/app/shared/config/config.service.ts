@@ -12,6 +12,7 @@ export class ConfigService {
   public static AP_PAGE_SIZE = "ap.pagesize";
   public static AP_FILTERS = "ap.filters";
   public static HW_FILTERS = "hw.filters";
+  public static CSV_SEPARATOR = "csvseparator";
 
   public version: Version;
 

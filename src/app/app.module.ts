@@ -39,6 +39,7 @@ import { SelectHeaderComponent } from './shared/filter/select-header/select-head
 import { SelectRowComponent } from './shared/filter/select-row/select-row.component';
 import { ExpandHeaderComponent } from './shared/filter/expand-header/expand-header.component';
 import { PaginatorStatusDirective } from './shared/table/paginator-status.directive';
+import { CsvDialogComponent } from './shared/csv-dialog/csv-dialog.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -88,6 +89,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     SelectRowComponent,
     ExpandHeaderComponent,
     PaginatorStatusDirective,
+    CsvDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -169,7 +169,8 @@ export class ApService {
         0,
         -1,
         null,
-        null
+        null,
+        false
       )
     );
     this.columns.push(
@@ -185,7 +186,8 @@ export class ApService {
         1,
         ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.dataService.apList.map((a) => a.apTypBezeichnung))].sort()
+        () => [...new Set(this.dataService.apList.map((a) => a.apTypBezeichnung))].sort(),
+        true
       )
     );
     this.columns.push(
@@ -201,7 +203,8 @@ export class ApService {
         2,
         ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -225,7 +228,8 @@ export class ApService {
                 this.userSettings.showStandort ? a.oe.fullname : a.verantwOe.fullname
               )
             ),
-          ].sort()
+          ].sort(),
+        true
       )
     );
     this.columns.push(
@@ -248,7 +252,8 @@ export class ApService {
                 this.userSettings.showStandort ? a.verantwOe.fullname : a.oe.fullname
               )
             ),
-          ].sort()
+          ].sort(),
+        true
       )
     );
     this.columns.push(
@@ -274,7 +279,8 @@ export class ApService {
                 this.userSettings.showStandort ? a.verantwOe.fullname : a.oe.fullname
               )
             ),
-          ].sort()
+          ].sort(),
+        true
       )
     );
     this.columns.push(
@@ -300,7 +306,8 @@ export class ApService {
                 this.userSettings.showStandort ? a.oe.fullname : a.verantwOe.fullname
               )
             ),
-          ].sort()
+          ].sort(),
+        true
       )
     );
     this.columns.push(
@@ -316,7 +323,8 @@ export class ApService {
         4,
         ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -333,7 +341,8 @@ export class ApService {
         5,
         ColumnType.IP,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        false
       )
     );
     this.columns.push(
@@ -350,7 +359,8 @@ export class ApService {
         0,
         ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -367,7 +377,8 @@ export class ApService {
         0,
         ColumnType.IP,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -384,7 +395,8 @@ export class ApService {
         0,
         ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.apDataSource.data.map((a) => a.vlanStr))].sort()
+        () => [...new Set(this.apDataSource.data.map((a) => a.vlanStr))].sort(),
+        true
       )
     );
     this.columns.push(
@@ -405,7 +417,8 @@ export class ApService {
         6,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -421,7 +434,8 @@ export class ApService {
         0,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -437,7 +451,8 @@ export class ApService {
         10,
         -1,
         null,
-        null
+        null,
+        false
       )
     );
 
@@ -454,7 +469,8 @@ export class ApService {
         0,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     // fuer Suche nach Index
@@ -465,13 +481,14 @@ export class ApService {
         () => "AP-Index",
         () => "apId",
         () => null,
-        () => null,
+        (a: Arbeitsplatz) => `${a.apId}`,
         "",
         false,
         0,
         ColumnType.NUMBER,
         null,
-        null
+        null,
+        true
       )
     );
 
@@ -532,10 +549,10 @@ export class ApService {
       this.columns.push(
         new SbsdbColumn(
           this,
-          DataService.TAG_DISPLAY_NAME + tag[0],
+          this.tagFieldName(tag[0]),
           () => DataService.TAG_DISPLAY_NAME + ": " + tag[0],
-          () => DataService.TAG_DISPLAY_NAME + ": " + tag[0],
-          () => DataService.TAG_DISPLAY_NAME + ": " + tag[0],
+          () => this.tagFieldName(tag[0]),
+          () => null,
           () => null,
           "",
           false,
@@ -551,7 +568,8 @@ export class ApService {
                 RelOp.exist,
                 RelOp.notexist,
               ],
-          null
+          null,
+          true
         )
       );
     });
@@ -682,12 +700,7 @@ export class ApService {
 
     // ap.subTypes = [];
     ap.tags.forEach((tag) => {
-      // if (tag.flag === ApDataService.BOOL_TAG_FLAG) {
-      //   ap.subTypes.push(tag.bezeichnung);
-      // } else {
-      //   ap[ApDataService.TAG_DISPLAY_NAME + ": " + tag.bezeichnung] = tag.text;
-      // }
-      ap[DataService.TAG_DISPLAY_NAME + ": " + tag.bezeichnung] =
+      ap[this.tagFieldName(tag.bezeichnung)] =
         tag.flag === DataService.BOOL_TAG_FLAG ? tag.flag : tag.text;
     });
     this.sortAP(ap);
@@ -701,5 +714,12 @@ export class ApService {
         return a.flag === DataService.BOOL_TAG_FLAG ? -1 : 1;
       }
     });
+  }
+
+  private tagFieldName(tag: string): string {
+    // alles ausser Buchstaben (a-z) und Ziffern aus der TAG-Bezeichnung entfernen
+    // fuer die Verwendung als Feldname im Arbeitsplatz.Object
+    const name = tag.replace(/[^\w^\d]/g, "");
+    return `${DataService.TAG_DISPLAY_NAME}${name}`;
   }
 }

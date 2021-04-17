@@ -1,5 +1,7 @@
 import { SbsdbColumn } from "./table/sbsdb-column";
 
+export const BOM = String.fromCharCode(0xfeff);
+
 /**
  * Index der Spalte 'name' aus dem Array 'columns' holen.
  *

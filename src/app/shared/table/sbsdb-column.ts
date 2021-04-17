@@ -96,6 +96,10 @@ export class SbsdbColumn<C, E> {
       : null) as string[];
   }
 
+  public get outputToCsv(): boolean {
+    return this.outputtocsv;
+  }
+
   constructor(
     private context: C,
     private colname: string,
@@ -108,7 +112,8 @@ export class SbsdbColumn<C, E> {
     private tabindex: number, // fuer Filterfelder und Reihenfolge
     private typekey: ColumnType,
     private op: RelOp[] | null, // erlaubte Verknuepfungen
-    private selectlist: (() => string[]) | null // soweit sinnvoll: no dup list fuer das Feld
+    private selectlist: (() => string[]) | null, // soweit sinnvoll: no dup list fuer das Feld
+    private outputtocsv: boolean
   ) {
     if (this.fieldName && this.show) {
       this.filtercontrol = new FormControl("");

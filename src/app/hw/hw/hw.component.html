@@ -180,7 +180,9 @@
         </th>
         <!-- DATA -->
         <td mat-cell *matCellDef="let row" (click)="hwService.expandHwRow(row, $event)">
-          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
+          <div sbsdbTooltipOnEllipsis>
+            {{ column.displayText(row) }}<span *ngIf="column.displayText(row)"> &euro;</span>
+          </div>
         </td>
       </ng-container>
 

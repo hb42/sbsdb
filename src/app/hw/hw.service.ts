@@ -129,7 +129,8 @@ export class HwService {
         0,
         -1,
         null,
-        null
+        null,
+        false
       )
     );
     this.columns.push(
@@ -145,7 +146,8 @@ export class HwService {
         1,
         ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.apKatBezeichnung))].sort()
+        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.apKatBezeichnung))].sort(),
+        true
       )
     );
     this.columns.push(
@@ -184,7 +186,8 @@ export class HwService {
               ...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.hwTypBezeichnung)),
             ].sort();
           }
-        }
+        },
+        true
       )
     );
     this.columns.push(
@@ -222,7 +225,8 @@ export class HwService {
           } else {
             return [...new Set(this.hwDataSource.data.map((h) => h.konfiguration))].sort();
           }
-        }
+        },
+        true
       )
     );
     this.columns.push(
@@ -238,7 +242,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.hersteller))].sort()
+        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.hersteller))].sort(),
+        true
       )
     );
     this.columns.push(
@@ -254,7 +259,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.inlist, RelOp.notinlist],
-        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.bezeichnung))].sort()
+        () => [...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.bezeichnung))].sort(),
+        true
       )
     );
     this.columns.push(
@@ -270,7 +276,8 @@ export class HwService {
         4,
         ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -286,7 +293,8 @@ export class HwService {
         5,
         ColumnType.DATE,
         [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -296,13 +304,14 @@ export class HwService {
         () => "Ansch.-Wert",
         () => "anschWert",
         () => "anschWert",
-        (h: Hardware) => (h.anschWert ? formatCurrency(h.anschWert, "de", "€") : ""),
+        (h: Hardware) => (h.anschWert ? formatNumber(h.anschWert, "de", "1.2-2") : ""),
         "w",
         true,
         6,
         ColumnType.NUMBER,
         [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -318,7 +327,8 @@ export class HwService {
         7,
         ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -334,7 +344,8 @@ export class HwService {
         10,
         -1,
         null,
-        null
+        null,
+        false
       )
     );
     this.columns.push(
@@ -350,7 +361,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -366,7 +378,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -382,7 +395,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -398,7 +412,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -414,7 +429,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -430,7 +446,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     this.columns.push(
@@ -446,7 +463,8 @@ export class HwService {
         0,
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
-        null
+        null,
+        true
       )
     );
     // fuer Suche nach Index
@@ -457,13 +475,14 @@ export class HwService {
         () => "HW-Index",
         () => "id",
         () => null,
-        () => null,
+        (h: Hardware) => `${h.id}`,
         "",
         false,
         0,
         ColumnType.NUMBER,
         null, // [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
-        null
+        null,
+        true
       )
     );
 
@@ -620,6 +639,7 @@ export class HwService {
           } else {
             // fuer die Suche in sonstiger HW
             ap.sonstHwStr +=
+              (ap.sonstHwStr ? "/" : "") +
               " " +
               hw.hwKonfig.hersteller +
               " " +
