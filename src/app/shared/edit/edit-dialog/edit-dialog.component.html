@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Edit-Test</h2>
+
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit(formGroup.value)"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        placeholder="test"
+        [formControl]="nameControl"
+        [errorStateMatcher]="matcher"
+      />
+      <mat-error *ngIf="nameControl.invalid">{{ getErrorMessage() }}</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+  <div mat-dialog-actions>
+    <button mat-flat-button color="accent" mat-dialog-close>Abbrechen</button>
+    <button
+      mat-flat-button
+      color="accent"
+      [mat-dialog-close]="data"
+      type="submit"
+      [disabled]="formGroup.invalid"
+    >
+      OK
+    </button>
+  </div>
+</form>

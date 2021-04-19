@@ -45,6 +45,7 @@ export class DataService {
   public readonly countHwUrl: string;
   public readonly pageHwUrl: string;
   public readonly allHwKonfig: string;
+  public readonly allTagTypesUrl: string;
 
   // case insensitive alpha sort
   // deutlich schneller als String.localeCompare()
@@ -73,6 +74,7 @@ export class DataService {
     this.pageHwUrl = this.configService.webservice + "/hw/page/";
     this.countHwUrl = this.configService.webservice + "/hw/count";
     this.allHwKonfig = this.configService.webservice + "/hwkonfig/all";
+    this.allTagTypesUrl = this.configService.webservice + "/ap/tagtypes";
 
     const readyEventCheck = () => {
       if (this.isDataReady()) {

@@ -2,23 +2,22 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { Router } from "@angular/router";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
-import { TransportElement } from "../shared/filter/transport-element";
-import { TransportElements } from "../shared/filter/transport-elements";
 import { GetColumn } from "../shared/helper";
 import { KeyboardService } from "../shared/keyboard.service";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { Betrst } from "../shared/model/betrst";
 import { Hardware } from "../shared/model/hardware";
 import { Tag } from "../shared/model/tag";
+import { TagTyp } from "../shared/model/tagTyp";
 import { NavigationService } from "../shared/navigation.service";
 import { ColumnType } from "../shared/table/column-type.enum";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
+import { ApEditService } from "./ap-edit-service";
 import { ApFilterService } from "./ap-filter.service";
 
 @Injectable({ providedIn: "root" })
@@ -39,7 +38,6 @@ export class ApService {
   public columns: SbsdbColumn<ApService, Arbeitsplatz>[] = [];
 
   public displayedColumns: string[];
-  public extFilterColumns: SbsdbColumn<ApService, Arbeitsplatz>[];
   /* fuer select list: Liste ohne Duplikate fuer ein Feld (nicht bei allen sinnvoll -> aptyp, oe, voe, tags, hwtyp, vlan(?))
     new Set() -> nur eindeutige - ... -> zu Array
     -> https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array#9229932
@@ -59,11 +57,11 @@ export class ApService {
   constructor(
     public filterService: ApFilterService,
     public editFilterService: EditFilterService,
+    public editService: ApEditService,
     private configService: ConfigService,
     private keyboardService: KeyboardService,
     private navigationService: NavigationService,
-    private dataService: DataService,
-    private router: Router
+    private dataService: DataService
   ) {
     console.debug("c'tor ArbeitsplatzService");
     this.userSettings = configService.getUser();
@@ -129,12 +127,10 @@ export class ApService {
   }
 
   public test(): void {
-    const te: TransportElement[] = this.filterService.convBracket(
-      this.filterService.filterExpression
-    );
-    const trans: TransportElements = { stdFilter: this.filterService.stdFilter, filter: te };
-    const fStr = JSON.stringify(trans);
-    console.debug("------  TEST  " + fStr);
+    this.filterService.testEdit();
+  }
+  public testEdit(ap: Arbeitsplatz): void {
+    this.editService.testTagEdit(ap);
   }
 
   public gotoHw(hw: Hardware): void {
@@ -578,8 +574,7 @@ export class ApService {
   /**`
    * Arbeitsplaetze parallel, in Bloecken von ConfigService.AP_PAGE_SIZE holen.
    *
-   * @param each - callback wenn alle Bloecke fertig ist
-   * @param ready - event nach dem letzten Block
+   * @param each - callback wenn alle Bloecke fertig sind
    */
   public async getAPs(each: () => void): Promise<void> {
     // zunaechst die OEs holen
@@ -633,6 +628,12 @@ export class ApService {
           console.error("ERROR loading OE-Data ", err);
         }
       );
+  }
+
+  public async getTagTypes(): Promise<TagTyp[]> {
+    const rc = await this.dataService.get(this.dataService.allTagTypesUrl).toPromise();
+    console.debug("got tagtypes");
+    return rc as TagTyp[];
   }
 
   // OE-Hierarchie aufbauen
