@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { TagChange } from "../edit-tags/tag-change";
 import { ApEditDialogData } from "./ap-edit-dialog-data";
 
 @Component({
@@ -26,8 +27,9 @@ export class ApEditDialogComponent {
     console.dir(form);
   }
 
-  public tagReady(evt: unknown): void {
+  public tagReady(evt: TagChange[]): void {
     console.debug("ApEditDialog tagReady");
     console.dir(evt);
+    this.data.tags = evt;
   }
 }

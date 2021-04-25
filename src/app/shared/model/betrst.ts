@@ -6,7 +6,7 @@ export class Betrst {
   public tel: string;
   public oeff: string;
   public ap: boolean;
-  public parentId: number;
+  public parentId?: number;
   public plz: string;
   public ort: string;
   public strasse: string;

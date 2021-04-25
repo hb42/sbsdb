@@ -6,6 +6,7 @@
 >
   <mat-dialog-content>
     <sbsdb-edit-tags
+      *ngIf="data.editTags"
       [ap]="data.ap"
       [formGroup]="formGroup"
       [onSubmit]="onSubmitEvent"

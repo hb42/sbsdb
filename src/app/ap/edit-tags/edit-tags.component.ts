@@ -1,10 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from "@angular/forms";
 import { Tag } from "app/shared/model/tag";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { TagTyp } from "../../shared/model/tagTyp";
+import { TagChange } from "./tag-change";
 import { TagInput } from "./tag-input";
 
 @Component({
@@ -14,37 +22,33 @@ import { TagInput } from "./tag-input";
 })
 export class EditTagsComponent implements OnInit {
   @Input() public ap: Arbeitsplatz;
-  @Input() public formGroup: FormGroup;
-  @Input() public onSubmit: EventEmitter<void>;
-  @Output() public tagReady: EventEmitter<unknown>;
+  @Input() public formGroup: FormGroup; // uebergeordnete formGroup
+  @Input() public onSubmit: EventEmitter<void>; // fuer den submit der form
+  @Output() public tagReady: EventEmitter<TagChange[]>; // liefert die zu aenderenden Daten
 
   public matcher = new FormFieldErrorStateMatcher();
   public tagFormGroup: FormGroup;
-  public apTagTypes: TagTyp[];
+  public apTagTypes: TagTyp[] = [];
   public tagInput: TagInput[];
   public newTag: FormControl;
   public newText: FormControl;
   public noTextFlag: number = DataService.BOOL_TAG_FLAG;
 
   private count = 0;
-  private remove: TagInput[] = [];
+  private changes: TagChange[] = [];
 
   constructor(private dataService: DataService, private formBuilder: FormBuilder) {
     console.debug("c'tor EditTagsCompomnenmt");
-    this.tagReady = new EventEmitter<unknown>();
+    this.tagReady = new EventEmitter<TagChange[]>();
     this.tagFormGroup = this.formBuilder.group({});
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+    // form submit
     this.onSubmit.subscribe(() => {
-      console.debug("EditTagsComponent onSubmit");
-      this.tagReady.emit(this.tagInput);
+      this.submit();
     });
-
-    const tt = (await this.dataService
-      .get(this.dataService.allTagTypesUrl)
-      .toPromise()) as TagTyp[];
-    this.apTagTypes = tt
+    this.apTagTypes = this.dataService.tagTypList
       .filter((t) => t.apKategorieId === this.ap.apKatId)
       .sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
 
@@ -56,7 +60,7 @@ export class EditTagsComponent implements OnInit {
         tagCtrl: new FormControl(
           this.apTagTypes.find((t) => t.id === tag.tagId),
           // eslint-disable-next-line @typescript-eslint/unbound-method
-          [Validators.required, this.checkTypes]
+          [Validators.required, this.checkTypes()]
         ),
         // eslint-disable-next-line @typescript-eslint/unbound-method
         textCtrl: new FormControl(tag.text, [Validators.required]),
@@ -70,7 +74,7 @@ export class EditTagsComponent implements OnInit {
       tag: null,
       id: this.count++,
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      tagCtrl: new FormControl(null, [Validators.required, this.checkTypes]),
+      tagCtrl: new FormControl(null, [Validators.required, this.checkTypes()]),
       // eslint-disable-next-line @typescript-eslint/unbound-method
       textCtrl: new FormControl("", [Validators.required]),
     };
@@ -83,6 +87,11 @@ export class EditTagsComponent implements OnInit {
     this.formGroup.addControl("tag", this.tagFormGroup);
   }
 
+  /**
+   * Texte fuer die verschiedenen Fehler
+   *
+   * @param control
+   */
   public getErrorMessage(control: FormControl): string {
     if (control.hasError("singleTags")) {
       return "TAGs dürfen nur einmal vergeben werden!";
@@ -96,31 +105,49 @@ export class EditTagsComponent implements OnInit {
     return null;
   }
 
-  public checkTypes(control: FormControl): ValidationErrors {
-    if (control.parent) {
-      const set = new Set();
-      let count = 0;
-      Object.keys(control.parent.controls).forEach((key) => {
-        const val: unknown = control.parent.get(key).value;
-        // eslint-disable-next-line no-prototype-builtins
-        if (val && val.hasOwnProperty("apKategorieId")) {
-          set.add(val["id"]);
-          count++;
-        }
-      });
-      return set.size !== count ? { singleTags: true } : null;
-    } else {
-      return null;
-    }
+  /**
+   * Validator fuer den Check gegen doppelte TAGs
+   */
+  public checkTypes(): ValidatorFn {
+    // mit dem folgenden Konstrukt bleibt 'this' in der function erhalten
+    return (control: FormControl): ValidationErrors => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (control.parent && control.value /*&& control.value.apKategorieId*/) {
+        const inp: TagTyp = control.value as TagTyp;
+        let count = 0;
+        Object.keys(control.parent.controls).forEach((key) => {
+          const val: unknown = control.parent.get(key).value;
+          // eslint-disable-next-line no-prototype-builtins
+          if (val && val.hasOwnProperty("apKategorieId")) {
+            if (inp.id == val["id"]) {
+              count++;
+            }
+          }
+        });
+        return count > 1 ? { singleTags: true } : null;
+      } else {
+        return null;
+      }
+    };
   }
 
+  /**
+   * Eintrag aus Liste loeschen
+   *
+   * @param tag
+   */
   public delete(tag: TagInput): void {
     if (tag) {
       const idx = this.tagInput.findIndex((t) => t.id === tag.id);
       const remove = this.tagInput.splice(idx, 1);
-      // der geloeschte Wert war schoin gespeichert als merken
+      // den geloeschten Wert merken
       if (remove.length === 1 && tag.tag.apTagId) {
-        this.remove.push(remove[0]);
+        this.changes.push({
+          apId: this.ap.apId,
+          apTagId: remove[0].tag.apTagId,
+          tagId: null,
+          text: "",
+        });
       }
       this.tagFormGroup.removeControl(`tag_${tag.id}`);
       this.tagFormGroup.removeControl(`txt_${tag.id}`);
@@ -129,10 +156,14 @@ export class EditTagsComponent implements OnInit {
     }
   }
 
+  /**
+   * Neuen TAG anfuegen
+   *
+   * @param tag
+   * @param val
+   */
   public add(tag: TagTyp, val: string): void {
-    // Validierung der "neu"-Felder ??
     const t = new Tag();
-    t.apTagId = this.ap.apId;
     t.tagId = tag.id;
     t.text = val;
     const rc: TagInput = {
@@ -140,17 +171,65 @@ export class EditTagsComponent implements OnInit {
       tag: t,
       id: this.count++,
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      tagCtrl: new FormControl(tag, [Validators.required, this.checkTypes]),
+      tagCtrl: new FormControl(tag, [Validators.required, this.checkTypes()]),
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      textCtrl: new FormControl(val, [Validators.required]),
+      textCtrl: new FormControl(tag.flag === this.noTextFlag ? " " : val, [Validators.required]),
     };
+    rc.tagCtrl.markAsTouched();
+    rc.textCtrl.markAsTouched();
     this.tagFormGroup.addControl(`tag_${rc.id}`, rc.tagCtrl);
     this.tagFormGroup.addControl(`txt_${rc.id}`, rc.textCtrl);
-    this.newTag.reset();
-    this.newText.reset();
     const newentry = this.tagInput.pop();
     this.tagInput.push(rc);
     this.tagInput.push(newentry);
-    console.debug("add");
+    this.newTag.reset();
+    this.newText.reset();
+    // *ExpressionChangedAfterItHasBeenCheckedError*
+    // wird zwar nur im dev mode geworfen, bedeutet, aber, dass die change detection in diesem
+    // Moment nicht sauber funktioniert. Loesung sollte primaer sein, das abzustellen (hier z.B.
+    // mit .markAsTouched()). Falls das nicht klappt gibt's noch die Keule:
+    //   inject in c'tor:  private cdRef: ChangeDetectorRef
+    //   hier:             this.cdRef.detectChanges();
+  }
+
+  /**
+   * Uebergeordnete form wurde abgeschickt
+   *
+   * Aenderungen zusammenstellen und per event zurueckschicken
+   * tagId == null -> DEL
+   * apTagId == null -> NEW
+   */
+  public submit(): void {
+    console.debug("EditTagsComponent onSubmit");
+    // Aenderungen zusammenstellen
+    // tagId == null -> DEL
+    // apTagId == null -> NEW
+    // Neu-Zeile wird nicht mehr gebraucht
+    this.tagInput.pop();
+    this.tagInput.forEach((ti) => {
+      const newTag: TagTyp = ti.tagCtrl.value as TagTyp;
+      const newText: string = ti.textCtrl.value as string;
+      if (ti.tag.apTagId) {
+        if (ti.tag.tagId !== newTag.id || ti.tag.text !== newText) {
+          // Aenderung eines vorhandenen
+          this.changes.push({
+            apId: this.ap.apId,
+            apTagId: ti.tag.apTagId,
+            tagId: newTag.id,
+            text: newTag.flag === this.noTextFlag ? "" : newText,
+          });
+        }
+      } else {
+        // Neuer TAG
+        this.changes.push({
+          apId: this.ap.apId,
+          apTagId: null,
+          tagId: newTag.id,
+          text: newTag.flag === this.noTextFlag ? "" : newText,
+        });
+      }
+    });
+
+    this.tagReady.emit(this.changes);
   }
 }

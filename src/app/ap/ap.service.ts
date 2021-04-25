@@ -38,6 +38,7 @@ export class ApService {
   public columns: SbsdbColumn<ApService, Arbeitsplatz>[] = [];
 
   public displayedColumns: string[];
+
   /* fuer select list: Liste ohne Duplikate fuer ein Feld (nicht bei allen sinnvoll -> aptyp, oe, voe, tags, hwtyp, vlan(?))
     new Set() -> nur eindeutige - ... -> zu Array
     -> https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array#9229932
@@ -129,8 +130,8 @@ export class ApService {
   public test(): void {
     this.filterService.testEdit();
   }
-  public testEdit(ap: Arbeitsplatz): void {
-    this.editService.testTagEdit(ap);
+  public tagsEdit(ap: Arbeitsplatz): void {
+    this.editService.tagsEdit(ap);
   }
 
   public gotoHw(hw: Hardware): void {
@@ -580,9 +581,10 @@ export class ApService {
     // zunaechst die OEs holen
     await this.getBst();
     // Groesse der einzelnen Bloecke
-    const pageSize =
-      Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
-      DataService.defaultpageSize;
+    let pageSize = Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE));
+    if (pageSize < DataService.defaultpageSize) {
+      pageSize = DataService.defaultpageSize;
+    }
     // Anzahl der Datensaetze
     const recs = (await this.dataService.get(this.dataService.countApUrl).toPromise()) as number;
     // zu holende Seiten

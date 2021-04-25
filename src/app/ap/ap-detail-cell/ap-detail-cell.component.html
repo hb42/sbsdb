@@ -12,6 +12,12 @@
     <div *ngIf="element.oe.oeff" class="detail-cell-margin detail-cell-oeff">
       <span>Öffnungszeiten</span><br />{{ element.oe.oeff }}
     </div>
+    <div class="fill"></div>
+    <div class="detail-cell-margin edit-button">
+      <button mat-icon-button title="Arbeitsplatz bearbeiten" (click)="apService.test()">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
   </div>
   <div class="detail-cell-content-row">
     <div *ngIf="element.verantwOe" class="detail-cell-margin detail-cell-standort-text">
@@ -24,10 +30,17 @@
   </div>
   <div class="detail-cell-content-row">
     <div class="detail-cell-margin">
-      <table>
+      <table class="sub-table">
         <thead>
           <tr>
-            <th colspan="4">Hardware</th>
+            <th colspan="4">
+              <div class="sub-table-head-title">Hardware</div>
+              <div class="sub-table-head-button edit-button">
+                <button mat-icon-button title="Hardware/IP bearbeiten" (click)="apService.test()">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </th>
           </tr>
           <tr>
             <th>Typ</th>
@@ -61,9 +74,20 @@
     </div>
     <div class="detail-cell-margin">
       <table>
-        <thead>
+        <thead class="sub-table">
           <tr>
-            <th colspan="2">Sonstige Informationen</th>
+            <th colspan="2">
+              <div class="sub-table-head-title">Sonstige Informationen</div>
+              <div class="sub-table-head-button edit-button">
+                <button
+                  mat-icon-button
+                  title="Sonstige Infos bearbeiten"
+                  (click)="apService.tagsEdit(element)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </th>
           </tr>
         </thead>
         <tr *ngFor="let tag of element.tags">

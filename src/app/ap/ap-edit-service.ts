@@ -14,15 +14,16 @@ export class ApEditService extends BaseEditService {
     console.debug("c'tor ApEditService");
   }
 
-  public testTagEdit(ap: Arbeitsplatz): void {
+  public tagsEdit(ap: Arbeitsplatz): void {
     const dialogRef = this.dialog.open(ApEditDialogComponent, {
       disableClose: true,
-      data: { ap: ap } as ApEditDialogData,
+      data: { ap: ap, editTags: true } as ApEditDialogData,
     });
 
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {
       console.debug("dialog closed");
+      // TODO Daten speichern
     });
   }
 }

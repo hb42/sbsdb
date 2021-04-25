@@ -6,6 +6,7 @@ import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { Hardware } from "./model/hardware";
 import { HwKonfig } from "./model/hw-konfig";
 import { ConfigService } from "./config/config.service";
+import { TagTyp } from "./model/tagTyp";
 
 @Injectable({
   providedIn: "root",
@@ -20,6 +21,7 @@ export class DataService {
   public bstList: Betrst[] = [];
   public hwList: Hardware[] = [];
   public hwKonfigList: HwKonfig[] = [];
+  public tagTypList: TagTyp[] = [];
 
   // Signale fuer das Laden der benoetigten Daten:
   //   apListFetched signalisiert, dass die AP-Liste vollstaendig geladen ist (und
@@ -33,6 +35,10 @@ export class DataService {
   public hwKonfigListReady: EventEmitter<void> = new EventEmitter<void>();
   // dataReady signalisiert, dass alle Daten geladen und vorbereitet sind
   public dataReady: EventEmitter<void> = new EventEmitter<void>();
+
+  // TODO wenn die Signalisierung funktioniert, kann hier das Handling einer
+  //      aktualisierten Liste eingehaengt werden
+  public tagTypListReady: EventEmitter<void> = new EventEmitter<void>();
 
   // Web-API calls
   public readonly oeTreeUrl: string;
@@ -102,6 +108,8 @@ export class DataService {
       this.hwkonfiglistready = true;
       readyEventCheck();
     });
+
+    this.fetchTagTypList();
   }
 
   public get(url: string): Observable<unknown> {
@@ -148,5 +156,12 @@ export class DataService {
     const ip1 = ip & 0xff;
 
     return `${ip1}.${ip2}.${ip3}.${ip4}`;
+  }
+
+  public fetchTagTypList(): void {
+    this.get(this.allTagTypesUrl).subscribe((tt: TagTyp[]) => {
+      this.tagTypList = tt;
+      this.tagTypListReady.emit();
+    });
   }
 }

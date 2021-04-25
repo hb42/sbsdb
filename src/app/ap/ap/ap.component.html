@@ -341,7 +341,7 @@
 <!-- Zeilen-Menue -->
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">
-    <button mat-menu-item (click)="apService.testEdit(ap)">Sonstige Infos bearbeiten</button>
+    <button mat-menu-item (click)="apService.tagsEdit(ap)">Sonstige Infos bearbeiten</button>
     <button mat-menu-item>Test2</button>
     <button mat-menu-item *ngIf="ap.apTypBezeichnung.indexOf('Thin') !== -1">Test3 TC</button>
   </ng-template>

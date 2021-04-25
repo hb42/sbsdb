@@ -564,9 +564,10 @@ export class HwService {
         this.dataService.hwKonfigListReady.emit();
       }
     );
-    const pageSize =
-      Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE)) ??
-      DataService.defaultpageSize;
+    let pageSize = Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE));
+    if (pageSize < DataService.defaultpageSize) {
+      pageSize = DataService.defaultpageSize;
+    }
     // Anzahl der Datensaetze
     const recs = (await this.dataService.get(this.dataService.countHwUrl).toPromise()) as number;
     // zu holende Seiten
