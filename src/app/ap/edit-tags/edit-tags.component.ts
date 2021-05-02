@@ -1,12 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+import { MatSelectChange } from "@angular/material/select";
 import { Tag } from "app/shared/model/tag";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
@@ -60,10 +54,12 @@ export class EditTagsComponent implements OnInit {
         tagCtrl: new FormControl(
           this.apTagTypes.find((t) => t.id === tag.tagId),
           // eslint-disable-next-line @typescript-eslint/unbound-method
-          [Validators.required, this.checkTypes()]
+          [Validators.required, this.checkTypes]
         ),
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        textCtrl: new FormControl(tag.text, [Validators.required]),
+        textCtrl: new FormControl(tag.flag === DataService.BOOL_TAG_FLAG ? " " : tag.text, [
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          Validators.required,
+        ]),
       };
       this.tagFormGroup.addControl(`tag_${rc.id}`, rc.tagCtrl);
       this.tagFormGroup.addControl(`txt_${rc.id}`, rc.textCtrl);
@@ -74,11 +70,11 @@ export class EditTagsComponent implements OnInit {
       tag: null,
       id: this.count++,
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      tagCtrl: new FormControl(null, [Validators.required, this.checkTypes()]),
+      tagCtrl: new FormControl(null, [Validators.required, this.checkTypes]),
       // eslint-disable-next-line @typescript-eslint/unbound-method
       textCtrl: new FormControl("", [Validators.required]),
     };
-    // Formfelder fuer neue Werte nicht an FormGroup haengen. Die waere immer invalid, wenn
+    // Formfelder fuer neue Werte nicht an FormGroup haengen. Die waeren immer invalid, wenn
     // diese beiden leer sind!
     this.newTag = empty.tagCtrl;
     this.newText = empty.textCtrl;
@@ -106,30 +102,41 @@ export class EditTagsComponent implements OnInit {
   }
 
   /**
-   * Validator fuer den Check gegen doppelte TAGs
+   * Wenn TAG ausgewaehlt wird, der keinen Text hat, Text-Input leeren.
+   *
+   * @param evt
+   * @param input
    */
-  public checkTypes(): ValidatorFn {
-    // mit dem folgenden Konstrukt bleibt 'this' in der function erhalten
-    return (control: FormControl): ValidationErrors => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (control.parent && control.value /*&& control.value.apKategorieId*/) {
-        const inp: TagTyp = control.value as TagTyp;
-        let count = 0;
-        Object.keys(control.parent.controls).forEach((key) => {
-          const val: unknown = control.parent.get(key).value;
-          // eslint-disable-next-line no-prototype-builtins
-          if (val && val.hasOwnProperty("apKategorieId")) {
-            if (inp.id == val["id"]) {
-              count++;
-            }
-          }
-        });
-        return count > 1 ? { singleTags: true } : null;
-      } else {
-        return null;
-      }
-    };
+  public onSelectionChange(evt: MatSelectChange, input: HTMLInputElement): void {
+    const tag = evt.value as TagTyp;
+    if (tag.flag === DataService.BOOL_TAG_FLAG && input.value) {
+      input.value = "";
+    }
   }
+
+  /**
+   * Validator fuer den Check gegen doppelte TAGs
+   *
+   * als Lamba deklarieren, damit bleibt 'this' erhalten
+   */
+  public checkTypes = (control: FormControl): ValidationErrors => {
+    if (control.parent && control.value /*&& control.value.apKategorieId*/) {
+      const inp: TagTyp = control.value as TagTyp;
+      let count = 0;
+      Object.keys(control.parent.controls).forEach((key) => {
+        const val: unknown = control.parent.get(key).value;
+        // eslint-disable-next-line no-prototype-builtins
+        if (val && val.hasOwnProperty("apKategorieId")) {
+          if (inp.id == val["id"]) {
+            count++;
+          }
+        }
+      });
+      return count > 1 ? { singleTags: true } : null;
+    } else {
+      return null;
+    }
+  };
 
   /**
    * Eintrag aus Liste loeschen
@@ -165,13 +172,13 @@ export class EditTagsComponent implements OnInit {
   public add(tag: TagTyp, val: string): void {
     const t = new Tag();
     t.tagId = tag.id;
-    t.text = val;
+    t.text = tag.flag === DataService.BOOL_TAG_FLAG ? "1" : val;
     const rc: TagInput = {
       apid: this.ap.apId,
       tag: t,
       id: this.count++,
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      tagCtrl: new FormControl(tag, [Validators.required, this.checkTypes()]),
+      tagCtrl: new FormControl(tag, [Validators.required, this.checkTypes]),
       // eslint-disable-next-line @typescript-eslint/unbound-method
       textCtrl: new FormControl(tag.flag === this.noTextFlag ? " " : val, [Validators.required]),
     };
@@ -211,6 +218,9 @@ export class EditTagsComponent implements OnInit {
       const newText: string = ti.textCtrl.value as string;
       if (ti.tag.apTagId) {
         if (ti.tag.tagId !== newTag.id || ti.tag.text !== newText) {
+          console.debug(
+            `tag changed: ${ti.tag.tagId} !== ${newTag.id} || ${ti.tag.text} !== ${newText}`
+          );
           // Aenderung eines vorhandenen
           this.changes.push({
             apId: this.ap.apId,

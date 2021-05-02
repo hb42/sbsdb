@@ -4,8 +4,18 @@
   (ngSubmit)="onSubmit(formGroup.value)"
   [class.error]="!formGroup.valid && formGroup.touched"
 >
-  <mat-dialog-content>
+  <div class="panel"><!-- ap data --></div>
+  <mat-dialog-content class="panel">
+    <sbsdb-edit-ap-hw
+      class="abstand"
+      *ngIf="data.editHw"
+      [ap]="data.ap"
+      [formGroup]="formGroup"
+      [onSubmit]="onSubmitEvent"
+      (hwReady)="hwReady($event)"
+    ></sbsdb-edit-ap-hw>
     <sbsdb-edit-tags
+      class="abstand"
       *ngIf="data.editTags"
       [ap]="data.ap"
       [formGroup]="formGroup"

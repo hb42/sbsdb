@@ -130,8 +130,17 @@ export class ApService {
   public test(): void {
     this.filterService.testEdit();
   }
+
+  public apEdit(ap: Arbeitsplatz): void {
+    this.editService.apEdit(ap);
+  }
+
   public tagsEdit(ap: Arbeitsplatz): void {
     this.editService.tagsEdit(ap);
+  }
+
+  public hwEdit(ap: Arbeitsplatz): void {
+    this.editService.hwEdit(ap);
   }
 
   public gotoHw(hw: Hardware): void {
@@ -546,9 +555,9 @@ export class ApService {
       this.columns.push(
         new SbsdbColumn(
           this,
-          this.tagFieldName(tag[0]),
+          this.dataService.tagFieldName(tag[0]),
           () => DataService.TAG_DISPLAY_NAME + ": " + tag[0],
-          () => this.tagFieldName(tag[0]),
+          () => this.dataService.tagFieldName(tag[0]),
           () => null,
           () => null,
           "",
@@ -594,7 +603,7 @@ export class ApService {
       this.dataService.get(`${this.dataService.pageApsUrl}${page}/${pageSize}`).subscribe(
         (aps: Arbeitsplatz[]) => {
           console.debug("fetch AP page #", page, " size=", aps.length);
-          aps.forEach((ap) => this.prepAP(ap));
+          aps.forEach((ap) => this.dataService.prepareAP(ap));
           this.dataService.apList = [...this.dataService.apList, ...aps];
           // this.apDataSource.data = [...this.apDataSource.data, ...aps];
         },
@@ -667,62 +676,5 @@ export class ApService {
         }
       }
     });
-  }
-
-  private prepAP(ap: Arbeitsplatz) {
-    ap.hwStr = ""; // keine undef Felder!
-    ap.sonstHwStr = ""; // keine undef Felder!
-    ap.hw = [];
-
-    ap.ipStr = ""; // aus priHW
-    ap.macStr = ""; // aus priHW
-    ap.vlanStr = ""; // aus priHW
-    ap.macsearch = ""; // alle MACs
-
-    const oe = this.dataService.bstList.find((bst) => ap.oeId === bst.bstId);
-    if (oe) {
-      ap.oe = oe;
-    } else {
-      // TODO leere OE anhaengen
-    }
-    if (ap.verantwOeId) {
-      const voe = this.dataService.bstList.find((bst) => ap.verantwOeId === bst.bstId);
-      if (voe) {
-        ap.verantwOe = voe;
-      } else {
-        // TODO leere OE anhaengen
-      }
-    } else {
-      ap.verantwOe = ap.oe;
-    }
-
-    // ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
-    // ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
-    // ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
-    // ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
-
-    // ap.subTypes = [];
-    ap.tags.forEach((tag) => {
-      ap[this.tagFieldName(tag.bezeichnung)] =
-        tag.flag === DataService.BOOL_TAG_FLAG ? tag.flag : tag.text;
-    });
-    this.sortAP(ap);
-  }
-
-  private sortAP(ap: Arbeitsplatz) {
-    ap.tags.sort((a, b) => {
-      if (a.flag === b.flag) {
-        return this.dataService.collator.compare(a.bezeichnung, b.bezeichnung);
-      } else {
-        return a.flag === DataService.BOOL_TAG_FLAG ? -1 : 1;
-      }
-    });
-  }
-
-  private tagFieldName(tag: string): string {
-    // alles ausser Buchstaben (a-z) und Ziffern aus der TAG-Bezeichnung entfernen
-    // fuer die Verwendung als Feldname im Arbeitsplatz.Object
-    const name = tag.replace(/[^\w^\d]/g, "");
-    return `${DataService.TAG_DISPLAY_NAME}${name}`;
   }
 }

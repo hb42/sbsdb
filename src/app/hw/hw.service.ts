@@ -1,4 +1,4 @@
-import { formatCurrency, formatDate, formatNumber } from "@angular/common";
+import { formatDate, formatNumber } from "@angular/common";
 import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
@@ -512,7 +512,12 @@ export class HwService {
       ) {
         // alle relevanten Listen sind da: HwKonfig in HW eintragen
         // und HW in AP eintragen
-        this.prepareData();
+        this.dataService.hwList.forEach((hw) => {
+          this.dataService.prepareHw(hw);
+        });
+        this.dataService.apList.forEach((ap) => {
+          this.dataService.apSortHw(ap);
+        });
         this.setDataToTable.emit();
         // apList ist damit komplett (stoesst dataService.dataReady an)
         this.dataService.apListReady.emit();
@@ -591,80 +596,5 @@ export class HwService {
         }
       );
     }
-  }
-
-  private prepareData(): void {
-    this.dataService.hwList.forEach((hw) => {
-      hw.hwKonfig = this.dataService.hwKonfigList.find((h) => h.id === hw.hwKonfigId);
-      let macsearch = "";
-      hw.ipStr = "";
-      hw.macStr = "";
-      hw.vlanStr = "";
-      hw.konfiguration = hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung;
-      // hw.apKatBezeichnung = hw.hwKonfig.apKatBezeichnung;
-      // hw.hwTypBezeichnung = hw.hwKonfig.hwTypBezeichnung;
-      hw.anschDat = new Date(hw.anschDat);
-      if (hw.vlans && hw.vlans[0]) {
-        hw.vlans.forEach((v) => {
-          const dhcp = v.ip === 0 ? " (DHCP)" : "";
-          v.ipStr = this.dataService.getIpString(v.vlan + v.ip) + dhcp;
-          v.macStr = this.dataService.getMacString(v.mac);
-          hw.ipStr += hw.ipStr ? "/ " + v.ipStr : v.ipStr;
-          hw.macStr += hw.macStr ? "/ " + v.macStr : v.macStr;
-          hw.vlanStr += hw.vlanStr ? "/ " + v.bezeichnung : v.bezeichnung;
-          macsearch += v.mac;
-        });
-      }
-
-      if (hw.apId) {
-        const ap = this.dataService.apList.find((a) => a.apId === hw.apId);
-        if (ap) {
-          hw.ap = ap;
-          hw.apStr = ap.apname + " | " + ap.oe.betriebsstelle + " | " + ap.bezeichnung;
-          ap.hw.push(hw);
-          ap.macsearch = macsearch;
-          if (hw.pri) {
-            if (hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG) {
-              ap.hwTypStr = hw.konfiguration;
-            }
-            ap.hwStr =
-              hw.hwKonfig.hersteller +
-              " - " +
-              hw.hwKonfig.bezeichnung +
-              (hw.sernr && hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG
-                ? " [" + hw.sernr + "]"
-                : "");
-            ap.ipStr += ap.ipStr ? "/ " + hw.ipStr : hw.ipStr;
-            ap.macStr += ap.macStr ? "/ " + hw.macStr : hw.macStr;
-            ap.vlanStr += ap.vlanStr ? "/ " + hw.vlanStr : hw.vlanStr;
-          } else {
-            // fuer die Suche in sonstiger HW
-            ap.sonstHwStr +=
-              (ap.sonstHwStr ? "/" : "") +
-              " " +
-              hw.hwKonfig.hersteller +
-              " " +
-              hw.hwKonfig.bezeichnung +
-              (hw.sernr && hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG
-                ? " " + hw.sernr
-                : "");
-          }
-        }
-      }
-    });
-    this.dataService.apList.forEach((ap) => {
-      ap.hw.sort((a, b) => {
-        if (a.pri) {
-          return -1;
-        } else if (b.pri) {
-          return 1;
-        } else {
-          return this.dataService.collator.compare(
-            a.hwKonfig.hwTypBezeichnung + a.hwKonfig.hersteller + a.hwKonfig.bezeichnung + a.sernr,
-            b.hwKonfig.hwTypBezeichnung + b.hwKonfig.hersteller + b.hwKonfig.bezeichnung + b.sernr
-          );
-        }
-      });
-    });
   }
 }

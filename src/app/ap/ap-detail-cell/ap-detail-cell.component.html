@@ -14,7 +14,7 @@
     </div>
     <div class="fill"></div>
     <div class="detail-cell-margin edit-button">
-      <button mat-icon-button title="Arbeitsplatz bearbeiten" (click)="apService.test()">
+      <button mat-icon-button title="Arbeitsplatz bearbeiten" (click)="apService.apEdit(element)">
         <mat-icon>edit</mat-icon>
       </button>
     </div>
@@ -36,7 +36,11 @@
             <th colspan="4">
               <div class="sub-table-head-title">Hardware</div>
               <div class="sub-table-head-button edit-button">
-                <button mat-icon-button title="Hardware/IP bearbeiten" (click)="apService.test()">
+                <button
+                  mat-icon-button
+                  title="Hardware/IP bearbeiten"
+                  (click)="apService.hwEdit(element)"
+                >
                   <mat-icon>edit</mat-icon>
                 </button>
               </div>

@@ -44,6 +44,7 @@ import { EditDialogComponent } from "./shared/edit/edit-dialog/edit-dialog.compo
 import { EditTagsComponent } from "./ap/edit-tags/edit-tags.component";
 import { ApEditDialogComponent } from "./ap/ap-edit-dialog/ap-edit-dialog.component";
 import { DisableControlDirective } from "./shared/edit/disable-control.directive";
+import { EditApHwComponent } from './ap/edit-ap-hw/edit-ap-hw.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -98,6 +99,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditTagsComponent,
     ApEditDialogComponent,
     DisableControlDirective,
+    EditApHwComponent,
   ],
   imports: [
     BrowserModule,

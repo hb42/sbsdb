@@ -1,6 +1,7 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 import { Betrst } from "./model/betrst";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { Hardware } from "./model/hardware";
@@ -52,6 +53,7 @@ export class DataService {
   public readonly pageHwUrl: string;
   public readonly allHwKonfig: string;
   public readonly allTagTypesUrl: string;
+  public readonly changeApUrl: string;
 
   // case insensitive alpha sort
   // deutlich schneller als String.localeCompare()
@@ -81,6 +83,7 @@ export class DataService {
     this.countHwUrl = this.configService.webservice + "/hw/count";
     this.allHwKonfig = this.configService.webservice + "/hwkonfig/all";
     this.allTagTypesUrl = this.configService.webservice + "/ap/tagtypes";
+    this.changeApUrl = this.configService.webservice + "/ap/changeap";
 
     const readyEventCheck = () => {
       if (this.isDataReady()) {
@@ -114,6 +117,10 @@ export class DataService {
 
   public get(url: string): Observable<unknown> {
     return this.http.get(url);
+  }
+
+  public post(url: string, data: unknown): Observable<unknown> {
+    return this.http.post(url, data).pipe(catchError(this.handleError));
   }
 
   public isDataReady(): boolean {
@@ -164,4 +171,206 @@ export class DataService {
       this.tagTypListReady.emit();
     });
   }
+
+  public updateAp(neu: Arbeitsplatz, neuHw: Hardware[]): void {
+    const ap = this.apList.find((a) => a.apId === neu.apId);
+    if (!ap) {
+      console.error("updateAp() AP not found. New:");
+      console.dir(neu);
+      return;
+    }
+    const keys = Object.keys(ap);
+    keys.forEach((key) => {
+      if (key.startsWith(DataService.TAG_DISPLAY_NAME)) {
+        delete ap[key];
+      }
+    });
+    ap.oeId = neu.oeId;
+    ap.verantwOeId = neu.verantwOeId;
+    ap.oe = null;
+    ap.verantwOe = null;
+    ap.tags = neu.tags;
+    ap.apname = neu.apname;
+    ap.apKatId = neu.apKatId;
+    ap.apKatBezeichnung = neu.apKatBezeichnung;
+    ap.apKatFlag = neu.apKatFlag;
+    ap.apTypId = neu.apTypId;
+    ap.apTypBezeichnung = neu.apTypBezeichnung;
+    ap.apTypFlag = neu.apTypFlag;
+    ap.bemerkung = neu.bemerkung;
+    this.prepareAP(ap);
+    ap.hw.forEach((hw) => {
+      hw.apId = null;
+      if (hw.vlans) {
+        hw.vlans.forEach((v) => {
+          v.ip = null;
+          v.vlanId = null;
+          v.bezeichnung = "";
+          v.netmask = null;
+          v.vlan = null;
+        });
+      }
+      this.prepareHw(hw);
+    });
+    neuHw.forEach((nhw) => {
+      const hw = this.hwList.find((h) => h.id === nhw.id);
+      hw.vlans = nhw.vlans;
+      hw.apId = nhw.apId;
+      hw.bemerkung = nhw.bemerkung;
+      hw.wartungFa = nhw.wartungFa;
+      hw.smbiosgiud = nhw.smbiosgiud;
+      hw.anschWert = nhw.anschWert;
+      hw.anschDat = nhw.anschDat;
+      hw.invNr = nhw.invNr;
+      hw.sernr = nhw.sernr;
+      hw.pri = nhw.pri;
+      hw.hwKonfigId = nhw.hwKonfigId;
+      this.prepareHw(hw);
+    });
+    this.apSortHw(ap);
+  }
+
+  public prepareAP(ap: Arbeitsplatz): void {
+    ap.hwStr = ""; // keine undef Felder!
+    ap.sonstHwStr = ""; // keine undef Felder!
+    ap.hw = [];
+
+    ap.ipStr = ""; // aus priHW
+    ap.macStr = ""; // aus priHW
+    ap.vlanStr = ""; // aus priHW
+    ap.macsearch = ""; // alle MACs
+
+    const oe = this.bstList.find((bst) => ap.oeId === bst.bstId);
+    if (oe) {
+      ap.oe = oe;
+    } else {
+      // TODO leere OE anhaengen
+    }
+    if (ap.verantwOeId) {
+      const voe = this.bstList.find((bst) => ap.verantwOeId === bst.bstId);
+      if (voe) {
+        ap.verantwOe = voe;
+      } else {
+        // TODO leere OE anhaengen
+      }
+    } else {
+      ap.verantwOe = ap.oe;
+    }
+
+    // ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
+    // ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
+    // ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
+    // ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
+
+    // ap.subTypes = [];
+    ap.tags.forEach((tag) => {
+      tag.text = tag.flag === DataService.BOOL_TAG_FLAG ? "1" : tag.text;
+      ap[this.tagFieldName(tag.bezeichnung)] = tag.text;
+    });
+    this.sortAP(ap);
+  }
+
+  private sortAP(ap: Arbeitsplatz) {
+    ap.tags.sort((a, b) => {
+      if (a.flag === b.flag) {
+        return this.collator.compare(a.bezeichnung, b.bezeichnung);
+      } else {
+        return a.flag === DataService.BOOL_TAG_FLAG ? -1 : 1;
+      }
+    });
+  }
+
+  public tagFieldName(tag: string): string {
+    // alles ausser Buchstaben (a-z) und Ziffern aus der TAG-Bezeichnung entfernen
+    // fuer die Verwendung als Feldname im Arbeitsplatz.Object
+    const name = tag.replace(/[^\w^\d]/g, "");
+    return `${DataService.TAG_DISPLAY_NAME}${name}`;
+  }
+
+  public prepareHw(hw: Hardware): void {
+    hw.hwKonfig = this.hwKonfigList.find((h) => h.id === hw.hwKonfigId);
+    let macsearch = "";
+    hw.ipStr = "";
+    hw.macStr = "";
+    hw.vlanStr = "";
+    hw.konfiguration = hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung;
+    // hw.apKatBezeichnung = hw.hwKonfig.apKatBezeichnung;
+    // hw.hwTypBezeichnung = hw.hwKonfig.hwTypBezeichnung;
+    hw.anschDat = new Date(hw.anschDat);
+    if (hw.vlans && hw.vlans[0]) {
+      hw.vlans.forEach((v) => {
+        const dhcp = v.ip === 0 ? " (DHCP)" : "";
+        v.ipStr = v.vlan ? this.getIpString(v.vlan + v.ip) + dhcp : "";
+        v.macStr = this.getMacString(v.mac);
+        hw.ipStr += hw.ipStr ? "/ " + v.ipStr : v.ipStr;
+        hw.macStr += hw.macStr ? "/ " + v.macStr : v.macStr;
+        hw.vlanStr += hw.vlanStr ? "/ " + v.bezeichnung : v.bezeichnung;
+        macsearch += v.mac;
+      });
+    }
+
+    if (hw.apId) {
+      const ap = this.apList.find((a) => a.apId === hw.apId);
+      if (ap) {
+        hw.ap = ap;
+        hw.apStr = ap.apname + " | " + ap.oe.betriebsstelle + " | " + ap.bezeichnung;
+        ap.hw.push(hw);
+        ap.macsearch = macsearch;
+        if (hw.pri) {
+          if (hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG) {
+            ap.hwTypStr = hw.konfiguration;
+          }
+          ap.hwStr =
+            hw.hwKonfig.hersteller +
+            " - " +
+            hw.hwKonfig.bezeichnung +
+            (hw.sernr && hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG
+              ? " [" + hw.sernr + "]"
+              : "");
+          ap.ipStr += ap.ipStr ? "/ " + hw.ipStr : hw.ipStr;
+          ap.macStr += ap.macStr ? "/ " + hw.macStr : hw.macStr;
+          ap.vlanStr += ap.vlanStr ? "/ " + hw.vlanStr : hw.vlanStr;
+        } else {
+          // fuer die Suche in sonstiger HW
+          ap.sonstHwStr +=
+            (ap.sonstHwStr ? "/" : "") +
+            " " +
+            hw.hwKonfig.hersteller +
+            " " +
+            hw.hwKonfig.bezeichnung +
+            (hw.sernr && hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG
+              ? " " + hw.sernr
+              : "");
+        }
+      }
+    }
+  }
+
+  public apSortHw(ap: Arbeitsplatz): void {
+    ap.hw.sort((a, b) => {
+      if (a.pri) {
+        return -1;
+      } else if (b.pri) {
+        return 1;
+      } else {
+        return this.collator.compare(
+          a.hwKonfig.hwTypBezeichnung + a.hwKonfig.hersteller + a.hwKonfig.bezeichnung + a.sernr,
+          b.hwKonfig.hwTypBezeichnung + b.hwKonfig.hersteller + b.hwKonfig.bezeichnung + b.sernr
+        );
+      }
+    });
+  }
+
+  private handleError = (error: HttpErrorResponse): Observable<never> => {
+    if (error.status === 0) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error("An error occurred:", error.error);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong.
+      console.error(`Backend returned code ${error.status}, ` + `body was: `, error.error);
+    }
+    // Return an observable with a user-facing error message.
+    return throwError("Something bad happened; please try again later.");
+  };
 }

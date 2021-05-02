@@ -7,7 +7,12 @@
     <div [formGroup]="tagFormGroup">
       <div *ngFor="let tag of tagInput">
         <mat-form-field class="abstand">
-          <mat-select [formControl]="tag.tagCtrl" [errorStateMatcher]="matcher" #tagsel>
+          <mat-select
+            [formControl]="tag.tagCtrl"
+            [errorStateMatcher]="matcher"
+            #tagsel
+            (selectionChange)="onSelectionChange($event, tagtext)"
+          >
             <mat-option *ngFor="let t of apTagTypes" [value]="t">
               {{ t.bezeichnung }}
             </mat-option>
@@ -16,6 +21,7 @@
         </mat-form-field>
         <mat-form-field class="abstand">
           <input
+            #tagtext
             matInput
             [formControl]="tag.textCtrl"
             [errorStateMatcher]="matcher"
