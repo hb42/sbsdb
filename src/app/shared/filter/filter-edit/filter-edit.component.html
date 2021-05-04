@@ -17,7 +17,7 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field class="abstand">
-    <mat-label>Vergleich</mat-label>
+    <mat-label>Wert</mat-label>
     <input *ngIf="!compareAsList()" matInput [(ngModel)]="data.c" />
     <mat-select *ngIf="compareAsList()" [(value)]="data.c">
       <mat-option *ngFor="let sel of selectedField?.selectList" [value]="sel">

@@ -1,11 +1,17 @@
 {
   "root": true,
-  "ignorePatterns": ["projects/**/*"],
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": [
+        "*.ts"
+      ],
       "parserOptions": {
-        "project": ["tsconfig.json"],
+        "project": [
+          "tsconfig.json"
+        ],
         "createDefaultProgram": true
       },
       "extends": [
@@ -14,16 +20,14 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        // prettier verwenden
-        // "prettier/@typescript-eslint",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:@angular-eslint/recommended--extra"
       ],
       "rules": {
         "@angular-eslint/component-selector": [
           "error",
           {
             "type": "element",
-            // an Projekt anpassen
             "prefix": "sbsdb",
             "style": "kebab-case"
           }
@@ -32,23 +36,29 @@
           "error",
           {
             "type": "attribute",
-            // an Projekt anpassen
             "prefix": "sbsdb",
             "style": "camelCase"
           }
         ],
         "@typescript-eslint/dot-notation": "off",
-        // UpperCase fuer Variablen erlauben
         "@typescript-eslint/naming-convention": [
           "error",
-          { "selector": ["variable", "property"], "format": ["camelCase", "UPPER_CASE"] }
+          {
+            "selector": [
+              "variable",
+              "property"
+            ],
+            "format": [
+              "camelCase",
+              "UPPER_CASE"
+            ]
+          }
         ],
-        // sonst werden alle enum's angemeckert
         "no-shadow": "off",
-        "@typescript-eslint/no-shadow": ["error"],
-        // Webstorm rückt Leerzeilen ein
+        "@typescript-eslint/no-shadow": [
+          "error"
+        ],
         "no-trailing-spaces": "off",
-        // console.info, etc. verbieten (aber .debug erlauben)
         "no-restricted-syntax": [
           "error",
           {
@@ -59,11 +69,14 @@
       }
     },
     {
-      "files": ["*.html"],
-      "excludedFiles": ["*index.html"],
+      "files": [
+        "*.html"
+      ],
+      "excludedFiles": [
+        "*index.html"
+      ],
       "extends": [
         "plugin:@angular-eslint/template/recommended",
-        // "prettier/@typescript-eslint",
         "plugin:prettier/recommended"
       ],
       "rules": {}
