@@ -93,6 +93,16 @@ export abstract class BaseFilterService {
   }
 
   /**
+   * Allgemeiner Filter fuer die Tabelle
+   *
+   * Genereller Filter, der nicht ueber die Filterfelder im Header oder in der
+   * erweiterten Suche gesetzt wird, sondern z.B. durch eine Menueauswahl.
+   *
+   * @param row
+   */
+  public abstract tableFilter(row: unknown): boolean;
+
+  /**
    * Startparameter setzen (-> Ap/HwService)
    *
    * @param col - Array der Tabellen-Spalten
@@ -109,9 +119,12 @@ export abstract class BaseFilterService {
     void this.readGlobalFilters();
 
     this.dataTable.filterPredicate = (row: unknown): boolean => {
-      let valid = this.filterExpression.validate(
-        row as Record<string, string | Array<string> | number | Date>
-      );
+      let valid = this.tableFilter(row);
+      if (valid) {
+        valid = this.filterExpression.validate(
+          row as Record<string, string | Array<string> | number | Date>
+        );
+      }
       if (!valid) {
         row["selected"] = false;
         // console.debug("## ausgefiltert ##");

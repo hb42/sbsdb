@@ -35,7 +35,8 @@ export class UserSession {
 
     // sicherstellen, dass alle Einstellungen definiert sind
     this.settings.path = this.settings.path ?? "";
-    this.settings.showStandort = !!this.settings.showStandort;
+    this.settings.showStandort =
+      this.settings.showStandort === undefined ? true : !!this.settings.showStandort;
     this.settings.apColumnFilters = this.settings.apColumnFilters ?? [];
     this.settings.apFilter = this.settings.apFilter ?? { stdFilter: true, filters: [] };
     this.settings.latestApFilter = this.settings.latestApFilter ?? "";
@@ -49,6 +50,7 @@ export class UserSession {
     this.settings.hwSortColumn = this.settings.hwSortColumn ?? "";
     this.settings.hwSortDirection = this.settings.hwSortDirection ?? "";
     this.settings.hwPageSize = this.settings.hwPageSize ?? 100;
+    this.settings.showFremde = !!this.settings.showFremde;
   }
 
   // Benutzerrechte sind R/O
@@ -174,6 +176,15 @@ export class UserSession {
 
   public set hwPageSize(pg: number) {
     this.settings.hwPageSize = pg;
+    this.change();
+  }
+
+  public get showFremde(): boolean {
+    return this.settings.showFremde;
+  }
+
+  public set showFremde(o: boolean) {
+    this.settings.showFremde = o;
     this.change();
   }
 

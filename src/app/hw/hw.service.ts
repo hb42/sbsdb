@@ -111,6 +111,11 @@ export class HwService {
     }
   }
 
+  public toggleFremdeHw(): void {
+    this.userSettings.showFremde = !this.userSettings.showFremde;
+    this.triggerFilter();
+  }
+
   public test(hw: Hardware): void {
     console.dir(hw);
   }
@@ -174,6 +179,12 @@ export class HwService {
             const a = this.hwDataSource.data
               .filter((h1) => {
                 const val = GetColumn("kategorie", this.columns).filterControl.value as string;
+                if (
+                  !this.userSettings.showFremde &&
+                  h1.hwKonfig.hwTypFlag === DataService.FREMDE_HW_FLAG
+                ) {
+                  return false;
+                }
                 return val ? h1.hwKonfig.apKatBezeichnung === val : true;
               })
               .map((h2) => h2.hwKonfig.hwTypBezeichnung);
@@ -183,7 +194,17 @@ export class HwService {
             return [...new Set(a)].sort();
           } else {
             return [
-              ...new Set(this.hwDataSource.data.map((h) => h.hwKonfig.hwTypBezeichnung)),
+              ...new Set(
+                this.hwDataSource.data
+                  .filter(
+                    (h3) =>
+                      !(
+                        !this.userSettings.showFremde &&
+                        h3.hwKonfig.hwTypFlag === DataService.FREMDE_HW_FLAG
+                      )
+                  )
+                  .map((h) => h.hwKonfig.hwTypBezeichnung)
+              ),
             ].sort();
           }
         },
@@ -215,6 +236,12 @@ export class HwService {
             const a = this.hwDataSource.data
               .filter((h1) => {
                 const val = GetColumn("typ", this.columns).filterControl.value as string;
+                if (
+                  !this.userSettings.showFremde &&
+                  h1.hwKonfig.hwTypFlag === DataService.FREMDE_HW_FLAG
+                ) {
+                  return false;
+                }
                 return val ? h1.hwKonfig.hwTypBezeichnung === val : true;
               })
               .map((h2) => h2.konfiguration);
@@ -223,7 +250,19 @@ export class HwService {
             }
             return [...new Set(a)].sort();
           } else {
-            return [...new Set(this.hwDataSource.data.map((h) => h.konfiguration))].sort();
+            return [
+              ...new Set(
+                this.hwDataSource.data
+                  .filter(
+                    (h3) =>
+                      !(
+                        !this.userSettings.showFremde &&
+                        h3.hwKonfig.hwTypFlag === DataService.FREMDE_HW_FLAG
+                      )
+                  )
+                  .map((h) => h.konfiguration)
+              ),
+            ].sort();
           }
         },
         true

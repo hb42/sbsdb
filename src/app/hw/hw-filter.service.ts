@@ -35,6 +35,14 @@ export class HwFilterService extends BaseFilterService {
     return `Geräte zugewiesen ${aps}, frei ${free}`;
   }
 
+  public tableFilter(row: unknown): boolean {
+    if (this.userSettings.showFremde) {
+      return true;
+    }
+    const hw = row as Hardware;
+    return hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG;
+  }
+
   public getLatestUserFilter(): string {
     return this.userSettings.latestHwFilter;
   }

@@ -22,4 +22,5 @@ export interface UserSettings {
   hwSortColumn?: string;
   hwSortDirection?: string;
   hwPageSize?: number;
+  showFremde?: boolean;
 }

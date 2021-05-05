@@ -23,6 +23,10 @@ export class ApFilterService extends BaseFilterService {
     this.userSettings = configService.getUser();
   }
 
+  public tableFilter(row: unknown): boolean {
+    return true;
+  }
+
   public getLatestUserFilter(): string {
     return this.userSettings.latestApFilter;
   }
