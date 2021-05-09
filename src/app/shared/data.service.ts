@@ -8,6 +8,7 @@ import { Hardware } from "./model/hardware";
 import { HwKonfig } from "./model/hw-konfig";
 import { ConfigService } from "./config/config.service";
 import { TagTyp } from "./model/tagTyp";
+import { Vlan } from "./model/vlan";
 
 @Injectable({
   providedIn: "root",
@@ -17,12 +18,14 @@ export class DataService {
   public static TAG_DISPLAY_NAME = "TAG";
   public static BOOL_TAG_FLAG = 1;
   public static FREMDE_HW_FLAG = 1;
+  public static PERIPHERIE_FLAG = 1;
 
   public apList: Arbeitsplatz[] = [];
   public bstList: Betrst[] = [];
   public hwList: Hardware[] = [];
   public hwKonfigList: HwKonfig[] = [];
   public tagTypList: TagTyp[] = [];
+  public vlanList: Vlan[] = [];
 
   // Signale fuer das Laden der benoetigten Daten:
   //   apListFetched signalisiert, dass die AP-Liste vollstaendig geladen ist (und
@@ -40,6 +43,7 @@ export class DataService {
   // TODO wenn die Signalisierung funktioniert, kann hier das Handling einer
   //      aktualisierten Liste eingehaengt werden
   public tagTypListReady: EventEmitter<void> = new EventEmitter<void>();
+  public vlanListReady: EventEmitter<void> = new EventEmitter<void>();
 
   // Web-API calls
   public readonly oeTreeUrl: string;
@@ -53,6 +57,7 @@ export class DataService {
   public readonly pageHwUrl: string;
   public readonly allHwKonfig: string;
   public readonly allTagTypesUrl: string;
+  public readonly allVlansUrl: string;
   public readonly changeApUrl: string;
 
   // case insensitive alpha sort
@@ -83,6 +88,7 @@ export class DataService {
     this.countHwUrl = this.configService.webservice + "/hw/count";
     this.allHwKonfig = this.configService.webservice + "/hwkonfig/all";
     this.allTagTypesUrl = this.configService.webservice + "/ap/tagtypes";
+    this.allVlansUrl = this.configService.webservice + "/ap/vlans";
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
 
     const readyEventCheck = () => {
@@ -113,6 +119,7 @@ export class DataService {
     });
 
     this.fetchTagTypList();
+    this.fetchVlanList();
   }
 
   public get(url: string): Observable<unknown> {
@@ -169,6 +176,13 @@ export class DataService {
     this.get(this.allTagTypesUrl).subscribe((tt: TagTyp[]) => {
       this.tagTypList = tt;
       this.tagTypListReady.emit();
+    });
+  }
+
+  public fetchVlanList(): void {
+    this.get(this.allVlansUrl).subscribe((v: Vlan[]) => {
+      this.vlanList = v;
+      this.vlanListReady.emit();
     });
   }
 

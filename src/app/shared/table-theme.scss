@@ -133,4 +133,10 @@
   .mat-card .highlight .mat-flat-button.mat-button-filter {
     background-color: mat-color($primary, A400, 0.2);
   }
+
+  /* Input */
+
+  .input-title {
+    background-color: mat-color($primary, 100, .5);
+  }
 }

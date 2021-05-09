@@ -1,11 +1,37 @@
 <mat-card>
-  <mat-card-header>
+  <mat-card-header class="input-title card-title">
     <mat-card-subtitle>Hardware</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <!-- umgebende FORM muss die uebergeordnete component bereitstellen -->
-    <div [formGroup]="hwFormGroup">
-      <div>hw-dropdown DEL-btn MAC vlan-dropdown ip-input ip DEL-btn(?) ADD-MAC-btn</div>
+    <div [formGroup]="hwFormGroup" class="hw-box">
+      <div>
+        <sbsdb-edit-hw
+          [hw]="priHw()"
+          [ap]="ap"
+          [pri]="true"
+          [formGroup]="hwFormGroup"
+          [onSubmit]="onSubmit"
+          (ready)="hwInputReady($event)"
+        ></sbsdb-edit-hw>
+      </div>
+      <div class="input-title periph-title">
+        Peripherie
+        <div class="fill"></div>
+        <button mat-icon-button title="Weitere Peripherie anfügen" type="button">
+          <mat-icon [color]="'primary'">add_circle_outline</mat-icon>
+        </button>
+      </div>
+      <div *ngFor="let peri of periHw()">
+        <sbsdb-edit-hw
+          [hw]="peri"
+          [ap]="ap"
+          [pri]="false"
+          [formGroup]="hwFormGroup"
+          [onSubmit]="onSubmit"
+          (ready)="hwInputReady($event)"
+        ></sbsdb-edit-hw>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>

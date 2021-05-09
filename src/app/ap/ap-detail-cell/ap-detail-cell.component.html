@@ -13,7 +13,7 @@
       <span>Öffnungszeiten</span><br />{{ element.oe.oeff }}
     </div>
     <div class="fill"></div>
-    <div class="detail-cell-margin edit-button">
+    <div *ngIf="apService.userSettings.isAdmin" class="detail-cell-margin edit-button">
       <button mat-icon-button title="Arbeitsplatz bearbeiten" (click)="apService.apEdit(element)">
         <mat-icon>edit</mat-icon>
       </button>
@@ -35,7 +35,7 @@
           <tr>
             <th colspan="4">
               <div class="sub-table-head-title">Hardware</div>
-              <div class="sub-table-head-button edit-button">
+              <div *ngIf="apService.userSettings.isAdmin" class="sub-table-head-button edit-button">
                 <button
                   mat-icon-button
                   title="Hardware/IP bearbeiten"
@@ -82,7 +82,7 @@
           <tr>
             <th colspan="2">
               <div class="sub-table-head-title">Sonstige Informationen</div>
-              <div class="sub-table-head-button edit-button">
+              <div *ngIf="apService.userSettings.isAdmin" class="sub-table-head-button edit-button">
                 <button
                   mat-icon-button
                   title="Sonstige Infos bearbeiten"

@@ -147,6 +147,11 @@ export class ApService {
     this.navigationService.navToHw.emit({ col: "hwid", search: hw.id });
   }
 
+  public toggleStandort(): void {
+    this.userSettings.showStandort = !this.userSettings.showStandort;
+    this.filterService.triggerFilter();
+  }
+
   // public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
   //   const col = GetColumn("aptyp", this.columns);
   //   col.filterControl.setValue(ap.apTypBezeichnung);
