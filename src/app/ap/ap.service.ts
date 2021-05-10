@@ -576,7 +576,7 @@ export class ApService {
           false,
           0,
           ColumnType.STRING,
-          Number(tag[1]) === DataService.BOOL_TAG_FLAG
+          Number(tag[1]) & DataService.BOOL_TAG_FLAG
             ? [RelOp.exist, RelOp.notexist]
             : [
                 RelOp.startswith,

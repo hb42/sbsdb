@@ -69,7 +69,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         event.preventDefault();
         event.stopPropagation();
       } else if (event.key == "x") {
-        this.apService.filterService.toCsv();
+        void this.apService.filterService.toCsv();
         event.preventDefault();
         event.stopPropagation();
       } else {

@@ -58,7 +58,7 @@
             {{ hw.hwKonfig.hwTypBezeichnung }}
           </td>
           <td>
-            <span *ngIf="hw.hwKonfig.hwTypFlag !== fremdeHwFlag">
+            <span *ngIf="!isFremdeHw(hw)">
               {{ hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung }}
               [<a
                 mat-button
@@ -95,8 +95,8 @@
           </tr>
         </thead>
         <tr *ngFor="let tag of element.tags">
-          <td [colSpan]="tag.flag === aptypeFlag ? 2 : 1">{{ tag.bezeichnung }}</td>
-          <td *ngIf="tag.flag !== aptypeFlag">{{ tag.text }}</td>
+          <td [colSpan]="isBoolTag(tag.flag) ? 2 : 1">{{ tag.bezeichnung }}</td>
+          <td *ngIf="!isBoolTag(tag.flag)">{{ tag.text }}</td>
         </tr>
       </table>
     </div>

@@ -26,7 +26,6 @@ export class EditTagsComponent implements OnInit {
   public tagInput: TagInput[];
   public newTag: FormControl;
   public newText: FormControl;
-  public noTextFlag: number = DataService.BOOL_TAG_FLAG;
 
   private count = 0;
   private changes: TagChange[] = [];
@@ -56,7 +55,7 @@ export class EditTagsComponent implements OnInit {
           // eslint-disable-next-line @typescript-eslint/unbound-method
           [Validators.required, this.checkTypes]
         ),
-        textCtrl: new FormControl(tag.flag === DataService.BOOL_TAG_FLAG ? " " : tag.text, [
+        textCtrl: new FormControl(this.isBoolTag(tag.flag) ? " " : tag.text, [
           // eslint-disable-next-line @typescript-eslint/unbound-method
           Validators.required,
         ]),
@@ -109,7 +108,7 @@ export class EditTagsComponent implements OnInit {
    */
   public onSelectionChange(evt: MatSelectChange, input: HTMLInputElement): void {
     const tag = evt.value as TagTyp;
-    if (tag.flag === DataService.BOOL_TAG_FLAG && input.value) {
+    if (this.isBoolTag(tag.flag) && input.value) {
       input.value = "";
     }
   }
@@ -172,7 +171,7 @@ export class EditTagsComponent implements OnInit {
   public add(tag: TagTyp, val: string): void {
     const t = new Tag();
     t.tagId = tag.id;
-    t.text = tag.flag === DataService.BOOL_TAG_FLAG ? "1" : val;
+    t.text = this.isBoolTag(tag.flag) ? "1" : val;
     const rc: TagInput = {
       apid: this.ap.apId,
       tag: t,
@@ -180,7 +179,7 @@ export class EditTagsComponent implements OnInit {
       // eslint-disable-next-line @typescript-eslint/unbound-method
       tagCtrl: new FormControl(tag, [Validators.required, this.checkTypes]),
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      textCtrl: new FormControl(tag.flag === this.noTextFlag ? " " : val, [Validators.required]),
+      textCtrl: new FormControl(this.isBoolTag(tag.flag) ? " " : val, [Validators.required]),
     };
     rc.tagCtrl.markAsTouched();
     rc.textCtrl.markAsTouched();
@@ -226,7 +225,7 @@ export class EditTagsComponent implements OnInit {
             apId: this.ap.apId,
             apTagId: ti.tag.apTagId,
             tagId: newTag.id,
-            text: newTag.flag === this.noTextFlag ? "" : newText,
+            text: this.isBoolTag(newTag.flag) ? "" : newText,
           });
         }
       } else {
@@ -235,11 +234,15 @@ export class EditTagsComponent implements OnInit {
           apId: this.ap.apId,
           apTagId: null,
           tagId: newTag.id,
-          text: newTag.flag === this.noTextFlag ? "" : newText,
+          text: this.isBoolTag(newTag.flag) ? "" : newText,
         });
       }
     });
 
     this.tagReady.emit(this.changes);
+  }
+
+  public isBoolTag(flag: number): boolean {
+    return (flag & DataService.BOOL_TAG_FLAG) !== 0;
   }
 }

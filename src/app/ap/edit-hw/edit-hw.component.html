@@ -5,7 +5,7 @@
         [formControl]="hwInput.hwCtrl"
         [errorStateMatcher]="matcher"
         (selectionChange)="hwSelectionChange()"
-        [sbsdbDisableControl]="pri && ap.apTypFlag === fremdeHwFlag"
+        [sbsdbDisableControl]="pri && isFremdeHw(ap.apTypFlag)"
       >
         <mat-option *ngFor="let h of hwSelectList()" [value]="h">
           {{ h ? h.konfiguration + "[" + h.sernr + "]" : "<--->" }}
@@ -16,7 +16,7 @@
     <div class="fill"></div>
     <button
       class="abstand"
-      *ngIf="hwInput.hwCtrl.value && hwInput.hwCtrl.value.hwKonfig.apKatFlag !== periphFlag"
+      *ngIf="hwInput.hwCtrl.value && !isPeripherie(hwInput.hwCtrl.value)"
       mat-icon-button
       color="primary"
       title="Neue MAC- bzw. IP-Adresse hinzufügen"

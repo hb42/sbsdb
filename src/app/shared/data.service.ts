@@ -16,9 +16,9 @@ import { Vlan } from "./model/vlan";
 export class DataService {
   public static defaultpageSize = 200;
   public static TAG_DISPLAY_NAME = "TAG";
-  public static BOOL_TAG_FLAG = 1;
-  public static FREMDE_HW_FLAG = 1;
-  public static PERIPHERIE_FLAG = 1;
+  public static BOOL_TAG_FLAG = 0b0000_0001;
+  public static FREMDE_HW_FLAG = 0b0000_0001;
+  public static PERIPHERIE_FLAG = 0b0000_0001;
 
   public apList: Arbeitsplatz[] = [];
   public bstList: Betrst[] = [];
@@ -278,7 +278,7 @@ export class DataService {
 
     // ap.subTypes = [];
     ap.tags.forEach((tag) => {
-      tag.text = tag.flag === DataService.BOOL_TAG_FLAG ? "1" : tag.text;
+      tag.text = tag.flag & DataService.BOOL_TAG_FLAG ? "1" : tag.text;
       ap[this.tagFieldName(tag.bezeichnung)] = tag.text;
     });
     this.sortAP(ap);
@@ -289,7 +289,7 @@ export class DataService {
       if (a.flag === b.flag) {
         return this.collator.compare(a.bezeichnung, b.bezeichnung);
       } else {
-        return a.flag === DataService.BOOL_TAG_FLAG ? -1 : 1;
+        return a.flag & DataService.BOOL_TAG_FLAG ? -1 : 1;
       }
     });
   }
@@ -331,14 +331,14 @@ export class DataService {
         ap.hw.push(hw);
         ap.macsearch = macsearch;
         if (hw.pri) {
-          if (hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG) {
+          if ((hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0) {
             ap.hwTypStr = hw.konfiguration;
           }
           ap.hwStr =
             hw.hwKonfig.hersteller +
             " - " +
             hw.hwKonfig.bezeichnung +
-            (hw.sernr && hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG
+            (hw.sernr && (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0
               ? " [" + hw.sernr + "]"
               : "");
           ap.ipStr += ap.ipStr ? "/ " + hw.ipStr : hw.ipStr;
@@ -352,7 +352,7 @@ export class DataService {
             hw.hwKonfig.hersteller +
             " " +
             hw.hwKonfig.bezeichnung +
-            (hw.sernr && hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG
+            (hw.sernr && (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0
               ? " " + hw.sernr
               : "");
         }

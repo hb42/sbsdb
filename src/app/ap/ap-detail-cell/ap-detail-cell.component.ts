@@ -2,6 +2,8 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { Component, Input } from "@angular/core";
 import { DataService } from "../../shared/data.service";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
+import { Hardware } from "../../shared/model/hardware";
+import { Tag } from "../../shared/model/tag";
 import { ApService } from "../ap.service";
 
 @Component({
@@ -19,11 +21,15 @@ import { ApService } from "../ap.service";
 export class ApDetailCellComponent {
   @Input() public element: Arbeitsplatz;
 
-  // const importieren
-  public fremdeHwFlag = DataService.FREMDE_HW_FLAG;
-  public aptypeFlag = DataService.BOOL_TAG_FLAG;
-
   constructor(public apService: ApService) {
     // noop
+  }
+
+  public isFremdeHw(hw: Hardware): boolean {
+    return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) !== 0;
+  }
+
+  public isBoolTag(flag: number): boolean {
+    return (flag & DataService.BOOL_TAG_FLAG) !== 0;
   }
 }

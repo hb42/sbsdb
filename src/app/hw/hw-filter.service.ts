@@ -40,7 +40,7 @@ export class HwFilterService extends BaseFilterService {
       return true;
     }
     const hw = row as Hardware;
-    return hw.hwKonfig.hwTypFlag !== DataService.FREMDE_HW_FLAG;
+    return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0;
   }
 
   public getLatestUserFilter(): string {

@@ -4,6 +4,7 @@ import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { Hardware } from "../../shared/model/hardware";
+import { Tag } from "../../shared/model/tag";
 import { Vlan } from "../../shared/model/vlan";
 import { HwInput } from "./hw-input";
 
@@ -23,8 +24,6 @@ export class EditHwComponent implements OnInit {
   @Output() public ready: EventEmitter<Hardware>; // liefert die zu aenderenden Daten
 
   public matcher = new FormFieldErrorStateMatcher();
-  public fremdeHwFlag = DataService.FREMDE_HW_FLAG;
-  public periphFlag = DataService.PERIPHERIE_FLAG;
   public hwFormGroup: FormGroup;
   public macFormGroup: FormGroup;
 
@@ -51,7 +50,7 @@ export class EditHwComponent implements OnInit {
 
     this.hwFormGroup.addControl(`hw${EditHwComponent.count++}`, this.hwInput.hwCtrl);
 
-    if (this.hw && this.hw.hwKonfig.apKatFlag !== this.periphFlag) {
+    if (this.hw && !this.isPeripherie(this.hw)) {
       console.debug("adding vlan");
       this.hw.vlans.forEach((v) => {
         const vl = this.getVlan(v.vlanId);
@@ -96,7 +95,7 @@ export class EditHwComponent implements OnInit {
           return true;
         }
         // zugeordnete HW und fremde HW nicht anzeigen
-        if (h.ap || h.hwKonfig.hwTypFlag === this.fremdeHwFlag) {
+        if (h.ap || this.isFremdeHw(h.hwKonfig.hwTypFlag)) {
           return false;
         }
         if (this.pri) {
@@ -122,6 +121,14 @@ export class EditHwComponent implements OnInit {
 
   public vlanSelectionChange(): void {
     // FIXME IP auf 0 setzen
+  }
+
+  public isFremdeHw(flag: number): boolean {
+    return (flag & DataService.FREMDE_HW_FLAG) !== 0;
+  }
+
+  public isPeripherie(hw: Hardware): boolean {
+    return (hw.hwKonfig.apKatFlag & DataService.PERIPHERIE_FLAG) !== 0;
   }
 
   private getVlan(id: number): Vlan {

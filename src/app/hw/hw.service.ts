@@ -181,7 +181,7 @@ export class HwService {
                 const val = GetColumn("kategorie", this.columns).filterControl.value as string;
                 if (
                   !this.userSettings.showFremde &&
-                  h1.hwKonfig.hwTypFlag === DataService.FREMDE_HW_FLAG
+                  h1.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG
                 ) {
                   return false;
                 }
@@ -200,7 +200,7 @@ export class HwService {
                     (h3) =>
                       !(
                         !this.userSettings.showFremde &&
-                        h3.hwKonfig.hwTypFlag === DataService.FREMDE_HW_FLAG
+                        h3.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG
                       )
                   )
                   .map((h) => h.hwKonfig.hwTypBezeichnung)
@@ -238,7 +238,7 @@ export class HwService {
                 const val = GetColumn("typ", this.columns).filterControl.value as string;
                 if (
                   !this.userSettings.showFremde &&
-                  h1.hwKonfig.hwTypFlag === DataService.FREMDE_HW_FLAG
+                  h1.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG
                 ) {
                   return false;
                 }
@@ -257,7 +257,7 @@ export class HwService {
                     (h3) =>
                       !(
                         !this.userSettings.showFremde &&
-                        h3.hwKonfig.hwTypFlag === DataService.FREMDE_HW_FLAG
+                        h3.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG
                       )
                   )
                   .map((h) => h.konfiguration)

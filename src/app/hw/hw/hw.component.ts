@@ -61,7 +61,7 @@ export class HwComponent implements AfterViewInit, OnInit {
         event.preventDefault();
         event.stopPropagation();
       } else if (event.key == "x") {
-        this.hwService.hwFilterService.toCsv();
+        void this.hwService.hwFilterService.toCsv();
         event.preventDefault();
         event.stopPropagation();
       } else {

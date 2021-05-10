@@ -25,7 +25,7 @@
             matInput
             [formControl]="tag.textCtrl"
             [errorStateMatcher]="matcher"
-            [sbsdbDisableControl]="tagsel.value && tagsel.value.flag === noTextFlag"
+            [sbsdbDisableControl]="tagsel.value && isBoolTag(tagsel.value.flag)"
           />
           <mat-error *ngIf="tag.textCtrl.invalid">{{ getErrorMessage(tag.textCtrl) }}</mat-error>
         </mat-form-field>
