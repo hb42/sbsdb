@@ -7,7 +7,7 @@ import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
-import { GetColumn } from "../shared/helper";
+import { Download, GetColumn } from "../shared/helper";
 import { KeyboardService } from "../shared/keyboard.service";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { Betrst } from "../shared/model/betrst";
@@ -128,7 +128,14 @@ export class ApService {
   }
 
   public test(): void {
-    this.filterService.testEdit();
+    // this.filterService.testEdit();
+    const csvblob: string = ["echo here we go", "pause"].join("\n");
+    const blob: Blob = new Blob([csvblob], {
+      type: "text/plain;charset=utf-8",
+      // type: "application/octet-stream;charset=UTF-8",
+    });
+
+    Download(blob, "sbsdb.cmd");
   }
 
   public apEdit(ap: Arbeitsplatz): void {

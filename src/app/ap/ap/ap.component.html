@@ -299,11 +299,7 @@
     <!--      <mat-icon>close</mat-icon>-->
     <!--      Alle Filter löschen-->
     <!--    </button>-->
-    <button
-      mat-menu-item
-      class="menue-entry"
-      (click)="apService.userSettings.showStandort = !apService.userSettings.showStandort"
-    >
+    <button mat-menu-item class="menue-entry" (click)="apService.toggleStandort()">
       <mat-icon>home</mat-icon>
       Standort anzeigen
       <span class="fill"></span>

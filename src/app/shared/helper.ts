@@ -3,6 +3,27 @@ import { SbsdbColumn } from "./table/sbsdb-column";
 export const BOM = String.fromCharCode(0xfeff);
 
 /**
+ * Blob als Datei herunterladen
+ *
+ * blob wird konstuiert als:
+ *   const blob: Blob = new Blob([string, string .. ], {
+ *     type: "text/plain;charset=utf-8", // alt.: "application/octet-stream;charset=UTF-8"
+ *   }
+ *
+ * @param content - Dateiinhalt als Blob
+ * @param fileName - Dateiname fuer Download
+ * @constructor
+ */
+export function Download(content: Blob, fileName: string): void {
+  const a = document.createElement("a");
+  const url = window.URL.createObjectURL(content);
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(url);
+  a.remove();
+}
+/**
  * Index der Spalte 'name' aus dem Array 'columns' holen.
  *
  * @param name

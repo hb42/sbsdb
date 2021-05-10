@@ -10,7 +10,7 @@ import { CsvDialogComponent } from "../csv-dialog/csv-dialog.component";
 import { DataService } from "../data.service";
 import { EditDialogData } from "../edit/edit-dialog/edit-dialog-data";
 import { EditDialogComponent } from "../edit/edit-dialog/edit-dialog.component";
-import { BOM, GetColumn, GetFieldContent } from "../helper";
+import { BOM, Download, GetColumn, GetFieldContent } from "../helper";
 import { BaseTableRow } from "../model/base-table-row";
 import { NavigationService } from "../navigation.service";
 import { ColumnType } from "../table/column-type.enum";
@@ -666,15 +666,7 @@ export abstract class BaseFilterService {
         const blob: Blob = new Blob([BOM, csvblob], {
           type: "text/csv;charset=utf-8",
         });
-
-        // output
-        const a = document.createElement("a");
-        const url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = "sbsdb.csv";
-        a.click();
-        window.URL.revokeObjectURL(url);
-        a.remove();
+        Download(blob, "sbsdb.csv");
       }
     });
   }
