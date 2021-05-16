@@ -223,3 +223,19 @@ table:not(.wrap-cell) .mat-cell > div {
 .status-item {
   padding: 0 10px;
 }
+
+// mat-card custom title
+
+.card-title {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 16px;
+  padding-right: 8px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+  height: 40px;
+}

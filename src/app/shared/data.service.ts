@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { IpHelper } from "./ip-helper";
 import { Betrst } from "./model/betrst";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { Hardware } from "./model/hardware";
@@ -154,24 +155,6 @@ export class DataService {
     return this.hwkonfiglistready;
   }
 
-  public getMacString(mac: string): string {
-    // kein match => Eingabe-String
-    return mac.replace(/^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/, "$1:$2:$3:$4:$5:$6").toUpperCase();
-  }
-
-  public getIpString(ip: number): string {
-    /* eslint-disable no-bitwise */
-    const ip4 = ip & 0xff;
-    ip = ip >> 8;
-    const ip3 = ip & 0xff;
-    ip = ip >> 8;
-    const ip2 = ip & 0xff;
-    ip = ip >> 8;
-    const ip1 = ip & 0xff;
-
-    return `${ip1}.${ip2}.${ip3}.${ip4}`;
-  }
-
   public fetchTagTypList(): void {
     this.get(this.allTagTypesUrl).subscribe((tt: TagTyp[]) => {
       this.tagTypList = tt;
@@ -314,8 +297,8 @@ export class DataService {
     if (hw.vlans && hw.vlans[0]) {
       hw.vlans.forEach((v) => {
         const dhcp = v.ip === 0 ? " (DHCP)" : "";
-        v.ipStr = v.vlan ? this.getIpString(v.vlan + v.ip) + dhcp : "";
-        v.macStr = this.getMacString(v.mac);
+        v.ipStr = v.vlan ? IpHelper.getIpString(v.vlan + v.ip) + dhcp : "";
+        v.macStr = IpHelper.getMacString(v.mac);
         hw.ipStr += hw.ipStr ? "/ " + v.ipStr : v.ipStr;
         hw.macStr += hw.macStr ? "/ " + v.macStr : v.macStr;
         hw.vlanStr += hw.vlanStr ? "/ " + v.bezeichnung : v.bezeichnung;

@@ -1,7 +1,15 @@
 <mat-card>
-  <mat-card-header class="input-title card-title">
-    <mat-card-subtitle>Sonstige Informationen</mat-card-subtitle>
-  </mat-card-header>
+  <div class="input-title card-title">
+    <!--  <mat-card-header class="input-title card-title">-->
+    <!--    <mat-card-subtitle>-->
+    Sonstige Informationen
+    <div class="fill"></div>
+    <button mat-icon-button title="Neuen Eintrag anfügen" type="button" (click)="addTag()">
+      <mat-icon [color]="'primary'">add_circle_outline</mat-icon>
+    </button>
+    <!--    </mat-card-subtitle>-->
+    <!--  </mat-card-header>-->
+  </div>
   <mat-card-content>
     <!-- umgebende FORM muss die uebergeordnete component bereitstellen -->
     <div [formGroup]="tagFormGroup" class="tag-box">
@@ -11,7 +19,7 @@
             [formControl]="tag.tagCtrl"
             [errorStateMatcher]="matcher"
             #tagsel
-            (selectionChange)="onSelectionChange($event, tagtext)"
+            (selectionChange)="onSelectionChange($event, tag)"
           >
             <mat-option *ngFor="let t of apTagTypes" [value]="t">
               {{ t.bezeichnung }}
@@ -29,27 +37,22 @@
           />
           <mat-error *ngIf="tag.textCtrl.invalid">{{ getErrorMessage(tag.textCtrl) }}</mat-error>
         </mat-form-field>
-        <button
-          *ngIf="tag.tag"
-          mat-icon-button
-          title="Eintrag löschen"
-          (click)="delete(tag)"
-          type="button"
-        >
+        <!--          *ngIf="tag.tag"-->
+        <button mat-icon-button title="Eintrag löschen" (click)="delete(tag)" type="button">
           <mat-icon color="accent">delete_outline</mat-icon>
         </button>
-        <button
-          *ngIf="!tag.tag"
-          mat-icon-button
-          title="Eintrag hinzufügen"
-          (click)="add(tag.tagCtrl.value, tag.textCtrl.value)"
-          type="button"
-          [disabled]="newText.invalid || newTag.invalid"
-        >
-          <mat-icon [color]="newText.invalid || newTag.invalid ? '' : 'primary'"
-            >add_circle_outline</mat-icon
-          >
-        </button>
+        <!--        <button-->
+        <!--          *ngIf="!tag.tag"-->
+        <!--          mat-icon-button-->
+        <!--          title="Eintrag hinzufügen"-->
+        <!--          (click)="add(tag.tagCtrl.value, tag.textCtrl.value)"-->
+        <!--          type="button"-->
+        <!--          [disabled]="newText.invalid || newTag.invalid"-->
+        <!--        >-->
+        <!--          <mat-icon [color]="newText.invalid || newTag.invalid ? '' : 'primary'"-->
+        <!--            >add_circle_outline</mat-icon-->
+        <!--          >-->
+        <!--        </button>-->
       </div>
       <mat-error *ngIf="tagFormGroup.invalid">{{ getFormErrorMessage() }}</mat-error>
     </div>

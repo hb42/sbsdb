@@ -41,10 +41,11 @@ export class EditTagsComponent implements OnInit {
     this.onSubmit.subscribe(() => {
       this.submit();
     });
+    // select list
     this.apTagTypes = this.dataService.tagTypList
       .filter((t) => t.apKategorieId === this.ap.apKatId)
-      .sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
-
+      .sort((a, b) => this.dataService.collator.compare(a.bezeichnung, b.bezeichnung));
+    // Daten fuer Form
     this.tagInput = this.ap.tags.map((tag) => {
       const rc = {
         apid: this.ap.apId,
@@ -64,20 +65,20 @@ export class EditTagsComponent implements OnInit {
       this.tagFormGroup.addControl(`txt_${rc.id}`, rc.textCtrl);
       return rc;
     });
-    const empty: TagInput = {
-      apid: this.ap.apId,
-      tag: null,
-      id: this.count++,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      tagCtrl: new FormControl(null, [Validators.required, this.checkTypes]),
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      textCtrl: new FormControl("", [Validators.required]),
-    };
-    // Formfelder fuer neue Werte nicht an FormGroup haengen. Die waeren immer invalid, wenn
-    // diese beiden leer sind!
-    this.newTag = empty.tagCtrl;
-    this.newText = empty.textCtrl;
-    this.tagInput.push(empty);
+    // const empty: TagInput = {
+    //   apid: this.ap.apId,
+    //   tag: null,
+    //   id: this.count++,
+    //   // eslint-disable-next-line @typescript-eslint/unbound-method
+    //   tagCtrl: new FormControl(null, [Validators.required, this.checkTypes]),
+    //   // eslint-disable-next-line @typescript-eslint/unbound-method
+    //   textCtrl: new FormControl("", [Validators.required]),
+    // };
+    // // Formfelder fuer neue Werte nicht an FormGroup haengen. Die waeren immer invalid, wenn
+    // // diese beiden leer sind!
+    // this.newTag = empty.tagCtrl;
+    // this.newText = empty.textCtrl;
+    // this.tagInput.push(empty);
     // an die uebergeordnete Form anhaengen
     this.formGroup.addControl("tag", this.tagFormGroup);
   }
@@ -101,16 +102,14 @@ export class EditTagsComponent implements OnInit {
   }
 
   /**
-   * Wenn TAG ausgewaehlt wird, der keinen Text hat, Text-Input leeren.
+   * Wenn neuer TAG ausgewaehlt wird, Text-Input leeren.
    *
    * @param evt
    * @param input
    */
-  public onSelectionChange(evt: MatSelectChange, input: HTMLInputElement): void {
-    const tag = evt.value as TagTyp;
-    if (this.isBoolTag(tag.flag) && input.value) {
-      input.value = "";
-    }
+  public onSelectionChange(evt: MatSelectChange, input: TagInput): void {
+    input.textCtrl.setValue("");
+    input.textCtrl.markAsTouched();
   }
 
   /**
@@ -143,9 +142,9 @@ export class EditTagsComponent implements OnInit {
    * @param tag
    */
   public delete(tag: TagInput): void {
-    if (tag) {
-      const idx = this.tagInput.findIndex((t) => t.id === tag.id);
-      const remove = this.tagInput.splice(idx, 1);
+    const idx = this.tagInput.findIndex((t) => t.id === tag.id);
+    const remove = this.tagInput.splice(idx, 1);
+    if (tag.tag) {
       // den geloeschten Wert merken
       if (remove.length === 1 && tag.tag.apTagId) {
         this.changes.push({
@@ -155,11 +154,12 @@ export class EditTagsComponent implements OnInit {
           text: "",
         });
       }
-      this.tagFormGroup.removeControl(`tag_${tag.id}`);
-      this.tagFormGroup.removeControl(`txt_${tag.id}`);
-      tag.tagCtrl = null;
-      tag.textCtrl = null;
     }
+    this.tagFormGroup.removeControl(`tag_${tag.id}`);
+    this.tagFormGroup.removeControl(`txt_${tag.id}`);
+    tag.tagCtrl = null;
+    tag.textCtrl = null;
+    // }
   }
 
   /**
@@ -198,6 +198,22 @@ export class EditTagsComponent implements OnInit {
     //   hier:             this.cdRef.detectChanges();
   }
 
+  public addTag(): void {
+    const rc: TagInput = {
+      apid: this.ap.apId,
+      tag: null,
+      id: this.count++,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      tagCtrl: new FormControl(null, [Validators.required, this.checkTypes]),
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      textCtrl: new FormControl("", [Validators.required]),
+    };
+    rc.tagCtrl.markAsTouched();
+    rc.textCtrl.markAsTouched();
+    this.tagFormGroup.addControl(`tag_${rc.id}`, rc.tagCtrl);
+    this.tagFormGroup.addControl(`txt_${rc.id}`, rc.textCtrl);
+    this.tagInput.push(rc);
+  }
   /**
    * Uebergeordnete form wurde abgeschickt
    *

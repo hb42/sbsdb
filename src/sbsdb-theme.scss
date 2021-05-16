@@ -1,12 +1,12 @@
 // -> https://material.angular.io/guide/theming
-@import "~@angular/material/theming";
 // Plus imports for other components in your app.
+@use '~@angular/material' as mat;
 @import "app/shared/table-theme";
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core();
+@include mat.core();
 
 /* selbstgestrickte Palette
    -> http://mcg.mbitson.com/#!?mcgpalette0=%231b72b8&mcgpalette1=%23ff9800
@@ -80,19 +80,19 @@ $hb-blue-alt: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$sbsdb-app-primary: mat-palette($hb-blue); //$mat-deep-orange);
-$sbsdb-app-accent: mat-palette($mat-deep-orange, A200, A100, A400); // 700, 500, 900); //$mat-indigo
+$sbsdb-app-primary: mat.define-palette($hb-blue); //mat.$deep-orange-palette);
+$sbsdb-app-accent: mat.define-palette(mat.$deep-orange-palette, A200, A100, A400); // 700, 500, 900); //mat.$indigo-palette
 
 // The warn palette is optional (defaults to red).
-$sbsdb-app-warn: mat-palette($mat-red);
+$sbsdb-app-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-app-warn);
+$sbsdb-app-theme: mat.define-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-app-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($sbsdb-app-theme);
+@include mat.all-component-themes($sbsdb-app-theme);
 
 // classes fuer allgemeine Tags
 @mixin material-colors($theme) {
@@ -102,44 +102,44 @@ $sbsdb-app-theme: mat-light-theme($sbsdb-app-primary, $sbsdb-app-accent, $sbsdb-
   $foreground: map-get($theme, foreground);
 
   .md-text-color {
-    color: mat-color($foreground, text);
+    color: mat.get-color-from-palette($foreground, text);
   }
   .md-primary-color {
-    color: mat-color($primary);
+    color: mat.get-color-from-palette($primary);
   }
   .md-primary-highlight-color2 {
-    color: mat-color($primary, A400);
+    color: mat.get-color-from-palette($primary, A400);
   }
   .md-primary-highlight-color {
-    color: mat-color($primary, A200);
+    color: mat.get-color-from-palette($primary, A200);
   }
   .md-primary-shadow {
-    background-color: mat-color($primary, A400, 0.2);
+    background-color: mat.get-color-from-palette($primary, A400, 0.2);
   }
   .md-primary-shadow-hover:hover {
-    background-color: mat-color($primary, A400, 0.2);
+    background-color: mat.get-color-from-palette($primary, A400, 0.2);
   }
   .md-accent-color {
-    color: mat-color($accent);
+    color: mat.get-color-from-palette($accent);
   }
   .md-accent-background-color {
-    background-color: mat-color($accent, A200);
+    background-color: mat.get-color-from-palette($accent, A200);
   }
   .md-accent-hover {
-    background-color: mat-color($accent, A200, 0.08);
+    background-color: mat.get-color-from-palette($accent, A200, 0.08);
   }
   .md-background-color {
-    background-color: mat-color($background, background);
+    background-color: mat.get-color-from-palette($background, background);
   }
   .md-background-color-hover {
-    background-color: mat-color($background, hover);
+    background-color: mat.get-color-from-palette($background, hover);
   }
   .mat-toolbar.head-spk {
     background: linear-gradient(
       to bottom,
-      mat-color($primary, 200) 0%,
+      mat.get-color-from-palette($primary, 200) 0%,
       // A200
-      mat-color($primary, 700) 100% // A700
+      mat.get-color-from-palette($primary, 700) 100% // A700
     );
   }
 

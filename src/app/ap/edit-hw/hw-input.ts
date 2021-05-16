@@ -1,17 +1,11 @@
 import { FormControl } from "@angular/forms";
 import { Hardware } from "../../shared/model/hardware";
-import { Vlan } from "../../shared/model/vlan";
+import { HwInputVlan } from "./hw-input-vlan";
 
 export interface HwInput {
   apid: number;
   hw: Hardware;
+  ctrlid: string;
   hwCtrl: FormControl;
-  vlans: {
-    mac: string;
-    vlan: Vlan;
-    ip: number;
-    macCtrl: FormControl;
-    vlanCtrl: FormControl;
-    ipCtrl: FormControl;
-  }[];
+  vlans: HwInputVlan[];
 }

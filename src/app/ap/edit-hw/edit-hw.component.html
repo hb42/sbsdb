@@ -2,31 +2,47 @@
   <div class="row-align">
     <mat-form-field class="hw-select">
       <mat-select
-        [formControl]="hwInput.hwCtrl"
+        [formControl]="hw.hwCtrl"
         [errorStateMatcher]="matcher"
-        (selectionChange)="hwSelectionChange()"
+        (selectionChange)="hwSelectionChange(hw.hwCtrl.value)"
         [sbsdbDisableControl]="pri && isFremdeHw(ap.apTypFlag)"
       >
         <mat-option *ngFor="let h of hwSelectList()" [value]="h">
-          {{ h ? h.konfiguration + "[" + h.sernr + "]" : "<--->" }}
+          {{ h ? h.konfiguration + " [" + h.sernr + "]" : "<--->" }}
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="hwInput.hwCtrl.invalid">{{ getErrorMessage(hwInput.hwCtrl) }}</mat-error>
+      <mat-error *ngIf="hw.hwCtrl.invalid">{{ getErrorMessage(hw.hwCtrl) }}</mat-error>
     </mat-form-field>
     <div class="fill"></div>
     <button
-      class="abstand"
-      *ngIf="hwInput.hwCtrl.value && !isPeripherie(hwInput.hwCtrl.value)"
+      #hwdelbtn
       mat-icon-button
-      color="primary"
-      title="Neue MAC- bzw. IP-Adresse hinzufügen"
+      class="abstand"
+      title="Hardware löschen"
+      type="button"
+      (click)="delHw()"
+      [disabled]="
+        pri &&
+        (hw.hwCtrl.value === null ||
+          (hw.hwCtrl.value && isFremdeHw(hw.hwCtrl.value.hwKonfig.hwTypFlag)))
+      "
     >
-      <!--      Neue MAC/IP-->
-      <mat-icon [color]="'primary'">add_link</mat-icon>
+      <mat-icon [color]="hwdelbtn.disabled ? '' : 'accent'">delete_outline</mat-icon>
     </button>
+
+    <!--    <button-->
+    <!--      class="abstand"-->
+    <!--      *ngIf="hwInput.hwCtrl.value && !isPeripherie(hwInput.hwCtrl.value)"-->
+    <!--      mat-icon-button-->
+    <!--      color="primary"-->
+    <!--      title="Neue MAC- bzw. IP-Adresse hinzufügen"-->
+    <!--    >-->
+    <!--      &lt;!&ndash;      Neue MAC/IP&ndash;&gt;-->
+    <!--      <mat-icon [color]="'primary'">add_link</mat-icon>-->
+    <!--    </button>-->
   </div>
 
-  <div *ngFor="let v of hwInput.vlans" class="row-align">
+  <div *ngFor="let v of hw.vlans" class="row-align">
     <mat-form-field>
       <mat-label>MAC-Adresse</mat-label>
       <input matInput [formControl]="v.macCtrl" [errorStateMatcher]="matcher" />
@@ -37,22 +53,31 @@
       <mat-select
         [formControl]="v.vlanCtrl"
         [errorStateMatcher]="matcher"
-        (selectionChange)="vlanSelectionChange()"
+        (selectionChange)="vlanSelectionChange(v)"
       >
-        <mat-option *ngFor="let v of vlans" [value]="v">
-          {{ v ? v.bezeichnung : "<--->" }}
+        <mat-option *ngFor="let vl of vlans" [value]="vl">
+          {{ vl ? vl.bezeichnung : "<--->" }}
         </mat-option>
       </mat-select>
       <mat-error *ngIf="v.vlanCtrl.invalid">{{ getErrorMessage(v.vlanCtrl) }}</mat-error>
+      <mat-hint align="start">{{ getNetworkInfo(v.vlanCtrl.value) }}</mat-hint>
+      <mat-hint align="end">{{ getIpInfo(v.vlanCtrl.value) }}</mat-hint>
     </mat-form-field>
     <mat-form-field class="ip-input abstand">
       <mat-label>IP</mat-label>
       <input matInput [formControl]="v.ipCtrl" [errorStateMatcher]="matcher" />
       <mat-error *ngIf="v.ipCtrl.invalid">{{ getErrorMessage(v.ipCtrl) }}</mat-error>
+      <mat-hint>DHCP = 0</mat-hint>
     </mat-form-field>
     <div class="abstand">
-      <button *ngIf="v.mac" mat-icon-button title="IP-Adresse löschen" type="button">
-        <mat-icon color="accent">delete_outline</mat-icon>
+      <button
+        [disabled]="!v.vlanCtrl.value"
+        mat-icon-button
+        title="IP-Adresse löschen"
+        type="button"
+        (click)="delIp(v)"
+      >
+        <mat-icon [color]="v.vlanCtrl.value ? 'accent' : ''">delete</mat-icon>
       </button>
     </div>
   </div>
