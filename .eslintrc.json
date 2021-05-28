@@ -72,9 +72,7 @@
       "files": [
         "*.html"
       ],
-      "excludedFiles": [
-        "*index.html"
-      ],
+      "plugins": [ "html" ],
       "extends": [
         "plugin:@angular-eslint/template/recommended",
         "plugin:prettier/recommended"
