@@ -43,6 +43,7 @@
   </div>
 
   <div *ngFor="let v of hw.vlans" class="row-align">
+    <mat-icon class="vlan-icon">subdirectory_arrow_right</mat-icon>
     <mat-form-field>
       <mat-label>MAC-Adresse</mat-label>
       <input matInput [formControl]="v.macCtrl" [errorStateMatcher]="matcher" />
@@ -77,7 +78,7 @@
         type="button"
         (click)="delIp(v)"
       >
-        <mat-icon [color]="v.vlanCtrl.value ? 'accent' : ''">delete</mat-icon>
+        <mat-icon [color]="v.vlanCtrl.value ? 'accent' : ''">delete_outline</mat-icon>
       </button>
     </div>
   </div>
