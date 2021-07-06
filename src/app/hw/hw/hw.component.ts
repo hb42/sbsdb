@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   HostBinding,
   HostListener,
@@ -33,7 +34,8 @@ export class HwComponent implements AfterViewInit, OnInit {
     private route: ActivatedRoute,
     private config: ConfigService,
     public dialog: MatDialog,
-    public hwService: HwService
+    public hwService: HwService,
+    private cdRef: ChangeDetectorRef
   ) {
     console.debug("c'tor HwComponent");
     this.hwService.editFilterService.setFilterService(this.hwService.hwFilterService);
@@ -94,6 +96,10 @@ export class HwComponent implements AfterViewInit, OnInit {
 
       //      this.hwService.navigationService.hwLoading = false;
     }, 0);
+    // Benutzer-Eingaben auf der AP-Seite koennen Aenderungen auf der HW-Seite ausloesen,
+    // und das triggert beim Wechsel zu HW u.U. *ExpressionChangedAfterItHasBeenCheckedError*.
+    // Das folgende verhindert diesen Fehler.
+    this.cdRef.detectChanges();
   }
 
   ngOnInit(): void {
@@ -102,7 +108,7 @@ export class HwComponent implements AfterViewInit, OnInit {
      */
     // TODO ActivatedRoute ist nur in der jeweiligen component sinnvoll
     //      d.h. je comp. in der das gebraucht wird .params.subscribe und das Handling an den Service delegieren
-    //      (evtl. NaviagatonService ??)
+    //      (evtl. NavigationService ??)
     this.route.paramMap.subscribe((params) => {
       // check params
       let encFilter: string = null;

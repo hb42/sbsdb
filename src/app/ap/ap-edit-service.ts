@@ -18,7 +18,7 @@ export class ApEditService extends BaseEditService {
   }
 
   public apEdit(ap: Arbeitsplatz): void {
-    this.edit({ ap: ap, editHw: true, editTags: true } as ApEditDialogData);
+    this.edit({ ap: ap, editAp: true, editHw: true, editTags: true } as ApEditDialogData);
   }
 
   public hwEdit(ap: Arbeitsplatz): void {
@@ -40,6 +40,7 @@ export class ApEditService extends BaseEditService {
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {
       console.debug("dialog closed");
+      console.dir(result);
       if (result) {
         this.save(result);
       }
@@ -47,7 +48,14 @@ export class ApEditService extends BaseEditService {
   }
 
   private save(result: ApEditDialogData): void {
-    const post = { id: result.ap.apId, tags: result.tags ?? [] } as EditApTransport;
+    const post = {
+      id: result.ap.apId,
+      ap: result.apData,
+      tags: result.tags ?? [],
+      hw: result.hw,
+    } as EditApTransport;
+    console.debug("save changes");
+    console.dir(post);
     this.dataService.post(this.dataService.changeApUrl, post).subscribe(
       (a: ApHw) => {
         // TODO handle changed AP

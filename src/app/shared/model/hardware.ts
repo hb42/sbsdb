@@ -28,6 +28,7 @@ export class Hardware implements BaseTableRow {
   public macStr = "";
   public vlanStr = "";
   public apStr = "";
+  public macsearch = "";
 
   // Darstellung
   public expanded?: boolean;

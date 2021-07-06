@@ -3,7 +3,7 @@ export class IpHelper {
 
   private static macString = /^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/;
   private static macCheck =
-    /(^\s*)([0-9a-fA-F]{2})[-:]?([0-9a-fA-F]{2})[-:]?([0-9a-fA-F]{2})[-:]?([0-9a-fA-F]{2})[-:]?([0-9a-fA-F]{2})[-:]?([0-9a-fA-F]{2})(\s*$)/;
+    /^\s*([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})\s*$/;
   private static ipString =
     /^\s*(\d|[01]?\d\d|2[0-4]\d|25[0-5])\.(\d|[01]?\d\d|2[0-4]\d|25[0-5])\.(\d|[01]?\d\d|2[0-4]\d|25[0-5])\.(\d|[01]?\d\d|2[0-4]\d|25[0-5])\s*$/;
   private static ipStringPart =
@@ -20,7 +20,8 @@ export class IpHelper {
 
   /**
    * Teil-IP-String in die numerische Darstellung umrechnen
-   * (fuer Host-Teil, wenn netmask < 24)
+   * (fuer Host-Teil, wenn netmask < 24,
+   *  z.B. "2.13" = 2*256 + 13 = 525)
    *
    * @param ip
    */
@@ -37,7 +38,7 @@ export class IpHelper {
           nums.push(Number.parseInt(ips[i], 10));
         }
       }
-      return nums.reduce((prev, n, i) => (prev += n * 256 ** i), 0);
+      return nums.reduce((prev, n, idx) => (prev += n * 256 ** idx), 0);
     } else {
       return null;
     }
@@ -55,7 +56,7 @@ export class IpHelper {
 
   /**
    * Eingegebene MAC-Adresse ueberpruefen und bei Erfolg ohne Sonderzeichen
-   * etc. (z.B. ':') zuruecklieferen. Im Fehlerfall wird null geliefert.
+   * (':', '-', '.') zuruecklieferen. Im Fehlerfall wird null geliefert.
    *
    * @param mac
    */
@@ -101,7 +102,7 @@ export class IpHelper {
    * @param netmask
    */
   public static getNetmask(netmask: number): number {
-    if (netmask < 32) {
+    if (netmask <= 32) {
       const host = 32 - netmask;
       const low = host ** 2 - 1;
       return 0xffff_ffff ^ low;
@@ -130,7 +131,7 @@ export class IpHelper {
    * @param netmask
    */
   public static getHostBits(netmask: number): number {
-    if (netmask < 32) {
+    if (netmask <= 32) {
       return netmask;
     } else {
       const bits = Math.log2(~netmask + 1);
@@ -173,5 +174,20 @@ export class IpHelper {
     const hostbits = this.getHostBits(netmask);
     const min = this.getHostIpMin(net, netmask);
     return 2 ** hostbits - 1 + min;
+  }
+
+  /**
+   * Host-Teil der Adresse als int
+   *  z.B. 5.77.42.120/24  -> 120 (Netz: 5.77.42.0)
+   *       5.77.200.45/25  -> 25  (Netz: 5.77.200.0)
+   *       5.77.200.129/25 -> 1   (Netz: 5.77.200.128)
+   *  => die vollstaendige Adresse ist die Addition von Netz- und Host-Teil
+   *
+   * @param host
+   * @param netmask
+   */
+  public static getHostIp(host: number, netmask: number): number {
+    netmask = this.getNetmask(netmask); // falls nur die Bit-Zahl geliefert wird
+    return host & ~netmask;
   }
 }

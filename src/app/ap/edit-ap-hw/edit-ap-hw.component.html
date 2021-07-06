@@ -23,8 +23,10 @@
           title="Weitere Peripherie anfügen"
           type="button"
           (click)="addPeripherie()"
+          [disabled]="periFormGroup.invalid"
+          [color]="'primary'"
         >
-          <mat-icon [color]="'primary'">add_circle_outline</mat-icon>
+          <mat-icon>add_circle_outline</mat-icon>
         </button>
       </div>
       <div *ngFor="let peri of data.periph">
@@ -32,7 +34,7 @@
           [hw]="peri"
           [ap]="ap"
           [pri]="false"
-          [formGroup]="hwFormGroup"
+          [formGroup]="periFormGroup"
           (delete)="delPeripherie($event)"
         ></sbsdb-edit-hw>
       </div>

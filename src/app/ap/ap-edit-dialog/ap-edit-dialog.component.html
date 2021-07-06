@@ -6,6 +6,14 @@
 >
   <div class="panel"><!-- ap data --></div>
   <mat-dialog-content class="panel">
+    <sbsdb-edit-ap
+      class="abstand"
+      *ngIf="data.editAp"
+      [ap]="data.ap"
+      [formGroup]="formGroup"
+      [onSubmit]="onSubmitEvent"
+      (apReady)="apReady($event)"
+    ></sbsdb-edit-ap>
     <sbsdb-edit-ap-hw
       class="abstand"
       *ngIf="data.editHw"

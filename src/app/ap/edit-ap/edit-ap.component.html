@@ -1,0 +1,58 @@
+<mat-card>
+  <div class="input-title card-title">
+    {{ ap.apTypBezeichnung }}
+  </div>
+
+  <mat-card-content class="fields">
+    <!-- umgebende FORM muss die uebergeordnete component bereitstellen -->
+    <!--    <div [formGroup]="apFormGroup"></div>-->
+
+    <mat-form-field class="abstand-top abstand textinp">
+      <mat-label>AP-Name</mat-label>
+      <input matInput [formControl]="nameCtrl" [errorStateMatcher]="matcher" />
+      <mat-error *ngIf="nameCtrl.invalid">{{ getErrorMessage(nameCtrl) }}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="abstand textinp">
+      <mat-label>Bezeichnung</mat-label>
+      <input matInput [formControl]="bezCtrl" [errorStateMatcher]="matcher" />
+      <mat-error *ngIf="bezCtrl.invalid">{{ getErrorMessage(bezCtrl) }}</mat-error>
+    </mat-form-field>
+    <div class="oe-fields">
+      <mat-form-field class="abstand standort textinp">
+        <mat-label>Standort</mat-label>
+        <mat-select
+          [formControl]="standCtrl"
+          [errorStateMatcher]="matcher"
+          (selectionChange)="onStandortSelectionChange()"
+        >
+          <mat-option *ngFor="let o of oeList" [value]="o">
+            {{ o.fullname }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="standCtrl.invalid">{{ getErrorMessage(standCtrl) }}</mat-error>
+      </mat-form-field>
+      <mat-form-field class="abstand textinp">
+        <mat-label>Verantwortliche OE</mat-label>
+        <mat-select [formControl]="verantwCtrl" [errorStateMatcher]="matcher">
+          <!--                (selectionChange)="onStandortSelectionChange($event)"-->
+          <mat-option *ngFor="let o of oeListNull" [value]="o">
+            {{ o ? o.fullname : "<--->" }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="standCtrl.invalid">{{ getErrorMessage(standCtrl) }}</mat-error>
+        <mat-hint align="start">sofern abweichend von Standort</mat-hint>
+      </mat-form-field>
+    </div>
+    <mat-form-field class="abstand bemerkung">
+      <mat-label>Bemerkung</mat-label>
+      <textarea
+        matInput
+        [formControl]="bemCtrl"
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="2"
+        cdkAutosizeMaxRows="5"
+      ></textarea>
+      <mat-error *ngIf="bezCtrl.invalid">{{ getErrorMessage(bezCtrl) }}</mat-error>
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>

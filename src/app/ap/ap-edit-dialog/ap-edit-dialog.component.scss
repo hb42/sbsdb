@@ -12,3 +12,9 @@
 .mat-dialog-title {
   margin: 0;
 }
+
+// max-height fuer Dialog ist per default auf 65vh eingestellt,
+// 85vh ist der max. nutzbare Wert
+.mat-dialog-content {
+  max-height: 85vh;
+}

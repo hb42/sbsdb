@@ -356,6 +356,23 @@ export class HwService {
     this.columns.push(
       new SbsdbColumn<HwService, Hardware>(
         this,
+        "mac",
+        () => "MAC",
+        () => "macsearch",
+        () => "macStr",
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.IP,
+        [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
+        null,
+        true
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
         "ap",
         () => "Arbeitsplatz",
         () => "apStr",

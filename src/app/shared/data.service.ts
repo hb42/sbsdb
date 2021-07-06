@@ -188,6 +188,7 @@ export class DataService {
     ap.verantwOe = null;
     ap.tags = neu.tags;
     ap.apname = neu.apname;
+    ap.bezeichnung = neu.bezeichnung;
     ap.apKatId = neu.apKatId;
     ap.apKatBezeichnung = neu.apKatBezeichnung;
     ap.apKatFlag = neu.apKatFlag;
@@ -207,6 +208,7 @@ export class DataService {
           v.vlan = null;
         });
       }
+      ap.hw = [];
       this.prepareHw(hw);
     });
     neuHw.forEach((nhw) => {
@@ -291,6 +293,8 @@ export class DataService {
     hw.macStr = "";
     hw.vlanStr = "";
     hw.konfiguration = hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung;
+    hw.ap = null;
+    hw.apStr = "";
     // hw.apKatBezeichnung = hw.hwKonfig.apKatBezeichnung;
     // hw.hwTypBezeichnung = hw.hwKonfig.hwTypBezeichnung;
     hw.anschDat = new Date(hw.anschDat);
@@ -304,6 +308,7 @@ export class DataService {
         hw.vlanStr += hw.vlanStr ? "/ " + v.bezeichnung : v.bezeichnung;
         macsearch += v.mac;
       });
+      hw.macsearch = macsearch;
     }
 
     if (hw.apId) {

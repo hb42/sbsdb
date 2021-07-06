@@ -229,9 +229,20 @@ export class EditHwComponent implements OnInit {
     }
   }
 
-  public;
   private getVlan(id: number): Vlan {
     return this.vlans.find((v) => (v ? v.id === id : false));
+  }
+
+  public addMac(): void {
+    console.error("addMac() not yet implemented");
+    // TODO UI?
+    //      falls ja -> .vlan.hwMacId = 0
+  }
+  public delMac(): void {
+    console.error("delMac() not yet implemented");
+    // TODO ist es sinnvoll hier die MAC zu loeschen? UI?
+    //      falls ja -> .vlan.mac = ""
+    //      fuer fremde HW muss min. eine MAC bleiben
   }
 
   private addVlanInputs(hw: Hardware) {

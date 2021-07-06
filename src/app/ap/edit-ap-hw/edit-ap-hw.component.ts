@@ -2,10 +2,14 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } fro
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
+import { IpHelper } from "../../shared/ip-helper";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
+import { Hardware } from "../../shared/model/hardware";
+import { Vlan } from "../../shared/model/vlan";
 import { HwInput } from "../edit-hw/hw-input";
 import { HwApInput } from "./hw-ap-input";
 import { HwChange } from "./hw-change";
+import { HwVlanChange } from "./hw-vlan-change";
 
 @Component({
   selector: "sbsdb-edit-ap-hw",
@@ -20,6 +24,7 @@ export class EditApHwComponent implements OnInit {
 
   public matcher = new FormFieldErrorStateMatcher();
   public hwFormGroup: FormGroup;
+  public periFormGroup: FormGroup;
   public data: HwApInput;
 
   constructor(
@@ -30,6 +35,7 @@ export class EditApHwComponent implements OnInit {
     console.debug("c'tor EditApHwCompomnenmt");
     this.hwReady = new EventEmitter<HwChange>();
     this.hwFormGroup = this.formBuilder.group({});
+    this.periFormGroup = this.formBuilder.group({});
   }
 
   public ngOnInit(): void {
@@ -39,45 +45,52 @@ export class EditApHwComponent implements OnInit {
     });
     this.data = { apid: this.ap.apId, priHw: this.priHw(), periph: this.periHw() };
     // an die uebergeordnete Form anhaengen
-    this.formGroup.addControl("tag", this.hwFormGroup);
+    this.formGroup.addControl("prihw", this.hwFormGroup);
+    this.formGroup.addControl("perihw", this.periFormGroup);
   }
 
   public submit(): void {
     console.debug("edit hw submit");
     const changes: HwChange = {
       apid: this.ap.apId,
-      // TODO Datenstruktur fuer die Rueckmeldung
-      // hw: this.resultHw
+      priVlans: [],
+      periph: [],
     };
-    /*
-      pri hw
-        this.data.priHw.hw.id -> this.data.priHw.hwCtrl.value.id (+ null check)
-        this.data.priHw.hw.vlans -> this.data.priHw.vlans
-           v.mac, .ip, .vlanId   ->   v.macCtrl.value, .ipCtrl.value, .vlanCtrl.value.vlanId
 
-       array vgl
-         map .priHw/.periph[x] .hw === null -> neue hw
-             .priHw/.periph[x] .vlans[y].hwMacId === 0 -> neue addr
+    const oldpri = this.data.priHw.hw;
+    const oldpriId = oldpri?.id ?? 0;
+    const newpri = this.data.priHw.hwCtrl.value as Hardware;
+    const newpriId = newpri?.id ?? 0;
+    if (oldpriId != newpriId) {
+      // pri hw changed
+      changes.newpriId = newpriId;
+    }
+    // vlan-changes priHw
+    if (newpriId) {
+      changes.priVlans = this.submitVlans(this.data.priHw);
+    }
 
-         work.forEach( if isNew indexes.push(idx) )
-         newItems = indexes.map( work.splice(i, 0)[0] )
-         old.foreach( if (!work.find(old)) delItems.push(id) else if(work != old) chgItems.push(work) )
+    const oldperi = this.ap.hw.filter((h) => !h.pri);
+    const newperi = this.data.periph;
+    const del = oldperi.filter(
+      (h) => newperi.findIndex((hi) => h.id === (hi.hwCtrl.value as Hardware).id) === -1
+    );
+    // periph. to remove
+    del.forEach((d) => changes.periph.push({ hwId: d.id, del: true, vlans: [] }));
+    // periph. changes
+    newperi.forEach((p) => {
+      const vlanChange = this.submitVlans(p);
+      if (vlanChange.length > 0 || p.apid !== (p.hwCtrl.value as Hardware).apId) {
+        changes.periph.push({
+          hwId: (p.hwCtrl.value as Hardware).id,
+          del: false,
+          vlans: vlanChange,
+        });
+      }
+    });
 
-          vlans:
-            old -> priHw.hw.vlans : Vlan[]
-                   periph[x].vlans : Vlan[]
-            work -> priHw.vlans : HwInputVlan[]
-                    periph[x].vlans : HwInputVlan[]
-          periphHw
-            old -> periph: HwInput[] -> .hw
-            work -.> periph: HwInput[] -> hwCtrl.value
-     */
-    // // ueber form iterieren
-    // Object.keys(this.hwFormGroup.controls).forEach((key) => {
-    //   console.debug("formgroup.key = " + key);
-    //   // -> key: formGroup -> formGroup.controls key: formControl/formGroup
-    //   console.dir(this.hwFormGroup.get(key));
-    // });
+    console.debug("-- hardware changes --");
+    console.dir(changes);
     this.hwReady.emit(changes);
   }
 
@@ -104,8 +117,52 @@ export class EditApHwComponent implements OnInit {
     const idx = this.data.periph.findIndex((hi) => hi.ctrlid === peri.ctrlid);
     const remove = this.data.periph.splice(idx, 1);
     if (remove && remove.length === 1) {
-      this.hwFormGroup.removeControl(remove[0].ctrlid);
+      this.periFormGroup.removeControl(remove[0].ctrlid);
       // remove[0].hwCtrl = null;
     }
+  }
+
+  /**
+   * Geaenderte Vlans als HwVlanChange-Arrray liefern
+   *
+   * @param input
+   * @private
+   */
+  private submitVlans(input: HwInput): HwVlanChange[] {
+    console.debug("--- submitVlans input ---");
+    console.dir(input);
+    const rc: HwVlanChange[] = [];
+    const oldvlans = (input.hwCtrl.value as Hardware)?.vlans ?? [];
+    const del = oldvlans.filter(
+      (v) => input.vlans.findIndex((vi) => v.hwMacId === vi.hwMacId) === -1
+    );
+    // MAC == "" => DEL
+    del.forEach((d) => rc.push({ hwMacId: d.hwMacId, mac: "", ip: 0, vlanId: 0 }));
+
+    input.vlans.forEach((v) => {
+      const newVlan = v.vlanCtrl.value as Vlan;
+      const newVlanId = newVlan.id;
+      const newMac = IpHelper.checkMacString(v.macCtrl.value);
+      // relevanter Teil der HostIp
+      const newIp = IpHelper.getHostIp(IpHelper.getIpPartial(v.ipCtrl.value), newVlan.netmask);
+      if (v.hwMacId === 0) {
+        // hwMacId == 0 => NEW
+        rc.push({
+          hwMacId: 0,
+          vlanId: newVlanId,
+          mac: newMac,
+          ip: newIp,
+        });
+      } else if ((v.vlan?.id ?? 0) !== newVlanId || v.mac !== newMac || v.ip != newIp) {
+        // changed
+        rc.push({
+          hwMacId: v.hwMacId,
+          vlanId: newVlanId,
+          mac: newMac,
+          ip: newIp,
+        });
+      }
+    });
+    return rc;
   }
 }

@@ -227,12 +227,15 @@ export class EditTagsComponent implements OnInit {
     // tagId == null -> DEL
     // apTagId == null -> NEW
     // Neu-Zeile wird nicht mehr gebraucht
-    this.tagInput.pop();
+    // this.tagInput.pop();
     this.tagInput.forEach((ti) => {
       const newTag: TagTyp = ti.tagCtrl.value as TagTyp;
       const newText: string = ti.textCtrl.value as string;
-      if (ti.tag.apTagId) {
-        if (ti.tag.tagId !== newTag.id || ti.tag.text !== newText) {
+      if (ti.tag /*.apTagId*/) {
+        if (
+          ti.tag.tagId !== newTag.id ||
+          (!this.isBoolTag(ti.tag.flag) && ti.tag.text !== newText)
+        ) {
           console.debug(
             `tag changed: ${ti.tag.tagId} !== ${newTag.id} || ${ti.tag.text} !== ${newText}`
           );
