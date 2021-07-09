@@ -1,0 +1,12 @@
+<div mat-dialog-actions class="end">
+  <button mat-flat-button color="primary" mat-dialog-close>Abbrechen</button>
+  <button
+    mat-flat-button
+    color="primary"
+    [mat-dialog-close]="data"
+    [disabled]="isInvalid()"
+    type="submit"
+  >
+    OK
+  </button>
+</div>

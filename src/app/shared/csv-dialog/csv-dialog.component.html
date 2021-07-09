@@ -1,4 +1,5 @@
-<h2 mat-dialog-title>Felder für die Ausgabe auswählen</h2>
+<sbsdb-dialog-title dialogTitle="Felder für die Ausgabe auswählen"></sbsdb-dialog-title>
+
 <div class="all-checkbox">
   <mat-checkbox [(ngModel)]="data.all" labelPosition="before"> Alle Felder ausgeben </mat-checkbox>
 </div>
@@ -11,7 +12,9 @@
     </mat-selection-list>
   </div>
 </div>
-<div mat-dialog-actions>
-  <button mat-flat-button color="primary" mat-dialog-close>Abbrechen</button>
-  <button mat-flat-button color="primary" [mat-dialog-close]="data" type="submit">OK</button>
-</div>
+
+<sbsdb-dialog-actions [data]="data"></sbsdb-dialog-actions>
+<!--<div mat-dialog-actions>-->
+<!--  <button mat-flat-button color="primary" mat-dialog-close>Abbrechen</button>-->
+<!--  <button mat-flat-button color="primary" [mat-dialog-close]="data" type="submit">OK</button>-->
+<!--</div>-->

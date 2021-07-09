@@ -1,4 +1,5 @@
-import { Component, Input } from "@angular/core";
+import { AfterViewInit, Component, Input, ViewChild } from "@angular/core";
+import { MatMenuTrigger } from "@angular/material/menu";
 import { Bracket } from "../bracket";
 import { EditFilterService } from "../edit-filter.service";
 import { Element } from "../element";
@@ -8,13 +9,23 @@ import { Element } from "../element";
   templateUrl: "./filter-bracket.component.html",
   styleUrls: ["./filter-bracket.component.scss"],
 })
-export class FilterBracketComponent {
+export class FilterBracketComponent implements AfterViewInit {
   @Input() public element: Element;
+
+  @ViewChild("newMenuBtn") newMenuBtn: MatMenuTrigger;
 
   public highlight = false;
   private menuopen = false;
 
   constructor(public editFilter: EditFilterService) {}
+
+  public ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.newMenuBtn) {
+        this.newMenuBtn.openMenu();
+      }
+    }, 0);
+  }
 
   public menuOpen(): void {
     this.menuopen = true;

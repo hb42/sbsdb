@@ -33,6 +33,7 @@
         mat-button
         color="primary"
         class="mat-button-filter"
+        #newMenuBtn="matMenuTrigger"
         [matMenuTriggerFor]="newMenu"
         [matMenuTriggerData]="{ el: element.term }"
       >
