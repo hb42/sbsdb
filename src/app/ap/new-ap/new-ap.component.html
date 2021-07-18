@@ -1,0 +1,18 @@
+<sbsdb-dialog-title dialogTitle="Neuer Arbeitsplatz"></sbsdb-dialog-title>
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="submit()"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <mat-dialog-content class="panel"> </mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Arbeitsplatz-Typ</mat-label>
+    <mat-select [formControl]="typCtrl" [errorStateMatcher]="matcher">
+      <mat-option *ngFor="let t of aptypList" [value]="t">
+        {{ t.bezeichnung }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="typCtrl.invalid">{{ getErrorMessage(typCtrl) }}</mat-error>
+  </mat-form-field>
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

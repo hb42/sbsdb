@@ -2,11 +2,19 @@ import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { DataService } from "../shared/data.service";
 import { BaseEditService } from "../shared/filter/base-edit-service";
+import { IpHelper } from "../shared/ip-helper";
 import { ApHw } from "../shared/model/ap-hw";
+import { ApTyp } from "../shared/model/ap-typ";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
+import { Hardware } from "../shared/model/hardware";
+import { HwKonfig } from "../shared/model/hw-konfig";
+import { Netzwerk } from "../shared/model/netzwerk";
+import { Vlan } from "../shared/model/vlan";
 import { ApEditDialogData } from "./ap-edit-dialog/ap-edit-dialog-data";
 import { ApEditDialogComponent } from "./ap-edit-dialog/ap-edit-dialog.component";
 import { EditApTransport } from "./ap-edit-dialog/edit-ap-transport";
+import { NewApData } from "./new-ap/new-ap-data";
+import { NewApComponent } from "./new-ap/new-ap.component";
 
 @Injectable({
   providedIn: "root",
@@ -15,6 +23,96 @@ export class ApEditService extends BaseEditService {
   constructor(public dialog: MatDialog, public dataService: DataService) {
     super(dialog, dataService);
     console.debug("c'tor ApEditService");
+  }
+
+  public newAp(): void {
+    const dialogRef = this.dialog.open(NewApComponent, { data: { typ: null } });
+    dialogRef.afterClosed().subscribe((result: NewApData) => {
+      console.debug("dlg closed");
+      if (result && result.typ) {
+        console.debug("with result");
+        const ap: Arbeitsplatz = {
+          apKatBezeichnung: result.typ.apkategorie,
+          apKatFlag: 0,
+          apKatId: result.typ.apKategorieId,
+          apTypBezeichnung: result.typ.bezeichnung,
+          apTypFlag: result.typ.flag,
+          apTypId: result.typ.id,
+          apname: "",
+          bemerkung: "",
+          bezeichnung: "",
+          hw: [],
+          hwStr: "",
+          hwTypStr: "",
+          ipStr: "",
+          macStr: IpHelper.getMacString("0"),
+          macsearch: "",
+          oe: undefined,
+          oeId: 0,
+          sonstHwStr: "",
+          tags: [],
+          verantwOe: undefined,
+          verantwOeId: 0,
+          vlanStr: "",
+          apId: 0,
+        };
+        if ((result.typ.flag & DataService.FREMDE_HW_FLAG) !== 0) {
+          // fremde HW: hier nur das Noetigste eintragen, der Rest wird auf dem Server erledigt
+          const hwkonfig: HwKonfig = {
+            apKatBezeichnung: "",
+            apKatFlag: 0,
+            apKatId: 0,
+            bezeichnung: "",
+            hd: "",
+            hersteller: "",
+            hwTypBezeichnung: "",
+            hwTypFlag: DataService.FREMDE_HW_FLAG,
+            hwTypId: 0,
+            id: 0,
+            prozessor: "",
+            ram: "",
+            sonst: "",
+            video: "",
+          };
+          const hw: Hardware = {
+            anschDat: undefined,
+            anschWert: 0,
+            ap: undefined,
+            apId: 0,
+            apStr: "Fremde HW - " + result.typ.apkategorie,
+            bemerkung: "",
+            hwKonfig: hwkonfig,
+            hwKonfigId: 0,
+            id: 0,
+            invNr: "",
+            ipStr: "",
+            konfiguration: "",
+            macStr: IpHelper.getMacString(IpHelper.NULL_MAC),
+            macsearch: "",
+            pri: true,
+            sernr: "",
+            smbiosgiud: "",
+            vlanStr: "",
+            vlans: [],
+            wartungFa: "",
+          };
+          const vlan: Netzwerk = {
+            bezeichnung: "",
+            hwMacId: 0,
+            ip: 0,
+            ipStr: "",
+            mac: IpHelper.NULL_MAC,
+            macStr: IpHelper.getMacString(IpHelper.NULL_MAC),
+            netmask: 0,
+            vlan: 0,
+            vlanId: 0,
+          };
+          hw.vlans.push(vlan);
+          ap.hw.push(hw);
+        }
+        this.apEdit(ap);
+      }
+    });
   }
 
   public apEdit(ap: Arbeitsplatz): void {
@@ -58,11 +156,16 @@ export class ApEditService extends BaseEditService {
     console.dir(post);
     this.dataService.post(this.dataService.changeApUrl, post).subscribe(
       (a: ApHw) => {
-        // TODO handle changed AP
-        this.dataService.updateAp(a.ap, a.hw);
-
-        console.debug("post succeeded");
-        console.dir(a);
+        if (a) {
+          this.dataService.updateAp(a.ap, a.hw);
+          // TODO trigger apfilter f. new ap/hw
+          //      braucht wohl einen event zu ap-filter-service -> einbauen im Kontext
+          //      der SSE-Impementierung
+          console.debug("post succeeded");
+          console.dir(a);
+        } else {
+          console.error("Server liefert kein Ergebnis für apchange");
+        }
       },
       (err: Error) => {
         console.error("Error " + err.message);

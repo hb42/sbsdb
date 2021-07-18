@@ -58,16 +58,16 @@
             {{ hw.hwKonfig.hwTypBezeichnung }}
           </td>
           <td>
-            <span *ngIf="!isFremdeHw(hw)">
-              {{ hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung }}
-              [<a
-                mat-button
-                color="primary"
-                class="textLink"
-                (click)="apService.gotoHw(hw); $event.stopPropagation()"
-                >{{ hw.sernr }}</a
-              >]
-            </span>
+            <!--            <span *ngIf="!isFremdeHw(hw)">-->
+            {{ hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung }}
+            [<a
+              mat-button
+              color="primary"
+              class="textLink"
+              (click)="apService.gotoHw(hw); $event.stopPropagation()"
+              >{{ hw.sernr }}</a
+            >]
+            <!--            </span>-->
           </td>
           <td [title]="hw.vlanStr">
             {{ hw.ipStr }}

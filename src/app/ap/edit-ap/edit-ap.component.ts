@@ -85,7 +85,7 @@ export class EditApComponent implements OnInit {
 
   public submit(): void {
     console.debug("edit ap submit");
-    const apchange: ApChange = { apid: this.ap.apId };
+    const apchange: ApChange = { apid: this.ap.apId, apTypId: this.ap.apTypId };
     const newname = this.nameCtrl.value as string;
     const newbezeichnung = this.bezCtrl.value as string;
     const newbemerkung = this.bemCtrl.value as string;
@@ -93,12 +93,13 @@ export class EditApComponent implements OnInit {
     const newverantwid = this.verantwCtrl.value
       ? (this.verantwCtrl.value as Betrst).bstId
       : newstandid;
-    const oldverantwid = this.ap.verantwOe ? this.ap.verantwOe.bstId : this.ap.oe.bstId;
+    const oldstandid = this.ap.oe?.bstId ?? -1;
+    const oldverantwid = this.ap.verantwOe ? this.ap.verantwOe.bstId : oldstandid;
     if (this.ap.apname.localeCompare(newname)) {
       apchange.apname = newname;
     }
-    if (this.ap.oe.bstId != newstandid || oldverantwid != newverantwid) {
-      if (this.ap.oe.bstId != newstandid) {
+    if (oldstandid != newstandid || oldverantwid != newverantwid) {
+      if (oldstandid != newstandid) {
         apchange.standortId = newstandid;
       }
       if (oldverantwid != newverantwid) {

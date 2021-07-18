@@ -25,7 +25,7 @@
       <mat-icon>file_download</mat-icon>
     </button>
     <span class="menu-spacer">|</span>
-    <button mat-icon-button title="Neuer Arbeitsplatz" (click)="apService.test()">
+    <button mat-icon-button title="Neuer Arbeitsplatz" (click)="apService.editService.newAp()">
       <!--      <mat-icon>add_circle_outline</mat-icon>-->
       <mat-icon>desktop_mac</mat-icon>
     </button>
@@ -341,9 +341,21 @@
       <mat-icon>edit</mat-icon>
       AP bearbeiten
     </button>
+    <button
+      mat-menu-item
+      *ngIf="apService.userSettings.isAdmin"
+      (click)="apService.editService.newAp()"
+    >
+      <mat-icon>desktop_mac</mat-icon>
+      Neuer Arbeitsplatz
+    </button>
+    <button mat-menu-item *ngIf="apService.userSettings.isAdmin" disabled>
+      <mat-icon>trash</mat-icon>
+      AP löschen
+    </button>
     <!--    <button mat-menu-item (click)="apService.hwEdit(ap)">Hardware bearbeiten</button>-->
     <!--    <button mat-menu-item (click)="apService.tagsEdit(ap)">Sonstige Infos bearbeiten</button>-->
-    <button mat-menu-item>Test2</button>
-    <button mat-menu-item *ngIf="ap.apTypBezeichnung.indexOf('Thin') !== -1">Test3 TC</button>
+    <!--    <button mat-menu-item>Test2</button>-->
+    <!--    <button mat-menu-item *ngIf="ap.apTypBezeichnung.indexOf('Thin') !== -1">Test3 TC</button>-->
   </ng-template>
 </mat-menu>

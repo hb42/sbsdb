@@ -3,6 +3,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { IpHelper } from "./ip-helper";
+import { ApTyp } from "./model/ap-typ";
 import { Betrst } from "./model/betrst";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { Hardware } from "./model/hardware";
@@ -27,6 +28,7 @@ export class DataService {
   public hwKonfigList: HwKonfig[] = [];
   public tagTypList: TagTyp[] = [];
   public vlanList: Vlan[] = [];
+  public aptypList: ApTyp[] = [];
 
   // Signale fuer das Laden der benoetigten Daten:
   //   apListFetched signalisiert, dass die AP-Liste vollstaendig geladen ist (und
@@ -45,6 +47,7 @@ export class DataService {
   //      aktualisierten Liste eingehaengt werden
   public tagTypListReady: EventEmitter<void> = new EventEmitter<void>();
   public vlanListReady: EventEmitter<void> = new EventEmitter<void>();
+  public aptypListReady: EventEmitter<void> = new EventEmitter<void>();
 
   // Web-API calls
   public readonly oeTreeUrl: string;
@@ -59,6 +62,7 @@ export class DataService {
   public readonly allHwKonfig: string;
   public readonly allTagTypesUrl: string;
   public readonly allVlansUrl: string;
+  public readonly allApTypUrl: string;
   public readonly changeApUrl: string;
 
   // case insensitive alpha sort
@@ -90,6 +94,8 @@ export class DataService {
     this.allHwKonfig = this.configService.webservice + "/hwkonfig/all";
     this.allTagTypesUrl = this.configService.webservice + "/ap/tagtypes";
     this.allVlansUrl = this.configService.webservice + "/ap/vlans";
+    this.allApTypUrl = this.configService.webservice + "/ap/aptypes";
+
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
 
     const readyEventCheck = () => {
@@ -121,6 +127,7 @@ export class DataService {
 
     this.fetchTagTypList();
     this.fetchVlanList();
+    this.fetchApTypList();
   }
 
   public get(url: string): Observable<unknown> {
@@ -169,12 +176,43 @@ export class DataService {
     });
   }
 
+  public fetchApTypList(): void {
+    this.get(this.allApTypUrl).subscribe((t: ApTyp[]) => {
+      this.aptypList = t;
+      this.aptypListReady.emit();
+    });
+  }
+
   public updateAp(neu: Arbeitsplatz, neuHw: Hardware[]): void {
-    const ap = this.apList.find((a) => a.apId === neu.apId);
+    let ap = this.apList.find((a) => a.apId === neu.apId);
     if (!ap) {
-      console.error("updateAp() AP not found. New:");
-      console.dir(neu);
-      return;
+      console.debug("updateAp() new ap");
+      ap = {
+        apKatBezeichnung: "",
+        apKatFlag: 0,
+        apKatId: 0,
+        apTypBezeichnung: "",
+        apTypFlag: 0,
+        apTypId: 0,
+        apname: "",
+        bemerkung: "",
+        bezeichnung: "",
+        hw: [],
+        hwStr: "",
+        hwTypStr: "",
+        ipStr: "",
+        macStr: "",
+        macsearch: "",
+        oe: undefined,
+        oeId: 0,
+        sonstHwStr: "",
+        tags: [],
+        verantwOe: undefined,
+        verantwOeId: 0,
+        vlanStr: "",
+        apId: neu.apId,
+      };
+      this.apList.push(ap);
     }
     const keys = Object.keys(ap);
     keys.forEach((key) => {
@@ -212,7 +250,33 @@ export class DataService {
       this.prepareHw(hw);
     });
     neuHw.forEach((nhw) => {
-      const hw = this.hwList.find((h) => h.id === nhw.id);
+      let hw = this.hwList.find((h) => h.id === nhw.id);
+      if (!hw) {
+        // neue HW (sollte nur fuer fremde HW vorkommen)
+        hw = {
+          anschDat: undefined,
+          anschWert: 0,
+          ap: undefined,
+          apId: 0,
+          apStr: "",
+          bemerkung: "",
+          hwKonfig: undefined,
+          hwKonfigId: 0,
+          id: nhw.id,
+          invNr: "",
+          ipStr: "",
+          konfiguration: "",
+          macStr: "",
+          macsearch: "",
+          pri: false,
+          sernr: "",
+          smbiosgiud: "",
+          vlanStr: "",
+          vlans: [],
+          wartungFa: "",
+        };
+        this.hwList.push(hw);
+      }
       hw.vlans = nhw.vlans;
       hw.apId = nhw.apId;
       hw.bemerkung = nhw.bemerkung;
@@ -323,12 +387,10 @@ export class DataService {
             ap.hwTypStr = hw.konfiguration;
           }
           ap.hwStr =
-            hw.hwKonfig.hersteller +
-            " - " +
-            hw.hwKonfig.bezeichnung +
-            (hw.sernr && (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0
-              ? " [" + hw.sernr + "]"
-              : "");
+            hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung + " [" + hw.sernr + "]";
+          // (hw.sernr && (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0
+          //   ? " [" + hw.sernr + "]"
+          //   : "");
           ap.ipStr += ap.ipStr ? "/ " + hw.ipStr : hw.ipStr;
           ap.macStr += ap.macStr ? "/ " + hw.macStr : hw.macStr;
           ap.vlanStr += ap.vlanStr ? "/ " + hw.vlanStr : hw.vlanStr;
