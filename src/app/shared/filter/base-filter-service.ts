@@ -1,3 +1,4 @@
+import { formatDate, formatNumber } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatTableDataSource } from "@angular/material/table";
@@ -757,22 +758,16 @@ export abstract class BaseFilterService {
                     }
                   }
                   if (io) {
-                    c.val = exp.compare as string; // mehre Felder: immer string
+                    const not = exp.operator.op === RelOp.notlike ? "!" : "";
+                    c.val = not + (exp.compare as string); // mehre Felder: immer string
                   }
                 }
               }
             } else {
               // string-Vergleich fuer Feld-Namen
               if (c.col.fieldName === feld) {
-                // FIXME das fliegt bei einer Teileingabe auf die Nase
-                //       Unterscheidung zw. Col-Field und ExtFilter
-                // if (c.col.typeKey === SbsdbColumn.DATE) {
-                //   c.val = formatDate(exp.compare as Date, "mediumDate", "de");
-                // } else if (c.col.typeKey === SbsdbColumn.NUMBER) {
-                //   c.val = formatNumber(exp.compare as number, "de");
-                // } else {
-                c.val = exp.compare as string;
-                // }
+                const not = exp.operator.op === RelOp.notlike ? "!" : "";
+                c.val = not + (exp.compare as string);
               }
             }
           });

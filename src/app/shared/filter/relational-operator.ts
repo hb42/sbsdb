@@ -69,7 +69,7 @@ export class RelationalOperator {
   // auf einfache Weise vergleichbar sind (was nicht der Fall ist!). Da hier nur Integer-
   // Werte oder normale Euro-Betraege verglichen werden, sollte das aber reichen.
   //
-  // Der Vergleichswert stammt aus einem Input und kommt daher immer als String an. Fuer
+  // Der Vergleichswert stammt aus einem HTML-Input und kommt daher immer als String an. Fuer
   // Vergleich mit number|Date muss er deshalb konvertiert werden.
 
   private static fieldToString(fieldContent: string | number, type: number): string {
@@ -97,19 +97,29 @@ export class RelationalOperator {
     }
   }
 
-  // LIKE vergleicht immer als string!
+  // LIKE vergleicht immer als regulaerer Ausdruck
+  // Vergleichsstring ohne RegEx-Sonderzeichen gibt das gleiche Ergebnis wie String.includes()
   private static like = (fieldContent: string | number, compare: string, type: number): boolean => {
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return RelationalOperator.fieldToString(fieldContent, type).includes(compare);
+    // compare = compare ? compare.toLocaleLowerCase() : "";
+    // return RelationalOperator.fieldToString(fieldContent, type).includes(compare);
+    try {
+      const regex = new RegExp(compare ? compare : "", "i");
+      return regex.test(RelationalOperator.fieldToString(fieldContent, type));
+    } catch (e) {
+      // wahrscheinlich Fehler beim Konvertieren zu RegExp
+      return false;
+    }
   };
-  // NOTLIKE vergleicht immer als string!
+  // NOTLIKE vergleicht immer als regulaerer Ausdruck
   private static notlike = (
     fieldContent: string | number,
     compare: string,
     type: number
   ): boolean => {
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return !RelationalOperator.fieldToString(fieldContent, type).includes(compare);
+    // compare = compare ? compare.toLocaleLowerCase() : "";
+    // return !RelationalOperator.fieldToString(fieldContent, type).includes(compare);
+    const regex = new RegExp(compare ? compare : "", "i");
+    return !regex.test(RelationalOperator.fieldToString(fieldContent, type));
   };
   // string, number, date - equal is case sensitive!
   private static equal = (

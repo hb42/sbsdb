@@ -12,6 +12,7 @@
       mat-icon-button
       title="Alle Filter löschen (Alt+L)"
       (click)="hwService.hwFilterService.resetFilters()"
+      [disabled]="hwService.hwFilterService.filterExpression.isEmpty()"
     >
       <mat-icon>search_off</mat-icon>
     </button>
