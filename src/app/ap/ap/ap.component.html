@@ -332,6 +332,18 @@
         apService.tableWrapCell ? "check_box" : "check_box_outline_blank"
       }}</mat-icon>
     </button>
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.userSettings.debug = !apService.userSettings.debug"
+    >
+      <mat-icon>pest_control</mat-icon>
+      Debug-Info
+      <span class="fill"></span>
+      <mat-icon class="menue-checkbox">{{
+        apService.userSettings.debug ? "check_box" : "check_box_outline_blank"
+      }}</mat-icon>
+    </button>
   </ng-template>
 </mat-menu>
 

@@ -253,28 +253,7 @@ export class DataService {
       let hw = this.hwList.find((h) => h.id === nhw.id);
       if (!hw) {
         // neue HW (sollte nur fuer fremde HW vorkommen)
-        hw = {
-          anschDat: undefined,
-          anschWert: 0,
-          ap: undefined,
-          apId: 0,
-          apStr: "",
-          bemerkung: "",
-          hwKonfig: undefined,
-          hwKonfigId: 0,
-          id: nhw.id,
-          invNr: "",
-          ipStr: "",
-          konfiguration: "",
-          macStr: "",
-          macsearch: "",
-          pri: false,
-          sernr: "",
-          smbiosgiud: "",
-          vlanStr: "",
-          vlans: [],
-          wartungFa: "",
-        };
+        hw = new Hardware();
         this.hwList.push(hw);
       }
       hw.vlans = nhw.vlans;

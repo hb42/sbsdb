@@ -74,28 +74,26 @@ export class ApEditService extends BaseEditService {
             sonst: "",
             video: "",
           };
-          const hw: Hardware = {
-            anschDat: undefined,
-            anschWert: 0,
-            ap: undefined,
-            apId: 0,
-            apStr: "Fremde HW - " + result.typ.apkategorie,
-            bemerkung: "",
-            hwKonfig: hwkonfig,
-            hwKonfigId: 0,
-            id: 0,
-            invNr: "",
-            ipStr: "",
-            konfiguration: "",
-            macStr: IpHelper.getMacString(IpHelper.NULL_MAC),
-            macsearch: "",
-            pri: true,
-            sernr: "",
-            smbiosgiud: "",
-            vlanStr: "",
-            vlans: [],
-            wartungFa: "",
-          };
+          const hw = new Hardware();
+          hw.anschWert = 0;
+          hw.apId = 0;
+          hw.apStr = "Fremde HW - " + result.typ.apkategorie;
+          hw.bemerkung = "";
+          hw.hwKonfig = hwkonfig;
+          hw.hwKonfigId = 0;
+          hw.id = 0;
+          hw.invNr = "";
+          hw.ipStr = "";
+          hw.konfiguration = "";
+          hw.macStr = IpHelper.getMacString(IpHelper.NULL_MAC);
+          hw.macsearch = "";
+          hw.pri = true;
+          hw.sernr = "";
+          hw.smbiosgiud = "";
+          hw.vlanStr = "";
+          hw.vlans = [];
+          hw.wartungFa = "";
+
           const vlan: Netzwerk = {
             bezeichnung: "",
             hwMacId: 0,

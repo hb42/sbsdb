@@ -302,6 +302,18 @@
       <!--        <mat-icon>close</mat-icon>-->
       <!--        Alle Filter löschen-->
       <!--      </button>-->
+      <button
+        mat-menu-item
+        class="menue-entry"
+        (click)="hwService.userSettings.debug = !hwService.userSettings.debug"
+      >
+        <mat-icon>pest_control</mat-icon>
+        Debug-Info
+        <span class="fill"></span>
+        <mat-icon class="menue-checkbox">{{
+          hwService.userSettings.debug ? "check_box" : "check_box_outline_blank"
+        }}</mat-icon>
+      </button>
     </ng-template>
   </mat-menu>
 

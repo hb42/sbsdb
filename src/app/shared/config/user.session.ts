@@ -74,6 +74,14 @@ export class UserSession {
     this.change();
   }
 
+  public get debug(): boolean {
+    return this.settings.debug;
+  }
+  public set debug(d: boolean) {
+    this.settings.debug = d;
+    this.change();
+  }
+
   // AP
 
   public get showStandort(): boolean {

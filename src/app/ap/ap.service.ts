@@ -659,6 +659,29 @@ export class ApService {
     return rc as TagTyp[];
   }
 
+  public vlanDebugStr(hw: Hardware): string {
+    if (hw && hw.vlans && hw.vlans[0]) {
+      let dbg = "";
+      hw.vlans.forEach((v) => {
+        dbg += dbg ? `/ #${v.vlanId}` : `#${v.vlanId}`;
+      });
+      return dbg;
+    } else {
+      return "";
+    }
+  }
+  public macDebugStr(hw: Hardware): string {
+    if (hw && hw.vlans && hw.vlans[0]) {
+      let dbg = "";
+      hw.vlans.forEach((v) => {
+        dbg += dbg ? `/ #${v.hwMacId}` : `#${v.hwMacId}`;
+      });
+      return dbg;
+    } else {
+      return "";
+    }
+  }
+
   // OE-Hierarchie aufbauen
   // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
   private prepBst() {

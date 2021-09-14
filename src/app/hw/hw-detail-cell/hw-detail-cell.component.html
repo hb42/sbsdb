@@ -4,16 +4,31 @@
       <table>
         <thead>
           <tr>
-            <th colspan="2">Konfiguration</th>
+            <th colspan="2">
+              Konfiguration
+              <span *ngIf="hwService.userSettings.debug" class="debug">
+                #{{ element.hwKonfig.id }}
+              </span>
+            </th>
           </tr>
         </thead>
         <tr>
           <td>Kategorie</td>
-          <td>{{ element.hwKonfig.apKatBezeichnung }}</td>
+          <td>
+            {{ element.hwKonfig.apKatBezeichnung }}
+            <span *ngIf="hwService.userSettings.debug" class="debug">
+              #{{ element.hwKonfig.apKatId }}
+            </span>
+          </td>
         </tr>
         <tr>
           <td>Typ</td>
-          <td>{{ element.hwKonfig.hwTypBezeichnung }}</td>
+          <td>
+            {{ element.hwKonfig.hwTypBezeichnung }}
+            <span *ngIf="hwService.userSettings.debug" class="debug">
+              #{{ element.hwKonfig.hwTypId }}
+            </span>
+          </td>
         </tr>
         <tr>
           <td>Hersteller</td>
@@ -49,7 +64,10 @@
       <table>
         <thead>
           <tr>
-            <th colspan="2">Hardware</th>
+            <th colspan="2">
+              Hardware
+              <span *ngIf="hwService.userSettings.debug" class="debug"> #{{ element.id }} </span>
+            </th>
           </tr>
         </thead>
         <tr>
@@ -88,11 +106,22 @@
           </tr>
         </thead>
         <tr *ngFor="let ip of element.vlans">
-          <td>{{ ip.macStr }}</td>
+          <td>
+            {{ ip.macStr }}
+            <span *ngIf="hwService.userSettings.debug" class="debug"> #{{ ip.hwMacId }} </span>
+          </td>
           <td>{{ ip.ipStr }}</td>
-          <td>{{ ip.bezeichnung }}</td>
+          <td>
+            {{ ip.bezeichnung }}
+            <span *ngIf="hwService.userSettings.debug" class="debug"
+              ><span *ngIf="ip.vlanId"> #{{ ip.vlanId }}</span></span
+            >
+          </td>
         </tr>
       </table>
+    </div>
+    <div *ngIf="hwService.userSettings.debug" class="detail-cell-margin">
+      <span *ngIf="element.ap" class="debug">AP #{{ element.ap.apId }} </span>
     </div>
   </div>
   <div class="detail-cell-bemerk">{{ element.bemerkung }}</div>

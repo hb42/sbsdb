@@ -1,9 +1,19 @@
 /* body reset */
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* debugging info */
+.debug {
+  color: gray;
+  font-size: 13px;
 }
 
 /* fill space between items */
@@ -134,16 +144,6 @@ sbsdb-foot {
   width: 100%;
 }
 
-
-html, body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
 /* Styles, die in den Component-Stylesheets nicht funktionieren
    (waere auch mit "encapsulation: ViewEncapsulation.None" zu loesen,
     dann sind aber alle Component-Styles global)
@@ -198,6 +198,17 @@ table:not(.wrap-cell) .mat-cell > div {
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
+}
+
+/* Menue
+   damit Checkboxes mit "fill" ausgerichtet werden koennen */
+.menue-entry {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.menue-checkbox {
+  padding-left: 10px;
 }
 
 // so koennte der fixe Teil der Tabelle angesprochen werden
