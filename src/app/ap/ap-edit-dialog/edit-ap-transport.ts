@@ -3,8 +3,8 @@ import { ApChange } from "../edit-ap/ap-change";
 import { TagChange } from "../edit-tags/tag-change";
 
 export interface EditApTransport {
-  id: number;
-  ap: ApChange;
+  id: number; // 0 -> NEW
+  ap: ApChange; // null -> DEL ap
   hw: HwChange;
   tags: TagChange[] | null;
 }

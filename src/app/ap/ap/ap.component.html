@@ -26,7 +26,7 @@
       <mat-icon>file_download</mat-icon>
     </button>
     <span class="menu-spacer">|</span>
-    <button mat-icon-button title="Neuer Arbeitsplatz" (click)="apService.editService.newAp()">
+    <button mat-icon-button title="Neuer Arbeitsplatz" (click)="apService.newAp()">
       <!--      <mat-icon>add_circle_outline</mat-icon>-->
       <mat-icon>desktop_mac</mat-icon>
     </button>
@@ -362,8 +362,8 @@
       <mat-icon>desktop_mac</mat-icon>
       Neuer Arbeitsplatz
     </button>
-    <button mat-menu-item *ngIf="apService.userSettings.isAdmin" disabled>
-      <mat-icon>trash</mat-icon>
+    <button mat-menu-item *ngIf="apService.userSettings.isAdmin" (click)="apService.deleteAp(ap)">
+      <mat-icon>delete_forever</mat-icon>
       AP löschen
     </button>
     <!--    <button mat-menu-item (click)="apService.hwEdit(ap)">Hardware bearbeiten</button>-->

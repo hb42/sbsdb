@@ -2,13 +2,13 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { ConfigService } from "./config/config.service";
 import { IpHelper } from "./ip-helper";
 import { ApTyp } from "./model/ap-typ";
-import { Betrst } from "./model/betrst";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
+import { Betrst } from "./model/betrst";
 import { Hardware } from "./model/hardware";
 import { HwKonfig } from "./model/hw-konfig";
-import { ConfigService } from "./config/config.service";
 import { TagTyp } from "./model/tagTyp";
 import { Vlan } from "./model/vlan";
 
@@ -183,93 +183,20 @@ export class DataService {
     });
   }
 
-  public updateAp(neu: Arbeitsplatz, neuHw: Hardware[]): void {
-    let ap = this.apList.find((a) => a.apId === neu.apId);
-    if (!ap) {
-      console.debug("updateAp() new ap");
-      ap = {
-        apKatBezeichnung: "",
-        apKatFlag: 0,
-        apKatId: 0,
-        apTypBezeichnung: "",
-        apTypFlag: 0,
-        apTypId: 0,
-        apname: "",
-        bemerkung: "",
-        bezeichnung: "",
-        hw: [],
-        hwStr: "",
-        hwTypStr: "",
-        ipStr: "",
-        macStr: "",
-        macsearch: "",
-        oe: undefined,
-        oeId: 0,
-        sonstHwStr: "",
-        tags: [],
-        verantwOe: undefined,
-        verantwOeId: 0,
-        vlanStr: "",
-        apId: neu.apId,
-      };
-      this.apList.push(ap);
+  public updateAp(neu: Arbeitsplatz, neuHw: Hardware[], delApId: number): void {
+    if (delApId > 0) {
+      // DEL AP
+      this.apList.splice(
+        this.apList.findIndex((ap) => ap.apId === delApId),
+        1
+      );
+      // TODO fremde HW loeschen!
+      this.changeApHw(neuHw);
+    } else {
+      const ap = this.changeAp(neu);
+      this.changeApHw(neuHw);
+      this.apSortHw(ap);
     }
-    const keys = Object.keys(ap);
-    keys.forEach((key) => {
-      if (key.startsWith(DataService.TAG_DISPLAY_NAME)) {
-        delete ap[key];
-      }
-    });
-    ap.oeId = neu.oeId;
-    ap.verantwOeId = neu.verantwOeId;
-    ap.oe = null;
-    ap.verantwOe = null;
-    ap.tags = neu.tags;
-    ap.apname = neu.apname;
-    ap.bezeichnung = neu.bezeichnung;
-    ap.apKatId = neu.apKatId;
-    ap.apKatBezeichnung = neu.apKatBezeichnung;
-    ap.apKatFlag = neu.apKatFlag;
-    ap.apTypId = neu.apTypId;
-    ap.apTypBezeichnung = neu.apTypBezeichnung;
-    ap.apTypFlag = neu.apTypFlag;
-    ap.bemerkung = neu.bemerkung;
-    this.prepareAP(ap);
-    ap.hw.forEach((hw) => {
-      hw.apId = null;
-      if (hw.vlans) {
-        hw.vlans.forEach((v) => {
-          v.ip = null;
-          v.vlanId = null;
-          v.bezeichnung = "";
-          v.netmask = null;
-          v.vlan = null;
-        });
-      }
-      ap.hw = [];
-      this.prepareHw(hw);
-    });
-    neuHw.forEach((nhw) => {
-      let hw = this.hwList.find((h) => h.id === nhw.id);
-      if (!hw) {
-        // neue HW (sollte nur fuer fremde HW vorkommen)
-        hw = new Hardware();
-        this.hwList.push(hw);
-      }
-      hw.vlans = nhw.vlans;
-      hw.apId = nhw.apId;
-      hw.bemerkung = nhw.bemerkung;
-      hw.wartungFa = nhw.wartungFa;
-      hw.smbiosgiud = nhw.smbiosgiud;
-      hw.anschWert = nhw.anschWert;
-      hw.anschDat = nhw.anschDat;
-      hw.invNr = nhw.invNr;
-      hw.sernr = nhw.sernr;
-      hw.pri = nhw.pri;
-      hw.hwKonfigId = nhw.hwKonfigId;
-      this.prepareHw(hw);
-    });
-    this.apSortHw(ap);
   }
 
   public prepareAP(ap: Arbeitsplatz): void {
@@ -399,6 +326,107 @@ export class DataService {
         return this.collator.compare(
           a.hwKonfig.hwTypBezeichnung + a.hwKonfig.hersteller + a.hwKonfig.bezeichnung + a.sernr,
           b.hwKonfig.hwTypBezeichnung + b.hwKonfig.hersteller + b.hwKonfig.bezeichnung + b.sernr
+        );
+      }
+    });
+  }
+
+  private changeAp(neu: Arbeitsplatz): Arbeitsplatz {
+    let ap = this.apList.find((a) => a.apId === neu.apId);
+    if (!ap) {
+      console.debug("updateAp() new ap");
+      ap = {
+        apKatBezeichnung: "",
+        apKatFlag: 0,
+        apKatId: 0,
+        apTypBezeichnung: "",
+        apTypFlag: 0,
+        apTypId: 0,
+        apname: "",
+        bemerkung: "",
+        bezeichnung: "",
+        hw: [],
+        hwStr: "",
+        hwTypStr: "",
+        ipStr: "",
+        macStr: "",
+        macsearch: "",
+        oe: undefined,
+        oeId: 0,
+        sonstHwStr: "",
+        tags: [],
+        verantwOe: undefined,
+        verantwOeId: 0,
+        vlanStr: "",
+        apId: neu.apId,
+      };
+      this.apList.push(ap);
+    }
+    const keys = Object.keys(ap);
+    keys.forEach((key) => {
+      if (key.startsWith(DataService.TAG_DISPLAY_NAME)) {
+        delete ap[key];
+      }
+    });
+    ap.oeId = neu.oeId;
+    ap.verantwOeId = neu.verantwOeId;
+    ap.oe = null;
+    ap.verantwOe = null;
+    ap.tags = neu.tags;
+    ap.apname = neu.apname;
+    ap.bezeichnung = neu.bezeichnung;
+    ap.apKatId = neu.apKatId;
+    ap.apKatBezeichnung = neu.apKatBezeichnung;
+    ap.apKatFlag = neu.apKatFlag;
+    ap.apTypId = neu.apTypId;
+    ap.apTypBezeichnung = neu.apTypBezeichnung;
+    ap.apTypFlag = neu.apTypFlag;
+    ap.bemerkung = neu.bemerkung;
+    this.prepareAP(ap);
+    ap.hw.forEach((hw) => {
+      hw.apId = null;
+      if (hw.vlans) {
+        hw.vlans.forEach((v) => {
+          v.ip = null;
+          v.vlanId = null;
+          v.bezeichnung = "";
+          v.netmask = null;
+          v.vlan = null;
+        });
+      }
+      ap.hw = [];
+      this.prepareHw(hw);
+    });
+    return ap;
+  }
+
+  private changeApHw(neuHw: Hardware[]): void {
+    neuHw.forEach((nhw) => {
+      if (nhw.sernr) {
+        let hw = this.hwList.find((h) => h.id === nhw.id);
+        if (!hw) {
+          // neue HW (sollte nur fuer fremde HW vorkommen)
+          hw = new Hardware();
+          hw.id = nhw.id;
+          this.hwList.push(hw);
+        }
+        hw.vlans = nhw.vlans;
+        hw.apId = nhw.apId;
+        hw.bemerkung = nhw.bemerkung;
+        hw.wartungFa = nhw.wartungFa;
+        hw.smbiosgiud = nhw.smbiosgiud;
+        hw.anschWert = nhw.anschWert;
+        hw.anschDat = nhw.anschDat;
+        hw.invNr = nhw.invNr;
+        hw.sernr = nhw.sernr;
+        hw.pri = nhw.pri;
+        hw.hwKonfigId = nhw.hwKonfigId;
+        this.prepareHw(hw);
+      } else {
+        // DEL HW
+        this.hwList.splice(
+          this.hwList.findIndex((h) => h.id === nhw.id),
+          1
         );
       }
     });

@@ -50,6 +50,7 @@ import { EditApComponent } from './ap/edit-ap/edit-ap.component';
 import { DialogTitleComponent } from './shared/dialog-title/dialog-title.component';
 import { DialogActionsComponent } from './shared/dialog-actions/dialog-actions.component';
 import { NewApComponent } from './ap/new-ap/new-ap.component';
+import { YesNoDialogComponent } from './shared/yes-no-dialog/yes-no-dialog.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -110,6 +111,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     DialogTitleComponent,
     DialogActionsComponent,
     NewApComponent,
+    YesNoDialogComponent,
   ],
   imports: [
     BrowserModule,

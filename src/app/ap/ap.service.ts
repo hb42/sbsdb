@@ -47,8 +47,8 @@ export class ApService {
  const uniq2 = [ ...new Set(this.apDataSource.data.map((a) => a.oesearch)) ].sort();
   */
 
-  // private filterChange: EventEmitter<void> = new EventEmitter<void>();
-  // private filterChanged = 1;
+  public filterChange: EventEmitter<void> = new EventEmitter<void>();
+
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
@@ -138,16 +138,24 @@ export class ApService {
     Download(blob, "sbsdb.cmd");
   }
 
+  public newAp(): void {
+    this.editService.newAp(this.filterChange);
+  }
+
   public apEdit(ap: Arbeitsplatz): void {
-    this.editService.apEdit(ap);
+    this.editService.apEdit(ap, this.filterChange);
+  }
+
+  public deleteAp(ap: Arbeitsplatz): void {
+    this.editService.deleteAp(ap, this.filterChange);
   }
 
   public tagsEdit(ap: Arbeitsplatz): void {
-    this.editService.tagsEdit(ap);
+    this.editService.tagsEdit(ap, this.filterChange);
   }
 
   public hwEdit(ap: Arbeitsplatz): void {
-    this.editService.hwEdit(ap);
+    this.editService.hwEdit(ap, this.filterChange);
   }
 
   public gotoHw(hw: Hardware): void {
@@ -549,6 +557,8 @@ export class ApService {
         return "";
       }
     };
+
+    this.filterChange.subscribe(() => this.filterService.triggerColumnFilter());
   }
 
   private onDataReady() {
