@@ -4,7 +4,8 @@ import { TagChange } from "../edit-tags/tag-change";
 
 export interface EditApTransport {
   id: number; // 0 -> NEW
-  ap: ApChange; // null -> DEL ap
+  ap: ApChange;
   hw: HwChange;
   tags: TagChange[] | null;
+  delAp: boolean;
 }

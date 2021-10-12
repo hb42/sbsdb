@@ -33,7 +33,7 @@ export class ConfigService {
 
   private userDataChange: EventEmitter<User> = new EventEmitter() as EventEmitter<User>;
   private userSession: UserSession;
-  private timer: number;
+  private timer: NodeJS.Timeout;
 
   constructor(
     private http: HttpClient,

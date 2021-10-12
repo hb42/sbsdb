@@ -47,8 +47,6 @@ export class ApService {
  const uniq2 = [ ...new Set(this.apDataSource.data.map((a) => a.oesearch)) ].sort();
   */
 
-  public filterChange: EventEmitter<void> = new EventEmitter<void>();
-
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
@@ -139,23 +137,23 @@ export class ApService {
   }
 
   public newAp(): void {
-    this.editService.newAp(this.filterChange);
+    this.editService.newAp();
   }
 
   public apEdit(ap: Arbeitsplatz): void {
-    this.editService.apEdit(ap, this.filterChange);
+    this.editService.apEdit(ap);
   }
 
   public deleteAp(ap: Arbeitsplatz): void {
-    this.editService.deleteAp(ap, this.filterChange);
+    this.editService.deleteAp(ap);
   }
 
   public tagsEdit(ap: Arbeitsplatz): void {
-    this.editService.tagsEdit(ap, this.filterChange);
+    this.editService.tagsEdit(ap);
   }
 
   public hwEdit(ap: Arbeitsplatz): void {
-    this.editService.hwEdit(ap, this.filterChange);
+    this.editService.hwEdit(ap);
   }
 
   public gotoHw(hw: Hardware): void {
@@ -558,7 +556,10 @@ export class ApService {
       }
     };
 
-    this.filterChange.subscribe(() => this.filterService.triggerColumnFilter());
+    // Server liefert Aenderungen an APs
+    this.dataService.apListChanged.subscribe(() => this.filterService.triggerColumnFilter());
+    // TODO filterChange ueberall entfernen
+    // this.filterChange.subscribe(() => this.filterService.triggerColumnFilter());
   }
 
   private onDataReady() {

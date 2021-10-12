@@ -4,6 +4,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { ConfigService } from "./config/config.service";
 import { IpHelper } from "./ip-helper";
+import { ApHw } from "./model/ap-hw";
 import { ApTyp } from "./model/ap-typ";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { Betrst } from "./model/betrst";
@@ -11,6 +12,7 @@ import { Hardware } from "./model/hardware";
 import { HwKonfig } from "./model/hw-konfig";
 import { TagTyp } from "./model/tagTyp";
 import { Vlan } from "./model/vlan";
+import { NotificationService } from "./notification.service";
 
 @Injectable({
   providedIn: "root",
@@ -49,6 +51,8 @@ export class DataService {
   public vlanListReady: EventEmitter<void> = new EventEmitter<void>();
   public aptypListReady: EventEmitter<void> = new EventEmitter<void>();
 
+  public apListChanged: EventEmitter<void> = new EventEmitter<void>();
+
   // Web-API calls
   public readonly oeTreeUrl: string;
   public readonly allApsUrl: string;
@@ -79,7 +83,11 @@ export class DataService {
   private hwlistready = false;
   private hwkonfiglistready = false;
 
-  constructor(private http: HttpClient, private configService: ConfigService) {
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService,
+    private notification: NotificationService
+  ) {
     console.debug("c'tor DataService");
 
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
@@ -128,6 +136,18 @@ export class DataService {
     this.fetchTagTypList();
     this.fetchVlanList();
     this.fetchApTypList();
+
+    notification.initialize();
+
+    notification.apChange.subscribe((data) => {
+      console.debug("dataService start update");
+      this.updateAp(data);
+      if (!notification.isOpen()) {
+        console.debug("reopening Notification");
+        notification.initialize();
+      }
+      this.apListChanged.emit();
+    });
   }
 
   public get(url: string): Observable<unknown> {
@@ -183,22 +203,6 @@ export class DataService {
     });
   }
 
-  public updateAp(neu: Arbeitsplatz, neuHw: Hardware[], delApId: number): void {
-    if (delApId > 0) {
-      // DEL AP
-      this.apList.splice(
-        this.apList.findIndex((ap) => ap.apId === delApId),
-        1
-      );
-      // TODO fremde HW loeschen!
-      this.changeApHw(neuHw);
-    } else {
-      const ap = this.changeAp(neu);
-      this.changeApHw(neuHw);
-      this.apSortHw(ap);
-    }
-  }
-
   public prepareAP(ap: Arbeitsplatz): void {
     ap.hwStr = ""; // keine undef Felder!
     ap.sonstHwStr = ""; // keine undef Felder!
@@ -237,6 +241,22 @@ export class DataService {
       ap[this.tagFieldName(tag.bezeichnung)] = tag.text;
     });
     this.sortAP(ap);
+  }
+
+  private updateAp(data: ApHw): void {
+    if (data.delApId > 0) {
+      // DEL AP
+      this.apList.splice(
+        this.apList.findIndex((ap) => ap.apId === data.delApId),
+        1
+      );
+      // TODO fremde HW loeschen!
+      this.changeApHw(data.hw);
+    } else {
+      const ap = this.changeAp(data.ap);
+      this.changeApHw(data.hw);
+      this.apSortHw(ap);
+    }
   }
 
   private sortAP(ap: Arbeitsplatz) {

@@ -26,13 +26,44 @@
       <mat-icon>file_download</mat-icon>
     </button>
     <span class="menu-spacer">|</span>
-    <button mat-icon-button title="Neue Hardware-Konfiguration">
-      <!--      <mat-icon>add_circle_outline</mat-icon>-->
-      <mat-icon>account_tree</mat-icon>
+
+    <button mat-icon-button [mat-menu-trigger-for]="newHwMenu" title="Bearbeiten">
+      <mat-icon>add_to_queue</mat-icon>
     </button>
-    <button mat-icon-button title="Neue Geräte">
-      <mat-icon>important_devices</mat-icon>
-    </button>
+    <mat-menu #newHwMenu="matMenu">
+      <button mat-menu-item (click)="hwService.newConfig()">
+        <mat-icon>queue_play_next</mat-icon>
+        <span>Neue Hardware-Konfiguration</span>
+      </button>
+      <button mat-menu-item (click)="hwService.newHardware()">
+        <mat-icon>desktop_mac</mat-icon>
+        <span>Neue Geräte</span>
+      </button>
+      <button mat-menu-item (click)="hwService.editConfig()">
+        <mat-icon>important_devices</mat-icon>
+        <span>Konfiguration bearbeiten</span>
+      </button>
+    </mat-menu>
+
+    <!--    <button-->
+    <!--      mat-button-->
+    <!--      (click)="newhw.toggle(); $event.preventDefault(); $event.stopPropagation()"-->
+    <!--      title="Bearbeiten"-->
+    <!--    >-->
+    <!--      <mat-select disableRipple style="width: unset" #newhw>-->
+    <!--        <mat-option (click)="hwService.newConfig()">Neue Hardware-Konfiguration</mat-option>-->
+    <!--        <mat-option (click)="hwService.newHardware()">Neue Geräte</mat-option>-->
+    <!--        <mat-option (click)="hwService.editConfig()">Konfiguration bearbeiten</mat-option>-->
+    <!--      </mat-select>-->
+    <!--    </button>-->
+
+    <!--    <button mat-icon-button title="Neue Hardware-Konfiguration">-->
+    <!--      &lt;!&ndash;      <mat-icon>add_circle_outline</mat-icon>&ndash;&gt;-->
+    <!--      <mat-icon>account_tree</mat-icon>-->
+    <!--    </button>-->
+    <!--    <button mat-icon-button title="Neue Geräte">-->
+    <!--      <mat-icon>important_devices</mat-icon>-->
+    <!--    </button>-->
     <span class="spacer"></span>
     <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">
       <mat-icon>menu</mat-icon>

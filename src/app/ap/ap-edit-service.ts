@@ -1,9 +1,8 @@
-import { EventEmitter, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { DataService } from "../shared/data.service";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { IpHelper } from "../shared/ip-helper";
-import { ApHw } from "../shared/model/ap-hw";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { Hardware } from "../shared/model/hardware";
 import { HwKonfig } from "../shared/model/hw-konfig";
@@ -24,7 +23,7 @@ export class ApEditService extends BaseEditService {
     console.debug("c'tor ApEditService");
   }
 
-  public newAp(filterChange: EventEmitter<void>): void {
+  public newAp(): void {
     const dialogRef = this.dialog.open(NewApComponent, { data: { typ: null } });
     dialogRef.afterClosed().subscribe((result: NewApData) => {
       console.debug("dlg closed");
@@ -107,29 +106,26 @@ export class ApEditService extends BaseEditService {
           hw.vlans.push(vlan);
           ap.hw.push(hw);
         }
-        this.apEdit(ap, filterChange);
+        this.apEdit(ap);
       }
     });
   }
 
-  public apEdit(ap: Arbeitsplatz, filterChange: EventEmitter<void>): void {
-    this.edit(
-      { ap: ap, editAp: true, editHw: true, editTags: true } as ApEditDialogData,
-      filterChange
-    );
+  public apEdit(ap: Arbeitsplatz): void {
+    this.edit({ ap: ap, editAp: true, editHw: true, editTags: true } as ApEditDialogData);
   }
 
-  public hwEdit(ap: Arbeitsplatz, filterChange: EventEmitter<void>): void {
+  public hwEdit(ap: Arbeitsplatz): void {
     console.debug("open edit aphw");
     console.dir(ap);
-    this.edit({ ap: ap, editHw: true } as ApEditDialogData, filterChange);
+    this.edit({ ap: ap, editHw: true } as ApEditDialogData);
   }
 
-  public tagsEdit(ap: Arbeitsplatz, filterChange: EventEmitter<void>): void {
-    this.edit({ ap: ap, editTags: true } as ApEditDialogData, filterChange);
+  public tagsEdit(ap: Arbeitsplatz): void {
+    this.edit({ ap: ap, editTags: true } as ApEditDialogData);
   }
 
-  public deleteAp(ap: Arbeitsplatz, filterChange: EventEmitter<void>): void {
+  public deleteAp(ap: Arbeitsplatz): void {
     const dialogRef = this.dialog.open(YesNoDialogComponent, {
       data: {
         title: "Arbeitsplatz löschen",
@@ -143,13 +139,14 @@ export class ApEditService extends BaseEditService {
           ap: null,
           hw: null,
           tags: null,
+          delAp: true,
         } as EditApTransport;
-        this.save(post, filterChange);
+        this.save(post);
       }
     });
   }
 
-  private edit(dat: ApEditDialogData, filterChange: EventEmitter<void>) {
+  private edit(dat: ApEditDialogData) {
     const dialogRef = this.dialog.open(ApEditDialogComponent, {
       disableClose: true,
       data: dat,
@@ -160,38 +157,41 @@ export class ApEditService extends BaseEditService {
       console.debug("dialog closed");
       console.dir(result);
       if (result) {
-        this.saveDlg(result, filterChange);
+        this.saveDlg(result);
       }
     });
   }
 
-  private saveDlg(result: ApEditDialogData, filterChange: EventEmitter<void>): void {
+  private saveDlg(result: ApEditDialogData): void {
     const post = {
       id: result.ap.apId,
       ap: result.apData,
       tags: result.tags ?? [],
       hw: result.hw,
+      delAp: false,
     } as EditApTransport;
-    this.save(post, filterChange);
+    this.save(post);
   }
 
-  private save(post: EditApTransport, filterChange: EventEmitter<void>): void {
+  private save(post: EditApTransport): void {
     console.debug("save changes");
     console.dir(post);
     this.dataService.post(this.dataService.changeApUrl, post).subscribe(
-      (a: ApHw) => {
-        if (a) {
-          this.dataService.updateAp(a.ap, a.hw, a.delApId);
-          // TODO trigger apfilter f. new ap/hw
-          //      braucht wohl einen event zu ap-filter-service -> einbauen im Kontext
-          //      der SSE-Impementierung
-          filterChange.emit();
-
-          console.debug("post succeeded");
-          console.dir(a);
-        } else {
-          console.error("Server liefert kein Ergebnis für apchange");
-        }
+      (a: never) => {
+        console.debug("post succeeded");
+        console.dir(a);
+        // if (a) {
+        //   this.dataService.updateAp(a.ap, a.hw, a.delApId);
+        //   // TODO trigger apfilter f. new ap/hw
+        //   //      braucht wohl einen event zu ap-filter-service -> einbauen im Kontext
+        //   //      der SSE-Impementierung
+        //   filterChange.emit();
+        //
+        //   console.debug("post succeeded");
+        //   console.dir(a);
+        // } else {
+        //   console.error("Server liefert kein Ergebnis für apchange");
+        // }
       },
       (err: Error) => {
         console.error("Error " + err.message);

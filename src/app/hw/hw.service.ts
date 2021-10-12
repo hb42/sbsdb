@@ -116,6 +116,16 @@ export class HwService {
     this.triggerFilter();
   }
 
+  public newConfig(): void {
+    console.debug("** new config clicked");
+  }
+  public newHardware(): void {
+    console.debug("** new hardware clicked");
+  }
+  public editConfig(): void {
+    console.debug("** edit config clicked");
+  }
+
   public test(hw: Hardware): void {
     console.dir(hw);
   }
@@ -608,6 +618,9 @@ export class HwService {
       }
     };
     this.hwFilterService.initService(this.columns, this.hwDataSource);
+
+    // Aenderungen in der AP-Liste muessen, wg. HW zu AP, auch hier beruecksichtigt werden
+    this.dataService.apListChanged.subscribe(() => this.hwFilterService.triggerColumnFilter());
   }
 
   // --- fetch data ---
