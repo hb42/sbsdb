@@ -72,6 +72,10 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         void this.apService.filterService.toCsv();
         event.preventDefault();
         event.stopPropagation();
+      } else if (event.key == "n") {
+        void this.apService.newAp();
+        event.preventDefault();
+        event.stopPropagation();
       } else {
         const colIdx = this.apService.columns.findIndex(
           (c) => c.accelerator && c.accelerator === event.key

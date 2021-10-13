@@ -27,7 +27,7 @@
     </button>
     <span class="menu-spacer">|</span>
 
-    <button mat-icon-button [mat-menu-trigger-for]="newHwMenu" title="Bearbeiten">
+    <button mat-icon-button [mat-menu-trigger-for]="newHwMenu" title="Neue Konfig/HW (Alt+N)" #newHwMenuBtn="matMenuTrigger">
       <mat-icon>add_to_queue</mat-icon>
     </button>
     <mat-menu #newHwMenu="matMenu">

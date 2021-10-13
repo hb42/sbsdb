@@ -35,6 +35,7 @@ export class UserSession {
 
     // sicherstellen, dass alle Einstellungen definiert sind
     this.settings.path = this.settings.path ?? "";
+    this.settings.debug = !!this.settings.debug;
     this.settings.showStandort =
       this.settings.showStandort === undefined ? true : !!this.settings.showStandort;
     this.settings.apColumnFilters = this.settings.apColumnFilters ?? [];

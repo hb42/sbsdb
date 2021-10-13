@@ -337,7 +337,7 @@ export class HwService {
         () => "anschDat",
         () => "anschDat",
         (h: Hardware) => (h.anschDat.valueOf() ? formatDate(h.anschDat, "mediumDate", "de") : ""),
-        "n",
+        "u",
         true,
         5,
         ColumnType.DATE,

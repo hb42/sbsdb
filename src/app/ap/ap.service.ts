@@ -222,7 +222,7 @@ export class ApService {
         () => "apname",
         () => "apname",
         (a: Arbeitsplatz) => a.apname,
-        "n",
+        "p",
         true,
         2,
         ColumnType.STRING,

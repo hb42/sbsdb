@@ -16,6 +16,8 @@ import { GetColumn } from "../../shared/helper";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { HwService } from "../hw.service";
+import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
+import { MatButton } from "@angular/material/button";
 
 @Component({
   selector: "sbsdb-hw",
@@ -29,6 +31,7 @@ export class HwComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
   @ViewChild("firstfilter") public firstFilter: HeaderCellComponent;
   @ViewChild("lastfilter") public lastFilter: HeaderCellComponent;
+  @ViewChild("newHwMenuBtn") public newHwMenuBtn: MatMenuTrigger;
 
   constructor(
     private route: ActivatedRoute,
@@ -64,6 +67,10 @@ export class HwComponent implements AfterViewInit, OnInit {
         event.stopPropagation();
       } else if (event.key == "x") {
         void this.hwService.hwFilterService.toCsv();
+        event.preventDefault();
+        event.stopPropagation();
+      } else if (event.key == "n") {
+        this.newHwMenuBtn.toggleMenu();
         event.preventDefault();
         event.stopPropagation();
       } else {
