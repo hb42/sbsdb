@@ -21,7 +21,7 @@
     </div>
     <div class="fill"></div>
     <div *ngIf="apService.userSettings.isAdmin" class="detail-cell-margin edit-button">
-      <button mat-icon-button title="Arbeitsplatz bearbeiten" (click)="apService.apEdit(element)">
+      <button mat-icon-button color="primary" title="Arbeitsplatz bearbeiten" (click)="apService.apEdit(element)">
         <mat-icon>edit</mat-icon>
       </button>
     </div>
@@ -47,6 +47,7 @@
               <div *ngIf="apService.userSettings.isAdmin" class="sub-table-head-button edit-button">
                 <button
                   mat-icon-button
+                  color="primary"
                   title="Hardware/IP bearbeiten"
                   (click)="apService.hwEdit(element)"
                 >
@@ -108,6 +109,7 @@
               <div *ngIf="apService.userSettings.isAdmin" class="sub-table-head-button edit-button">
                 <button
                   mat-icon-button
+                  color="primary"
                   title="Sonstige Infos bearbeiten"
                   (click)="apService.tagsEdit(element)"
                 >
