@@ -85,7 +85,7 @@ export function ParseDate(date: string): Date {
  */
 export function StringToNumber(input: string): number {
   const isnumber = /^[+-]?\d+\.?\d*$/;
-  input = input ? input.replace(".", "").replace(",", ".").trim() : "";
+  input = input ? input.replace(/\./g, "").replace(/,/, ".").trim() : "";
   return isnumber.test(input) ? Number.parseFloat(input) : NaN;
 }
 

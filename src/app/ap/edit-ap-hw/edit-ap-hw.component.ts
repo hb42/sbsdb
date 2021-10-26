@@ -69,7 +69,7 @@ export class EditApHwComponent implements OnInit {
     if (
       newpriId ||
       (this.data.priHw.hw &&
-        (this.data.priHw.hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) > 0)
+        (this.data.priHw.hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) !== 0)
     ) {
       changes.priVlans = this.submitVlans(this.data.priHw);
     }

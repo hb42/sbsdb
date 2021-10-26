@@ -47,16 +47,20 @@ export class NotificationService {
       }
     }, 300000);
 
-    void this.hubConnection.start().then((data: never) => {
-      console.debug("## Now connected to NotificationHub");
-      console.log(data);
-    });
-    // macht Probleme, wenn der Server weg ist
-    // .catch((error: never) => {
-    //   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    //   console.error(`Could not connect to NotificationHub: ${error}`);
-    //   setTimeout(() => this.initialize(), 1000);
-    // });
+    void this.hubConnection
+      .start()
+      .then((data: never) => {
+        console.debug("## Now connected to NotificationHub");
+        console.log(data);
+      })
+      .catch((error: never) => {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        console.error("Could not connect to NotificationHub:");
+        console.dir(error);
+        // macht Probleme, wenn der Server weg ist
+        //   setTimeout(() => this.initialize(), 1000);
+        // TODO Errorhandling f. Serverfehler
+      });
   }
 
   public isOpen(): boolean {

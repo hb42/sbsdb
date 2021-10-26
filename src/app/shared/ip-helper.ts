@@ -77,7 +77,7 @@ export class IpHelper {
    * @param ip
    */
   public static getIpString(ip: number): string {
-    return this.getPartialIpString(ip, 4);
+    return IpHelper.getPartialIpString(ip, 4);
   }
 
   /**
@@ -119,7 +119,7 @@ export class IpHelper {
    * @param netmask
    */
   public static getNetmaskBits(netmask: number): number {
-    const bits = this.getHostBits(netmask);
+    const bits = IpHelper.getHostBits(netmask);
     return bits ? 32 - bits : 0;
   }
 
@@ -146,7 +146,7 @@ export class IpHelper {
    * @param netmask
    */
   public static getHostBytes(netmask: number): number {
-    const bits = this.getHostBits(netmask);
+    const bits = IpHelper.getHostBits(netmask);
     return Math.trunc((bits - 1) / 8) + 1;
   }
 
@@ -158,7 +158,7 @@ export class IpHelper {
    * @param netmask
    */
   public static getHostIpMin(net: number, netmask: number): number {
-    const bytes = this.getHostBytes(netmask);
+    const bytes = IpHelper.getHostBytes(netmask);
     const mask = 256 ** bytes - 1;
     return net & mask;
   }
@@ -172,7 +172,7 @@ export class IpHelper {
    */
   public static getHostIpMax(net: number, netmask: number): number {
     const hostbits = this.getHostBits(netmask);
-    const min = this.getHostIpMin(net, netmask);
+    const min = IpHelper.getHostIpMin(net, netmask);
     return 2 ** hostbits - 1 + min;
   }
 
@@ -187,7 +187,7 @@ export class IpHelper {
    * @param netmask
    */
   public static getHostIp(host: number, netmask: number): number {
-    netmask = this.getNetmask(netmask); // falls nur die Bit-Zahl geliefert wird
+    netmask = IpHelper.getNetmask(netmask); // falls nur die Bit-Zahl geliefert wird
     return host & ~netmask;
   }
 }
