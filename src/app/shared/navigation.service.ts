@@ -1,12 +1,17 @@
 import { Location } from "@angular/common";
 import { EventEmitter, Injectable } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router, UrlTree } from "@angular/router";
-import { ErrorService } from "@hb42/lib-client";
 import { filter } from "rxjs/operators";
 import { ConfigService } from "./config/config.service";
+import { ElectronService } from "./electron.service";
 
 @Injectable({ providedIn: "root" })
 export class NavigationService {
+  public static errorUrl = "error";
+  public errorStatus = "zzz";
+  public errorMessage = "xxx";
+  public errorStack = "xxx\nyyy";
+  public lastError: Error = new Error("aaa");
   public currentPath = "";
 
   public apLoading = false;
@@ -25,6 +30,7 @@ export class NavigationService {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
+    private electronService: ElectronService,
     public configService: ConfigService
   ) {
     console.debug("c'tor NavigationService");
@@ -37,7 +43,7 @@ export class NavigationService {
         // last enthaelt alle param: z.B. "/ap;id=42;tree=vlan"
         // Navigation zu diesem String:
         //   this.router.navigateByUrl(this.router.parseUrl("/ap;id=42;tree=vlan"))
-        if (last && !last.endsWith(ErrorService.errorPage)) {
+        if (last && !last.endsWith(NavigationService.errorUrl)) {
           this.configService.getUser().path = last;
           this.currentPath = last;
         }
@@ -70,7 +76,7 @@ export class NavigationService {
     // falls die Fehlerseite als letzte Navigation gespeichert wurde,
     // zur Startseite gehen.
     let goto = this.configService.getUser().path;
-    if (goto && goto.endsWith(ErrorService.errorPage)) {
+    if (goto && goto.endsWith(NavigationService.errorUrl)) {
       goto = "/";
     }
     // ungueltige Werte -> Startseite
@@ -106,7 +112,28 @@ export class NavigationService {
     this.navigateByUrl(this.router.createUrlTree(command));
   }
 
+  /**
+   * Anwendung neu laden
+   *
+   * In electron wuerde das Ueberschreiben von window.location.href nicht funktionieren
+   * (zumindest nicht mit Angular-SPA). Da muss der Reload auf der electron-Seite erfolgen.
+   * Im electron start-script sieht das in etwa so aus:
+   * <pre>
+   *   ipcMain.on("reload-app", function(event, arg) {
+   *     console.log("APP RELOAD " + arg);
+   *     mainWindow.loadURL(url.format({
+   *                           pathname: path.join(__dirname, 'index.html'),
+   *                           protocol: 'file:',
+   *                           slashes: true
+   *                        }));
+   *   });
+   * </pre>
+   */
   public resetApp(): void {
-    window.location.href = this.location.prepareExternalUrl("/");
+    if (this.electronService.isElectron) {
+      this.electronService.send("reload-app", "navigationService");
+    } else {
+      window.location.href = this.location.prepareExternalUrl("/");
+    }
   }
 }

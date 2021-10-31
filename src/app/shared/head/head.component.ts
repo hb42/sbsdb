@@ -67,6 +67,11 @@ export class HeadComponent implements AfterViewInit {
     }
   }
 
+  public about(): void {
+    // TODO dialog starten
+    throw new SyntaxError("Test exception");
+  }
+
   public backBtn(): void {
     history.back();
   }

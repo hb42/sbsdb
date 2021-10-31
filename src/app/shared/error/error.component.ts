@@ -1,13 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ErrorService } from "@hb42/lib-client";
 import { ConfigService } from "../config/config.service";
-
-// FIXME kann wieder raus, sobald das interface in lib-client eingebaut ist
-interface ErrorMsg {
-  title: string;
-  message: string;
-}
+import { NavigationService } from "../navigation.service";
 
 @Component({
   selector: "sbsdb-error",
@@ -17,21 +11,20 @@ interface ErrorMsg {
 export class ErrorComponent implements OnInit {
   public status: string;
   public message: string;
+  public stack: string;
 
   constructor(
     private route: ActivatedRoute,
-    public errorService: ErrorService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private navigationService: NavigationService
   ) {
     console.debug("c'tor ErrorComponent");
   }
 
   public ngOnInit(): void {
-    const latest: ErrorMsg = this.errorService.getLastError() as ErrorMsg;
-    this.status = latest.title;
-    this.message = latest.message;
-    console.debug("Error:");
-    console.dir(latest);
+    this.status = this.navigationService.lastError.name;
+    this.message = this.navigationService.lastError.message;
+    this.stack = this.navigationService.lastError.stack;
   }
 
   /**
@@ -40,6 +33,6 @@ export class ErrorComponent implements OnInit {
    */
   public restartApp(): void {
     this.configService.getUser().path = "/";
-    this.errorService.resetApp();
+    this.navigationService.resetApp();
   }
 }

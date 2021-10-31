@@ -1,8 +1,9 @@
 import { Location } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
-import { Version, VersionService } from "@hb42/lib-client";
 import { environment } from "../../../environments/environment";
+import { Version } from "../version";
+import { VersionService } from "../version.service";
 import { User } from "./user";
 import { UserSession } from "./user.session";
 
@@ -24,12 +25,12 @@ export class ConfigService {
   }
 
   // Web-API calls
-  private readonly getConf: string;
-  private readonly setConf: string;
-  private readonly delConf: string;
-  private readonly getUserConf: string;
-  private readonly setUserConf: string;
-  private readonly getVersion: string;
+  private readonly getConfUrl: string;
+  private readonly setConfUrl: string;
+  private readonly delConfUrl: string;
+  private readonly getUserConfUrl: string;
+  private readonly setUserConfUrl: string;
+  private readonly getVersionUrl: string;
 
   private userDataChange: EventEmitter<User> = new EventEmitter() as EventEmitter<User>;
   private userSession: UserSession;
@@ -44,12 +45,12 @@ export class ConfigService {
     // Adresse der Web-API
     this.websvc = location.prepareExternalUrl(environment.webservice);
 
-    this.getConf = this.webservice + "/config/get";
-    this.setConf = this.webservice + "/config/set";
-    this.delConf = this.webservice + "/config/del";
-    this.getUserConf = this.webservice + "/user/get";
-    this.setUserConf = this.webservice + "/user/set";
-    this.getVersion = this.webservice + "/config/version";
+    this.getConfUrl = this.webservice + "/config/get";
+    this.setConfUrl = this.webservice + "/config/set";
+    this.delConfUrl = this.webservice + "/config/del";
+    this.getUserConfUrl = this.webservice + "/user/get";
+    this.setUserConfUrl = this.webservice + "/user/set";
+    this.getVersionUrl = this.webservice + "/config/version";
 
     // in den Event fuer Benutzer-Config-Aenderungen einklinken
     this.userDataChange.subscribe((user) => {
@@ -93,7 +94,7 @@ export class ConfigService {
     // Oberflaeche entschiweden werden.
     return (
       this.http
-        .get<User>(this.getUserConf)
+        .get<User>(this.getUserConfUrl)
         .toPromise()
         .then((data) => {
           this.userSession = new UserSession(this.userDataChange, data);
@@ -104,7 +105,7 @@ export class ConfigService {
         // Versionen
         .then(() => {
           console.debug(">>> getting app meta data");
-          return this.versionService.init(this.getVersion).then((ver) => {
+          return this.versionService.init(this.getVersionUrl).then((ver) => {
             console.debug(">>> meta data done");
             console.log(ver.displayname + " v" + ver.version + " " + ver.copyright);
             console.dir(ver.versions);
@@ -123,7 +124,7 @@ export class ConfigService {
 
   public getConfig(confName: string): Promise<unknown> {
     return this.http
-      .get<string>(this.getConf + "/" + confName)
+      .get<string>(this.getConfUrl + "/" + confName)
       .toPromise()
       .then((val) => {
         try {
@@ -143,14 +144,14 @@ export class ConfigService {
     }
     const val: string = JSON.stringify(value);
     return this.http
-      .post(this.setConf + "/" + confName, val)
+      .post(this.setConfUrl + "/" + confName, val)
       .toPromise()
       .then((rc) => rc);
   }
 
   public deleteConfig(confName: string): Promise<unknown> {
     return this.http
-      .delete(this.delConf + "/" + confName)
+      .delete(this.delConfUrl + "/" + confName)
       .toPromise()
       .then((rc) => rc);
   }
@@ -172,7 +173,7 @@ export class ConfigService {
       clearTimeout(this.timer);
     }
     this.timer = setTimeout(() => {
-      this.http.post<User>(this.setUserConf, user).subscribe(() => {
+      this.http.post<User>(this.setUserConfUrl, user).subscribe(() => {
         console.debug("user conf saved");
         console.dir(user);
       });

@@ -14,6 +14,12 @@
  * Anwendung per IPC-event "app-ready" Bereitschaft meldet wird die Datei angelegt.
  * Das laesst sich recht einfach per Batch-Script abfragen.
  *
+ * TODO f. electron > 12:
+ *  -> https://github.com/electron/electron/issues/7300#issuecomment-799093768
+ *  "One reason some people are still experiencing this problem is that nodeIntegration has been
+ *   removed from Electron v12. So setting nodeIntegration: true has no affect. Instead, you need
+ *   to set contextIsolation: false. I suggest reading the justification to understand why and
+ *   becoming familiar with the contextBridge to make it work safely."
  */
 
 const electron = require("electron");

@@ -1,12 +1,11 @@
 import { registerLocaleData } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import localeDe from "@angular/common/locales/de";
-import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
+import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { LibClientModule, LOGON_OPTIONS, LogonParameter, Version } from "@hb42/lib-client";
 import { AdminOptionsComponent } from "./admin/admin-options/admin-options.component";
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
 import { AdminPanelConfigInputComponent } from "./admin/admin-panel-config-input/admin-panel-config-input.component";
@@ -35,6 +34,7 @@ import { DialogTitleComponent } from "./shared/dialog-title/dialog-title.compone
 import { DisableControlDirective } from "./shared/edit/disable-control.directive";
 import { EditDialogComponent } from "./shared/edit/edit-dialog/edit-dialog.component";
 import { ErrorComponent } from "./shared/error/error.component";
+import { ErrorService } from "./shared/error/error.service";
 import { ExpandHeaderComponent } from "./shared/filter/expand-header/expand-header.component";
 import { FilterBracketComponent } from "./shared/filter/filter-bracket/filter-bracket.component";
 import { FilterEditListComponent } from "./shared/filter/filter-edit-list/filter-edit-list.component";
@@ -50,15 +50,16 @@ import { StatusComponent } from "./shared/status/status.component";
 import { HeaderCellComponent } from "./shared/table/header-cell/header-cell.component";
 import { PaginatorStatusDirective } from "./shared/table/paginator-status.directive";
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
+import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
-export function logonOptionsFactory(): LogonParameter {
-  return {
-    logon: "NO",
-  };
-}
+// export function logonOptionsFactory(): LogonParameter {
+//   return {
+//     logon: "NO",
+//   };
+// }
 
 registerLocaleData(localeDe); // + provider, s.u.
 
@@ -125,7 +126,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     AppMaterialModule,
 
     // -- eigene
-    LibClientModule,
+    // LibClientModule,
   ],
   // f. mat-dialog (wird nur ohne Ivy gebraucht)
   // entryComponents: [ApFilterEditComponent, ApFilterEditListComponent],
@@ -143,12 +144,14 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     },
     // paginator uebersetzen
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlDe },
+    // Error handler
+    { provide: ErrorHandler, useClass: ErrorService },
 
     // Konfig fuer Autologon TODO Altschuld, entfernen, sobald lib-client umgebaut
-    {
-      provide: LOGON_OPTIONS,
-      useFactory: logonOptionsFactory,
-    },
+    // {
+    //   provide: LOGON_OPTIONS,
+    //   useFactory: logonOptionsFactory,
+    // },
   ],
   bootstrap: [AppComponent],
 })

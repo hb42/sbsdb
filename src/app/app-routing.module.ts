@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { ErrorService } from "@hb42/lib-client";
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminComponent } from "./admin/admin/admin.component";
@@ -9,6 +8,7 @@ import { ADM_FILTER_PATH, ADM_OPTIONS_PATH, ADM_PATH, AP_PATH, HW_PATH } from ".
 import { HwComponent } from "./hw/hw/hw.component";
 import { AdminGuard } from "./shared/admin.guard";
 import { ErrorComponent } from "./shared/error/error.component";
+import { NavigationService } from "./shared/navigation.service";
 
 const routes: Routes = [
   { path: "", redirectTo: "/" + AP_PATH, pathMatch: "full" },
@@ -31,7 +31,7 @@ const routes: Routes = [
       },
     ],
   },
-  { path: ErrorService.errorPage, component: ErrorComponent },
+  { path: NavigationService.errorUrl, component: ErrorComponent },
 ];
 
 @NgModule({

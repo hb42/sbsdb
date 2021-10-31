@@ -1,8 +1,8 @@
-import { formatDate, formatNumber } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatTableDataSource } from "@angular/material/table";
 import { Base64 } from "js-base64";
+import { isArray } from "rxjs/internal-compatibility";
 import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../config/config.service";
 import { UserSession } from "../config/user.session";
@@ -644,7 +644,7 @@ export abstract class BaseFilterService {
                   content = col.displayText(row);
                 } else {
                   // fuer alle anderen den Feldinhalt holen (ggf. aus mehreren Feldern)
-                  if (Array.isArray(col.fieldName)) {
+                  if (isArray(col.fieldName)) {
                     content = col.fieldName.reduce(
                       (prev, curr) =>
                         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -674,7 +674,7 @@ export abstract class BaseFilterService {
 
   private async readGlobalFilters() {
     const blob: unknown = await this.configService.getConfig(this.getGlobalFiltersName());
-    if (blob && blob instanceof Array) {
+    if (blob && isArray(blob)) {
       this.globalFilters = blob as TransportFilter[];
       const maxkey: number = this.globalFilters.reduce(
         (prev, curr) => (curr.key > prev ? curr.key : prev),
@@ -748,8 +748,8 @@ export abstract class BaseFilterService {
           const feld = exp.field.fieldName; // string | string[] !!
           cols.forEach((c) => {
             // string[]-Vergleich
-            if (feld instanceof Array) {
-              if (c.col.fieldName instanceof Array) {
+            if (isArray(feld)) {
+              if (isArray(c.col.fieldName)) {
                 if (feld.length === c.col.fieldName.length) {
                   let io = true;
                   for (let i = 0; i < c.col.fieldName.length; i++) {
@@ -876,7 +876,7 @@ export abstract class BaseFilterService {
       } else if (tr.op === 1) {
         op = and;
       }
-      if (Array.isArray(tr.elem)) {
+      if (isArray(tr.elem)) {
         const br = new Bracket();
         br.up = b;
         b.addElement(op, br);

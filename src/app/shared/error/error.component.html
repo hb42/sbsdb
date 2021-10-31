@@ -1,9 +1,10 @@
 <div class="error-page">
   <h1>Programm-Fehler:</h1>
   <h3>{{ status }} - {{ message }}</h3>
+  <pre>{{ stack }}</pre>
   <hr />
   <p>
-    <a (click)="restartApp()" class="btn btn-success">Anwendung neu starten</a>
+    <a (click)="restartApp()" class="link">Anwendung neu starten</a>
     <!--<a [routerLink] = "['/']">Zur Anwendung</a>-->
   </p>
 </div>
