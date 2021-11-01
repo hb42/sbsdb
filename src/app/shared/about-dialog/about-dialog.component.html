@@ -1,0 +1,37 @@
+<!--<sbsdb-dialog-title dialogTitle="Info"></sbsdb-dialog-title>-->
+
+<!--<div class="panel"></div>-->
+<mat-dialog-content class="panel">
+  <div class="img-panel text">
+    <img src="resource/splash_blank.bmp" width="299" height="150" />
+    <div class="version">
+      {{ version.ver.version }}
+    </div>
+  </div>
+  <div class="text">{{ version.ver.copyright }}</div>
+  <div class="list">
+    <div *ngFor="let ver of version.ver.versions">{{ ver }}</div>
+    <!--    <div>-->
+    <!--      <ul class="sw-list">-->
+    <!--        <li *ngFor="let ver of version.ver.versions">{{ ver }}</li>-->
+    <!--      </ul>-->
+    <!--    </div>-->
+  </div>
+  <div class="text server">{{ version.serverVer.displayname }} {{ version.serverVer.version }}</div>
+  <div class="text server-copy" style="">{{ version.serverVer.copyright }}</div>
+  <div class="list">
+    <div *ngFor="let ver of version.serverVer.versions">{{ ver }}</div>
+    <!--    <div>-->
+    <!--      <ul class="sw-list">-->
+    <!--        <li *ngFor="let ver of version.serverVer.versions">{{ ver }}</li>-->
+    <!--      </ul>-->
+    <!--    </div>-->
+  </div>
+</mat-dialog-content>
+<div class="foot">
+  <a class="rel-notes mat-button" href="resource/Versionen.txt" target="_blank">Release Notes</a>
+  <div class="fill"></div>
+  <div mat-dialog-actions>
+    <button mat-flat-button color="primary" mat-dialog-close type="submit">OK</button>
+  </div>
+</div>

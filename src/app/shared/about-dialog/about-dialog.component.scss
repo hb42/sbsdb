@@ -1,0 +1,64 @@
+.end {
+  justify-content: flex-end;
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  padding-left: 150px;
+  padding-right: 150px;
+  width: 299px;
+}
+.img-panel {
+  display: flex;
+  width: 299px;
+}
+.text {
+  text-align: center;
+}
+.list {
+  font-size: small;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+ul.sw-list {
+  padding-inline-start: 25px;
+  list-style-type: circle;
+}
+/* Version auf der Graphik positionieren */
+.version {
+  position: relative;
+  top: 80px;
+  left: -184px;
+  font-size: xx-large;
+  white-space: nowrap;
+}
+.server {
+  font-weight: bold;
+  /* color "primary" */
+  color: #1b72b8;
+  margin-top: 20px;
+}
+.server-copy {
+  font-size: small;
+}
+.foot {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+.rel-notes {
+  font-size: x-small;
+  position: relative;
+  bottom: -12px;
+  padding: 0;
+  font-weight: normal;
+  line-height: inherit;
+  user-select: auto;
+}
+//.rel-notes:hover {
+//  color: #1b72b8;
+//}

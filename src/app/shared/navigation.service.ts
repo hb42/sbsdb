@@ -2,16 +2,13 @@ import { Location } from "@angular/common";
 import { EventEmitter, Injectable } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router, UrlTree } from "@angular/router";
 import { filter } from "rxjs/operators";
+import { ERROR_PATH } from "../app-routing-const";
 import { ConfigService } from "./config/config.service";
 import { ElectronService } from "./electron.service";
 
 @Injectable({ providedIn: "root" })
 export class NavigationService {
-  public static errorUrl = "error";
-  public errorStatus = "zzz";
-  public errorMessage = "xxx";
-  public errorStack = "xxx\nyyy";
-  public lastError: Error = new Error("aaa");
+  public lastError: Error = new Error("");
   public currentPath = "";
 
   public apLoading = false;
@@ -43,7 +40,7 @@ export class NavigationService {
         // last enthaelt alle param: z.B. "/ap;id=42;tree=vlan"
         // Navigation zu diesem String:
         //   this.router.navigateByUrl(this.router.parseUrl("/ap;id=42;tree=vlan"))
-        if (last && !last.endsWith(NavigationService.errorUrl)) {
+        if (last && !last.endsWith(ERROR_PATH)) {
           this.configService.getUser().path = last;
           this.currentPath = last;
         }
@@ -76,7 +73,7 @@ export class NavigationService {
     // falls die Fehlerseite als letzte Navigation gespeichert wurde,
     // zur Startseite gehen.
     let goto = this.configService.getUser().path;
-    if (goto && goto.endsWith(NavigationService.errorUrl)) {
+    if (goto && goto.endsWith(ERROR_PATH)) {
       goto = "/";
     }
     // ungueltige Werte -> Startseite

@@ -1,4 +1,5 @@
 import { ErrorHandler, Injectable } from "@angular/core";
+import { ERROR_PATH } from "../../app-routing-const";
 import { NavigationService } from "../navigation.service";
 
 @Injectable({
@@ -17,6 +18,6 @@ export class ErrorService implements ErrorHandler {
     }
     console.debug("ErrorHandler with error:");
     console.dir(error);
-    this.navigationService.navigateByUrl("/" + NavigationService.errorUrl);
+    this.navigationService.navigateByUrl("/" + ERROR_PATH);
   }
 }

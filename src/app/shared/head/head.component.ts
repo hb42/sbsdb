@@ -1,7 +1,9 @@
 import { AfterViewInit, Component, HostBinding, HostListener, ViewChild } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { MatMenu } from "@angular/material/menu";
 import { Router } from "@angular/router";
 import { ADM_PATH, AP_PATH, HW_PATH } from "../../app-routing-const";
+import { AboutDialogComponent } from "../about-dialog/about-dialog.component";
 import { ConfigService } from "../config/config.service";
 import { NavigationService } from "../navigation.service";
 
@@ -30,7 +32,8 @@ export class HeadComponent implements AfterViewInit {
   constructor(
     private router: Router,
     public navigationService: NavigationService,
-    public configService: ConfigService
+    public configService: ConfigService,
+    public dialog: MatDialog
   ) {}
 
   @HostListener("document:keydown", ["$event"])
@@ -68,8 +71,18 @@ export class HeadComponent implements AfterViewInit {
   }
 
   public about(): void {
+    // throw new SyntaxError("Test exception");
     // TODO dialog starten
-    throw new SyntaxError("Test exception");
+    this.dialog.open(AboutDialogComponent);
+
+    // Dialog-Ergebnis
+    // dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {
+    //   console.debug("dialog closed");
+    //   console.dir(result);
+    //   if (result) {
+    //     this.saveDlg(result);
+    //   }
+    // });
   }
 
   public backBtn(): void {
