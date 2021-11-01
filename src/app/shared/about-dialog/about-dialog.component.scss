@@ -36,10 +36,15 @@ ul.sw-list {
   font-size: xx-large;
   white-space: nowrap;
 }
+.space {
+  margin-top: 20px;
+  font-size: x-large;
+  color: silver;
+}
 .server {
   font-weight: bold;
   /* color "primary" */
-  color: #1b72b8;
+  color: #ff0000;
   margin-top: 20px;
 }
 .server-copy {
