@@ -40,9 +40,13 @@ export class HwFilterService extends BaseFilterService {
       return true;
     }
     const hw = row as Hardware;
-    return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0;
+    return !this.isFremdeHw(hw);
+    // return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0;
   }
 
+  public isFremdeHw(hw: Hardware): boolean {
+    return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) !== 0;
+  }
   public getLatestUserFilter(): string {
     return this.userSettings.latestHwFilter;
   }

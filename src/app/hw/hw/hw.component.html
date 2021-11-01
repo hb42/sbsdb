@@ -27,7 +27,12 @@
     </button>
     <span class="menu-spacer">|</span>
 
-    <button mat-icon-button [mat-menu-trigger-for]="newHwMenu" title="Neue Konfig/HW (Alt+N)" #newHwMenuBtn="matMenuTrigger">
+    <button
+      mat-icon-button
+      [mat-menu-trigger-for]="newHwMenu"
+      title="Neue Konfig/HW (Alt+N)"
+      #newHwMenuBtn="matMenuTrigger"
+    >
       <mat-icon>add_to_queue</mat-icon>
     </button>
     <mat-menu #newHwMenu="matMenu">
@@ -39,7 +44,7 @@
         <mat-icon>desktop_mac</mat-icon>
         <span>Neue Geräte</span>
       </button>
-      <button mat-menu-item (click)="hwService.editConfig()">
+      <button mat-menu-item (click)="hwService.editConfigs()">
         <mat-icon>important_devices</mat-icon>
         <span>Konfiguration bearbeiten</span>
       </button>
@@ -351,6 +356,15 @@
   <!-- Zeilen-Menue -->
   <mat-menu #hwMenu="matMenu">
     <ng-template matMenuContent let-hw="hw">
+      <button
+        mat-menu-item
+        *ngIf="hwService.userSettings.isAdmin"
+        (click)="hwService.hwEdit(hw)"
+        [disabled]="hwService.hwFilterService.isFremdeHw(hw)"
+      >
+        <mat-icon>edit</mat-icon>
+        Hardware bearbeiten
+      </button>
       <button mat-menu-item (click)="hwService.test(hw)">Test1</button>
       <button mat-menu-item>Test2</button>
     </ng-template>

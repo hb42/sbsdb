@@ -6,6 +6,7 @@ import { IpHelper } from "../../shared/ip-helper";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { Hardware } from "../../shared/model/hardware";
 import { Vlan } from "../../shared/model/vlan";
+import { ApService } from "../ap.service";
 import { HwInput } from "../edit-hw/hw-input";
 import { HwApInput } from "./hw-ap-input";
 import { HwChange } from "./hw-change";
@@ -30,7 +31,8 @@ export class EditApHwComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private formBuilder: FormBuilder,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private apService: ApService
   ) {
     console.debug("c'tor EditApHwCompomnenmt");
     this.hwReady = new EventEmitter<HwChange>();
@@ -66,10 +68,10 @@ export class EditApHwComponent implements OnInit {
       changes.newpriId = newpriId;
     }
     // vlan-changes priHw
+    // (this.data.priHw.hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) !== 0)
     if (
       newpriId ||
-      (this.data.priHw.hw &&
-        (this.data.priHw.hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) !== 0)
+      (this.data.priHw.hw && this.apService.filterService.isFremdeHw(this.data.priHw.hw))
     ) {
       changes.priVlans = this.submitVlans(this.data.priHw);
     }
@@ -146,9 +148,12 @@ export class EditApHwComponent implements OnInit {
     input.vlans.forEach((v) => {
       const newVlan = v.vlanCtrl.value as Vlan;
       const newVlanId = newVlan.id;
-      const newMac = IpHelper.checkMacString(v.macCtrl.value);
+      const newMac = IpHelper.checkMacString(v.macCtrl.value as string);
       // relevanter Teil der HostIp
-      const newIp = IpHelper.getHostIp(IpHelper.getIpPartial(v.ipCtrl.value), newVlan.netmask);
+      const newIp = IpHelper.getHostIp(
+        IpHelper.getIpPartial(v.ipCtrl.value as string),
+        newVlan.netmask
+      );
       if (v.hwMacId === 0) {
         // hwMacId == 0 => NEW
         rc.push({

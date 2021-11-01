@@ -1,14 +1,25 @@
 <div [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'" class="detail-cell-content">
   <div class="detail-cell-content-row">
     <div class="detail-cell-margin">
-      <table>
+      <table class="sub-table">
         <thead>
           <tr>
             <th colspan="2">
-              Konfiguration
+              <div class="sub-table-head-title">Konfiguration</div>
               <span *ngIf="hwService.userSettings.debug" class="debug">
                 #{{ element.hwKonfig.id }}
               </span>
+              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  title="Konfiguration bearbeiten"
+                  [disabled]="hwService.hwFilterService.isFremdeHw(element)"
+                  (click)="hwService.editConfig(element)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
             </th>
           </tr>
         </thead>
@@ -65,8 +76,19 @@
         <thead>
           <tr>
             <th colspan="2">
-              Hardware
+              <div class="sub-table-head-title">Hardware</div>
               <span *ngIf="hwService.userSettings.debug" class="debug"> #{{ element.id }} </span>
+              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  title="Hardware bearbeiten"
+                  [disabled]="hwService.hwFilterService.isFremdeHw(element)"
+                  (click)="hwService.hwhwEdit(element)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
             </th>
           </tr>
         </thead>
@@ -100,9 +122,24 @@
       <table *ngIf="element.vlans.length > 0">
         <thead>
           <tr>
-            <th>MAC</th>
-            <th>IP</th>
-            <th>VLAN</th>
+            <th>
+              <div class="sub-table-head-title">MAC</div>
+            </th>
+            <th><div class="sub-table-head-title">IP</div></th>
+            <th>
+              <div class="sub-table-head-title">VLAN</div>
+              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  title="MACs bearbeiten"
+                  [disabled]="hwService.hwFilterService.isFremdeHw(element)"
+                  (click)="hwService.hwmacEdit(element)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </th>
           </tr>
         </thead>
         <tr *ngFor="let ip of element.vlans">
@@ -122,6 +159,18 @@
     </div>
     <div *ngIf="hwService.userSettings.debug" class="detail-cell-margin">
       <span *ngIf="element.ap" class="debug">AP #{{ element.ap.apId }} </span>
+    </div>
+    <div class="fill"></div>
+    <div *ngIf="hwService.userSettings.isAdmin" class="detail-cell-margin edit-button">
+      <button
+        mat-icon-button
+        color="primary"
+        title="Gerät bearbeiten"
+        [disabled]="hwService.hwFilterService.isFremdeHw(element)"
+        (click)="hwService.hwEdit(element)"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
     </div>
   </div>
   <div class="detail-cell-bemerk">{{ element.bemerkung }}</div>

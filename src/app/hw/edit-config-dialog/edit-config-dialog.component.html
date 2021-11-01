@@ -1,0 +1,13 @@
+<!--Konfiguration bearbeiten -> neu/aend
+-->
+<sbsdb-dialog-title dialogTitle="Konfiguration bearbeiten"></sbsdb-dialog-title>
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit(formGroup.value)"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <div class="panel"><!-- config data --></div>
+  <mat-dialog-content class="panel"> </mat-dialog-content>
+
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

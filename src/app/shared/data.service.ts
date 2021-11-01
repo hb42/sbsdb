@@ -68,6 +68,7 @@ export class DataService {
   public readonly allVlansUrl: string;
   public readonly allApTypUrl: string;
   public readonly changeApUrl: string;
+  public readonly changeHwUrl: string;
 
   // case insensitive alpha sort
   // deutlich schneller als String.localeCompare()
@@ -105,6 +106,7 @@ export class DataService {
     this.allApTypUrl = this.configService.webservice + "/ap/aptypes";
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
+    this.changeHwUrl = this.configService.webservice + "/hw/changehw";
 
     const readyEventCheck = () => {
       if (this.isDataReady()) {

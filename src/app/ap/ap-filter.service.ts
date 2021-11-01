@@ -3,9 +3,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { AP_PATH } from "../app-routing-const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
+import { DataService } from "../shared/data.service";
 import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { TransportFilters } from "../shared/filter/transport-filters";
-import { DataService } from "../shared/data.service";
+import { Hardware } from "../shared/model/hardware";
 import { NavigationService } from "../shared/navigation.service";
 
 @Injectable({ providedIn: "root" })
@@ -41,5 +42,8 @@ export class ApFilterService extends BaseFilterService {
   }
   public getUrl(): string {
     return "/" + AP_PATH;
+  }
+  public isFremdeHw(hw: Hardware): boolean {
+    return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) !== 0;
   }
 }

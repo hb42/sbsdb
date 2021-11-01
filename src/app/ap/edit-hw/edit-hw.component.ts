@@ -125,7 +125,7 @@ export class EditHwComponent implements OnInit {
   };
 
   public macCheck = (control: FormControl): ValidationErrors => {
-    if (IpHelper.checkMacString(control.value)) {
+    if (IpHelper.checkMacString(control.value as string)) {
       return null;
     } else {
       return { invalidmac: true };
@@ -142,7 +142,7 @@ export class EditHwComponent implements OnInit {
       if (vlan) {
         const min = this.getMinIp(vlan);
         const max = IpHelper.getHostIpMax(vlan.ip, vlan.netmask);
-        const ipval = IpHelper.getIpPartial(control.value);
+        const ipval = IpHelper.getIpPartial(control.value as string);
         // console.debug(`${ipval} > ${min} && ${ipval} < ${max}`);
         if (ipval > min && ipval < max) {
           return null;

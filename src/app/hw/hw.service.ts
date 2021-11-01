@@ -14,6 +14,7 @@ import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
 import { ColumnType } from "../shared/table/column-type.enum";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
+import { HwEditService } from "./hw-edit.service";
 import { HwFilterService } from "./hw-filter.service";
 
 @Injectable({
@@ -43,6 +44,7 @@ export class HwService {
     public navigationService: NavigationService,
     public editFilterService: EditFilterService,
     public hwFilterService: HwFilterService,
+    public editService: HwEditService,
     private configService: ConfigService
   ) {
     console.debug("c'tor HwService ");
@@ -122,8 +124,25 @@ export class HwService {
   public newHardware(): void {
     console.debug("** new hardware clicked");
   }
-  public editConfig(): void {
+  public editConfigs(): void {
     console.debug("** edit config clicked");
+  }
+
+  public editConfig(hw: Hardware): void {
+    this.editService.editConfig(hw);
+  }
+
+  public hwEdit(hw: Hardware): void {
+    this.editService.hwEdit(hw);
+  }
+  public hwapEdit(hw: Hardware): void {
+    this.editService.hwapEdit(hw);
+  }
+  public hwhwEdit(hw: Hardware): void {
+    this.editService.hwhwEdit(hw);
+  }
+  public hwmacEdit(hw: Hardware): void {
+    this.editService.hwmacEdit(hw);
   }
 
   public test(hw: Hardware): void {
@@ -189,10 +208,7 @@ export class HwService {
             const a = this.hwDataSource.data
               .filter((h1) => {
                 const val = GetColumn("kategorie", this.columns).filterControl.value as string;
-                if (
-                  !this.userSettings.showFremde &&
-                  h1.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG
-                ) {
+                if (!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h1)) {
                   return false;
                 }
                 return val ? h1.hwKonfig.apKatBezeichnung === val : true;
@@ -207,11 +223,7 @@ export class HwService {
               ...new Set(
                 this.hwDataSource.data
                   .filter(
-                    (h3) =>
-                      !(
-                        !this.userSettings.showFremde &&
-                        h3.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG
-                      )
+                    (h3) => !(!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h3))
                   )
                   .map((h) => h.hwKonfig.hwTypBezeichnung)
               ),
@@ -246,10 +258,7 @@ export class HwService {
             const a = this.hwDataSource.data
               .filter((h1) => {
                 const val = GetColumn("typ", this.columns).filterControl.value as string;
-                if (
-                  !this.userSettings.showFremde &&
-                  h1.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG
-                ) {
+                if (!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h1)) {
                   return false;
                 }
                 return val ? h1.hwKonfig.hwTypBezeichnung === val : true;
@@ -264,11 +273,7 @@ export class HwService {
               ...new Set(
                 this.hwDataSource.data
                   .filter(
-                    (h3) =>
-                      !(
-                        !this.userSettings.showFremde &&
-                        h3.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG
-                      )
+                    (h3) => !(!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h3))
                   )
                   .map((h) => h.konfiguration)
               ),

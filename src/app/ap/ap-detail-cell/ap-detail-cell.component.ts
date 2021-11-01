@@ -3,7 +3,6 @@ import { Component, Input } from "@angular/core";
 import { DataService } from "../../shared/data.service";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { Hardware } from "../../shared/model/hardware";
-import { Tag } from "../../shared/model/tag";
 import { ApService } from "../ap.service";
 
 @Component({
@@ -26,7 +25,7 @@ export class ApDetailCellComponent {
   }
 
   public isFremdeHw(hw: Hardware): boolean {
-    return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) !== 0;
+    return this.apService.filterService.isFremdeHw(hw);
   }
 
   public isBoolTag(flag: number): boolean {
