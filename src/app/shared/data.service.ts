@@ -4,12 +4,13 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { ConfigService } from "./config/config.service";
 import { IpHelper } from "./ip-helper";
-import { ApHw } from "./model/ap-hw";
+import { ApTransport } from "./model/ap-transport";
 import { ApTyp } from "./model/ap-typ";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { Betrst } from "./model/betrst";
 import { Hardware } from "./model/hardware";
 import { HwKonfig } from "./model/hw-konfig";
+import { HwTransport } from "./model/hw-transport";
 import { TagTyp } from "./model/tagTyp";
 import { Vlan } from "./model/vlan";
 import { NotificationService } from "./notification.service";
@@ -150,6 +151,16 @@ export class DataService {
       }
       this.apListChanged.emit();
     });
+
+    notification.hwChange.subscribe((data) => {
+      console.debug("dataService start update");
+      this.updateHw(data);
+      if (!notification.isOpen()) {
+        console.debug("reopening Notification");
+        notification.initialize();
+      }
+      this.apListChanged.emit();
+    });
   }
 
   public get(url: string): Observable<unknown> {
@@ -245,7 +256,7 @@ export class DataService {
     this.sortAP(ap);
   }
 
-  private updateAp(data: ApHw): void {
+  private updateAp(data: ApTransport): void {
     if (data.delApId > 0) {
       // DEL AP
       this.apList.splice(
@@ -259,6 +270,10 @@ export class DataService {
       this.changeApHw(data.hw);
       this.apSortHw(ap);
     }
+  }
+
+  private updateHw(data: HwTransport): void {
+    // TODO
   }
 
   private sortAP(ap: Arbeitsplatz) {

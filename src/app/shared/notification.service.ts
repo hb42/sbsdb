@@ -1,13 +1,15 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { ConfigService } from "./config/config.service";
-import { ApHw } from "./model/ap-hw";
+import { ApTransport } from "./model/ap-transport";
+import { HwTransport } from "./model/hw-transport";
 
 @Injectable({
   providedIn: "root",
 })
 export class NotificationService {
-  public apChange: EventEmitter<ApHw> = new EventEmitter<ApHw>();
+  public apChange: EventEmitter<ApTransport> = new EventEmitter<ApTransport>();
+  public hwChange: EventEmitter<HwTransport> = new EventEmitter<HwTransport>();
   private hubConnection: HubConnection | undefined;
 
   constructor(public configService: ConfigService) {
@@ -25,10 +27,16 @@ export class NotificationService {
       // .configureLogging(LogLevel.Information)
       .build();
 
-    this.hubConnection.on("apchange", (data: ApHw) => {
+    this.hubConnection.on("apchange", (data: ApTransport) => {
       console.debug("## Event apchange");
       console.dir(data);
       this.apChange.emit(data);
+    });
+
+    this.hubConnection.on("hwchange", (data: HwTransport) => {
+      console.debug("## Event hwchange");
+      console.dir(data);
+      this.hwChange.emit(data);
     });
 
     this.hubConnection.onclose((err: Error) => {
