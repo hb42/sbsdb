@@ -36,13 +36,13 @@
       <mat-icon>add_to_queue</mat-icon>
     </button>
     <mat-menu #newHwMenu="matMenu">
-      <button mat-menu-item (click)="hwService.newConfig()">
-        <mat-icon>queue_play_next</mat-icon>
-        <span>Neue Hardware-Konfiguration</span>
-      </button>
       <button mat-menu-item (click)="hwService.newHardware()">
         <mat-icon>desktop_mac</mat-icon>
         <span>Neue Geräte</span>
+      </button>
+      <button mat-menu-item (click)="hwService.newConfig()">
+        <mat-icon>queue_play_next</mat-icon>
+        <span>Neue Hardware-Konfiguration</span>
       </button>
       <button mat-menu-item (click)="hwService.editConfigs()">
         <mat-icon>important_devices</mat-icon>

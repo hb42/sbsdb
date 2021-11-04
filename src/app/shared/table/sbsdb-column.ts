@@ -91,9 +91,9 @@ export class SbsdbColumn<C, E> {
   }
 
   public get selectList(): string[] | null {
-    return (this.selectlist
-      ? SbsdbColumn.callback(this.selectlist, this.context)
-      : null) as string[];
+    return (
+      this.selectlist ? SbsdbColumn.callback(this.selectlist, this.context) : null
+    ) as string[];
   }
 
   public get outputToCsv(): boolean {

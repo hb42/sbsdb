@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use "@angular/material" as mat;
 @mixin table-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -16,10 +16,10 @@
   }
 
   .detail-cell-expanded {
-    background-color: mat.get-color-from-palette($primary, 100, .5);
+    background-color: mat.get-color-from-palette($primary, 100, 0.5);
   }
   .detail-cell-content-expanded {
-    background-color: mat.get-color-from-palette($primary, 100, .04);
+    background-color: mat.get-color-from-palette($primary, 100, 0.04);
   }
   .detail-cell-expanded div {
     white-space: unset !important;
@@ -73,7 +73,7 @@
 
   .detail-cell-content th {
     font-weight: normal;
-    background-color: mat.get-color-from-palette($primary, 100, .5);
+    background-color: mat.get-color-from-palette($primary, 100, 0.5);
   }
 
   .detail-cell-content-row {
@@ -88,7 +88,7 @@
   }
 
   .detail-cell-standort-text {
-    background-color: mat.get-color-from-palette($primary, 100, .5);
+    background-color: mat.get-color-from-palette($primary, 100, 0.5);
     padding: 2px 10px;
     border-left: solid 1px var(--md-details-border-color);
     border-bottom: solid 1px var(--md-details-border-color);
@@ -138,6 +138,6 @@
   /* Input */
 
   .input-title {
-    background-color: mat.get-color-from-palette($primary, 100, .5);
+    background-color: mat.get-color-from-palette($primary, 100, 0.5);
   }
 }

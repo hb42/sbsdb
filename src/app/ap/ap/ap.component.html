@@ -200,7 +200,17 @@
         </th>
         <!-- DATA -->
         <td mat-cell *matCellDef="let row" (click)="apService.expandApRow(row, $event)">
-          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
+          <div sbsdbTooltipOnEllipsis>
+            {{ column.displayText(row) }}
+            <!-- das folgende funktioniert nicht -->
+            <!--            <a-->
+            <!--              mat-button-->
+            <!--              color="primary"-->
+            <!--              class="textLink"-->
+            <!--              (click)="apService.gotoHw(row.hw); $event.stopPropagation()"-->
+            <!--              >{{ column.displayText(row) }}</a-->
+            <!--            >-->
+          </div>
         </td>
       </ng-container>
       <!-- COLUMN hardware end -->

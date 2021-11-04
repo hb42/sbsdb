@@ -64,6 +64,7 @@ export class VersionService {
   }
 
   private makeVer(pack: JSON): Version {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const pre = semver.prerelease(pack["version"]); // ['alpha', 10] || [10]
     let prerel = "";
     let prebuild: number | null = null;
@@ -85,8 +86,11 @@ export class VersionService {
       copyright: (pack["copyright"] as string) ?? "",
       author: (pack["author"] as string) ?? "",
       license: (pack["license"] as string) ?? "",
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       major: semver.major(pack["version"]),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       minor: semver.minor(pack["version"]),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       patch: semver.patch(pack["version"]),
       prerelease: prerel ?? "",
       build: prebuild ?? 0,

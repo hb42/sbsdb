@@ -171,7 +171,7 @@ export class IpHelper {
    * @param netmask
    */
   public static getHostIpMax(net: number, netmask: number): number {
-    const hostbits = this.getHostBits(netmask);
+    const hostbits = IpHelper.getHostBits(netmask);
     const min = IpHelper.getHostIpMin(net, netmask);
     return 2 ** hostbits - 1 + min;
   }

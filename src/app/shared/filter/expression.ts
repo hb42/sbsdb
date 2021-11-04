@@ -1,4 +1,3 @@
-import { isArray } from "rxjs/internal-compatibility";
 import { GetFieldContent } from "../helper";
 import { ColumnType } from "../table/column-type.enum";
 import { Bracket } from "./bracket";
@@ -49,7 +48,7 @@ export class Expression implements Term {
     let compValue: string | number | Date;
     if (this.field.type === ColumnType.STRING || this.field.type === ColumnType.IP) {
       // mehrere Felder vergleichen ist nur bei String-Vergleich sinnvoll
-      const fields: string[] = isArray(this.field.fieldName)
+      const fields: string[] = Array.isArray(this.field.fieldName)
         ? this.field.fieldName
         : [this.field.fieldName];
       if (record) {

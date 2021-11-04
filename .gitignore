@@ -14,6 +14,7 @@
 /out-tsc
 # Only exists if Bazel was run
 /bazel-out
+/.cache
 
 # dependencies
 /node_modules
@@ -42,6 +43,7 @@ speed-measure-plugin.json
 .vs/
 
 # misc
+/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage

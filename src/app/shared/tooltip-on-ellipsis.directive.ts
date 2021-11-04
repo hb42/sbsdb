@@ -4,7 +4,9 @@ import { Directive, HostListener } from "@angular/core";
   selector: "[sbsdbTooltipOnEllipsis]",
 })
 export class TooltipOnEllipsisDirective {
-  constructor() {}
+  constructor() {
+    // noop
+  }
 
   /**
    * Tooltip mit dem vollstaendigen Text anzeigen, wenn der Text
