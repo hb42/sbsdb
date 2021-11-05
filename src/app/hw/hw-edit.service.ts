@@ -1,13 +1,16 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { lastValueFrom } from "rxjs";
 import { DataService } from "../shared/data.service";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { Hardware } from "../shared/model/hardware";
+import { HwHistory } from "../shared/model/hw-history";
 import { EditConfigData } from "./edit-config-dialog/edit-config-data";
 import { EditConfigDialogComponent } from "./edit-config-dialog/edit-config-dialog.component";
 import { EditHwTransport } from "./hw-edit-dialog/edit-hw-transport";
 import { HwEditDialogData } from "./hw-edit-dialog/hw-edit-dialog-data";
 import { HwEditDialogComponent } from "./hw-edit-dialog/hw-edit-dialog.component";
+import { ShowHistoryDialogComponent } from "./show-history-dialog/show-history-dialog.component";
 
 @Injectable({
   providedIn: "root",
@@ -33,6 +36,15 @@ export class HwEditService extends BaseEditService {
 
   public editConfig(hw: Hardware): void {
     this.editConf({ hw: hw });
+  }
+
+  public async showHistory(hw: Hardware): Promise<void> {
+    const url = `${this.dataService.hwHistoryUrl}/${hw.id}`;
+    const hwh: HwHistory[] = (await lastValueFrom(this.dataService.get(url))) as HwHistory[];
+    const dialogRef = this.dialog.open(ShowHistoryDialogComponent, {
+      disableClose: true,
+      data: { hw: hw, list: hwh },
+    });
   }
 
   private edit(hwe: HwEditDialogData): void {

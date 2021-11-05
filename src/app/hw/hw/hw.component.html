@@ -44,9 +44,9 @@
         <mat-icon>queue_play_next</mat-icon>
         <span>Neue Hardware-Konfiguration</span>
       </button>
-      <button mat-menu-item (click)="hwService.editConfigs()">
+      <button mat-menu-item (click)="hwService.listConfigs()">
         <mat-icon>important_devices</mat-icon>
-        <span>Konfiguration bearbeiten</span>
+        <span>Konfigurationen-Liste</span>
       </button>
     </mat-menu>
 
@@ -364,6 +364,14 @@
       >
         <mat-icon>edit</mat-icon>
         Hardware bearbeiten
+      </button>
+      <button
+        mat-menu-item
+        (click)="hwService.showHistory(hw)"
+        [disabled]="hwService.hwFilterService.isFremdeHw(hw)"
+      >
+        <mat-icon>list</mat-icon>
+        Hardware-Historie
       </button>
       <button mat-menu-item (click)="hwService.test(hw)">Test1</button>
       <button mat-menu-item>Test2</button>

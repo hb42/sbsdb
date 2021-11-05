@@ -140,4 +140,13 @@
   .input-title {
     background-color: mat.get-color-from-palette($primary, 100, 0.5);
   }
+
+  /* HW-History */
+
+  .history-table th {
+    background-color: mat.get-color-from-palette($primary, 100);
+  }
+  .history-table tr.highlight {
+    background-color: mat.get-color-from-palette($primary, 100, 0.4);
+  }
 }

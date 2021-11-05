@@ -1,0 +1,26 @@
+<sbsdb-dialog-title
+  dialogTitle="Historie für {{ data.hw.konfiguration }} [{{ data.hw.sernr }}]"
+></sbsdb-dialog-title>
+<div class="detail-cell-content">
+  <mat-dialog-content>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Datum</th>
+          <th>Arbeitsplatz</th>
+        </tr>
+      </thead>
+      <tr *ngFor="let hwh of data.list" [class.highlight]="hwh.direction === '+'">
+        <td>{{ hwh.direction }}</td>
+        <td>{{ hwh.shiftdate | date: "mediumDate" }}</td>
+        <td>{{ hwh.apname }}: {{ hwh.betriebsstelle }} - {{ hwh.apbezeichnung }}</td>
+      </tr>
+    </table>
+  </mat-dialog-content>
+</div>
+<div class="foot">
+  <div mat-dialog-actions class="end">
+    <button mat-flat-button color="primary" mat-dialog-close type="submit">OK</button>
+  </div>
+</div>

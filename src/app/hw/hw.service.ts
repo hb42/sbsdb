@@ -3,6 +3,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { lastValueFrom } from "rxjs";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
@@ -124,8 +125,8 @@ export class HwService {
   public newHardware(): void {
     console.debug("** new hardware clicked");
   }
-  public editConfigs(): void {
-    console.debug("** edit config clicked");
+  public listConfigs(): void {
+    console.debug("** list config clicked");
   }
 
   public editConfig(hw: Hardware): void {
@@ -143,6 +144,10 @@ export class HwService {
   }
   public hwmacEdit(hw: Hardware): void {
     this.editService.hwmacEdit(hw);
+  }
+
+  public showHistory(hw: Hardware): void {
+    this.editService.showHistory(hw);
   }
 
   public test(hw: Hardware): void {
@@ -631,24 +636,24 @@ export class HwService {
   // --- fetch data ---
 
   private async fetchData(): Promise<void> {
-    this.dataService.get(this.dataService.allHwKonfig).subscribe(
-      (hwk: HwKonfig[]) => {
+    this.dataService.get(this.dataService.allHwKonfig).subscribe({
+      next: (hwk: HwKonfig[]) => {
         console.debug("fetch HwKonfig size=", hwk.length);
         this.dataService.hwKonfigList = hwk;
       },
-      (err) => {
+      error: (err) => {
         console.error("ERROR loading HwKonfig-Data ", err);
       },
-      () => {
+      complete: () => {
         this.dataService.hwKonfigListReady.emit();
-      }
-    );
+      },
+    });
     let pageSize = Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE));
     if (pageSize < DataService.defaultpageSize) {
       pageSize = DataService.defaultpageSize;
     }
     // Anzahl der Datensaetze
-    const recs = (await this.dataService.get(this.dataService.countHwUrl).toPromise()) as number;
+    const recs = (await lastValueFrom(this.dataService.get(this.dataService.countHwUrl))) as number;
     // zu holende Seiten
     const count = Math.ceil(recs / pageSize);
     let fetched = 0;

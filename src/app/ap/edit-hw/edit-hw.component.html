@@ -27,7 +27,7 @@
           (hw.hwCtrl.value && isFremdeHw(hw.hwCtrl.value.hwKonfig.hwTypFlag)))
       "
     >
-      <mat-icon [color]="hwdelbtn.disabled ? '' : 'accent'">delete_forever</mat-icon>
+      <mat-icon [color]="hwdelbtn.disabled ? '' : 'accent'">delete_outline</mat-icon>
     </button>
 
     <!--    <button-->
@@ -78,7 +78,7 @@
         type="button"
         (click)="delIp(v)"
       >
-        <mat-icon [color]="v.vlanCtrl.value ? 'accent' : ''">delete_forever</mat-icon>
+        <mat-icon [color]="v.vlanCtrl.value ? 'accent' : ''">delete_outline</mat-icon>
       </button>
     </div>
   </div>
