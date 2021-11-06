@@ -16,6 +16,15 @@
   display: inline-grid;
 }
 
+.mat-stroked-button {
+  font-size: large;
+  border-color: rgba(0,0,0,0.5);
+}
+
+.dd-icon {
+  margin-right: 16px;
+}
+
 .mat-raised-button.disabled-button {
   background-color: transparent;
   border-bottom: solid 2px darkorange;

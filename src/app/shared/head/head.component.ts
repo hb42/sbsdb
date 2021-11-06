@@ -2,7 +2,7 @@ import { AfterViewInit, Component, HostBinding, HostListener, ViewChild } from "
 import { MatDialog } from "@angular/material/dialog";
 import { MatMenu } from "@angular/material/menu";
 import { Router } from "@angular/router";
-import { ADM_PATH, AP_PATH, HW_PATH } from "../../app-routing-const";
+import { ADM_PATH, AP_PATH, CONF_PATH, HW_PATH } from "../../app-routing-const";
 import { AboutDialogComponent } from "../about-dialog/about-dialog.component";
 import { ConfigService } from "../config/config.service";
 import { NavigationService } from "../navigation.service";
@@ -22,10 +22,19 @@ export class HeadComponent implements AfterViewInit {
   @ViewChild("admenu", { static: true }) public admenu: MatMenu;
 
   public navLinks = [
-    { path: "/" + AP_PATH, label: "Arbeitsplätze", key: "a", menu: null },
-    { path: "/" + HW_PATH, label: "Hardware", key: "h", menu: null },
-    { path: "/" + ADM_PATH, label: "Admin", key: "d", menu: null },
+    { path: "/" + AP_PATH, label: "Arbeitsplätze", key: "a", menu: null, icon: "desktop_mac" },
+    { path: "/" + HW_PATH, label: "Hardware", key: "h", menu: null, icon: "devices" },
+    {
+      path: "/" + CONF_PATH,
+      label: "Konfigurationen",
+      key: "k",
+      menu: null,
+      icon: "important_devices",
+    },
+    { path: "/" + ADM_PATH, label: "Admin", key: "d", menu: null, icon: "settings" },
   ];
+
+  public selected = "";
 
   public search: string;
 
@@ -64,10 +73,35 @@ export class HeadComponent implements AfterViewInit {
     this.navLinks[2].menu = this.admenu;
   }
 
+  public btnTitle(): string {
+    let rc = "";
+    this.navLinks.forEach((nav) => {
+      if (this.navigationService.isPage(nav.path)) {
+        rc = nav.label;
+      }
+    });
+    return rc;
+  }
+  public btnTitleIcon(): string {
+    let rc = "";
+    this.navLinks.forEach((nav) => {
+      if (this.navigationService.isPage(nav.path)) {
+        rc = nav.icon;
+      }
+    });
+    return rc;
+  }
+
   public navigate(target: string): void {
     if (!this.navigationService.isPage(target)) {
       void this.router.navigate([target]);
     }
+  }
+
+  public test(rla: unknown, link: unknown): void {
+    console.debug("### Test main button");
+    console.dir(rla);
+    console.dir(link);
   }
 
   public about(): void {

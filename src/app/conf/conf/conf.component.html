@@ -1,0 +1,295 @@
+<div class="flex-col">
+  <sbsdb-head>
+    <button
+      mat-icon-button
+      title="Erweiterte Suche (Alt+E)"
+      (click)="confService.confFilterService.toggleExtendedFilter()"
+      [class.ext-filter-button-select]="!confService.confFilterService.stdFilter"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      title="Alle Filter löschen (Alt+L)"
+      (click)="confService.confFilterService.resetFilters()"
+      [disabled]="confService.confFilterService.filterExpression.isEmpty()"
+    >
+      <mat-icon>search_off</mat-icon>
+    </button>
+    <span class="menu-spacer">|</span>
+    <button
+      mat-icon-button
+      title="Als CSV ausgeben (Alt+X)"
+      (click)="confService.confFilterService.toCsv()"
+    >
+      <!--      <mat-icon>share</mat-icon>-->
+      <mat-icon>file_download</mat-icon>
+    </button>
+    <span class="menu-spacer">|</span>
+
+    <button mat-icon-button title="Neue Konfiguration (Alt+N)" (click)="confService.newConf()">
+      <mat-icon>add_to_queue</mat-icon>
+    </button>
+
+    <span class="spacer"></span>
+    <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </sbsdb-head>
+
+  <sbsdb-filter
+    *ngIf="!confService.confFilterService.stdFilter"
+    [data]="confService.confFilterService.filterElement"
+  ></sbsdb-filter>
+
+  <div class="flex-content">
+    <!-- empty table -->
+    <div class="spinner-container" *ngIf="confService.loading">
+      <mat-spinner></mat-spinner>
+    </div>
+    <!-- TABLE begin -->
+    <table
+      mat-table
+      [dataSource]="confService.confDataSource"
+      matSort
+      multiTemplateDataRows
+      (matSortChange)="confService.onSort($event)"
+      [class.wrap-cell]="confService.tableWrapCell"
+    >
+      <ng-container matColumnDef="select">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef class="icon-column">
+          <sbsdb-select-header
+            [filterService]="confService.confFilterService"
+          ></sbsdb-select-header>
+        </th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let row">
+          <sbsdb-select-row
+            [filterService]="confService.confFilterService"
+            [row]="row"
+          ></sbsdb-select-row>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="kategorie" *ngIf="getColumn('kategorie'); let column">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-header-cell
+            #firstfilter
+            (keydown.shift.tab)="
+              focusLastFilter(); $event.preventDefault(); $event.stopPropagation()
+            "
+            [column]="column"
+            [showFilter]="confService.confFilterService.stdFilter"
+            size="S"
+          ></sbsdb-header-cell>
+        </th>
+        <!-- DATA -->
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="confService.expandConfRow(row, $event)"
+        >
+          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="typ" *ngIf="getColumn('typ'); let column">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-header-cell
+            [column]="column"
+            [showFilter]="confService.confFilterService.stdFilter"
+            size="S"
+          ></sbsdb-header-cell>
+        </th>
+        <!-- DATA -->
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="confService.expandConfRow(row, $event)"
+        >
+          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="hersteller" *ngIf="getColumn('hersteller'); let column">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-header-cell
+            [column]="column"
+            [showFilter]="confService.confFilterService.stdFilter"
+            size="L"
+          ></sbsdb-header-cell>
+        </th>
+        <!-- DATA -->
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="confService.expandConfRow(row, $event)"
+        >
+          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="bezeichnung" *ngIf="getColumn('bezeichnung'); let column">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-header-cell
+            #lastfilter
+            (keydown.tab)="focusFirstFilter(); $event.preventDefault(); $event.stopPropagation()"
+            [column]="column"
+            [showFilter]="confService.confFilterService.stdFilter"
+            size="L"
+          ></sbsdb-header-cell>
+        </th>
+        <!-- DATA -->
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="confService.expandConfRow(row, $event)"
+        >
+          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
+        </td>
+      </ng-container>
+
+      <!--      <ng-container matColumnDef="sernr" *ngIf="getColumn('sernr'); let column">-->
+      <!--        &lt;!&ndash; HEAD &ndash;&gt;-->
+      <!--        <th mat-header-cell *matHeaderCellDef>-->
+      <!--          <sbsdb-header-cell-->
+      <!--            [column]="column"-->
+      <!--            [showFilter]="hwService.hwFilterService.stdFilter"-->
+      <!--          ></sbsdb-header-cell>-->
+      <!--        </th>-->
+      <!--        &lt;!&ndash; DATA &ndash;&gt;-->
+      <!--        <td-->
+      <!--          mat-cell-->
+      <!--          *matCellDef="let row"-->
+      <!--          class="highlight-when-expanded"-->
+      <!--          (click)="hwService.expandHwRow(row, $event)"-->
+      <!--        >-->
+      <!--          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>-->
+      <!--        </td>-->
+      <!--      </ng-container>-->
+
+      <ng-container matColumnDef="menu">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef class="icon-column">
+          <sbsdb-expand-header
+            [filterService]="confService.confFilterService"
+          ></sbsdb-expand-header>
+        </th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="hwMenu"
+            [matMenuTriggerData]="{ hw: element }"
+            color="primary"
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- COLUMN details template begin -->
+      <ng-container matColumnDef="confdetails">
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [colSpan]="confService.displayedColumns.length"
+          class="detail-cell-cell"
+        >
+          <sbsdb-conf-detail-cell [element]="element"></sbsdb-conf-detail-cell>
+        </td>
+      </ng-container>
+      <!-- COLUMN details template end -->
+
+      <!-- ROW details template begin -->
+      <tr mat-header-row *matHeaderRowDef="confService.displayedColumns; sticky: true"></tr>
+      <tr
+        mat-row
+        *matRowDef="let element; columns: confService.displayedColumns"
+        class="table-row table-row-clickable"
+        [class.detail-cell-expanded]="element.expanded"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="let element; columns: ['confdetails']"
+        class="detail-cell-row"
+        [class.detail-cell-content-expanded]="element.expanded"
+      ></tr>
+      <!--       ROW details template end -->
+    </table>
+  </div>
+
+  <!-- Paginator -->
+  <mat-paginator
+    [pageSizeOptions]="[100, 250, 500, 1000]"
+    showFirstLastButtons
+    (page)="confService.onPage($event)"
+    class="paginator"
+    color="primary"
+    [sbsdbPaginatorStatus]="pagInsert"
+  ></mat-paginator>
+
+  <!-- Infos zum Filter in paginator einfuegen -->
+  <div #pagInsert>
+    <div class="status-item">{{ confService.confFilterService.filterCount() }}</div>
+    |
+    <!--    <div class="status-item">{{ confService.confFilterService.zugeordneteHw() }}</div>-->
+  </div>
+
+  <!-- Header-Menue -->
+  <mat-menu #tableMenu="matMenu">
+    <ng-template matMenuContent>
+      <!--      <button mat-menu-item class="menue-entry" (click)="confService.toggleFremdeHw()">-->
+      <!--        <mat-icon>devices</mat-icon>-->
+      <!--        Fremde HW anzeigen-->
+      <!--        <span class="fill"></span>-->
+      <!--        <mat-icon class="menue-checkbox">{{-->
+      <!--          hwService.userSettings.showFremde ? "check_box" : "check_box_outline_blank"-->
+      <!--        }}</mat-icon>-->
+      <!--      </button>-->
+      <!--    <button mat-menu-item class="menue-entry" (click)="extendedFilter()">-->
+      <!--      <mat-icon>find_in_page</mat-icon>-->
+      <!--      Erweiterte Suche-->
+      <!--    </button>-->
+      <!--      <button mat-menu-item class="menue-entry">-->
+      <!--        <mat-icon>close</mat-icon>-->
+      <!--        Alle Filter löschen-->
+      <!--      </button>-->
+      <button
+        mat-menu-item
+        class="menue-entry"
+        (click)="confService.userSettings.debug = !confService.userSettings.debug"
+      >
+        <mat-icon>pest_control</mat-icon>
+        Debug-Info
+        <span class="fill"></span>
+        <mat-icon class="menue-checkbox">{{
+          confService.userSettings.debug ? "check_box" : "check_box_outline_blank"
+        }}</mat-icon>
+      </button>
+    </ng-template>
+  </mat-menu>
+
+  <!-- Zeilen-Menue -->
+  <mat-menu #hwMenu="matMenu">
+    <ng-template matMenuContent let-hw="hw">
+      <button
+        mat-menu-item
+        *ngIf="confService.userSettings.isAdmin"
+        (click)="confService.confEdit(hw)"
+      >
+        <mat-icon>edit</mat-icon>
+        Konfiguration bearbeiten
+      </button>
+      <button mat-menu-item>Test2</button>
+    </ng-template>
+  </mat-menu>
+</div>

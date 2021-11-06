@@ -1,3 +1,4 @@
+import { formatNumber } from "@angular/common";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
@@ -257,6 +258,25 @@ export class DataService {
       ap[this.tagFieldName(tag.bezeichnung)] = tag.text;
     });
     this.sortAP(ap);
+  }
+
+  /**
+   * Felder RAM + HD formatieren
+   * Die Felder enthalten i.d.R. einen Integer-Wert, der die Groesse in MB angibt.
+   * Da die Felder als String gespeichert werden, sind auch andere Eingaben moeglich.
+   * Sofern es sich um einen reinen Zahlwert handelt wird er als Zahl mit Tausender-
+   * Trennung formatiert. Alles andere wird nur durchgereicht.
+   *
+   * @param num
+   */
+  public formatMbSize(num: string): string {
+    const isnumber = /^[+-]?\d+$/;
+    num = num ? num.trim() : "";
+    if (isnumber.test(num)) {
+      return formatNumber(Number.parseFloat(num), "de", "1.0-0") + " MB";
+    } else {
+      return num;
+    }
   }
 
   private updateAp(data: ApTransport): void {

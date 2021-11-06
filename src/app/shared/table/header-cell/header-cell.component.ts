@@ -59,6 +59,8 @@ export class HeaderCellComponent implements AfterViewInit {
   public fieldClass(): string {
     this.size = this.size ?? "M";
     switch (this.size.toUpperCase()) {
+      case "XXS":
+        return "filter-xxs";
       case "XS":
         return "filter-xs";
       case "M":

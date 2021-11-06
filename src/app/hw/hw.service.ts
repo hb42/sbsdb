@@ -66,8 +66,8 @@ export class HwService {
   }
 
   public onPage(event: PageEvent): void {
-    if (event.pageSize !== this.userSettings.apPageSize) {
-      this.userSettings.apPageSize = event.pageSize;
+    if (event.pageSize !== this.userSettings.hwPageSize) {
+      this.userSettings.hwPageSize = event.pageSize;
     }
   }
 
@@ -95,42 +95,17 @@ export class HwService {
     this.navigationService.navToAp.emit({ col: "apid", search: hw.ap.apId });
   }
 
-  /**
-   * Felder RAM + HD formatieren
-   * Die Felder enthalten i.d.R. einen Integer-Wert, der die Groesse in MB angibt.
-   * Da die Felder als String gespeichert werden, sind auch andere Eingaben moeglich.
-   * Sofern es sich um einen reinen Zahlwert handelt wird er als Zahl mit Tausender-
-   * Trennung formatiert. Alles andere wird nur durchgereicht.
-   *
-   * @param num
-   */
-  public formatMbSize(num: string): string {
-    const isnumber = /^[+-]?\d+$/;
-    num = num ? num.trim() : "";
-    if (isnumber.test(num)) {
-      return formatNumber(Number.parseFloat(num), "de", "1.0-0") + " MB";
-    } else {
-      return num;
-    }
-  }
-
   public toggleFremdeHw(): void {
     this.userSettings.showFremde = !this.userSettings.showFremde;
-    this.triggerFilter();
+    this.hwFilterService.triggerFilter();
   }
 
-  public newConfig(): void {
-    console.debug("** new config clicked");
-  }
-  public newHardware(): void {
-    console.debug("** new hardware clicked");
-  }
-  public listConfigs(): void {
-    console.debug("** list config clicked");
+  public editConfig(conf: HwKonfig): void {
+    console.debug("** edit config clicked");
   }
 
-  public editConfig(hw: Hardware): void {
-    this.editService.editConfig(hw);
+  public newHw(): void {
+    console.debug("** ne hw clicked");
   }
 
   public hwEdit(hw: Hardware): void {
@@ -147,7 +122,7 @@ export class HwService {
   }
 
   public showHistory(hw: Hardware): void {
-    this.editService.showHistory(hw);
+    void this.editService.showHistory(hw);
   }
 
   public test(hw: Hardware): void {
@@ -611,7 +586,7 @@ export class HwService {
     this.setDataToTable.subscribe(() => {
       if (this.hwDataSource.paginator) {
         this.hwDataSource.data = this.dataService.hwList;
-        this.triggerFilter();
+        this.hwFilterService.triggerFilter();
       }
     });
 

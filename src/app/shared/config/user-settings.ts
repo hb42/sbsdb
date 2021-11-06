@@ -24,4 +24,10 @@ export interface UserSettings {
   hwSortDirection?: string;
   hwPageSize?: number;
   showFremde?: boolean;
+  // Conf-Page
+  latestConfFilter?: string;
+  confFilter?: TransportFilters;
+  confSortColumn?: string;
+  confSortDirection?: string;
+  confPageSize?: number;
 }

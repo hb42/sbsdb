@@ -60,6 +60,8 @@ import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directi
 import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
 import { ShowHistoryDialogComponent } from './hw/show-history-dialog/show-history-dialog.component';
+import { ConfComponent } from './conf/conf/conf.component';
+import { ConfDetailCellComponent } from './conf/conf-detail-cell/conf-detail-cell.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -129,6 +131,8 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditConfigDialogComponent,
     NewHwDialogComponent,
     ShowHistoryDialogComponent,
+    ConfComponent,
+    ConfDetailCellComponent,
   ],
   imports: [
     BrowserModule,

@@ -9,9 +9,11 @@ import {
   ADM_OPTIONS_PATH,
   ADM_PATH,
   AP_PATH,
+  CONF_PATH,
   ERROR_PATH,
   HW_PATH,
 } from "./app-routing-const";
+import { ConfComponent } from "./conf/conf/conf.component";
 import { HwComponent } from "./hw/hw/hw.component";
 import { AdminGuard } from "./shared/admin.guard";
 import { ErrorComponent } from "./shared/error/error.component";
@@ -20,6 +22,7 @@ const routes: Routes = [
   { path: "", redirectTo: "/" + AP_PATH, pathMatch: "full" },
   { path: AP_PATH, component: ApComponent },
   { path: HW_PATH, component: HwComponent },
+  { path: CONF_PATH, component: ConfComponent },
   {
     path: ADM_PATH,
     component: AdminComponent,

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ApService } from "../ap/ap.service";
+import { ConfService } from "../conf/conf.service";
 import { HwService } from "../hw/hw.service";
 
 /**
@@ -14,5 +15,5 @@ import { HwService } from "../hw/hw.service";
   providedIn: "root",
 })
 export class InitService {
-  constructor(private ap: ApService, private hw: HwService) {}
+  constructor(private ap: ApService, private hw: HwService, private conf: ConfService) {}
 }

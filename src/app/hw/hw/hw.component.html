@@ -1,5 +1,31 @@
 <div class="flex-col">
   <sbsdb-head>
+    <!--    <button mat-stroked-button [mat-menu-trigger-for]="triggerHwKonf" title="Ansicht wechseln">-->
+    <!--      <mat-icon class="dd-icon">{{-->
+    <!--        hwService.userSettings.showKonfig ? "important_devices" : "devices"-->
+    <!--      }}</mat-icon>-->
+    <!--      {{ hwService.userSettings.showKonfig ? "Konfigurationen" : "Hardware" }}-->
+    <!--      <mat-icon>arrow_drop_down</mat-icon>-->
+    <!--    </button>-->
+    <!--    <mat-menu #triggerHwKonf="matMenu">-->
+    <!--      <button-->
+    <!--        mat-menu-item-->
+    <!--        (click)="hwService.userSettings.showKonfig = false"-->
+    <!--        [style.display]="hwService.userSettings.showKonfig ? 'inline-block' : 'none'"-->
+    <!--      >-->
+    <!--        <mat-icon>devices</mat-icon>-->
+    <!--        <span>Hardware-Liste</span>-->
+    <!--      </button>-->
+    <!--      <button-->
+    <!--        mat-menu-item-->
+    <!--        (click)="hwService.userSettings.showKonfig = true"-->
+    <!--        [style.display]="hwService.userSettings.showKonfig ? 'none' : 'inline-block'"-->
+    <!--      >-->
+    <!--        <mat-icon>important_devices</mat-icon>-->
+    <!--        <span>Konfigurationen-Liste</span>-->
+    <!--      </button>-->
+    <!--    </mat-menu>-->
+
     <button
       mat-icon-button
       title="Erweiterte Suche (Alt+E)"
@@ -27,28 +53,9 @@
     </button>
     <span class="menu-spacer">|</span>
 
-    <button
-      mat-icon-button
-      [mat-menu-trigger-for]="newHwMenu"
-      title="Neue Konfig/HW (Alt+N)"
-      #newHwMenuBtn="matMenuTrigger"
-    >
+    <button mat-icon-button title="Neue Hardware (Alt+N)" (click)="hwService.newHw()">
       <mat-icon>add_to_queue</mat-icon>
     </button>
-    <mat-menu #newHwMenu="matMenu">
-      <button mat-menu-item (click)="hwService.newHardware()">
-        <mat-icon>desktop_mac</mat-icon>
-        <span>Neue Geräte</span>
-      </button>
-      <button mat-menu-item (click)="hwService.newConfig()">
-        <mat-icon>queue_play_next</mat-icon>
-        <span>Neue Hardware-Konfiguration</span>
-      </button>
-      <button mat-menu-item (click)="hwService.listConfigs()">
-        <mat-icon>important_devices</mat-icon>
-        <span>Konfigurationen-Liste</span>
-      </button>
-    </mat-menu>
 
     <!--    <button-->
     <!--      mat-button-->
@@ -96,7 +103,7 @@
     >
       <ng-container matColumnDef="select">
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="icon-column">
           <sbsdb-select-header [filterService]="hwService.hwFilterService"></sbsdb-select-header>
         </th>
         <!-- DATA -->
@@ -255,7 +262,7 @@
 
       <ng-container matColumnDef="menu">
         <!-- HEAD -->
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="icon-column">
           <sbsdb-expand-header [filterService]="hwService.hwFilterService"></sbsdb-expand-header>
         </th>
         <!-- DATA -->

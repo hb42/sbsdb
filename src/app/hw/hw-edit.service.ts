@@ -34,10 +34,6 @@ export class HwEditService extends BaseEditService {
     this.edit({ hw: hw, editMac: true } as HwEditDialogData);
   }
 
-  public editConfig(hw: Hardware): void {
-    this.editConf({ hw: hw });
-  }
-
   public async showHistory(hw: Hardware): Promise<void> {
     const url = `${this.dataService.hwHistoryUrl}/${hw.id}`;
     const hwh: HwHistory[] = (await lastValueFrom(this.dataService.get(url))) as HwHistory[];

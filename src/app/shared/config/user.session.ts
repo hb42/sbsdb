@@ -52,6 +52,11 @@ export class UserSession {
     this.settings.hwSortDirection = this.settings.hwSortDirection ?? "";
     this.settings.hwPageSize = this.settings.hwPageSize ?? 100;
     this.settings.showFremde = !!this.settings.showFremde;
+    this.settings.confFilter = this.settings.confFilter ?? { stdFilter: true, filters: [] };
+    this.settings.latestConfFilter = this.settings.latestConfFilter ?? "";
+    this.settings.confSortColumn = this.settings.confSortColumn ?? "";
+    this.settings.confSortDirection = this.settings.confSortDirection ?? "";
+    this.settings.confPageSize = this.settings.confPageSize ?? 100;
   }
 
   // Benutzerrechte sind R/O
@@ -223,6 +228,64 @@ export class UserSession {
 
   public set hwStdFilter(ex: boolean) {
     this.settings.hwFilter.stdFilter = ex;
+    this.change();
+  }
+
+  // Conf
+
+  public get confSortColumn(): string {
+    return this.settings.confSortColumn;
+  }
+
+  public set confSortColumn(col: string) {
+    this.settings.confSortColumn = col;
+    this.change();
+  }
+
+  public get confSortDirection(): string {
+    return this.settings.confSortDirection;
+  }
+
+  public set confSortDirection(dir: string) {
+    this.settings.confSortDirection = dir;
+    this.change();
+  }
+
+  public get confPageSize(): number {
+    return this.settings.confPageSize;
+  }
+
+  public set confPageSize(pg: number) {
+    this.settings.confPageSize = pg;
+    this.change();
+  }
+
+  // Conf-Filter
+
+  public get confFilter(): TransportFilters {
+    return this.settings.confFilter;
+  }
+
+  public set confFilter(filt: TransportFilters) {
+    this.settings.confFilter = filt;
+    this.change();
+  }
+
+  public get latestConfFilter(): string {
+    return this.settings.latestConfFilter;
+  }
+
+  public set latestConfFilter(filt: string) {
+    this.settings.latestConfFilter = filt;
+    this.change();
+  }
+
+  public get confStdFilter(): boolean {
+    return this.settings.confFilter.stdFilter;
+  }
+
+  public set confStdFilter(ex: boolean) {
+    this.settings.confFilter.stdFilter = ex;
     this.change();
   }
 

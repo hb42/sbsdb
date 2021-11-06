@@ -1,0 +1,75 @@
+<div [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'" class="detail-cell-content">
+  <div class="detail-cell-content-row">
+    <div class="detail-cell-margin">
+      <table class="sub-table">
+        <thead>
+          <tr>
+            <th colspan="2">
+              <div class="sub-table-head-title">Konfiguration</div>
+              <span *ngIf="confService.userSettings.debug" class="debug"> #{{ element.id }} </span>
+              <div
+                *ngIf="confService.userSettings.isAdmin"
+                class="sub-table-head-button edit-button"
+              >
+                <button
+                  mat-icon-button
+                  color="primary"
+                  title="Konfiguration bearbeiten"
+                  (click)="confService.confEdit(element)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tr>
+          <td>Kategorie</td>
+          <td>
+            {{ element.apKatBezeichnung }}
+            <span *ngIf="confService.userSettings.debug" class="debug">
+              #{{ element.apKatId }}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>Typ</td>
+          <td>
+            {{ element.hwTypBezeichnung }}
+            <span *ngIf="confService.userSettings.debug" class="debug">
+              #{{ element.hwTypId }}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>Hersteller</td>
+          <td>{{ element.hersteller }}</td>
+        </tr>
+        <tr>
+          <td>Typ-Bezeichnung</td>
+          <td>{{ element.bezeichnung }}</td>
+        </tr>
+        <tr>
+          <td>Prozessor</td>
+          <td>{{ element.prozessor }}</td>
+        </tr>
+        <tr>
+          <td>RAM</td>
+          <td>{{ confService.dataService.formatMbSize(element.ram) }}</td>
+        </tr>
+        <tr>
+          <td>HD</td>
+          <td>{{ confService.dataService.formatMbSize(element.hd) }}</td>
+        </tr>
+        <tr>
+          <td>Grafik</td>
+          <td>{{ element.video }}</td>
+        </tr>
+        <tr>
+          <td>Sonstiges</td>
+          <td class="detail-cell-bemerk-td">{{ element.sonst }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

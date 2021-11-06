@@ -15,7 +15,7 @@
                   color="primary"
                   title="Konfiguration bearbeiten"
                   [disabled]="hwService.hwFilterService.isFremdeHw(element)"
-                  (click)="hwService.editConfig(element)"
+                  (click)="hwService.editConfig(element.hwKonfig)"
                 >
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -55,11 +55,11 @@
         </tr>
         <tr>
           <td>RAM</td>
-          <td>{{ hwService.formatMbSize(element.hwKonfig.ram) }}</td>
+          <td>{{ hwService.dataService.formatMbSize(element.hwKonfig.ram) }}</td>
         </tr>
         <tr>
           <td>HD</td>
-          <td>{{ hwService.formatMbSize(element.hwKonfig.hd) }}</td>
+          <td>{{ hwService.dataService.formatMbSize(element.hwKonfig.hd) }}</td>
         </tr>
         <tr>
           <td>Grafik</td>

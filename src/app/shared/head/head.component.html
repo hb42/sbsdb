@@ -18,51 +18,27 @@
   </mat-menu>
 
   <span class="spacer"></span>
+  <button mat-stroked-button [mat-menu-trigger-for]="navmenu">
+    <mat-icon class="dd-icon">{{ btnTitleIcon() }}</mat-icon>
+    {{ btnTitle() }}
+    <mat-icon>arrow_drop_down</mat-icon>
+  </button>
+  <mat-menu #navmenu="matMenu">
+    <div *ngFor="let link of navLinks">
+      <button
+        mat-menu-item
+        routerLinkActive
+        #rla="routerLinkActive"
+        [style.display]="rla.isActive ? 'none' : 'inline-block'"
+        [routerLink]="link.path"
+      >
+        <mat-icon>{{ link.icon }}</mat-icon>
+        <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
+      </button>
+    </div>
+    <!--    <span class="spacer2"></span>-->
+  </mat-menu>
 
-  <div *ngFor="let link of navLinks">
-    <button
-      mat-raised-button
-      routerLinkActive
-      #rla="routerLinkActive"
-      [routerLink]="link.path"
-      [disabled]="rla.isActive"
-      [class.disabled-button]="rla.isActive"
-    >
-      <!--      <mat-spinner-->
-      <!--        diameter="30"-->
-      <!--        style="position: fixed; margin: 4px 0 0 20px"-->
-      <!--        *ngIf="(link.ap && navigationService.apLoading) || (link.hw && navigationService.hwLoading)"-->
-      <!--      ></mat-spinner>-->
-      <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
-    </button>
-    <span class="spacer2"></span>
-  </div>
-
-  <!--  <button mat-raised-button (click)="navigationService.navToAp.emit({ col: '', search: '' })">-->
-  <!--    <sbsdb-accelerator-string [text]="'Arbeitsplätze'" [accel]="'a'"></sbsdb-accelerator-string>-->
-  <!--  </button>-->
-  <!--  <span class="spacer2"></span>-->
-  <!--  <button-->
-  <!--    mat-raised-button-->
-  <!--    routerLinkActive-->
-  <!--    #rla="routerLinkActive"-->
-  <!--    [routerLink]="'/hw'"-->
-  <!--    [disabled]="rla.isActive"-->
-  <!--    [class.disabled-button]="rla.isActive"-->
-  <!--  >-->
-  <!--    <sbsdb-accelerator-string [text]="'Hardware'" [accel]="'h'"></sbsdb-accelerator-string>-->
-  <!--  </button>-->
-  <!--  <span class="spacer2"></span>-->
-  <!--  <button-->
-  <!--    mat-raised-button-->
-  <!--    routerLinkActive-->
-  <!--    #rla="routerLinkActive"-->
-  <!--    [routerLink]="'/admin'"-->
-  <!--    [disabled]="rla.isActive"-->
-  <!--    [class.disabled-button]="rla.isActive"-->
-  <!--  >-->
-  <!--    <sbsdb-accelerator-string [text]="'Admin'" [accel]="'d'"></sbsdb-accelerator-string>-->
-  <!--  </button>-->
   <span class="spacer2"></span>
 
   <span class="spacer"></span>
