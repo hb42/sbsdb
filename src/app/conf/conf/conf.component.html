@@ -156,26 +156,24 @@
           <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
         </td>
       </ng-container>
-
-      <!--      <ng-container matColumnDef="sernr" *ngIf="getColumn('sernr'); let column">-->
-      <!--        &lt;!&ndash; HEAD &ndash;&gt;-->
-      <!--        <th mat-header-cell *matHeaderCellDef>-->
-      <!--          <sbsdb-header-cell-->
-      <!--            [column]="column"-->
-      <!--            [showFilter]="hwService.hwFilterService.stdFilter"-->
-      <!--          ></sbsdb-header-cell>-->
-      <!--        </th>-->
-      <!--        &lt;!&ndash; DATA &ndash;&gt;-->
-      <!--        <td-->
-      <!--          mat-cell-->
-      <!--          *matCellDef="let row"-->
-      <!--          class="highlight-when-expanded"-->
-      <!--          (click)="hwService.expandHwRow(row, $event)"-->
-      <!--        >-->
-      <!--          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>-->
-      <!--        </td>-->
-      <!--      </ng-container>-->
-
+      <ng-container matColumnDef="zuordnung" *ngIf="getColumn('zuordnung'); let column">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>
+          <!--                <sbsdb-header-cell-->
+          <!--                  [column]="column"-->
+          <!--                  [showFilter]="hwService.hwFilterService.stdFilter"-->
+          <!--                ></sbsdb-header-cell>-->
+        </th>
+        <!-- DATA -->
+        <td
+          mat-cell
+          *matCellDef="let row"
+          class="highlight-when-expanded"
+          (click)="confService.expandConfRow(row, $event)"
+        >
+          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
+        </td>
+      </ng-container>
       <ng-container matColumnDef="menu">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef class="icon-column">
@@ -247,22 +245,14 @@
   <!-- Header-Menue -->
   <mat-menu #tableMenu="matMenu">
     <ng-template matMenuContent>
-      <!--      <button mat-menu-item class="menue-entry" (click)="confService.toggleFremdeHw()">-->
-      <!--        <mat-icon>devices</mat-icon>-->
-      <!--        Fremde HW anzeigen-->
-      <!--        <span class="fill"></span>-->
-      <!--        <mat-icon class="menue-checkbox">{{-->
-      <!--          hwService.userSettings.showFremde ? "check_box" : "check_box_outline_blank"-->
-      <!--        }}</mat-icon>-->
-      <!--      </button>-->
-      <!--    <button mat-menu-item class="menue-entry" (click)="extendedFilter()">-->
-      <!--      <mat-icon>find_in_page</mat-icon>-->
-      <!--      Erweiterte Suche-->
-      <!--    </button>-->
-      <!--      <button mat-menu-item class="menue-entry">-->
-      <!--        <mat-icon>close</mat-icon>-->
-      <!--        Alle Filter löschen-->
-      <!--      </button>-->
+      <button mat-menu-item class="menue-entry" (click)="confService.toggleEmpty()">
+        <mat-icon>numbers</mat-icon>
+        Konf. ohne Geräte anzeigen
+        <span class="fill"></span>
+        <mat-icon class="menue-checkbox">{{
+          confService.userSettings.showEmptyConfig ? "check_box" : "check_box_outline_blank"
+        }}</mat-icon>
+      </button>
       <button
         mat-menu-item
         class="menue-entry"
@@ -289,7 +279,14 @@
         <mat-icon>edit</mat-icon>
         Konfiguration bearbeiten
       </button>
-      <button mat-menu-item>Test2</button>
+      <button
+        mat-menu-item
+        *ngIf="confService.userSettings.isAdmin"
+        (click)="confService.newConf()"
+      >
+        <mat-icon>add_to_queue</mat-icon>
+        Neue Konfiguration
+      </button>
     </ng-template>
   </mat-menu>
 </div>

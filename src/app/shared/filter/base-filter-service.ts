@@ -135,6 +135,7 @@ export abstract class BaseFilterService {
       }
       return valid;
     };
+    this.dataTable.filter = `${this.filterChanged++}`;
 
     // Aenderung an Filter-Feldern in den Benutzereinstellungen speichern
     // und Filter triggern

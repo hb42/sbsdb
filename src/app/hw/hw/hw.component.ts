@@ -8,6 +8,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { MatMenuTrigger } from "@angular/material/menu";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { ActivatedRoute } from "@angular/router";
@@ -16,8 +17,6 @@ import { GetColumn } from "../../shared/helper";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { HwService } from "../hw.service";
-import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
-import { MatButton } from "@angular/material/button";
 
 @Component({
   selector: "sbsdb-hw",
@@ -135,8 +134,8 @@ export class HwComponent implements AfterViewInit, OnInit {
           // this.hwService.hwFilterService.filterFor("hwid", Number.parseInt(params.get("hwid"), 10));
         }
       } else {
-        if (this.config.getUser().latestApFilter) {
-          encFilter = this.config.getUser().latestApFilter;
+        if (this.config.getUser().latestHwFilter) {
+          encFilter = this.config.getUser().latestHwFilter;
           this.hwService.hwFilterService.nav2filter(encFilter);
         }
       }

@@ -97,7 +97,7 @@ export class HwService {
 
   public toggleFremdeHw(): void {
     this.userSettings.showFremde = !this.userSettings.showFremde;
-    this.hwFilterService.triggerFilter();
+    this.hwFilterService.triggerColumnFilter();
   }
 
   public editConfig(conf: HwKonfig): void {
@@ -563,12 +563,7 @@ export class HwService {
       ) {
         // alle relevanten Listen sind da: HwKonfig in HW eintragen
         // und HW in AP eintragen
-        this.dataService.hwList.forEach((hw) => {
-          this.dataService.prepareHw(hw);
-        });
-        this.dataService.apList.forEach((ap) => {
-          this.dataService.apSortHw(ap);
-        });
+        this.dataService.prepareHwList();
         this.setDataToTable.emit();
         // apList ist damit komplett (stoesst dataService.dataReady an)
         this.dataService.apListReady.emit();

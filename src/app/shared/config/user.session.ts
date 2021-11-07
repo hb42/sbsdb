@@ -57,6 +57,7 @@ export class UserSession {
     this.settings.confSortColumn = this.settings.confSortColumn ?? "";
     this.settings.confSortDirection = this.settings.confSortDirection ?? "";
     this.settings.confPageSize = this.settings.confPageSize ?? 100;
+    this.settings.showEmptyConfig = !!this.settings.showEmptyConfig;
   }
 
   // Benutzerrechte sind R/O
@@ -257,6 +258,15 @@ export class UserSession {
 
   public set confPageSize(pg: number) {
     this.settings.confPageSize = pg;
+    this.change();
+  }
+
+  public get showEmptyConfig(): boolean {
+    return this.settings.showEmptyConfig;
+  }
+
+  public set showEmptyConfig(e: boolean) {
+    this.settings.showEmptyConfig = e;
     this.change();
   }
 

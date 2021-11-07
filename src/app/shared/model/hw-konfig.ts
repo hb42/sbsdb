@@ -15,6 +15,11 @@ export class HwKonfig {
   public apKatId: number;
   public apKatBezeichnung: string;
   public apKatFlag: number;
+
+  // berechnet
+  public zuordnung?: string;
+  public devices?: number;
+  public aps?: number;
   // Darstellung
   public expanded?: boolean;
   public selected?: boolean;

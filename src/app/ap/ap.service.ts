@@ -626,9 +626,8 @@ export class ApService {
       this.dataService.get(`${this.dataService.pageApsUrl}${page}/${pageSize}`).subscribe(
         (aps: Arbeitsplatz[]) => {
           console.debug("fetch AP page #", page, " size=", aps.length);
-          aps.forEach((ap) => this.dataService.prepareAP(ap));
+          //      aps.forEach((ap) => this.dataService.prepareAP(ap));
           this.dataService.apList = [...this.dataService.apList, ...aps];
-          // this.apDataSource.data = [...this.apDataSource.data, ...aps];
         },
         (err) => {
           console.error("ERROR loading AP-Data ", err);
@@ -637,6 +636,7 @@ export class ApService {
           each();
           fetched++;
           if (fetched === count) {
+            this.dataService.prepareApList();
             console.debug("fetch page READY");
             this.dataService.apListFetched.emit();
             // ready.emit();

@@ -215,6 +215,11 @@ table:not(.wrap-cell) .mat-cell > div {
   padding-left: 10px;
 }
 
+/* breitere Menues erlauben */
+.mat-menu-panel {
+  max-width: 300px !important;
+}
+
 // so koennte der fixe Teil der Tabelle angesprochen werden
 //.mat-table-sticky {
 //  border-top: 1px solid #e0e0e0;

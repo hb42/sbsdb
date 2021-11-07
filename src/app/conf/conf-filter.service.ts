@@ -6,6 +6,7 @@ import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { TransportFilters } from "../shared/filter/transport-filters";
+import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
 
 @Injectable({
@@ -46,6 +47,10 @@ export class ConfFilterService extends BaseFilterService {
   }
 
   tableFilter(row: unknown): boolean {
-    return true;
+    if (this.userSettings.showEmptyConfig) {
+      return true;
+    }
+    const conf = row as HwKonfig;
+    return conf.devices > 0;
   }
 }

@@ -369,7 +369,7 @@
       *ngIf="apService.userSettings.isAdmin"
       (click)="apService.editService.newAp()"
     >
-      <mat-icon>desktop_mac</mat-icon>
+      <mat-icon>add_to_queue</mat-icon>
       Neuer Arbeitsplatz
     </button>
     <button mat-menu-item *ngIf="apService.userSettings.isAdmin" (click)="apService.deleteAp(ap)">

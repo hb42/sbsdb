@@ -30,4 +30,5 @@ export interface UserSettings {
   confSortColumn?: string;
   confSortDirection?: string;
   confPageSize?: number;
+  showEmptyConfig?: boolean;
 }

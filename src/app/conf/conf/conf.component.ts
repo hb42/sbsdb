@@ -84,7 +84,7 @@ export class ConfComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    console.debug("afterViewInit HwComponent");
+    console.debug("afterViewInit ConfComponent");
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     setTimeout(() => {
@@ -119,7 +119,7 @@ export class ConfComponent implements OnInit, AfterViewInit {
       if (params) {
         if (params.has("filt")) {
           encFilter = params.get("filt");
-          this.config.getUser().latestHwFilter = encFilter;
+          this.config.getUser().latestConfFilter = encFilter;
           this.confService.confFilterService.filterFromNavigation(encFilter);
         } else if (params.has("hwid")) {
           // FIXME das hier hat den Nachteil, dass so zwei Eintraege in der History eingetragen werden:
@@ -129,11 +129,14 @@ export class ConfComponent implements OnInit, AfterViewInit {
           //       auf noch nicht initialisierte Columns zugegriffen. Da waere eine Verzoegerung noetig
           //       bis filterService.dataReady. Sieht momentan nach Henne-Ei-Problem aus ...
           //       => wenn mal Zeit ist
-          // this.hwService.hwFilterService.filterFor("hwid", Number.parseInt(params.get("hwid"), 10));
+          this.confService.confFilterService.filterFor(
+            "hwid",
+            Number.parseInt(params.get("hwid"), 10)
+          );
         }
       } else {
-        if (this.config.getUser().latestApFilter) {
-          encFilter = this.config.getUser().latestApFilter;
+        if (this.config.getUser().latestConfFilter) {
+          encFilter = this.config.getUser().latestConfFilter;
           this.confService.confFilterService.nav2filter(encFilter);
         }
       }

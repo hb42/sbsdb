@@ -380,8 +380,10 @@
         <mat-icon>list</mat-icon>
         Hardware-Historie
       </button>
-      <button mat-menu-item (click)="hwService.test(hw)">Test1</button>
-      <button mat-menu-item>Test2</button>
+      <button mat-menu-item *ngIf="hwService.userSettings.isAdmin" (click)="hwService.newHw()">
+        <mat-icon>add_to_queue</mat-icon>
+        Neue Geräte
+      </button>
     </ng-template>
   </mat-menu>
 </div>

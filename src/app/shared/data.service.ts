@@ -149,6 +149,7 @@ export class DataService {
     notification.apChange.subscribe((data) => {
       console.debug("dataService start update");
       this.updateAp(data);
+      this.prepareHwKonfigList();
       if (!notification.isOpen()) {
         console.debug("reopening Notification");
         notification.initialize();
@@ -159,6 +160,7 @@ export class DataService {
     notification.hwChange.subscribe((data) => {
       console.debug("dataService start update");
       this.updateHw(data);
+      this.prepareHwKonfigList();
       if (!notification.isOpen()) {
         console.debug("reopening Notification");
         notification.initialize();
@@ -220,7 +222,66 @@ export class DataService {
     });
   }
 
-  public prepareAP(ap: Arbeitsplatz): void {
+  public prepareApList(): void {
+    this.apList.forEach((ap) => {
+      this.prepareAp(ap);
+    });
+  }
+
+  public prepareHwList(): void {
+    this.hwList.forEach((hw) => {
+      this.prepareHw(hw);
+    });
+    this.prepareHwKonfigList();
+    this.apList.forEach((ap) => {
+      this.apSortHw(ap);
+    });
+  }
+
+  public prepareHwKonfigList(): void {
+    this.hwKonfigList.forEach((conf) => {
+      let count = 0;
+      let inuse = 0;
+      for (let i = 0; i < this.hwList.length; i++) {
+        if (this.hwList[i].hwKonfigId === conf.id) {
+          count++;
+          if (this.hwList[i].ap) {
+            inuse++;
+          }
+        }
+      }
+      conf.devices = count;
+      conf.aps = inuse;
+      conf.zuordnung = `${count} Geräte/ ${inuse} zugewiesen`;
+    });
+  }
+  /**
+   * Felder RAM + HD formatieren
+   * Die Felder enthalten i.d.R. einen Integer-Wert, der die Groesse in MB angibt.
+   * Da die Felder als String gespeichert werden, sind auch andere Eingaben moeglich.
+   * Sofern es sich um einen reinen Zahlwert handelt wird er als Zahl mit Tausender-
+   * Trennung formatiert. Alles andere wird nur durchgereicht.
+   *
+   * @param num
+   */
+  public formatMbSize(num: string): string {
+    const isnumber = /^[+-]?\d+$/;
+    num = num ? num.trim() : "";
+    if (isnumber.test(num)) {
+      return formatNumber(Number.parseFloat(num), "de", "1.0-0") + " MB";
+    } else {
+      return num;
+    }
+  }
+
+  public tagFieldName(tag: string): string {
+    // alles ausser Buchstaben (a-z) und Ziffern aus der TAG-Bezeichnung entfernen
+    // fuer die Verwendung als Feldname im Arbeitsplatz.Object
+    const name = tag.replace(/[^\w^\d]/g, "");
+    return `${DataService.TAG_DISPLAY_NAME}${name}`;
+  }
+
+  private prepareAp(ap: Arbeitsplatz): void {
     ap.hwStr = ""; // keine undef Felder!
     ap.sonstHwStr = ""; // keine undef Felder!
     ap.hw = [];
@@ -260,25 +321,6 @@ export class DataService {
     this.sortAP(ap);
   }
 
-  /**
-   * Felder RAM + HD formatieren
-   * Die Felder enthalten i.d.R. einen Integer-Wert, der die Groesse in MB angibt.
-   * Da die Felder als String gespeichert werden, sind auch andere Eingaben moeglich.
-   * Sofern es sich um einen reinen Zahlwert handelt wird er als Zahl mit Tausender-
-   * Trennung formatiert. Alles andere wird nur durchgereicht.
-   *
-   * @param num
-   */
-  public formatMbSize(num: string): string {
-    const isnumber = /^[+-]?\d+$/;
-    num = num ? num.trim() : "";
-    if (isnumber.test(num)) {
-      return formatNumber(Number.parseFloat(num), "de", "1.0-0") + " MB";
-    } else {
-      return num;
-    }
-  }
-
   private updateAp(data: ApTransport): void {
     if (data.delApId > 0) {
       // DEL AP
@@ -309,14 +351,7 @@ export class DataService {
     });
   }
 
-  public tagFieldName(tag: string): string {
-    // alles ausser Buchstaben (a-z) und Ziffern aus der TAG-Bezeichnung entfernen
-    // fuer die Verwendung als Feldname im Arbeitsplatz.Object
-    const name = tag.replace(/[^\w^\d]/g, "");
-    return `${DataService.TAG_DISPLAY_NAME}${name}`;
-  }
-
-  public prepareHw(hw: Hardware): void {
+  private prepareHw(hw: Hardware): void {
     hw.hwKonfig = this.hwKonfigList.find((h) => h.id === hw.hwKonfigId);
     let macsearch = "";
     hw.ipStr = "";
@@ -376,7 +411,7 @@ export class DataService {
     }
   }
 
-  public apSortHw(ap: Arbeitsplatz): void {
+  private apSortHw(ap: Arbeitsplatz): void {
     ap.hw.sort((a, b) => {
       if (a.pri) {
         return -1;
@@ -442,7 +477,7 @@ export class DataService {
     ap.apTypBezeichnung = neu.apTypBezeichnung;
     ap.apTypFlag = neu.apTypFlag;
     ap.bemerkung = neu.bemerkung;
-    this.prepareAP(ap);
+    this.prepareAp(ap);
     ap.hw.forEach((hw) => {
       hw.apId = null;
       if (hw.vlans) {

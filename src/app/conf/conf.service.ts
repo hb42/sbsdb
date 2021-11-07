@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
@@ -35,7 +35,7 @@ export class ConfService {
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
-  // private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
+  private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     public dataService: DataService,
@@ -52,9 +52,9 @@ export class ConfService {
       this.init();
     }, 0);
 
-    this.navigationService.navToHw.subscribe((dat) => {
-      this.confFilterService.filterFor(dat.col, dat.search);
-    });
+    // this.navigationService.navToHw.subscribe((dat) => {
+    //   this.confFilterService.filterFor(dat.col, dat.search);
+    // });
   }
 
   public newConf(): void {
@@ -67,7 +67,7 @@ export class ConfService {
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
     this.confDataSource.sort = sort;
     this.confDataSource.paginator = paginator;
-    // this.setDataToTable.emit();
+    this.setDataToTable.emit();
     this.confDataSource.paginator.pageSize = this.userSettings.confPageSize;
     if (this.userSettings.hwSortColumn && this.userSettings.confSortDirection) {
       this.confDataSource.sort.active = this.userSettings.confSortColumn;
@@ -96,15 +96,9 @@ export class ConfService {
     event.stopPropagation();
   }
 
-  /**
-   * Filter ausloesen
-   *
-   * DataTable reagiert auf Aenderungen an DataSource.filter, hier wird nur ein Wert
-   * hochgezaehlt, der eigentliche Filter kommt per URl. Das Filtern passiert in
-   * DataSource.filterPredicate().
-   */
-  private triggerFilter() {
-    this.confDataSource.filter = `${this.filterChanged++}`;
+  public toggleEmpty(): void {
+    this.userSettings.showEmptyConfig = !this.userSettings.showEmptyConfig;
+    this.confFilterService.triggerColumnFilter();
   }
 
   private buildColumns() {
@@ -231,6 +225,23 @@ export class ConfService {
     this.columns.push(
       new SbsdbColumn<ConfService, HwKonfig>(
         this,
+        "zuordnung",
+        () => "Geräte",
+        () => "zuordnung",
+        () => "zuordnung",
+        (h: HwKonfig) => h.zuordnung,
+        "",
+        true,
+        5,
+        ColumnType.STRING,
+        null,
+        null,
+        false
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<ConfService, HwKonfig>(
+        this,
         "menu",
         () => null,
         () => null,
@@ -330,6 +341,40 @@ export class ConfService {
         true
       )
     );
+    this.columns.push(
+      new SbsdbColumn<ConfService, HwKonfig>(
+        this,
+        "devices",
+        () => "Geräte",
+        () => "devices",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.NUMBER,
+        null,
+        null,
+        true
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<ConfService, HwKonfig>(
+        this,
+        "aps",
+        () => "Zugeordnet",
+        () => "aps",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.NUMBER,
+        null,
+        null,
+        true
+      )
+    );
     // fuer Suche nach Index
     this.columns.push(
       new SbsdbColumn<ConfService, HwKonfig>(
@@ -358,14 +403,16 @@ export class ConfService {
 
     // warten bis alle Daten geladen sind
     this.dataService.dataReady.subscribe(() => {
+      this.setDataToTable.emit();
+      this.loading = false;
+    });
+    this.setDataToTable.subscribe(() => {
       if (this.confDataSource.paginator) {
         this.confDataSource.data = this.dataService.hwKonfigList;
         this.confFilterService.dataReady = true;
         this.confFilterService.triggerFilter();
-        this.loading = false;
       }
     });
-
     // liefert Daten fuer internen sort in mat-table -> z.B. immer lowercase vergleichen
     this.confDataSource.sortingDataAccessor = (hw: HwKonfig, id: string) => {
       const col = GetColumn(id, this.columns);
