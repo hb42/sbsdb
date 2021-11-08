@@ -53,9 +53,13 @@ export class HeadComponent implements AfterViewInit {
           console.debug("KEYBOARD EVENT alt." + event.key);
           if (this.navigationService.isPage(nav.path)) {
             console.debug("on page");
-            console.dir(this.menuBtn);
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-            this.menuBtn._elementRef.nativeElement.click();
+            if (this.menuBtn) {
+              console.dir(this.menuBtn);
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+              this.menuBtn._elementRef.nativeElement.click(); // TODO noch sinnvoll?
+            } else {
+              console.debug("no this.menuBtn");
+            }
           } else {
             console.debug("navigate");
             this.navigationService.navigateByUrl(nav.path);
