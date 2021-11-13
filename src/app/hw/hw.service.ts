@@ -4,6 +4,15 @@ import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { lastValueFrom } from "rxjs";
+import {
+  KEY_SORT_ADAT,
+  KEY_SORT_AP,
+  KEY_SORT_HW_WERT,
+  KEY_SORT_KAT_IP,
+  KEY_SORT_OE_KONF,
+  KEY_SORT_SER,
+  KEY_SORT_TYP,
+} from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
@@ -34,6 +43,8 @@ export class HwService {
   // Zeilenumbruch in der Zelle umschalten
   public tableWrapCell = false;
 
+  public newHwEvent: EventEmitter<void> = new EventEmitter<void>();
+
   private filterChanged = 1;
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
@@ -58,6 +69,8 @@ export class HwService {
     this.navigationService.navToHw.subscribe((dat) => {
       this.hwFilterService.filterFor(dat.col, dat.search);
     });
+
+    this.newHwEvent.subscribe(() => this.editService.newHw());
   }
 
   public onSort(event: Sort): void {
@@ -102,10 +115,6 @@ export class HwService {
 
   public editConfig(conf: HwKonfig): void {
     console.debug("** edit config clicked");
-  }
-
-  public newHw(): void {
-    console.debug("** ne hw clicked");
   }
 
   public hwEdit(hw: Hardware): void {
@@ -155,7 +164,7 @@ export class HwService {
         () => "hwKonfig.apKatBezeichnung",
         () => "hwKonfig.apKatBezeichnung",
         (h: Hardware) => h.hwKonfig.apKatBezeichnung,
-        "k",
+        KEY_SORT_KAT_IP,
         true,
         1,
         ColumnType.STRING,
@@ -172,7 +181,7 @@ export class HwService {
         () => "hwKonfig.hwTypBezeichnung",
         () => "hwKonfig.hwTypBezeichnung",
         (h: Hardware) => h.hwKonfig.hwTypBezeichnung,
-        "t",
+        KEY_SORT_TYP,
         true,
         2,
         ColumnType.STRING,
@@ -221,7 +230,7 @@ export class HwService {
         () => "konfiguration",
         () => "konfiguration",
         (h: Hardware) => h.konfiguration,
-        "o",
+        KEY_SORT_OE_KONF,
         true,
         3,
         ColumnType.STRING,
@@ -305,7 +314,7 @@ export class HwService {
         () => "sernr",
         () => "sernr",
         (h: Hardware) => h.sernr,
-        "s",
+        KEY_SORT_SER,
         true,
         4,
         ColumnType.STRING,
@@ -322,7 +331,7 @@ export class HwService {
         () => "anschDat",
         () => "anschDat",
         (h: Hardware) => (h.anschDat.valueOf() ? formatDate(h.anschDat, "mediumDate", "de") : ""),
-        "u",
+        KEY_SORT_ADAT,
         true,
         5,
         ColumnType.DATE,
@@ -339,7 +348,7 @@ export class HwService {
         () => "anschWert",
         () => "anschWert",
         (h: Hardware) => (h.anschWert ? formatNumber(h.anschWert, "de", "1.2-2") : ""),
-        "w",
+        KEY_SORT_HW_WERT,
         true,
         6,
         ColumnType.NUMBER,
@@ -373,7 +382,7 @@ export class HwService {
         () => "apStr",
         () => "apStr",
         (h: Hardware) => h.apStr,
-        "p",
+        KEY_SORT_AP,
         true,
         7,
         ColumnType.STRING,

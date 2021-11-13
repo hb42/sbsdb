@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { HW_PATH } from "../app-routing-const";
+import { HW_PATH } from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";

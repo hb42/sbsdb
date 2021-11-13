@@ -1,8 +1,8 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   HostBinding,
-  HostListener,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -12,8 +12,11 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
+import { KEY_FIRST_FILTER } from "../../const";
 import { ConfigService } from "../../shared/config/config.service";
 import { GetColumn } from "../../shared/helper";
+import { KeyboardListener } from "../../shared/keyboard-listener";
+import { KeyboardService } from "../../shared/keyboard.service";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { ApService } from "../ap.service";
@@ -36,66 +39,18 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public subscription: Subscription;
 
+  private keyboardEvents: KeyboardListener[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private config: ConfigService,
     public apService: ApService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private keyboardService: KeyboardService
   ) {
     console.debug("c'tor ApComponent");
     this.apService.editFilterService.setFilterService(this.apService.filterService);
-  }
-
-  // focus first filter
-  @HostListener("document:keydown.alt.f", ["$event"])
-  public handleKeyboardEvent(event: KeyboardEvent): void {
-    this.focusFirstFilter();
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  // Spalten via Keyboard sortieren
-  @HostListener("document:keydown", ["$event"])
-  public handleApKeys(event: KeyboardEvent): void {
-    if (event.altKey && !event.shiftKey && !event.ctrlKey) {
-      // Extended Filter => alt-e
-      if (event.key === "e") {
-        this.apService.filterService.toggleExtendedFilter();
-        event.preventDefault();
-        event.stopPropagation();
-      } else if (event.key == "l") {
-        this.apService.filterService.resetFilters();
-        event.preventDefault();
-        event.stopPropagation();
-      } else if (event.key == "x") {
-        void this.apService.filterService.toCsv();
-        event.preventDefault();
-        event.stopPropagation();
-      } else if (event.key == "n") {
-        void this.apService.newAp();
-        event.preventDefault();
-        event.stopPropagation();
-      } else {
-        const colIdx = this.apService.columns.findIndex(
-          (c) => c.accelerator && c.accelerator === event.key
-        );
-        if (colIdx >= 0) {
-          // FIXME MatSort.sort sortiert zwar, aktualisiert aber nicht den Pfeil, der die Sort-Richtung anzeigt
-          //       das funktioniert z.Zt. nur ueber einen Hack (interne fn _handleClick())
-          //       -> https://github.com/angular/components/issues/10242
-          //       angular v11.2.5: scheint endlich zu funktionieren (beobachten!)
-          this.sort.sort(this.sort.sortables.get(this.apService.columns[colIdx].columnName));
-          // const sortHeader = this.sort.sortables.get(
-          //   this.apService.columns[colIdx].columnName
-          // ) as MatSortHeader;
-          // // eslint-disable-next-line no-underscore-dangle
-          // sortHeader._handleClick();
-          event.preventDefault();
-          event.stopPropagation();
-        }
-      }
-    }
   }
 
   public ngOnInit(): void {
@@ -132,19 +87,21 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
           this.apService.filterService.nav2filter(encFilter);
         }
       }
+    });
 
-      // URL /ap;id=11;tree=bst -> {id: 11, tree: 'bst'}
-      // als zweiter Navigationsparameter:
-      //   this.router.navigate(['/ap', { id: 11, tree: 'bst' }]);
-      //   <a [routerLink]="['/ap', { id: 11, tree: 'bst' }]">test</a>
+    // Keyboard handling
+    let listener: KeyboardListener = { trigger: new EventEmitter<void>(), key: KEY_FIRST_FILTER };
+    this.keyboardService.register(listener);
+    listener.trigger.subscribe(() => this.focusFirstFilter());
+    this.keyboardEvents.push(listener);
 
-      // this.apService.urlParams = {
-      //   tree: params.tree,
-      //   id: Number.parseInt(params.id, 10),
-      // };
-      // if (params.tree && params.tree === "oe") {
-      //   // this.apService.expandTree(this.apService.urlParams.id);
-      // }
+    this.apService.columns.forEach((c) => {
+      if (c.accelerator) {
+        listener = { trigger: new EventEmitter<void>(), key: c.accelerator };
+        listener.trigger.subscribe(() => this.sort.sort(this.sort.sortables.get(c.columnName)));
+        this.keyboardService.register(listener);
+        this.keyboardEvents.push(listener);
+      }
     });
   }
 
@@ -170,6 +127,10 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       console.debug("ApComponent - subscription.unsubscribe");
       this.subscription.unsubscribe();
     }
+    this.keyboardEvents.forEach((evt) => {
+      this.keyboardService.unregister(evt.key);
+      evt.trigger.unsubscribe();
+    });
   }
 
   public focusFirstFilter(): void {

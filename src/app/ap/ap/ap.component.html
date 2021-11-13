@@ -1,39 +1,10 @@
 <div class="flex-col">
-  <sbsdb-head>
-    <button
-      mat-icon-button
-      title="Erweiterte Suche (Alt+E)"
-      (click)="apService.filterService.toggleExtendedFilter()"
-      [class.ext-filter-button-select]="!apService.filterService.stdFilter"
-    >
-      <mat-icon>search</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      title="Alle Filter löschen (Alt+L)"
-      (click)="apService.filterService.resetFilters()"
-      [disabled]="apService.filterService.filterExpression.isEmpty()"
-    >
-      <mat-icon>search_off</mat-icon>
-    </button>
-    <span class="menu-spacer">|</span>
-    <button
-      mat-icon-button
-      title="Als CSV ausgeben (Alt+X)"
-      (click)="apService.filterService.toCsv()"
-    >
-      <!--      <mat-icon>share</mat-icon>-->
-      <mat-icon>file_download</mat-icon>
-    </button>
-    <span class="menu-spacer">|</span>
-    <button mat-icon-button title="Neuer Arbeitsplatz (Alt+N)" (click)="apService.newAp()">
-      <!--      <mat-icon>add_circle_outline</mat-icon>-->
-      <mat-icon>add_to_queue</mat-icon>
-    </button>
-    <span class="spacer"></span>
-    <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">
-      <mat-icon>menu</mat-icon>
-    </button>
+  <sbsdb-head
+    [filterService]="apService.filterService"
+    newTitle="Neuer Arbeitsplatz"
+    [newElement]="apService.newApEvent"
+    [mainMenu]="tableMenu"
+  >
   </sbsdb-head>
 
   <sbsdb-filter

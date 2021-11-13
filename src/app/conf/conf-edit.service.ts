@@ -11,4 +11,8 @@ export class ConfEditService extends BaseEditService {
     super(dialog, dataService);
     console.debug("c'tor ConfEditService");
   }
+
+  public newConf(): void {
+    console.debug("** new conf button");
+  }
 }

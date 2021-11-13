@@ -1,10 +1,36 @@
-import { AfterViewInit, Component, HostBinding, HostListener, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnDestroy,
+  ViewChild,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatMenu } from "@angular/material/menu";
+import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
 import { Router } from "@angular/router";
-import { ADM_PATH, AP_PATH, CONF_PATH, HW_PATH } from "../../app-routing-const";
+import {
+  ADM_PATH,
+  AP_PATH,
+  CONF_PATH,
+  HW_PATH,
+  KEY_ADM_PAGE,
+  KEY_AP_PAGE,
+  KEY_CSV,
+  KEY_DEL_FILTER,
+  KEY_EXT_FILTER,
+  KEY_HW_PAGE,
+  KEY_KONF_PAGE,
+  KEY_MAIN_MENU,
+  KEY_NEW,
+} from "../../const";
 import { AboutDialogComponent } from "../about-dialog/about-dialog.component";
 import { ConfigService } from "../config/config.service";
+import { UserSession } from "../config/user.session";
+import { BaseFilterService } from "../filter/base-filter-service";
+import { KeyboardListener } from "../keyboard-listener";
+import { KeyboardService } from "../keyboard.service";
 import { NavigationService } from "../navigation.service";
 
 @Component({
@@ -12,71 +38,119 @@ import { NavigationService } from "../navigation.service";
   templateUrl: "./head.component.html",
   styleUrls: ["./head.component.scss"],
 })
-export class HeadComponent implements AfterViewInit {
+export class HeadComponent implements AfterViewInit, OnDestroy {
   @HostBinding("attr.class") public cssClass = "flex-panel";
 
-  @ViewChild("menubtn") public menuBtn;
+  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
-  @ViewChild("apmenu", { static: true }) public apmenu: MatMenu;
-  @ViewChild("hwmenu", { static: true }) public hwmenu: MatMenu;
-  @ViewChild("admenu", { static: true }) public admenu: MatMenu;
+  @Input() public filterService: BaseFilterService;
+  @Input() public newTitle: string;
+  @Input() public newElement: EventEmitter<void>;
+  @Input() public mainMenu: MatMenu;
+
+  public userSettings: UserSession;
 
   public navLinks = [
-    { path: "/" + AP_PATH, label: "Arbeitsplätze", key: "a", menu: null, icon: "desktop_mac" },
-    { path: "/" + HW_PATH, label: "Hardware", key: "h", menu: null, icon: "devices" },
+    {
+      path: "/" + AP_PATH,
+      label: "Arbeitsplätze",
+      key: KEY_AP_PAGE,
+      icon: "desktop_mac",
+    },
+    {
+      path: "/" + HW_PATH,
+      label: "Hardware",
+      key: KEY_HW_PAGE,
+      icon: "devices",
+    },
     {
       path: "/" + CONF_PATH,
       label: "Konfigurationen",
-      key: "k",
-      menu: null,
+      key: KEY_KONF_PAGE,
       icon: "important_devices",
     },
-    { path: "/" + ADM_PATH, label: "Admin", key: "d", menu: null, icon: "settings" },
+    {
+      path: "/" + ADM_PATH,
+      label: "Admin",
+      key: KEY_ADM_PAGE,
+      icon: "settings",
+    },
   ];
 
   public selected = "";
-
   public search: string;
+
+  private keyboardEvents: KeyboardListener[] = [];
 
   constructor(
     private router: Router,
     public navigationService: NavigationService,
     public configService: ConfigService,
-    public dialog: MatDialog
-  ) {}
-
-  @HostListener("document:keydown", ["$event"])
-  public handleKeyboardEvent(event: KeyboardEvent): void {
-    if (event.altKey) {
-      this.navLinks.forEach((nav) => {
-        if (nav.key === event.key) {
-          console.debug("KEYBOARD EVENT alt." + event.key);
-          if (this.navigationService.isPage(nav.path)) {
-            console.debug("on page");
-            if (this.menuBtn) {
-              console.dir(this.menuBtn);
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-              this.menuBtn._elementRef.nativeElement.click(); // TODO noch sinnvoll?
-            } else {
-              console.debug("no this.menuBtn");
-            }
-          } else {
-            console.debug("navigate");
-            this.navigationService.navigateByUrl(nav.path);
-          }
-          event.preventDefault();
-          event.stopPropagation();
-        }
-      });
-    }
+    public dialog: MatDialog,
+    private keyboardService: KeyboardService
+  ) {
+    this.userSettings = configService.getUser();
   }
 
   public ngAfterViewInit(): void {
-    this.navLinks[0].menu = this.apmenu;
-    this.navLinks[1].menu = this.hwmenu;
-    this.navLinks[2].menu = this.admenu;
+    let listener: KeyboardListener;
+    if (this.filterService) {
+      listener = { trigger: new EventEmitter<void>(), key: KEY_EXT_FILTER };
+      this.keyboardService.register(listener);
+      listener.trigger.subscribe(() => this.filterService.toggleExtendedFilter());
+      this.keyboardEvents.push(listener);
+
+      listener = { trigger: new EventEmitter<void>(), key: KEY_DEL_FILTER };
+      this.keyboardService.register(listener);
+      listener.trigger.subscribe(() => this.filterService.resetFilters());
+      this.keyboardEvents.push(listener);
+
+      listener = { trigger: new EventEmitter<void>(), key: KEY_CSV };
+      this.keyboardService.register(listener);
+      listener.trigger.subscribe(() => void this.filterService.toCsv());
+      this.keyboardEvents.push(listener);
+    }
+    if (this.newElement && this.userSettings.isAdmin) {
+      listener = { trigger: new EventEmitter<void>(), key: KEY_NEW };
+      this.keyboardService.register(listener);
+      listener.trigger.subscribe(() => this.newBtnClick());
+      this.keyboardEvents.push(listener);
+    }
+    if (this.mainMenu) {
+      listener = { trigger: new EventEmitter<void>(), key: KEY_MAIN_MENU };
+      this.keyboardService.register(listener);
+      listener.trigger.subscribe(() => this.menuTrigger.toggleMenu());
+      this.keyboardEvents.push(listener);
+    }
+
+    this.navLinks.forEach((n) => {
+      listener = { trigger: new EventEmitter<void>(), key: n.key };
+      this.keyboardService.register(listener);
+      this.keyboardEvents.push(listener);
+      listener.trigger.subscribe(() => {
+        if (!this.navigationService.isPage(n.path)) {
+          console.debug("navigate");
+          this.navigationService.navigateByUrl(n.path);
+        } else {
+          console.debug("on page");
+        }
+      });
+    });
   }
 
+  public ngOnDestroy(): void {
+    console.debug("HeadComponent: unregister keyboard events");
+    this.keyboardEvents.forEach((ke) => {
+      this.keyboardService.unregister(ke.key);
+      ke.trigger.unsubscribe();
+    });
+  }
+
+  public newBtnClick(): void {
+    if (this.newElement) {
+      this.newElement.emit();
+    }
+  }
   public btnTitle(): string {
     let rc = "";
     this.navLinks.forEach((nav) => {

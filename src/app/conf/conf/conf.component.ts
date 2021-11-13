@@ -2,8 +2,9 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   HostBinding,
-  HostListener,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -11,8 +12,11 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { ActivatedRoute } from "@angular/router";
+import { KEY_FIRST_FILTER } from "../../const";
 import { ConfigService } from "../../shared/config/config.service";
 import { GetColumn } from "../../shared/helper";
+import { KeyboardListener } from "../../shared/keyboard-listener";
+import { KeyboardService } from "../../shared/keyboard.service";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { ConfService } from "../conf.service";
@@ -22,7 +26,7 @@ import { ConfService } from "../conf.service";
   templateUrl: "./conf.component.html",
   styleUrls: ["./conf.component.scss"],
 })
-export class ConfComponent implements OnInit, AfterViewInit {
+export class ConfComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostBinding("attr.class") public cssClass = "flex-panel flex-content-fix";
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
@@ -30,57 +34,18 @@ export class ConfComponent implements OnInit, AfterViewInit {
   @ViewChild("firstfilter") public firstFilter: HeaderCellComponent;
   @ViewChild("lastfilter") public lastFilter: HeaderCellComponent;
 
+  private keyboardEvents: KeyboardListener[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private config: ConfigService,
     public dialog: MatDialog,
     public confService: ConfService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private keyboardService: KeyboardService
   ) {
     console.debug("c'tor ConfComponent");
     this.confService.editFilterService.setFilterService(this.confService.confFilterService);
-  }
-
-  // focus first filter
-  @HostListener("document:keydown.alt.f", ["$event"])
-  public handleKeyboardEvent(event: KeyboardEvent): void {
-    this.focusFirstFilter();
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  // Spalten via Keyboard sortieren
-  @HostListener("document:keydown", ["$event"])
-  public handleApKeys(event: KeyboardEvent): void {
-    if (event.altKey && !event.shiftKey && !event.ctrlKey) {
-      // Extended Filter => alt-e
-      if (event.key === "e") {
-        this.confService.confFilterService.toggleExtendedFilter();
-        event.preventDefault();
-        event.stopPropagation();
-      } else if (event.key == "l") {
-        this.confService.confFilterService.resetFilters();
-        event.preventDefault();
-        event.stopPropagation();
-      } else if (event.key == "x") {
-        void this.confService.confFilterService.toCsv();
-        event.preventDefault();
-        event.stopPropagation();
-      } else if (event.key == "n") {
-        this.confService.newConf();
-        event.preventDefault();
-        event.stopPropagation();
-      } else {
-        const colIdx = this.confService.columns.findIndex(
-          (c) => c.accelerator && c.accelerator === event.key
-        );
-        if (colIdx >= 0) {
-          this.sort.sort(this.sort.sortables.get(this.confService.columns[colIdx].columnName));
-          event.preventDefault();
-          event.stopPropagation();
-        }
-      }
-    }
   }
 
   public ngAfterViewInit(): void {
@@ -91,14 +56,6 @@ export class ConfComponent implements OnInit, AfterViewInit {
       // Benutzereinstellungen setzen
       this.confService.setViewParams(this.sort, this.paginator);
       this.focusFirstFilter();
-      //
-      // const at = this.pagElement.nativeElement.getElementsByClassName("mat-paginator-container");
-      // const before = this.pagElement.nativeElement.getElementsByClassName(
-      //   "mat-paginator-page-size"
-      // );
-      // at[0].insertBefore(this.pagInsert.nativeElement, before[0]);
-
-      //      this.hwService.navigationService.hwLoading = false;
     }, 0);
     // Benutzer-Eingaben auf der AP-Seite koennen Aenderungen auf der HW-Seite ausloesen,
     // und das triggert beim Wechsel zu HW u.U. *ExpressionChangedAfterItHasBeenCheckedError*.
@@ -121,18 +78,6 @@ export class ConfComponent implements OnInit, AfterViewInit {
           encFilter = params.get("filt");
           this.config.getUser().latestConfFilter = encFilter;
           this.confService.confFilterService.filterFromNavigation(encFilter);
-        } else if (params.has("hwid")) {
-          // FIXME das hier hat den Nachteil, dass so zwei Eintraege in der History eingetragen werden:
-          //       (1) /ap;apname=xx und vom Filter (2) /ap;filt=xxx
-          //       besser direkt ueber apService aufrufen
-          // FIXME funktioniert nicht wenn die Anwendung hiermit gestartet wird. Dann wird in filterFor
-          //       auf noch nicht initialisierte Columns zugegriffen. Da waere eine Verzoegerung noetig
-          //       bis filterService.dataReady. Sieht momentan nach Henne-Ei-Problem aus ...
-          //       => wenn mal Zeit ist
-          this.confService.confFilterService.filterFor(
-            "hwid",
-            Number.parseInt(params.get("hwid"), 10)
-          );
         }
       } else {
         if (this.config.getUser().latestConfFilter) {
@@ -140,6 +85,28 @@ export class ConfComponent implements OnInit, AfterViewInit {
           this.confService.confFilterService.nav2filter(encFilter);
         }
       }
+    });
+
+    // Keyboard handling
+    let listener: KeyboardListener = { trigger: new EventEmitter<void>(), key: KEY_FIRST_FILTER };
+    this.keyboardService.register(listener);
+    listener.trigger.subscribe(() => this.focusFirstFilter());
+    this.keyboardEvents.push(listener);
+
+    this.confService.columns.forEach((c) => {
+      if (c.accelerator) {
+        listener = { trigger: new EventEmitter<void>(), key: c.accelerator };
+        listener.trigger.subscribe(() => this.sort.sort(this.sort.sortables.get(c.columnName)));
+        this.keyboardService.register(listener);
+        this.keyboardEvents.push(listener);
+      }
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.keyboardEvents.forEach((evt) => {
+      this.keyboardService.unregister(evt.key);
+      evt.trigger.unsubscribe();
     });
   }
 

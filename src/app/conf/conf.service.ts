@@ -2,6 +2,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { KEY_SORT_BEZ, KEY_SORT_HERST, KEY_SORT_KAT_IP, KEY_SORT_TYP } from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
@@ -31,6 +32,8 @@ export class ConfService {
   // Zeilenumbruch in der Zelle umschalten
   public tableWrapCell = false;
 
+  public newConfEvent: EventEmitter<void> = new EventEmitter<void>();
+
   private filterChanged = 1;
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
@@ -55,11 +58,10 @@ export class ConfService {
     // this.navigationService.navToHw.subscribe((dat) => {
     //   this.confFilterService.filterFor(dat.col, dat.search);
     // });
+
+    this.newConfEvent.subscribe(() => this.editService.newConf());
   }
 
-  public newConf(): void {
-    console.debug("** new conf button");
-  }
   public confEdit(conf: HwKonfig): void {
     console.debug("** edit conf button");
   }
@@ -127,7 +129,7 @@ export class ConfService {
         () => "apKatBezeichnung",
         () => "apKatBezeichnung",
         (h: HwKonfig) => h.apKatBezeichnung,
-        "k",
+        KEY_SORT_KAT_IP,
         true,
         1,
         ColumnType.STRING,
@@ -144,7 +146,7 @@ export class ConfService {
         () => "hwTypBezeichnung",
         () => "hwTypBezeichnung",
         (h: HwKonfig) => h.hwTypBezeichnung,
-        "t",
+        KEY_SORT_TYP,
         true,
         2,
         ColumnType.STRING,
@@ -182,7 +184,7 @@ export class ConfService {
         () => "hersteller",
         () => "hersteller",
         (h: HwKonfig) => h.hersteller,
-        "o",
+        KEY_SORT_HERST,
         true,
         3,
         ColumnType.STRING,
@@ -206,7 +208,7 @@ export class ConfService {
         () => "bezeichnung",
         () => "bezeichnung",
         (h: HwKonfig) => h.bezeichnung,
-        "",
+        KEY_SORT_BEZ,
         true,
         4,
         ColumnType.STRING,

@@ -1,85 +1,10 @@
 <div class="flex-col">
-  <sbsdb-head>
-    <!--    <button mat-stroked-button [mat-menu-trigger-for]="triggerHwKonf" title="Ansicht wechseln">-->
-    <!--      <mat-icon class="dd-icon">{{-->
-    <!--        hwService.userSettings.showKonfig ? "important_devices" : "devices"-->
-    <!--      }}</mat-icon>-->
-    <!--      {{ hwService.userSettings.showKonfig ? "Konfigurationen" : "Hardware" }}-->
-    <!--      <mat-icon>arrow_drop_down</mat-icon>-->
-    <!--    </button>-->
-    <!--    <mat-menu #triggerHwKonf="matMenu">-->
-    <!--      <button-->
-    <!--        mat-menu-item-->
-    <!--        (click)="hwService.userSettings.showKonfig = false"-->
-    <!--        [style.display]="hwService.userSettings.showKonfig ? 'inline-block' : 'none'"-->
-    <!--      >-->
-    <!--        <mat-icon>devices</mat-icon>-->
-    <!--        <span>Hardware-Liste</span>-->
-    <!--      </button>-->
-    <!--      <button-->
-    <!--        mat-menu-item-->
-    <!--        (click)="hwService.userSettings.showKonfig = true"-->
-    <!--        [style.display]="hwService.userSettings.showKonfig ? 'none' : 'inline-block'"-->
-    <!--      >-->
-    <!--        <mat-icon>important_devices</mat-icon>-->
-    <!--        <span>Konfigurationen-Liste</span>-->
-    <!--      </button>-->
-    <!--    </mat-menu>-->
-
-    <button
-      mat-icon-button
-      title="Erweiterte Suche (Alt+E)"
-      (click)="hwService.hwFilterService.toggleExtendedFilter()"
-      [class.ext-filter-button-select]="!hwService.hwFilterService.stdFilter"
-    >
-      <mat-icon>search</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      title="Alle Filter löschen (Alt+L)"
-      (click)="hwService.hwFilterService.resetFilters()"
-      [disabled]="hwService.hwFilterService.filterExpression.isEmpty()"
-    >
-      <mat-icon>search_off</mat-icon>
-    </button>
-    <span class="menu-spacer">|</span>
-    <button
-      mat-icon-button
-      title="Als CSV ausgeben (Alt+X)"
-      (click)="hwService.hwFilterService.toCsv()"
-    >
-      <!--      <mat-icon>share</mat-icon>-->
-      <mat-icon>file_download</mat-icon>
-    </button>
-    <span class="menu-spacer">|</span>
-
-    <button mat-icon-button title="Neue Hardware (Alt+N)" (click)="hwService.newHw()">
-      <mat-icon>add_to_queue</mat-icon>
-    </button>
-
-    <!--    <button-->
-    <!--      mat-button-->
-    <!--      (click)="newhw.toggle(); $event.preventDefault(); $event.stopPropagation()"-->
-    <!--      title="Bearbeiten"-->
-    <!--    >-->
-    <!--      <mat-select disableRipple style="width: unset" #newhw>-->
-    <!--        <mat-option (click)="hwService.newConfig()">Neue Hardware-Konfiguration</mat-option>-->
-    <!--        <mat-option (click)="hwService.newHardware()">Neue Geräte</mat-option>-->
-    <!--        <mat-option (click)="hwService.editConfig()">Konfiguration bearbeiten</mat-option>-->
-    <!--      </mat-select>-->
-    <!--    </button>-->
-
-    <!--    <button mat-icon-button title="Neue Hardware-Konfiguration">-->
-    <!--      &lt;!&ndash;      <mat-icon>add_circle_outline</mat-icon>&ndash;&gt;-->
-    <!--      <mat-icon>account_tree</mat-icon>-->
-    <!--    </button>-->
-    <!--    <button mat-icon-button title="Neue Geräte">-->
-    <!--      <mat-icon>important_devices</mat-icon>-->
-    <!--    </button>-->
-    <span class="spacer"></span>
-    <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">
-      <mat-icon>menu</mat-icon>
-    </button>
+  <sbsdb-head
+    [filterService]="hwService.hwFilterService"
+    newTitle="Neue Hardware"
+    [newElement]="hwService.newHwEvent"
+    [mainMenu]="tableMenu"
+  >
   </sbsdb-head>
 
   <sbsdb-filter
@@ -380,7 +305,11 @@
         <mat-icon>list</mat-icon>
         Hardware-Historie
       </button>
-      <button mat-menu-item *ngIf="hwService.userSettings.isAdmin" (click)="hwService.newHw()">
+      <button
+        mat-menu-item
+        *ngIf="hwService.userSettings.isAdmin"
+        (click)="hwService.editService.newHw()"
+      >
         <mat-icon>add_to_queue</mat-icon>
         Neue Geräte
       </button>

@@ -53,7 +53,50 @@
 
   <span class="spacer"></span>
   <div class="fill"></div>
+  <button
+    *ngIf="filterService"
+    mat-icon-button
+    title="Erweiterte Suche (Alt+E)"
+    (click)="filterService.toggleExtendedFilter()"
+    [class.ext-filter-button-select]="!filterService.stdFilter"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+  <button
+    *ngIf="filterService"
+    mat-icon-button
+    title="Alle Filter löschen (Alt+L)"
+    (click)="filterService.resetFilters()"
+    [disabled]="filterService.filterExpression.isEmpty() && filterService.stdFilter"
+  >
+    <mat-icon>search_off</mat-icon>
+  </button>
+  <span class="menu-spacer" *ngIf="filterService">|</span>
+  <button
+    *ngIf="filterService"
+    mat-icon-button
+    title="Als CSV ausgeben (Alt+X)"
+    (click)="filterService.toCsv()"
+  >
+    <!--      <mat-icon>share</mat-icon>-->
+    <mat-icon>file_download</mat-icon>
+  </button>
+  <span class="menu-spacer" *ngIf="filterService">|</span>
+  <button
+    *ngIf="newElement"
+    [disabled]="!userSettings.isAdmin"
+    mat-icon-button
+    [title]="newTitle + ' (Alt+N)'"
+    (click)="newBtnClick()"
+  >
+    <!--      <mat-icon>add_circle_outline</mat-icon>-->
+    <mat-icon>add_to_queue</mat-icon>
+  </button>
+  <span class="spacer"></span>
+  <button *ngIf="mainMenu" mat-icon-button title="Einstellungen" [matMenuTriggerFor]="mainMenu">
+    <mat-icon>menu</mat-icon>
+  </button>
 
   <!-- hier kann die jeweilige Seite ihre Menues einhaengen -->
-  <ng-content></ng-content>
+  <!--  <ng-content></ng-content>-->
 </mat-toolbar>

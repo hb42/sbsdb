@@ -1,40 +1,10 @@
 <div class="flex-col">
-  <sbsdb-head>
-    <button
-      mat-icon-button
-      title="Erweiterte Suche (Alt+E)"
-      (click)="confService.confFilterService.toggleExtendedFilter()"
-      [class.ext-filter-button-select]="!confService.confFilterService.stdFilter"
-    >
-      <mat-icon>search</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      title="Alle Filter löschen (Alt+L)"
-      (click)="confService.confFilterService.resetFilters()"
-      [disabled]="confService.confFilterService.filterExpression.isEmpty()"
-    >
-      <mat-icon>search_off</mat-icon>
-    </button>
-    <span class="menu-spacer">|</span>
-    <button
-      mat-icon-button
-      title="Als CSV ausgeben (Alt+X)"
-      (click)="confService.confFilterService.toCsv()"
-    >
-      <!--      <mat-icon>share</mat-icon>-->
-      <mat-icon>file_download</mat-icon>
-    </button>
-    <span class="menu-spacer">|</span>
-
-    <button mat-icon-button title="Neue Konfiguration (Alt+N)" (click)="confService.newConf()">
-      <mat-icon>add_to_queue</mat-icon>
-    </button>
-
-    <span class="spacer"></span>
-    <button mat-icon-button title="Einstellungen" [matMenuTriggerFor]="tableMenu">
-      <mat-icon>menu</mat-icon>
-    </button>
+  <sbsdb-head
+    [filterService]="confService.confFilterService"
+    newTitle="Neue Konfiguration"
+    [newElement]="confService.newConfEvent"
+    [mainMenu]="tableMenu"
+  >
   </sbsdb-head>
 
   <sbsdb-filter
@@ -282,7 +252,7 @@
       <button
         mat-menu-item
         *ngIf="confService.userSettings.isAdmin"
-        (click)="confService.newConf()"
+        (click)="confService.editService.newConf()"
       >
         <mat-icon>add_to_queue</mat-icon>
         Neue Konfiguration

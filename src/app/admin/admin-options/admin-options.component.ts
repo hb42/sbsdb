@@ -1,5 +1,5 @@
 import { Component, HostBinding } from "@angular/core";
-import { ADM_FILTER_PATH, ADM_OPTIONS_PATH, ADM_PATH } from "../../app-routing-const";
+import { ADM_FILTER_PATH, ADM_OPTIONS_PATH, ADM_PATH } from "../../const";
 import { NavigationService } from "../../shared/navigation.service";
 
 @Component({

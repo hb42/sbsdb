@@ -4,6 +4,7 @@ import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ApComponent } from "./ap/ap/ap.component";
+import { ConfComponent } from "./conf/conf/conf.component";
 import {
   ADM_FILTER_PATH,
   ADM_OPTIONS_PATH,
@@ -12,8 +13,7 @@ import {
   CONF_PATH,
   ERROR_PATH,
   HW_PATH,
-} from "./app-routing-const";
-import { ConfComponent } from "./conf/conf/conf.component";
+} from "./const";
 import { HwComponent } from "./hw/hw/hw.component";
 import { AdminGuard } from "./shared/admin.guard";
 import { ErrorComponent } from "./shared/error/error.component";

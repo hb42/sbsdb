@@ -2,6 +2,14 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import {
+  KEY_SORT_AP,
+  KEY_SORT_BEZ,
+  KEY_SORT_HW_WERT,
+  KEY_SORT_KAT_IP,
+  KEY_SORT_OE_KONF,
+  KEY_SORT_TYP,
+} from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
@@ -39,6 +47,8 @@ export class ApService {
 
   public displayedColumns: string[];
 
+  public newApEvent: EventEmitter<void> = new EventEmitter<void>();
+
   /* fuer select list: Liste ohne Duplikate fuer ein Feld (nicht bei allen sinnvoll -> aptyp, oe, voe, tags, hwtyp, vlan(?))
     new Set() -> nur eindeutige - ... -> zu Array
     -> https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array#9229932
@@ -75,6 +85,8 @@ export class ApService {
     this.navigationService.navToAp.subscribe((dat) => {
       this.filterService.filterFor(dat.col, dat.search);
     });
+
+    this.newApEvent.subscribe(() => this.editService.newAp());
   }
 
   // public getColumnIndex(name: string): number {
@@ -134,10 +146,6 @@ export class ApService {
     });
 
     Download(blob, "sbsdb.cmd");
-  }
-
-  public newAp(): void {
-    this.editService.newAp();
   }
 
   public apEdit(ap: Arbeitsplatz): void {
@@ -205,7 +213,7 @@ export class ApService {
         () => "apTypBezeichnung",
         () => "apTypBezeichnung",
         (a: Arbeitsplatz) => a.apTypBezeichnung,
-        "t",
+        KEY_SORT_TYP,
         true,
         1,
         ColumnType.STRING,
@@ -222,7 +230,7 @@ export class ApService {
         () => "apname",
         () => "apname",
         (a: Arbeitsplatz) => a.apname,
-        "p",
+        KEY_SORT_AP,
         true,
         2,
         ColumnType.STRING,
@@ -240,7 +248,7 @@ export class ApService {
         () => (this.userSettings.showStandort ? "oe.betriebsstelle" : "verantwOe.betriebsstelle"),
         (a: Arbeitsplatz) =>
           this.userSettings.showStandort ? a.oe.betriebsstelle : a.verantwOe.betriebsstelle,
-        "o",
+        KEY_SORT_OE_KONF,
         true,
         3,
         ColumnType.STRING,
@@ -342,7 +350,7 @@ export class ApService {
         () => "bezeichnung",
         () => "bezeichnung",
         (a: Arbeitsplatz) => a.bezeichnung,
-        "b",
+        KEY_SORT_BEZ,
         true,
         4,
         ColumnType.STRING,
@@ -360,7 +368,7 @@ export class ApService {
         () => ["ipStr", "macsearch"],
         () => "vlan",
         (a: Arbeitsplatz) => (a.ipStr ? a.ipStr + (a.macStr ? " –– " + a.macStr : "") : a.macStr),
-        "i",
+        KEY_SORT_KAT_IP,
         true,
         5,
         ColumnType.IP,
@@ -436,7 +444,7 @@ export class ApService {
         // () => (this.userSettings.searchSonstHw ? "sonstHwStr" : "hwStr"),
         () => "hwStr",
         (a: Arbeitsplatz) => a.hwStr,
-        "w",
+        KEY_SORT_HW_WERT,
         true,
         6,
         ColumnType.STRING,

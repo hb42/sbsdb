@@ -2,7 +2,7 @@ import { Location } from "@angular/common";
 import { EventEmitter, Injectable } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router, UrlTree } from "@angular/router";
 import { filter } from "rxjs/operators";
-import { ERROR_PATH } from "../app-routing-const";
+import { ERROR_PATH } from "../const";
 import { ConfigService } from "./config/config.service";
 import { ElectronService } from "./electron.service";
 

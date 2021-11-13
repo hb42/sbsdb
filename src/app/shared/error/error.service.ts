@@ -1,5 +1,5 @@
 import { ErrorHandler, Injectable } from "@angular/core";
-import { ERROR_PATH } from "../../app-routing-const";
+import { ERROR_PATH } from "../../const";
 import { NavigationService } from "../navigation.service";
 
 @Injectable({
