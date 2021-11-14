@@ -193,8 +193,7 @@ table:not(.wrap-cell) .mat-cell > div {
   white-space: nowrap;
 }
 
-.mat-cell > div,
-.mat-cell > a {
+.mat-cell div {
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
@@ -258,4 +257,9 @@ table:not(.wrap-cell) .mat-cell > div {
   color: rgba(0, 0, 0, 0.54);
   font-size: 14px;
   height: 40px;
+}
+
+// links ohne a | button
+.clickable {
+  cursor: pointer;
 }

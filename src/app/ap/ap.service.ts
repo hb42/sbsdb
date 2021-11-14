@@ -164,6 +164,12 @@ export class ApService {
     this.editService.hwEdit(ap);
   }
 
+  public gotoPriHw(ap: Arbeitsplatz): void {
+    const hw = ap.hw.find((h) => h.pri);
+    if (hw) {
+      this.gotoHw(hw);
+    }
+  }
   public gotoHw(hw: Hardware): void {
     this.navigationService.navToHw.emit({ col: "hwid", search: hw.id });
   }

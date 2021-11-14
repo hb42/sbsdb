@@ -29,19 +29,16 @@ export class HeaderCellComponent implements AfterViewInit {
    */
   @Input() public size: string; // "XS", "s", "M"
 
-  private nativeElement: HTMLElement;
-  private input: HTMLInputElement;
-
   constructor(private elementRef: ElementRef) {
-    // nop
+    console.debug("c'tor HeadCellComponent");
   }
 
-  public ngAfterViewInit(): void {
-    this.nativeElement = this.elementRef.nativeElement as HTMLElement;
-    if (this.column.isDropdown()) {
-      this.input = this.nativeElement.querySelector("mat-select");
-    } else {
-      this.input = this.nativeElement.querySelector("input");
+  ngAfterViewInit(): void {
+    // verhindern, dass der SortHeader per TAB erreichbart ist, dafuer gibt's Shortcuts
+    const nativeElement = this.elementRef.nativeElement as HTMLElement;
+    const sortheader: HTMLDivElement = nativeElement.querySelector(".mat-sort-header-container");
+    if (sortheader) {
+      sortheader.tabIndex = -1;
     }
   }
 
@@ -49,8 +46,16 @@ export class HeaderCellComponent implements AfterViewInit {
    * Focus auf das Eingabefeld setzen
    */
   public focus(): void {
-    if (this.input) {
-      this.input.focus();
+    const nativeElement = this.elementRef.nativeElement as HTMLElement;
+    let input: HTMLInputElement;
+    if (this.column.isDropdown()) {
+      input = nativeElement.querySelector("mat-select");
+    } else {
+      input = nativeElement.querySelector("input");
+    }
+
+    if (input) {
+      input.focus();
     }
   }
   /**
