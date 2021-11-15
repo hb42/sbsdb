@@ -1,12 +1,12 @@
 <mat-toolbar color="primary" class="head-spk header">
-  <button mat-button [mat-menu-trigger-for]="mainmenu">
+  <button mat-button [mat-menu-trigger-for]="aboutmenu">
     <img
       alt="SBSDB"
       src="./resource/sbs32-grey2.png"
       title="{{ configService.version.displayname }} {{ configService.version.version }}"
     />
   </button>
-  <mat-menu #mainmenu="matMenu">
+  <mat-menu #aboutmenu="matMenu">
     <button mat-menu-item (click)="about()">
       <mat-icon>info</mat-icon>
       <span>Über</span>
@@ -93,7 +93,13 @@
     <mat-icon>add_to_queue</mat-icon>
   </button>
   <span class="spacer"></span>
-  <button *ngIf="mainMenu" mat-icon-button title="Einstellungen" [matMenuTriggerFor]="mainMenu">
+  <button
+    *ngIf="mainMenu"
+    mat-icon-button
+    title="Einstellungen"
+    [matMenuTriggerFor]="mainMenu"
+    #mainMenuTrigger="matMenuTrigger"
+  >
     <mat-icon>menu</mat-icon>
   </button>
 

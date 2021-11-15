@@ -11,6 +11,7 @@ interface Listener {
 @Injectable({ providedIn: "root" })
 export class KeyboardService {
   private listeners: Listener[] = [];
+  private ctrlListeners: Listener[] = [];
 
   // In Windows liefert Alt+<Taste> in KeyboardEvent.key das Zeichen
   // fuer diese Taste, also Alt+A => 'a'. Unter macOS wird mit Alt eine
@@ -81,24 +82,34 @@ export class KeyboardService {
           event.preventDefault();
           event.stopPropagation();
         }
+      } else if (event.ctrlKey && !event.altKey && !event.shiftKey && event.key !== "Control") {
+        const data = this.ctrlListeners.find((c) => event.key === c.key || event.key === c.key2);
+        if (data) {
+          console.debug("KEYBOARD EVENT ctl+" + data.key);
+          data.trigger.emit();
+          event.preventDefault();
+          event.stopPropagation();
+        }
       }
     });
   }
 
-  public register(listener: KeyboardListener): void {
-    if (this.unregister(listener.key)) {
+  public register(listener: KeyboardListener, ctrl: boolean = false): void {
+    const keys = ctrl ? this.ctrlListeners : this.listeners;
+    if (this.unregister(listener.key, ctrl)) {
       console.error(`KeyboardService: Shortcut '${listener.key}' was already in use.`);
     }
     const key2 = this.keytable.find((kt) => kt.k === listener.key);
     if (key2) {
-      this.listeners.push({ trigger: listener.trigger, key: listener.key, key2: key2.a });
+      keys.push({ trigger: listener.trigger, key: listener.key, key2: key2.a });
     }
   }
 
-  public unregister(key: string): boolean {
-    const idx = this.listeners.findIndex((c) => c.key === key);
+  public unregister(key: string, ctrl: boolean = false): boolean {
+    const keys = ctrl ? this.ctrlListeners : this.listeners;
+    const idx = keys.findIndex((c) => c.key === key);
     if (idx >= 0) {
-      this.listeners.splice(idx, 1);
+      keys.splice(idx, 1);
       return true;
     } else {
       return false;

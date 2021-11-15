@@ -41,7 +41,7 @@ import { NavigationService } from "../navigation.service";
 export class HeadComponent implements AfterViewInit, OnDestroy {
   @HostBinding("attr.class") public cssClass = "flex-panel";
 
-  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
+  @ViewChild("mainMenuTrigger") menuTrigger: MatMenuTrigger;
 
   @Input() public filterService: BaseFilterService;
   @Input() public newTitle: string;
@@ -81,6 +81,7 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
   public search: string;
 
   private keyboardEvents: KeyboardListener[] = [];
+  private ctrlKeyboardEvents: KeyboardListener[] = [];
 
   constructor(
     private router: Router,
@@ -118,9 +119,9 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
     }
     if (this.mainMenu) {
       listener = { trigger: new EventEmitter<void>(), key: KEY_MAIN_MENU };
-      this.keyboardService.register(listener);
+      this.keyboardService.register(listener, true);
       listener.trigger.subscribe(() => this.menuTrigger.toggleMenu());
-      this.keyboardEvents.push(listener);
+      this.ctrlKeyboardEvents.push(listener);
     }
 
     this.navLinks.forEach((n) => {
@@ -142,6 +143,10 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
     console.debug("HeadComponent: unregister keyboard events");
     this.keyboardEvents.forEach((ke) => {
       this.keyboardService.unregister(ke.key);
+      ke.trigger.unsubscribe();
+    });
+    this.ctrlKeyboardEvents.forEach((ke) => {
+      this.keyboardService.unregister(ke.key, true);
       ke.trigger.unsubscribe();
     });
   }
