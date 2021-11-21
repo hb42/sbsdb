@@ -22,6 +22,8 @@ import { NewApComponent } from "./ap/new-ap/new-ap.component";
 import { AppMaterialModule } from "./app-material.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { ConfDetailCellComponent } from "./conf/conf-detail-cell/conf-detail-cell.component";
+import { ConfComponent } from "./conf/conf/conf.component";
 import { EditConfigDialogComponent } from "./hw/edit-config-dialog/edit-config-dialog.component";
 import { EditHwApComponent } from "./hw/edit-hw-ap/edit-hw-ap.component";
 import { EditHwHwComponent } from "./hw/edit-hw-hw/edit-hw-hw.component";
@@ -32,6 +34,7 @@ import { HwListComponent } from "./hw/hw-list/hw-list.component";
 import { HwTreeComponent } from "./hw/hw-tree/hw-tree.component";
 import { HwComponent } from "./hw/hw/hw.component";
 import { NewHwDialogComponent } from "./hw/new-hw-dialog/new-hw-dialog.component";
+import { ShowHistoryDialogComponent } from "./hw/show-history-dialog/show-history-dialog.component";
 import { AboutDialogComponent } from "./shared/about-dialog/about-dialog.component";
 import { AcceleratorStringComponent } from "./shared/accelerator-string/accelerator-string.component";
 import { ConfigService } from "./shared/config/config.service";
@@ -59,9 +62,6 @@ import { PaginatorStatusDirective } from "./shared/table/paginator-status.direct
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
-import { ShowHistoryDialogComponent } from './hw/show-history-dialog/show-history-dialog.component';
-import { ConfComponent } from './conf/conf/conf.component';
-import { ConfDetailCellComponent } from './conf/conf-detail-cell/conf-detail-cell.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
