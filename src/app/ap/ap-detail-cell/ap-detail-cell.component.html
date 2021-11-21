@@ -21,7 +21,12 @@
     </div>
     <div class="fill"></div>
     <div *ngIf="apService.userSettings.isAdmin" class="detail-cell-margin edit-button">
-      <button mat-icon-button color="primary" title="Arbeitsplatz bearbeiten" (click)="apService.apEdit(element)">
+      <button
+        mat-icon-button
+        color="primary"
+        title="Arbeitsplatz bearbeiten"
+        (click)="apService.apEdit(element)"
+      >
         <mat-icon>edit</mat-icon>
       </button>
     </div>
@@ -74,13 +79,16 @@
             <!--            <span *ngIf="!isFremdeHw(hw)">-->
             {{ hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung }}
             <span *ngIf="apService.userSettings.debug" class="debug"> #{{ hw.hwKonfig.id }} </span>
-            [<a
-              mat-button
+            [<button
+              class="sub-table-link-button"
+              mat-icon-button
               color="primary"
-              class="textLink"
+              title="zur Hardware"
               (click)="apService.gotoHw(hw); $event.stopPropagation()"
-              >{{ hw.sernr }}</a
             >
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+            {{ hw.sernr }}
             <span *ngIf="apService.userSettings.debug" class="debug"> #{{ hw.id }}</span
             >]
             <!--            </span>-->

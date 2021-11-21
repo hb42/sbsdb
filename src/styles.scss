@@ -263,3 +263,13 @@ table:not(.wrap-cell) .mat-cell > div {
 .clickable {
   cursor: pointer;
 }
+
+.sub-table-link-button.mat-icon-button {
+  width: 18px;
+  height: 20px;
+  line-height: 16px;
+}
+.sub-table-link-button .material-icons {
+  font-size: 16px;
+  padding-bottom: 3px;
+}

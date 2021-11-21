@@ -173,13 +173,16 @@
           (click)="hwService.expandHwRow(row, $event); $event.stopPropagation()"
         >
           <div sbsdbTooltipOnEllipsis *ngIf="row.ap">
-            <a
-              mat-button
+            <button
+              class="sub-table-link-button"
+              mat-icon-button
               color="primary"
-              class="textLink"
+              title="zum Arbeitsplatz"
               (click)="hwService.gotoAp(row); $event.stopPropagation()"
-              >{{ row.ap.apname }}</a
             >
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+            {{ row.ap.apname }}
             | {{ row.ap.oe.betriebsstelle }} | {{ row.ap.bezeichnung }}
           </div>
         </td>

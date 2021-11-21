@@ -171,11 +171,16 @@
         </th>
         <!-- DATA -->
         <td mat-cell *matCellDef="let row" (click)="apService.expandApRow(row, $event)">
-          <div
-            sbsdbTooltipOnEllipsis
-            class="md-primary-color clickable"
-            (click)="apService.gotoPriHw(row); $event.stopPropagation()"
-          >
+          <div sbsdbTooltipOnEllipsis>
+            <button
+              class="sub-table-link-button"
+              mat-icon-button
+              color="primary"
+              title="zur Hardware"
+              (click)="apService.gotoPriHw(row); $event.stopPropagation()"
+            >
+              <mat-icon>open_in_new</mat-icon>
+            </button>
             {{ column.displayText(row) }}
           </div>
         </td>
