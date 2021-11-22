@@ -250,9 +250,8 @@ export class DataService {
           }
         }
       }
-      conf.devices = count;
-      conf.aps = inuse;
-      conf.zuordnung = `${count} Geräte/ ${inuse} zugewiesen`;
+      conf.deviceCount = count;
+      conf.apCount = inuse;
     });
   }
   /**
@@ -424,6 +423,8 @@ export class DataService {
         );
       }
     });
+    // Konfig-IDs fuer den Filter
+    ap.konfIds = ap.hw.map((h) => h.hwKonfigId);
   }
 
   private changeAp(neu: Arbeitsplatz): Arbeitsplatz {
@@ -454,6 +455,7 @@ export class DataService {
         verantwOeId: 0,
         vlanStr: "",
         apId: neu.apId,
+        konfIds: [],
       };
       this.apList.push(ap);
     }

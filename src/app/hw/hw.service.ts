@@ -108,6 +108,10 @@ export class HwService {
     this.navigationService.navToAp.emit({ col: "apid", search: hw.ap.apId });
   }
 
+  public gotoKonf(hw: Hardware): void {
+    this.navigationService.navToKonf.emit({ col: "konfid", search: hw.hwKonfigId });
+  }
+
   public toggleFremdeHw(): void {
     this.userSettings.showFremde = !this.userSettings.showFremde;
     this.hwFilterService.triggerColumnFilter();
@@ -536,6 +540,23 @@ export class HwService {
         () => "id",
         () => null,
         (h: Hardware) => `${h.id}`,
+        "",
+        false,
+        0,
+        ColumnType.NUMBER,
+        null, // [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
+        null,
+        true
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "hwkonfid",
+        () => "HW-Konfig-Index",
+        () => "hwKonfigId",
+        () => null,
+        (h: Hardware) => `${h.hwKonfigId}`,
         "",
         false,
         0,

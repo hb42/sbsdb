@@ -53,6 +53,7 @@ export class ApEditService extends BaseEditService {
           verantwOeId: 0,
           vlanStr: "",
           apId: 0,
+          konfIds: [],
         };
         if ((result.typ.flag & DataService.FREMDE_HW_FLAG) !== 0) {
           // fremde HW: hier nur das Noetigste eintragen, der Rest wird auf dem Server erledigt

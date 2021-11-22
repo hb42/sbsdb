@@ -51,6 +51,6 @@ export class ConfFilterService extends BaseFilterService {
       return true;
     }
     const conf = row as HwKonfig;
-    return conf.devices > 0;
+    return conf.deviceCount > 0;
   }
 }

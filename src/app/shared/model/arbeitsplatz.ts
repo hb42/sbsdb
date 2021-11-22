@@ -1,7 +1,7 @@
 import { BaseTableRow } from "./base-table-row";
 import { Betrst } from "./betrst";
-import { Tag } from "./tag";
 import { Hardware } from "./hardware";
+import { Tag } from "./tag";
 
 export class Arbeitsplatz implements BaseTableRow {
   public apId: number;
@@ -35,6 +35,7 @@ export class Arbeitsplatz implements BaseTableRow {
   public macStr = ""; //  dto.
   public vlanStr = ""; // dto.
   public macsearch = ""; // Suche in allen MACs
+  public konfIds: Array<number> = [];
   // public oesearch = "";
   // public oesort = "";
   // public voesearch = "";

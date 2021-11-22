@@ -22,6 +22,10 @@ export class NavigationService {
     col: string;
     search: string | number;
   }>();
+  public navToKonf: EventEmitter<{ col: string; search: string | number }> = new EventEmitter<{
+    col: string;
+    search: string | number;
+  }>();
 
   constructor(
     private router: Router,

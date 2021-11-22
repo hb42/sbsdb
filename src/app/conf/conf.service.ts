@@ -55,9 +55,9 @@ export class ConfService {
       this.init();
     }, 0);
 
-    // this.navigationService.navToHw.subscribe((dat) => {
-    //   this.confFilterService.filterFor(dat.col, dat.search);
-    // });
+    this.navigationService.navToKonf.subscribe((dat) => {
+      this.confFilterService.filterFor(dat.col, dat.search);
+    });
 
     this.newConfEvent.subscribe(() => this.editService.newConf());
   }
@@ -101,6 +101,14 @@ export class ConfService {
   public toggleEmpty(): void {
     this.userSettings.showEmptyConfig = !this.userSettings.showEmptyConfig;
     this.confFilterService.triggerColumnFilter();
+  }
+
+  public gotoHw(conf: HwKonfig): void {
+    this.navigationService.navToHw.emit({ col: "hwkonfid", search: conf.id });
+  }
+
+  public gotoAp(conf: HwKonfig): void {
+    this.navigationService.navToAp.emit({ col: "hwKonfid", search: conf.id });
   }
 
   private buildColumns() {
@@ -231,7 +239,7 @@ export class ConfService {
         () => "Geräte",
         () => "zuordnung",
         () => "zuordnung",
-        (h: HwKonfig) => h.zuordnung,
+        () => null,
         "",
         true,
         5,
@@ -348,7 +356,7 @@ export class ConfService {
         this,
         "devices",
         () => "Geräte",
-        () => "devices",
+        () => "deviceCount",
         () => null,
         () => null,
         "",
@@ -365,7 +373,7 @@ export class ConfService {
         this,
         "aps",
         () => "Zugeordnet",
-        () => "aps",
+        () => "apCount",
         () => null,
         () => null,
         "",
@@ -381,7 +389,7 @@ export class ConfService {
     this.columns.push(
       new SbsdbColumn<ConfService, HwKonfig>(
         this,
-        "hwid",
+        "konfid",
         () => "HwKonfig-Index",
         () => "id",
         () => null,
@@ -406,12 +414,12 @@ export class ConfService {
     // warten bis alle Daten geladen sind
     this.dataService.dataReady.subscribe(() => {
       this.setDataToTable.emit();
+      this.confFilterService.dataReady = true;
       this.loading = false;
     });
     this.setDataToTable.subscribe(() => {
       if (this.confDataSource.paginator) {
         this.confDataSource.data = this.dataService.hwKonfigList;
-        this.confFilterService.dataReady = true;
         this.confFilterService.triggerFilter();
       }
     });

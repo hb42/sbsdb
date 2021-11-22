@@ -100,7 +100,17 @@
           class="highlight-when-expanded"
           (click)="hwService.expandHwRow(row, $event)"
         >
-          <div sbsdbTooltipOnEllipsis>{{ column.displayText(row) }}</div>
+          <div sbsdbTooltipOnEllipsis>
+            <button
+              class="sub-table-link-button"
+              mat-icon-button
+              color="primary"
+              title="zur Konfiguration"
+              (click)="hwService.gotoKonf(row); $event.stopPropagation()"
+            >
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+            {{ column.displayText(row) }}</div>
         </td>
       </ng-container>
 

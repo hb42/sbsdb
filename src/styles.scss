@@ -265,11 +265,12 @@ table:not(.wrap-cell) .mat-cell > div {
 }
 
 .sub-table-link-button.mat-icon-button {
-  width: 18px;
+  width: 14px;
   height: 20px;
   line-height: 16px;
+  left: -4px;
 }
 .sub-table-link-button .material-icons {
-  font-size: 16px;
+  font-size: inherit;
   padding-bottom: 3px;
 }

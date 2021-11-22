@@ -11,7 +11,7 @@ export class RelationalOperator {
   // public static LIST_ALL = "<alle>";
 
   public execute: (
-    fieldContent: string | Array<string> | number | Date,
+    fieldContent: string | Array<number> | number | Date,
     compare: string | number | Date,
     type: ColumnType
   ) => boolean;
@@ -53,6 +53,9 @@ export class RelationalOperator {
         break;
       case RelOp.ltNum:
         this.execute = RelationalOperator.ltNum;
+        break;
+      case RelOp.findinarray:
+        this.execute = RelationalOperator.findInArray;
         break;
       default:
         this.execute = RelationalOperator.noop;
@@ -213,6 +216,18 @@ export class RelationalOperator {
       return new Date(fieldContent).valueOf() < ParseDate(compare).valueOf();
     } else if (type === ColumnType.NUMBER) {
       return (fieldContent as number) < StringToNumber(compare);
+    } else {
+      return false;
+    }
+  };
+  // array<number>
+  private static findInArray = (
+    fieldContent: Array<number>,
+    compare: string,
+    type: number
+  ): boolean => {
+    if (type === ColumnType.ARRAY_N) {
+      return fieldContent.findIndex((a) => a === StringToNumber(compare)) >= 0;
     } else {
       return false;
     }

@@ -77,6 +77,15 @@
           </td>
           <td>
             <!--            <span *ngIf="!isFremdeHw(hw)">-->
+            <button
+              class="sub-table-link-button"
+              mat-icon-button
+              color="primary"
+              title="zur Konfiguration"
+              (click)="apService.gotoKonf(hw); $event.stopPropagation()"
+            >
+              <mat-icon>open_in_new</mat-icon>
+            </button>
             {{ hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung }}
             <span *ngIf="apService.userSettings.debug" class="debug"> #{{ hw.hwKonfig.id }} </span>
             [<button

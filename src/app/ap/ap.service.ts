@@ -174,6 +174,10 @@ export class ApService {
     this.navigationService.navToHw.emit({ col: "hwid", search: hw.id });
   }
 
+  public gotoKonf(hw: Hardware): void {
+    this.navigationService.navToKonf.emit({ col: "konfid", search: hw.hwKonfigId });
+  }
+
   public toggleStandort(): void {
     this.userSettings.showStandort = !this.userSettings.showStandort;
     this.filterService.triggerFilter();
@@ -527,6 +531,23 @@ export class ApService {
         null,
         null,
         true
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
+        this,
+        "hwKonfid",
+        () => "HW-Konfig-Index",
+        () => "konfIds",
+        () => null,
+        () => "array",
+        "",
+        false,
+        0,
+        ColumnType.ARRAY_N,
+        null,
+        null,
+        false
       )
     );
 

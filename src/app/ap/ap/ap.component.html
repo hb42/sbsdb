@@ -172,7 +172,7 @@
         <!-- DATA -->
         <td mat-cell *matCellDef="let row" (click)="apService.expandApRow(row, $event)">
           <div sbsdbTooltipOnEllipsis>
-            <button
+            <button *ngIf="row.hwStr"
               class="sub-table-link-button"
               mat-icon-button
               color="primary"

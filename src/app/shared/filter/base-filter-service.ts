@@ -286,6 +286,8 @@ export abstract class BaseFilterService {
         search = (search as string) ?? "";
       } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
         op = RelOp.equal;
+      } else if (col.typeKey === ColumnType.ARRAY_N) {
+        op = RelOp.findinarray;
       }
       this.filterExpression.reset();
       this.stdFilter = false;
