@@ -20,7 +20,8 @@ export class TooltipOnEllipsisDirective {
   @HostListener("mouseenter", ["$event"]) tooltipOnEllipsis(evt: MouseEvent): void {
     const elem: HTMLElement = evt.target as HTMLElement;
     if (elem && elem.offsetWidth < elem.scrollWidth && !elem.title) {
-      elem.title = elem.innerText;
+      // button fuer Verlinkung aus dem String entfernen
+      elem.title = elem.innerText.replace("open_in_new\n ", "");
     }
   }
 }

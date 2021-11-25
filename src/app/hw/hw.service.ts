@@ -325,7 +325,7 @@ export class HwService {
         true,
         4,
         ColumnType.STRING,
-        [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike],
+        [RelOp.startswith, RelOp.endswith, RelOp.like, RelOp.notlike, RelOp.equal, RelOp.notequal],
         null,
         true
       )

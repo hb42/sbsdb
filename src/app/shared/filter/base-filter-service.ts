@@ -280,13 +280,20 @@ export abstract class BaseFilterService {
 
   public filterFor(colName: string, search: string | number): void {
     const col = GetColumn(colName, this.columns);
-    let op = RelOp.equal;
     if (col) {
+      let op = RelOp.like;
+      if (col.operators.findIndex((o) => o === RelOp.inlist) >= 0) {
+        op = RelOp.inlist;
+      } else if (col.operators.findIndex((o) => o === RelOp.equal) >= 0) {
+        op = RelOp.equal;
+      }
+
       if (col.typeKey === ColumnType.STRING || col.typeKey === ColumnType.IP) {
-        search = (search as string) ?? "";
-        // } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
+        search = search ?? "";
+      } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
+        search = search ?? 0;
       } else if (col.typeKey === ColumnType.ARRAY) {
-        // search = this.arraySearch(colName, search as string);
+        search = search ?? "";
         op = RelOp.inlist;
       }
       this.filterExpression.reset();

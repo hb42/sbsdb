@@ -229,10 +229,10 @@ export class DataService {
   }
 
   public prepareHwList(): void {
+    this.prepareHwKonfigList();
     this.hwList.forEach((hw) => {
       this.prepareHw(hw);
     });
-    this.prepareHwKonfigList();
     this.apList.forEach((ap) => {
       this.apSortHw(ap);
     });
@@ -246,7 +246,7 @@ export class DataService {
       for (let i = 0; i < this.hwList.length; i++) {
         if (this.hwList[i].hwKonfigId === conf.id) {
           count++;
-          if (this.hwList[i].ap) {
+          if (this.hwList[i].apId) {
             inuse++;
           }
         }
@@ -387,24 +387,21 @@ export class DataService {
           if ((hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0) {
             ap.hwTypStr = hw.hwKonfig.konfiguration;
           }
-          ap.hwStr =
-            hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung + " [" + hw.sernr + "]";
+          ap.hwStr = hw.hwKonfig.konfiguration + " [" + hw.sernr + "]";
           // (hw.sernr && (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0
           //   ? " [" + hw.sernr + "]"
           //   : "");
-          ap.ipStr += ap.ipStr ? "/ " + hw.ipStr : hw.ipStr;
-          ap.macStr += ap.macStr ? "/ " + hw.macStr : hw.macStr;
-          ap.vlanStr += ap.vlanStr ? "/ " + hw.vlanStr : hw.vlanStr;
+          ap.ipStr += ap.ipStr ? " / " + hw.ipStr : hw.ipStr;
+          ap.macStr += ap.macStr ? " / " + hw.macStr : hw.macStr;
+          ap.vlanStr += ap.vlanStr ? " / " + hw.vlanStr : hw.vlanStr;
         } else {
           // fuer die Suche in sonstiger HW
           ap.sonstHwStr +=
-            (ap.sonstHwStr ? "/" : "") +
+            (ap.sonstHwStr ? " / " : "") +
             " " +
-            hw.hwKonfig.hersteller +
-            " " +
-            hw.hwKonfig.bezeichnung +
+            hw.hwKonfig.konfiguration +
             (hw.sernr && (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0
-              ? " " + hw.sernr
+              ? " [" + hw.sernr + "]"
               : "");
         }
       }
