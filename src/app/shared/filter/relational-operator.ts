@@ -3,7 +3,7 @@
  * z.B. groesser, beginnt mit, enthaelt
  */
 import { formatCurrency, formatDate } from "@angular/common";
-import { ParseDate, StringToNumber } from "../helper";
+import { GetFieldContent, ParseDate, StringToNumber } from "../helper";
 import { ColumnType } from "../table/column-type.enum";
 import { RelOp } from "./rel-op.enum";
 
@@ -11,7 +11,7 @@ export class RelationalOperator {
   // public static LIST_ALL = "<alle>";
 
   public execute: (
-    fieldContent: string | Array<number> | number | Date,
+    fieldContent: string | Array<unknown> | number | Date,
     compare: string | number | Date,
     type: ColumnType
   ) => boolean;
@@ -53,9 +53,6 @@ export class RelationalOperator {
         break;
       case RelOp.ltNum:
         this.execute = RelationalOperator.ltNum;
-        break;
-      case RelOp.findinarray:
-        this.execute = RelationalOperator.findInArray;
         break;
       default:
         this.execute = RelationalOperator.noop;
@@ -126,7 +123,7 @@ export class RelationalOperator {
   };
   // string, number, date - equal is case sensitive!
   private static equal = (
-    fieldContent: string | number,
+    fieldContent: string | number | Array<unknown>,
     compare: string,
     type: number
   ): boolean => {
@@ -139,9 +136,23 @@ export class RelationalOperator {
       return fc === compare;
     } else if (type === ColumnType.DATE) {
       compare = compare ? compare : "";
-      return new Date(fieldContent).valueOf() == ParseDate(compare).valueOf();
+      return new Date(fieldContent as number | string).valueOf() == ParseDate(compare).valueOf();
     } else if (type === ColumnType.NUMBER) {
       return fieldContent === StringToNumber(compare);
+    } else if (type === ColumnType.ARRAY) {
+      // in einem Array suchen
+      // compare enthaelt den Namen des Feldes im Array
+      const comp = compare.split("=");
+      if (comp.length != 2) {
+        return false;
+      }
+      const field = comp[0];
+      compare = comp[1];
+      if (Array.isArray(fieldContent)) {
+        return fieldContent.findIndex((a) => compare === GetFieldContent(a, field)) >= 0;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -162,8 +173,20 @@ export class RelationalOperator {
       return new Date(fieldContent).valueOf() != ParseDate(compare).valueOf();
     } else if (type === ColumnType.NUMBER) {
       return fieldContent !== StringToNumber(compare);
-    } else {
-      return false;
+    } else if (type === ColumnType.ARRAY) {
+      // in einem Array suchen
+      // compare enthaelt den Namen des Feldes im Array
+      const comp = compare.split("=");
+      if (comp.length != 2) {
+        return false;
+      }
+      const field = comp[0];
+      compare = comp[1];
+      if (Array.isArray(fieldContent)) {
+        return fieldContent.findIndex((a) => compare === GetFieldContent(a, field)) === -1;
+      } else {
+        return true;
+      }
     }
   };
   // string
@@ -216,18 +239,6 @@ export class RelationalOperator {
       return new Date(fieldContent).valueOf() < ParseDate(compare).valueOf();
     } else if (type === ColumnType.NUMBER) {
       return (fieldContent as number) < StringToNumber(compare);
-    } else {
-      return false;
-    }
-  };
-  // array<number>
-  private static findInArray = (
-    fieldContent: Array<number>,
-    compare: string,
-    type: number
-  ): boolean => {
-    if (type === ColumnType.ARRAY_N) {
-      return fieldContent.findIndex((a) => a === StringToNumber(compare)) >= 0;
     } else {
       return false;
     }

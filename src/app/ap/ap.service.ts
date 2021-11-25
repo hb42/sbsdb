@@ -171,11 +171,14 @@ export class ApService {
     }
   }
   public gotoHw(hw: Hardware): void {
-    this.navigationService.navToHw.emit({ col: "hwid", search: hw.id });
+    this.navigationService.navToHw.emit({ col: "sernr", search: hw.sernr });
   }
 
   public gotoKonf(hw: Hardware): void {
-    this.navigationService.navToKonf.emit({ col: "konfid", search: hw.hwKonfigId });
+    this.navigationService.navToKonf.emit({
+      col: "konfiguration",
+      search: hw.hwKonfig.konfiguration,
+    });
   }
 
   public toggleStandort(): void {
@@ -515,42 +518,31 @@ export class ApService {
         true
       )
     );
-    // fuer Suche nach Index
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this,
-        "apid",
-        () => "AP-Index",
-        () => "apId",
+        this, // bemerkung -> enthaelt
+        "konfiguration",
+        () => "Konfiguration",
+        () => "hw$hwKonfig.konfiguration",
         () => null,
-        (a: Arbeitsplatz) => `${a.apId}`,
+        () => null,
         "",
         false,
         0,
-        ColumnType.NUMBER,
-        null,
-        null,
-        true
-      )
-    );
-    this.columns.push(
-      new SbsdbColumn<ApService, Arbeitsplatz>(
-        this,
-        "hwKonfid",
-        () => "HW-Konfig-Index",
-        () => "konfIds",
-        () => null,
-        () => "array",
-        "",
-        false,
-        0,
-        ColumnType.ARRAY_N,
-        null,
-        null,
+        ColumnType.ARRAY,
+        [RelOp.inlist, RelOp.notinlist],
+        () => {
+          return [
+            ...new Set(
+              this.dataService.hwKonfigList
+                .filter((h3) => h3.deviceCount > 0)
+                .map((h) => h.konfiguration)
+            ),
+          ].sort();
+        },
         false
       )
     );
-
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 

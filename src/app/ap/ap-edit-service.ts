@@ -53,7 +53,6 @@ export class ApEditService extends BaseEditService {
           verantwOeId: 0,
           vlanStr: "",
           apId: 0,
-          konfIds: [],
         };
         if ((result.typ.flag & DataService.FREMDE_HW_FLAG) !== 0) {
           // fremde HW: hier nur das Noetigste eintragen, der Rest wird auf dem Server erledigt
@@ -72,6 +71,7 @@ export class ApEditService extends BaseEditService {
             ram: "",
             sonst: "",
             video: "",
+            konfiguration: "",
           };
           const hw = new Hardware();
           hw.anschWert = 0;
@@ -83,7 +83,6 @@ export class ApEditService extends BaseEditService {
           hw.id = 0;
           hw.invNr = "";
           hw.ipStr = "";
-          hw.konfiguration = "";
           hw.macStr = IpHelper.getMacString(IpHelper.NULL_MAC);
           hw.macsearch = "";
           hw.pri = true;

@@ -104,11 +104,14 @@ export class ConfService {
   }
 
   public gotoHw(conf: HwKonfig): void {
-    this.navigationService.navToHw.emit({ col: "hwkonfid", search: conf.id });
+    this.navigationService.navToHw.emit({ col: "konfiguration", search: conf.konfiguration });
   }
 
   public gotoAp(conf: HwKonfig): void {
-    this.navigationService.navToAp.emit({ col: "hwKonfid", search: conf.id });
+    this.navigationService.navToAp.emit({
+      col: "konfiguration",
+      search: conf.konfiguration,
+    });
   }
 
   private buildColumns() {
@@ -385,25 +388,38 @@ export class ConfService {
         true
       )
     );
-    // fuer Suche nach Index
     this.columns.push(
       new SbsdbColumn<ConfService, HwKonfig>(
         this,
-        "konfid",
-        () => "HwKonfig-Index",
-        () => "id",
+        "konfiguration",
+        () => "Konfiguration",
+        () => "konfiguration",
         () => null,
-        (h: HwKonfig) => `${h.id}`,
+        (h: HwKonfig) => h.konfiguration,
         "",
         false,
         0,
-        ColumnType.NUMBER,
-        null, // [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
-        null,
+        ColumnType.STRING,
+        [
+          RelOp.inlist,
+          RelOp.notinlist,
+          RelOp.startswith,
+          RelOp.endswith,
+          RelOp.like,
+          RelOp.notlike,
+        ],
+        () => {
+          return [
+            ...new Set(
+              this.confDataSource.data
+                .filter((h3) => this.userSettings.showEmptyConfig || h3.deviceCount > 0)
+                .map((h) => h.konfiguration)
+            ),
+          ].sort();
+        },
         true
       )
     );
-
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 

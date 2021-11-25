@@ -96,7 +96,10 @@ export class EditHwComponent implements OnInit {
         }
       })
       .sort((a, b) =>
-        this.dataService.collator.compare(a.konfiguration + a.sernr, b.konfiguration + b.sernr)
+        this.dataService.collator.compare(
+          a.hwKonfig.konfiguration + a.sernr,
+          b.hwKonfig.konfiguration + b.sernr
+        )
       );
     sel.unshift(null);
     return sel;

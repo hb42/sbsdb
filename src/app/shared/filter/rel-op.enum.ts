@@ -14,5 +14,4 @@ export enum RelOp {
   notexist = "NICHT VORHANDEN", // alle
   gtNum = "GRÖSSER ALS", // number, date
   ltNum = "KLEINER ALS", // number, date
-  findinarray = "=", // array<number>
 }

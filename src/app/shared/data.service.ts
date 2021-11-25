@@ -240,6 +240,7 @@ export class DataService {
 
   public prepareHwKonfigList(): void {
     this.hwKonfigList.forEach((conf) => {
+      conf.konfiguration = conf.hersteller + " - " + conf.bezeichnung;
       let count = 0;
       let inuse = 0;
       for (let i = 0; i < this.hwList.length; i++) {
@@ -356,7 +357,7 @@ export class DataService {
     hw.ipStr = "";
     hw.macStr = "";
     hw.vlanStr = "";
-    hw.konfiguration = hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung;
+    // hw.konfiguration = hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung;
     hw.ap = null;
     hw.apStr = "";
     // hw.apKatBezeichnung = hw.hwKonfig.apKatBezeichnung;
@@ -384,7 +385,7 @@ export class DataService {
         ap.macsearch = macsearch;
         if (hw.pri) {
           if ((hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0) {
-            ap.hwTypStr = hw.konfiguration;
+            ap.hwTypStr = hw.hwKonfig.konfiguration;
           }
           ap.hwStr =
             hw.hwKonfig.hersteller + " - " + hw.hwKonfig.bezeichnung + " [" + hw.sernr + "]";
@@ -423,8 +424,6 @@ export class DataService {
         );
       }
     });
-    // Konfig-IDs fuer den Filter
-    ap.konfIds = ap.hw.map((h) => h.hwKonfigId);
   }
 
   private changeAp(neu: Arbeitsplatz): Arbeitsplatz {
@@ -455,7 +454,6 @@ export class DataService {
         verantwOeId: 0,
         vlanStr: "",
         apId: neu.apId,
-        konfIds: [],
       };
       this.apList.push(ap);
     }

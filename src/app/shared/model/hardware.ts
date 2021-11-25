@@ -1,7 +1,7 @@
 import { Arbeitsplatz } from "./arbeitsplatz";
 import { BaseTableRow } from "./base-table-row";
-import { Netzwerk } from "./netzwerk";
 import { HwKonfig } from "./hw-konfig";
+import { Netzwerk } from "./netzwerk";
 
 export class Hardware implements BaseTableRow {
   public id: number;
@@ -20,7 +20,7 @@ export class Hardware implements BaseTableRow {
   public apId: number;
   public ap: Arbeitsplatz;
 
-  public konfiguration: string;
+  // public konfiguration: string;
   // public hwTypBezeichnung: string;
   // public apKatBezeichnung: string;
   public vlans: Netzwerk[];

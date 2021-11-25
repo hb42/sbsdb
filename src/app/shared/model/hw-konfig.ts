@@ -17,6 +17,7 @@ export class HwKonfig {
   public apKatFlag: number;
 
   // berechnet
+  public konfiguration: string;
   public deviceCount?: number;
   public apCount?: number;
   // Darstellung

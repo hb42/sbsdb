@@ -3,5 +3,5 @@ export enum ColumnType {
   IP,
   DATE,
   NUMBER,
-  ARRAY_N,
+  ARRAY,
 }

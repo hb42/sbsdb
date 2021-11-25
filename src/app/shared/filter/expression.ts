@@ -41,11 +41,14 @@ export class Expression implements Term {
   }
 
   public toString(): string {
-    return "[" + this.field.displayName + " " + this.operator.toString() + this.compareString + "]";
+    return (
+      "[" + this.field.displayName + " " + this.operator.toString() + " " + this.compareString + "]"
+    );
   }
 
   public validate(record: Record<string, string | Array<string> | number | Date>): boolean {
-    let compValue: string | number | Date;
+    let compare = this.compare;
+    let compValue: string | number | Date | Array<unknown>;
     if (this.field.type === ColumnType.STRING || this.field.type === ColumnType.IP) {
       // mehrere Felder vergleichen ist nur bei String-Vergleich sinnvoll
       const fields: string[] = Array.isArray(this.field.fieldName)
@@ -57,7 +60,15 @@ export class Expression implements Term {
           ""
         );
       }
+    } else if (this.field.type === ColumnType.ARRAY) {
+      const fields = (this.field.fieldName as string).split("$");
+      if (fields.length != 2) {
+        return false;
+      }
+      compValue = GetFieldContent(record, fields[0]) as Array<unknown>;
+      compare = fields[1] + "=" + compare.toString();
     } else {
+      // number | date
       const field = this.field.fieldName as string;
       const val = GetFieldContent(record, field);
       if (val) {
@@ -66,7 +77,7 @@ export class Expression implements Term {
         compValue = this.field.type === ColumnType.NUMBER ? 0 : new Date(0);
       }
     }
-    return this.operator.execute(compValue, this.compare, this.field.type);
+    return this.operator.execute(compValue, compare, this.field.type);
   }
 
   public isBracket(): boolean {

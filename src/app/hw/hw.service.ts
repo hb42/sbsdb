@@ -105,11 +105,14 @@ export class HwService {
   }
 
   public gotoAp(hw: Hardware): void {
-    this.navigationService.navToAp.emit({ col: "apid", search: hw.ap.apId });
+    this.navigationService.navToAp.emit({ col: "apname", search: hw.ap.apname });
   }
 
   public gotoKonf(hw: Hardware): void {
-    this.navigationService.navToKonf.emit({ col: "konfid", search: hw.hwKonfigId });
+    this.navigationService.navToKonf.emit({
+      col: "konfiguration",
+      search: hw.hwKonfig.konfiguration,
+    });
   }
 
   public toggleFremdeHw(): void {
@@ -231,9 +234,9 @@ export class HwService {
         this,
         "konfiguration",
         () => "Konfiguration",
+        () => "hwKonfig.konfiguration",
         () => "konfiguration",
-        () => "konfiguration",
-        (h: Hardware) => h.konfiguration,
+        (h: Hardware) => h.hwKonfig.konfiguration,
         KEY_SORT_OE_KONF,
         true,
         3,
@@ -256,7 +259,7 @@ export class HwService {
                 }
                 return val ? h1.hwKonfig.hwTypBezeichnung === val : true;
               })
-              .map((h2) => h2.konfiguration);
+              .map((h2) => h2.hwKonfig.konfiguration);
             if (GetColumn("konfiguration", this.columns).filterControl.value) {
               a.push(GetColumn("konfiguration", this.columns).filterControl.value as string);
             }
@@ -268,7 +271,7 @@ export class HwService {
                   .filter(
                     (h3) => !(!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h3))
                   )
-                  .map((h) => h.konfiguration)
+                  .map((h) => h.hwKonfig.konfiguration)
               ),
             ].sort();
           }
@@ -531,42 +534,6 @@ export class HwService {
         true
       )
     );
-    // fuer Suche nach Index
-    this.columns.push(
-      new SbsdbColumn<HwService, Hardware>(
-        this,
-        "hwid",
-        () => "HW-Index",
-        () => "id",
-        () => null,
-        (h: Hardware) => `${h.id}`,
-        "",
-        false,
-        0,
-        ColumnType.NUMBER,
-        null, // [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
-        null,
-        true
-      )
-    );
-    this.columns.push(
-      new SbsdbColumn<HwService, Hardware>(
-        this,
-        "hwkonfid",
-        () => "HW-Konfig-Index",
-        () => "hwKonfigId",
-        () => null,
-        (h: Hardware) => `${h.hwKonfigId}`,
-        "",
-        false,
-        0,
-        ColumnType.NUMBER,
-        null, // [RelOp.equal, RelOp.gtNum, RelOp.ltNum],
-        null,
-        true
-      )
-    );
-
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 
