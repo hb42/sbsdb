@@ -25,8 +25,10 @@ export class Expression implements Term {
       this.compareString = "";
     } else {
       this.comp = c;
+      // ">>" = &raquo; = #187 / "<<" = &laquo; = #171
       this.comp
-        ? (this.compareString = " '" + this.comp.toString() + "'")
+        ? (this.compareString =
+            " " + String.fromCharCode(187) + this.comp.toString() + String.fromCharCode(171))
         : (this.compareString = "");
     }
   }
