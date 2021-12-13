@@ -113,28 +113,7 @@ export class NavigationService {
     this.navigateByUrl(this.router.createUrlTree(command));
   }
 
-  /**
-   * Anwendung neu laden
-   *
-   * In electron wuerde das Ueberschreiben von window.location.href nicht funktionieren
-   * (zumindest nicht mit Angular-SPA). Da muss der Reload auf der electron-Seite erfolgen.
-   * Im electron start-script sieht das in etwa so aus:
-   * <pre>
-   *   ipcMain.on("reload-app", function(event, arg) {
-   *     console.log("APP RELOAD " + arg);
-   *     mainWindow.loadURL(url.format({
-   *                           pathname: path.join(__dirname, 'index.html'),
-   *                           protocol: 'file:',
-   *                           slashes: true
-   *                        }));
-   *   });
-   * </pre>
-   */
   public resetApp(): void {
-    if (this.electronService.isElectron) {
-      this.electronService.send("reload-app", "navigationService");
-    } else {
-      window.location.href = this.location.prepareExternalUrl("/");
-    }
+    window.location.href = this.location.prepareExternalUrl("/");
   }
 }

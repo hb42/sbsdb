@@ -41,7 +41,7 @@ export class VersionService {
       .then(async (pj: JSON) => {
         const ver = ["Basis: Angular " + VERSION.full];
         if (this.electronService.isElectron) {
-          ver.push("Browser-Engine: Electron " + this.electronService.electronVersion);
+          ver.push("Runtime: Electron " + this.electronService.electronVersion);
         }
         pj["versions"] = ver;
         this.version = this.makeVer(pj);

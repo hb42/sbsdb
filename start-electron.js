@@ -20,6 +20,9 @@
  *   removed from Electron v12. So setting nodeIntegration: true has no affect. Instead, you need
  *   to set contextIsolation: false. I suggest reading the justification to understand why and
  *   becoming familiar with the contextBridge to make it work safely."
+ *   Die gesamte Mimik ist zu ueberpruefen, da das fuer electron v4 geschrieben wurde!
+ *
+ * /Users/hb/Workspaces/JavaScript/sbsdb/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron
  */
 
 const electron = require("electron");
@@ -29,7 +32,6 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
 const session = electron.session;
-const ipcMain = electron.ipcMain;
 
 const windowStateKeeper = require("electron-window-state");
 
@@ -57,7 +59,7 @@ const menuTemplate = [
         accelerator: process.platform !== "darwin" ? "F5" : "Cmd+R",
       },
       { type: "separator" },
-      { role: "quit", label: "Datei-Archiv beenden" },
+      { role: "quit", label: "SBS-Datenbank beenden" },
     ],
   },
   {
@@ -86,10 +88,12 @@ var mainWindow = null;
 
 const startApp = function () {
   console.log("start app");
+  // TODO Strings in Abhaengigkeit von Plattform
+  session.defaultSession.allowNTLMCredentialsForDomains("*keinekekse.net");
   // Tell Electron where to load the entry point from
-  mainWindow.loadURL(
-    url.format({ pathname: path.join(__dirname, "index.html"), protocol: "file:", slashes: true })
-  );
+  mainWindow.loadURL("http://sbsdb.keinekekse.net:8000/791/sbsdb");
+  //   url.format({ pathname: path.join(__dirname, "index.html"), protocol: "file:", slashes: true })
+  // );
 };
 
 const createWindow = function () {
@@ -104,6 +108,7 @@ const createWindow = function () {
   //   event.returnValue = 'pong'
   // })
 
+  /*
   ipcMain.on("reload-app", function (event, arg) {
     console.log("APP RELOAD " + arg);
     startApp();
@@ -122,7 +127,7 @@ const createWindow = function () {
       });
     }
   });
-
+*/
   // Load the previous window state with fallback to defaults
   var mainWindowState = windowStateKeeper({
     defaultWidth: 1200,
@@ -139,6 +144,7 @@ const createWindow = function () {
     autoHideMenuBar: true,
     webPreferences: {
       devTools: true,
+      preload: path.join(__dirname, "preload-electron.js"),
     },
   });
 
