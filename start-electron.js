@@ -88,10 +88,15 @@ var mainWindow = null;
 
 const startApp = function () {
   console.log("start app");
-  // TODO Strings in Abhaengigkeit von Plattform
-  session.defaultSession.allowNTLMCredentialsForDomains("*keinekekse.net");
+  const ntlmString = process.platform !== "darwin" ? "*v998dpve.v998.intern" : "*keinekekse.net";
+  const appUrl =
+    process.platform !== "darwin"
+      ? "https://e077app1.v998dpve.v998.intern"
+      : "http://sbsdb.keinekekse.net:8000";
+  // allow kerberos
+  session.defaultSession.allowNTLMCredentialsForDomains(ntlmString);
   // Tell Electron where to load the entry point from
-  mainWindow.loadURL("http://sbsdb.keinekekse.net:8000/791/sbsdb");
+  mainWindow.loadURL(appUrl + "/791/sbsdb");
   //   url.format({ pathname: path.join(__dirname, "index.html"), protocol: "file:", slashes: true })
   // );
 };
