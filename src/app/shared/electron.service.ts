@@ -3,9 +3,9 @@ import { Injectable } from "@angular/core";
 // im electron-Startscript (bzw. im preload) wird 'electron' als globale Variable definiert:
 //   contextBridge.exposeInMainWorld("electron", { a: () => doSomething, ... });
 //
-interface Electron {
-  test: (msg: string) => void;
-  version: () => string;
+interface LocalApi {
+  test(msg: string): void;
+  version(): string;
 }
 
 /**
@@ -14,7 +14,7 @@ interface Electron {
  */
 @Injectable({ providedIn: "root" })
 export class ElectronService {
-  private readonly electron: Electron;
+  private readonly electron: LocalApi;
 
   get isElectron(): boolean {
     return !!this.electron;
@@ -29,7 +29,7 @@ export class ElectronService {
 
   constructor() {
     if (window["electron"]) {
-      this.electron = window["electron"] as Electron;
+      this.electron = window["electron"] as LocalApi;
     } else {
       this.electron = null;
     }
