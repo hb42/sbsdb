@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Arbeitsplatz } from "./model/arbeitsplatz";
 
 // im electron-Startscript (bzw. im preload) wird 'electron' als globale Variable definiert:
 //   contextBridge.exposeInMainWorld("electron", { a: () => doSomething, ... });
@@ -6,6 +7,7 @@ import { Injectable } from "@angular/core";
 interface LocalApi {
   test(msg: string): void;
   version(): string;
+  exec(ap: Arbeitsplatz, job: string): void;
 }
 
 /**
@@ -36,6 +38,15 @@ export class ElectronService {
     console.debug("c'tor ElectronService");
     if (this.isElectron) {
       console.log("Running on electron runtime " + this.electronVersion);
+      this.electron.test("calling sbsdb-local");
+    }
+  }
+
+  public exec(ap: Arbeitsplatz, job: string) {
+    if (this.isElectron) {
+      this.electron.exec(ap, job);
+    } else {
+      console.error("Electron call while on browser. AP=" + ap.apname + ", Job=" + job);
     }
   }
 }

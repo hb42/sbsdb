@@ -13,6 +13,7 @@ import {
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
+import { ElectronService } from "../shared/electron.service";
 import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
 import { Download, GetColumn } from "../shared/helper";
@@ -67,6 +68,7 @@ export class ApService {
     public filterService: ApFilterService,
     public editFilterService: EditFilterService,
     public editService: ApEditService,
+    public electronService: ElectronService,
     private configService: ConfigService,
     private keyboardService: KeyboardService,
     private navigationService: NavigationService,

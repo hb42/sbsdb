@@ -172,7 +172,8 @@
         <!-- DATA -->
         <td mat-cell *matCellDef="let row" (click)="apService.expandApRow(row, $event)">
           <div sbsdbTooltipOnEllipsis>
-            <button *ngIf="row.hwStr"
+            <button
+              *ngIf="row.hwStr"
               class="sub-table-link-button"
               mat-icon-button
               color="primary"
@@ -332,6 +333,17 @@
 <!-- Zeilen-Menue -->
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">
+    <button
+      mat-menu-item
+      *ngIf="apService.userSettings.isAdmin && apService.electronService.isElectron"
+      (click)="apService.electronService.exec(ap, 'TEST')"
+    >
+      <mat-icon>play_circle</mat-icon>
+      Test Exec
+    </button>
+    <mat-divider
+      *ngIf="apService.userSettings.isAdmin && apService.electronService.isElectron"
+    ></mat-divider>
     <button mat-menu-item *ngIf="apService.userSettings.isAdmin" (click)="apService.apEdit(ap)">
       <mat-icon>edit</mat-icon>
       AP bearbeiten

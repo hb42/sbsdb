@@ -73,8 +73,14 @@ export class KeyboardService {
 
   constructor(@Inject(DOCUMENT) doc: Document) {
     doc.addEventListener("keydown", (event) => {
-      console.dir(event);
-      if (event.altKey && !event.ctrlKey && !event.shiftKey && event.key !== "Alt") {
+      console.debug("keydown " + event.key);
+      if (
+        event.altKey &&
+        !event.ctrlKey &&
+        !event.shiftKey &&
+        !event.metaKey &&
+        event.key !== "Alt"
+      ) {
         const data = this.listeners.find((c) => event.key === c.key || event.key === c.key2);
         if (data) {
           console.debug("KEYBOARD EVENT alt+" + data.key);
@@ -82,7 +88,13 @@ export class KeyboardService {
           event.preventDefault();
           event.stopPropagation();
         }
-      } else if (event.ctrlKey && !event.altKey && !event.shiftKey && event.key !== "Control") {
+      } else if (
+        event.ctrlKey &&
+        !event.altKey &&
+        !event.shiftKey &&
+        !event.metaKey &&
+        event.key !== "Control"
+      ) {
         const data = this.ctrlListeners.find((c) => event.key === c.key || event.key === c.key2);
         if (data) {
           console.debug("KEYBOARD EVENT ctl+" + data.key);
