@@ -7,7 +7,7 @@ import { Arbeitsplatz } from "./model/arbeitsplatz";
 interface LocalApi {
   test(msg: string): void;
   version(): string;
-  exec(ap: Arbeitsplatz, job: string): void;
+  exec(job: string, ap: Arbeitsplatz): void;
 }
 
 /**
@@ -42,9 +42,9 @@ export class ElectronService {
     }
   }
 
-  public exec(ap: Arbeitsplatz, job: string) {
+  public exec(job: string, ap: Arbeitsplatz) {
     if (this.isElectron) {
-      this.electron.exec(ap, job);
+      this.electron.exec(job, ap);
     } else {
       console.error("Electron call while on browser. AP=" + ap.apname + ", Job=" + job);
     }

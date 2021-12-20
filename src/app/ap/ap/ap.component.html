@@ -336,7 +336,7 @@
     <button
       mat-menu-item
       *ngIf="apService.userSettings.isAdmin && apService.electronService.isElectron"
-      (click)="apService.electronService.exec(ap, 'TEST')"
+      (click)="apService.electronService.exec('TEST', ap)"
     >
       <mat-icon>play_circle</mat-icon>
       Test Exec
