@@ -35,6 +35,8 @@ export class ConfigService {
 
   private userDataChange: EventEmitter<User> = new EventEmitter() as EventEmitter<User>;
   private userSession: UserSession;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   private timer: NodeJS.Timeout;
 
   constructor(
