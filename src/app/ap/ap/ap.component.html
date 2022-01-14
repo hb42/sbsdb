@@ -333,14 +333,16 @@
 <!-- Zeilen-Menue -->
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">
-    <button
-      mat-menu-item
-      *ngIf="apService.userSettings.isAdmin && apService.electronService.isElectron"
-      (click)="apService.electronService.exec('TEST', ap)"
-    >
-      <mat-icon>play_circle</mat-icon>
-      Test Exec
-    </button>
+    <span *ngIf="apService.userSettings.isAdmin && apService.electronService.isElectron">
+      <button
+        *ngFor="let ext of apService.extProgListFor(ap)"
+        mat-menu-item
+        (click)="apService.runProgram(ext.program, ap)"
+      >
+        <mat-icon>play_circle</mat-icon>
+        {{ ext.bezeichnung }}
+      </button>
+    </span>
     <mat-divider
       *ngIf="apService.userSettings.isAdmin && apService.electronService.isElectron"
     ></mat-divider>

@@ -8,7 +8,7 @@
         [sbsdbDisableControl]="pri && isFremdeHw(ap.apTypFlag)"
       >
         <mat-option *ngFor="let h of hwSelectList()" [value]="h">
-          {{ h ? h.konfiguration + " [" + h.sernr + "]" : "<--->" }}
+          {{ h ? h.hwKonfig.konfiguration + " [" + h.sernr + "]" : "<--->" }}
         </mat-option>
       </mat-select>
       <mat-error *ngIf="hw.hwCtrl.invalid">{{ getErrorMessage(hw.hwCtrl) }}</mat-error>

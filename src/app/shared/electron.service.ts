@@ -7,7 +7,7 @@ import { Arbeitsplatz } from "./model/arbeitsplatz";
 interface LocalApi {
   test(msg: string): void;
   version(): string;
-  exec(job: string, ap: Arbeitsplatz): void;
+  exec(job: string, ap: Arbeitsplatz): Promise<{ rc: number; info: string }>;
 }
 
 /**
@@ -42,11 +42,17 @@ export class ElectronService {
     }
   }
 
-  public exec(job: string, ap: Arbeitsplatz) {
+  public async exec(job: string, ap: Arbeitsplatz): Promise<string | null> {
     if (this.isElectron) {
-      this.electron.exec(job, ap);
+      const result = await this.electron.exec(job, ap);
+      if (result.rc > 0) {
+        return result.info;
+      } else {
+        return null;
+      }
     } else {
       console.error("Electron call while on browser. AP=" + ap.apname + ", Job=" + job);
+      return "Fehler: das funktioniert nur in der Standalone-Anwendung";
     }
   }
 }

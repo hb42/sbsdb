@@ -20,6 +20,7 @@ import { Download, GetColumn } from "../shared/helper";
 import { KeyboardService } from "../shared/keyboard.service";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { Betrst } from "../shared/model/betrst";
+import { ExtProg } from "../shared/model/ext-prog";
 import { Hardware } from "../shared/model/hardware";
 import { Tag } from "../shared/model/tag";
 import { TagTyp } from "../shared/model/tagTyp";
@@ -186,6 +187,23 @@ export class ApService {
   public toggleStandort(): void {
     this.userSettings.showStandort = !this.userSettings.showStandort;
     this.filterService.triggerFilter();
+  }
+
+  public extProgListFor(ap: Arbeitsplatz): ExtProg[] {
+    return this.dataService.extProgList
+      .filter((ex) => ex.apkategorieId === ap.apKatId)
+      .sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
+  }
+
+  public runProgram(job: string, ap: Arbeitsplatz) {
+    if (this.electronService.isElectron) {
+      void this.electronService.exec(job, ap).then((result) => {
+        if (result) {
+          // TODO hat nicht funktioniert, User informieren
+          console.debug("Fehler beim Aufruf von " + job + ": " + result);
+        }
+      });
+    }
   }
 
   // public filterByAptyp(ap: Arbeitsplatz, event: Event): void {

@@ -9,6 +9,7 @@ import { ApTransport } from "./model/ap-transport";
 import { ApTyp } from "./model/ap-typ";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { Betrst } from "./model/betrst";
+import { ExtProg } from "./model/ext-prog";
 import { Hardware } from "./model/hardware";
 import { HwKonfig } from "./model/hw-konfig";
 import { HwTransport } from "./model/hw-transport";
@@ -33,6 +34,7 @@ export class DataService {
   public tagTypList: TagTyp[] = [];
   public vlanList: Vlan[] = [];
   public aptypList: ApTyp[] = [];
+  public extProgList: ExtProg[] = [];
 
   // Signale fuer das Laden der benoetigten Daten:
   //   apListFetched signalisiert, dass die AP-Liste vollstaendig geladen ist (und
@@ -72,6 +74,7 @@ export class DataService {
   public readonly changeApUrl: string;
   public readonly changeHwUrl: string;
   public readonly hwHistoryUrl: string;
+  public readonly extProgUrl: string;
 
   // case insensitive alpha sort
   // deutlich schneller als String.localeCompare()
@@ -113,6 +116,8 @@ export class DataService {
 
     this.hwHistoryUrl = this.configService.webservice + "/hw/hwhistoryfor";
 
+    this.extProgUrl = this.configService.webservice + "/svz/extprog/all";
+
     const readyEventCheck = () => {
       if (this.isDataReady()) {
         console.debug("## all data ready");
@@ -140,6 +145,7 @@ export class DataService {
       readyEventCheck();
     });
 
+    this.fetchExtProgList();
     this.fetchTagTypList();
     this.fetchVlanList();
     this.fetchApTypList();
@@ -219,6 +225,12 @@ export class DataService {
     this.get(this.allApTypUrl).subscribe((t: ApTyp[]) => {
       this.aptypList = t;
       this.aptypListReady.emit();
+    });
+  }
+
+  public fetchExtProgList(): void {
+    this.get(this.extProgUrl).subscribe((e: ExtProg[]) => {
+      this.extProgList = e;
     });
   }
 
