@@ -23,6 +23,8 @@ export class EditHwApComponent {
   ) {
     console.debug("c'tor EditHwApCompomnenmt");
     this.apReady = new EventEmitter<boolean>();
-    // this.hwFormGroup = this.formBuilder.group({});
+    this.formGroup = this.formBuilder.group({});
   }
+
+  removeAp() {}
 }

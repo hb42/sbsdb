@@ -73,7 +73,7 @@ export class KeyboardService {
 
   constructor(@Inject(DOCUMENT) doc: Document) {
     doc.addEventListener("keydown", (event) => {
-      console.debug("keydown " + event.key);
+      // console.debug("keydown " + event.key);
       if (
         event.altKey &&
         !event.ctrlKey &&
@@ -83,7 +83,7 @@ export class KeyboardService {
       ) {
         const data = this.listeners.find((c) => event.key === c.key || event.key === c.key2);
         if (data) {
-          console.debug("KEYBOARD EVENT alt+" + data.key);
+          // console.debug("KEYBOARD EVENT alt+" + data.key);
           data.trigger.emit();
           event.preventDefault();
           event.stopPropagation();
@@ -97,7 +97,7 @@ export class KeyboardService {
       ) {
         const data = this.ctrlListeners.find((c) => event.key === c.key || event.key === c.key2);
         if (data) {
-          console.debug("KEYBOARD EVENT ctl+" + data.key);
+          // console.debug("KEYBOARD EVENT ctl+" + data.key);
           data.trigger.emit();
           event.preventDefault();
           event.stopPropagation();

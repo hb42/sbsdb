@@ -1,3 +1,26 @@
-<!--AP anzeigen/entfernen (zuordnen???)-->
-
-<p>edit-ap works!</p>
+<mat-card>
+  <!--  <mat-card-header class="input-title card-title">-->
+  <!--    <mat-card-subtitle>Hardware</mat-card-subtitle>-->
+  <!--  </mat-card-header>-->
+  <div class="input-title card-title">Zugeordneter Arbeitsplatz</div>
+  <mat-card-content class="fields">
+    <div [formGroup]="formGroup" class="abstand-top">
+      <!--AP anzeigen/entfernen (zuordnen???)-->
+      <div class="row-align">
+        <div class="ap-text">{{ hw.apStr }}</div>
+        <div class="fill"></div>
+        <button
+          #apdelbtn
+          *ngIf="!!hw.ap"
+          mat-icon-button
+          class="abstand"
+          title="AP entfernen"
+          type="button"
+          (click)="removeAp()"
+        >
+          <mat-icon [color]="apdelbtn.disabled ? '' : 'accent'">delete_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
