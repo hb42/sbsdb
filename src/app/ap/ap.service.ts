@@ -190,20 +190,15 @@ export class ApService {
   }
 
   public extProgListFor(ap: Arbeitsplatz): ExtProg[] {
-    return this.dataService.extProgList
-      .filter((ex) => ex.apkategorieId === ap.apKatId)
-      .sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
-  }
-
-  public runProgram(job: string, ap: Arbeitsplatz) {
-    if (this.electronService.isElectron) {
-      void this.electronService.exec(job, ap).then((result) => {
-        if (result) {
-          // TODO hat nicht funktioniert, User informieren
-          console.debug("Fehler beim Aufruf von " + job + ": " + result);
-        }
-      });
+    if (!this.electronService.isElectron) {
+      return [];
     }
+    let allProgs = this.dataService.extProgList.filter((ex) => ex.apkategorieId === ap.apKatId);
+    // fuer Nichtadmin nur Programme, bei denen in flag das Bit 0 gesetzt ist
+    if (!this.userSettings.isAdmin && this.userSettings.isHotline) {
+      allProgs = allProgs.filter((ex) => (ex.flag & 0x0001) > 0);
+    }
+    return allProgs.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
   }
 
   // public filterByAptyp(ap: Arbeitsplatz, event: Event): void {

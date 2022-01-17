@@ -45,6 +45,7 @@ export class ElectronService {
   public async exec(job: string, ap: Arbeitsplatz): Promise<string | null> {
     if (this.isElectron) {
       const result = await this.electron.exec(job, ap);
+      console.debug("electron.exec ended rc=" + result.rc.toString() + ", msg=" + result.info);
       if (result.rc > 0) {
         return result.info;
       } else {

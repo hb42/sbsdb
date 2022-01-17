@@ -20,6 +20,8 @@ import { KeyboardService } from "../../shared/keyboard.service";
 import { HeaderCellComponent } from "../../shared/table/header-cell/header-cell.component";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { ApService } from "../ap.service";
+import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "sbsdb-ap",
@@ -47,7 +49,8 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     private config: ConfigService,
     public apService: ApService,
     public dialog: MatDialog,
-    private keyboardService: KeyboardService
+    private keyboardService: KeyboardService,
+    private snackBar: MatSnackBar
   ) {
     console.debug("c'tor ApComponent");
     this.apService.editFilterService.setFilterService(this.apService.filterService);
@@ -165,5 +168,21 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public getColumn(name: string): SbsdbColumn<unknown, unknown> {
     return GetColumn(name, this.apService.columns);
+  }
+
+  public runProgram(job: string, ap: Arbeitsplatz) {
+    if (this.apService.electronService.isElectron) {
+      void this.apService.electronService.exec(job, ap).then((result) => {
+        if (result) {
+          // hat nicht funktioniert, User informieren
+          console.debug("Fehler beim Aufruf von " + job + ": " + result);
+          // const snackBarRef =
+          this.snackBar.open(result, "OK", { duration: 10000 });
+          // snackBarRef.onAction().subscribe(() => {
+          //   snackBarRef.dismiss();
+          // });
+        }
+      });
+    }
   }
 }
