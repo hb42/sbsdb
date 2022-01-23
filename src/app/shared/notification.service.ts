@@ -12,6 +12,10 @@ export class NotificationService {
   public hwChange: EventEmitter<HwTransport> = new EventEmitter<HwTransport>();
   private hubConnection: HubConnection | undefined;
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  private checkTimer: NodeJS.Timeout;
+
   constructor(public configService: ConfigService) {
     console.debug("c'tor NotificationService");
     // this.initialize();
@@ -19,41 +23,34 @@ export class NotificationService {
 
   public initialize(): void {
     console.debug("## initialize notifications");
-    this.stopConnection();
+    try {
+      this.stopConnection();
 
-    // TODO die Strings sollten aus der Config kommen
-    this.hubConnection = new HubConnectionBuilder()
-      .withUrl(this.configService.webservice + "/notification")
-      // .configureLogging(LogLevel.Information)
-      .build();
+      // TODO die Strings sollten aus der Config kommen
+      this.hubConnection = new HubConnectionBuilder()
+        .withUrl(this.configService.webservice + "/notification")
+        // .configureLogging(LogLevel.Information)
+        .build();
 
-    this.hubConnection.on("apchange", (data: ApTransport) => {
-      console.debug("## Event apchange");
-      console.dir(data);
-      this.apChange.emit(data);
-    });
+      this.hubConnection.on("apchange", (data: ApTransport) => {
+        console.debug("## Event apchange");
+        console.dir(data);
+        this.apChange.emit(data);
+      });
 
-    this.hubConnection.on("hwchange", (data: HwTransport) => {
-      console.debug("## Event hwchange");
-      console.dir(data);
-      this.hwChange.emit(data);
-    });
+      this.hubConnection.on("hwchange", (data: HwTransport) => {
+        console.debug("## Event hwchange");
+        console.dir(data);
+        this.hwChange.emit(data);
+      });
 
-    this.hubConnection.onclose((err: Error) => {
-      console.debug("## Notification has been closed: " + err.message);
-      setTimeout(() => this.initialize(), 100);
-    });
-
-    // alle 5 Min. Verbindung testen (die Abfrage des Status scheint zu verhindern, dass
-    //                                der websocket nach 20 Min. geschlosssen wird)
-    setInterval(() => {
-      if (!this.isOpen()) {
-        console.debug(
-          "## Check: Notification not open - state: " + this.hubConnection?.state?.toString()
-        );
+      this.hubConnection.onclose((err: Error) => {
+        console.debug("## Notification has been closed: " + err.message);
         setTimeout(() => this.initialize(), 100);
-      }
-    }, 300000);
+      });
+    } catch (e) {
+      // catch all network errors and retry in a minute
+    }
 
     void this.hubConnection
       .start()
@@ -69,6 +66,24 @@ export class NotificationService {
         //   setTimeout(() => this.initialize(), 1000);
         // TODO Errorhandling f. Serverfehler
       });
+
+    // jede Minute Verbindung testen (die Abfrage des Status scheint zu verhindern, dass
+    //                                der websocket nach 20 Min. vom IIS geschlosssen wird)
+    if (this.checkTimer) {
+      clearTimeout(this.checkTimer);
+    }
+    this.checkTimer = setInterval(() => {
+      try {
+        if (!this.isOpen()) {
+          console.debug(
+            "## Check: Notification not open - state: " + this.hubConnection?.state?.toString()
+          );
+          setTimeout(() => this.initialize(), 100);
+        }
+      } catch (e) {
+        // ignore error, just retry in a minute
+      }
+    }, 60000);
   }
 
   public isOpen(): boolean {
