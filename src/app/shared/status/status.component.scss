@@ -1,5 +1,22 @@
 .status-panel {
-  position: absolute;
-  background-color: transparent;
-  color: hsl(0deg, 0%, 20%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 20px;
+  opacity: 1;
+  font-size: 14px;
+}
+
+.success {
+  color: springgreen;
+}
+.warn {
+  color: yellow;
+}
+.error {
+  color: #ff6666;
+}
+
+.status-btn {
+  color: skyblue;
 }

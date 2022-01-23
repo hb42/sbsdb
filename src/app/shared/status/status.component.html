@@ -1,3 +1,4 @@
-<div class="status-panel" [ngStyle]="panelPosition">
-  <div class="sbsdb-status">{{ text }}</div>
+<div class="status-panel">
+  <div [class]="data.textclass">{{ data.msg }}</div>
+  <button mat-stroked-button class="status-btn" (click)="close()">OK</button>
 </div>

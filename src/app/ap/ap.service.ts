@@ -25,6 +25,7 @@ import { Hardware } from "../shared/model/hardware";
 import { Tag } from "../shared/model/tag";
 import { TagTyp } from "../shared/model/tagTyp";
 import { NavigationService } from "../shared/navigation.service";
+import { StatusService } from "../shared/status.service";
 import { ColumnType } from "../shared/table/column-type.enum";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
 import { ApEditService } from "./ap-edit-service";
@@ -73,7 +74,8 @@ export class ApService {
     private configService: ConfigService,
     private keyboardService: KeyboardService,
     private navigationService: NavigationService,
-    private dataService: DataService
+    private dataService: DataService,
+    public statusService: StatusService
   ) {
     console.debug("c'tor ArbeitsplatzService");
     this.userSettings = configService.getUser();
@@ -199,6 +201,18 @@ export class ApService {
       allProgs = allProgs.filter((ex) => (ex.flag & 0x0001) > 0);
     }
     return allProgs.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
+  }
+
+  public runProgram(job: string, ap: Arbeitsplatz) {
+    if (this.electronService.isElectron) {
+      void this.electronService.exec(job, ap).then((result) => {
+        if (result) {
+          // hat nicht funktioniert, User informieren
+          console.debug("Fehler beim Aufruf von " + job + ": " + result);
+          this.statusService.warn(result);
+        }
+      });
+    }
   }
 
   // public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
