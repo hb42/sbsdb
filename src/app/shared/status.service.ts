@@ -6,36 +6,41 @@ import { StatusComponent } from "./status/status.component";
   providedIn: "root",
 })
 export class StatusService {
+  public static STATUS_INFO = "INFO";
+  public static STATUS_WARN = "WARN";
+  public static STATUS_ERROR = "ERROR";
+
   constructor(private snackBar: MatSnackBar) {}
 
-  public success(msg: string): void {
-    // fuer hat-geklappt-Nachricht: msg ca. 3-4 Sekunden anzeigen
-    // springgreen
-    // this.snackBar.open(msg, "OK", { duration: 3000 });
+  /**
+   * Fuer hat-geklappt-Nachricht: msg 4 Sekunden anzeigen
+   */
+  public info(msg: string): void {
     this.snackBar.openFromComponent(StatusComponent, {
-      duration: 3000,
-      data: { msg: msg, textclass: "success" },
+      duration: 4000,
+      data: { msg: msg, type: StatusService.STATUS_INFO },
     });
   }
 
+  /**
+   * warning: msg 10 Sekunden anzeigen
+   */
   public warn(msg: string): void {
-    // warning: 10 Sekunden anzeigen
-    // yellow
-    // this.snackBar.open(msg, "OK", { duration: 10000 });
     this.snackBar.openFromComponent(StatusComponent, {
       duration: 10000,
-      data: { msg: msg, textclass: "warn" },
+      data: { msg: msg, type: StatusService.STATUS_WARN },
     });
   }
 
+  /**
+   * error: Nachricht muss manuell geschlossen werden
+   */
   public error(msg: string): void {
-    // error: Nachricht muss manuell geschlossen werden
-    // red | orange
-    // this.snackBar.open(msg, "OK", { panelClass: "snackBarPanel" });
     this.snackBar.openFromComponent(StatusComponent, {
-      data: { msg: msg, textclass: "error" },
+      data: { msg: msg, type: StatusService.STATUS_ERROR },
     });
   }
+
   public test(): void {
     console.debug("SnackBar.TEST");
     this.snackBar.open("test message", "OK", { duration: 10000 });

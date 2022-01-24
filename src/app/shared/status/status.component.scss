@@ -3,20 +3,21 @@
   justify-content: space-between;
   align-items: center;
   line-height: 20px;
-  opacity: 1;
   font-size: 14px;
 }
 
-.success {
+.status-info {
   color: springgreen;
 }
-.warn {
+.status-warn {
   color: yellow;
 }
-.error {
-  color: #ff6666;
+.status-error {
+  color: #ff8866;
 }
 
-.status-btn {
-  color: skyblue;
+.status-icon {
+  opacity: 0.7;
+  margin-right: 20px;
+  font-size: 30px;
 }

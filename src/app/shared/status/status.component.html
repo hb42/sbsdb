@@ -1,4 +1,5 @@
 <div class="status-panel">
-  <div [class]="data.textclass">{{ data.msg }}</div>
-  <button mat-stroked-button class="status-btn" (click)="close()">OK</button>
+  <div><mat-icon [class]="textclass()" class="status-icon">{{icon()}}</mat-icon></div>
+  <div [class]="textclass()">{{ data.msg }}</div>
+  <button mat-button color="accent" (click)="close()">OK</button>
 </div>

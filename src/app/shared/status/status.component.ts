@@ -1,5 +1,6 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from "@angular/material/snack-bar";
+import { StatusService } from "../status.service";
 
 /**
  * Status als SnackBar
@@ -12,11 +13,36 @@ import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from "@angular/material/snack-bar"
 })
 export class StatusComponent {
   constructor(
-    @Inject(MAT_SNACK_BAR_DATA) public data: { msg: string; textclass: string },
+    @Inject(MAT_SNACK_BAR_DATA) public data: { msg: string; type: string },
     private snackBarRef: MatSnackBarRef<StatusComponent>
   ) {}
 
   public close(): void {
     this.snackBarRef.dismiss();
+  }
+
+  public icon(): string {
+    switch (this.data.type) {
+      case StatusService.STATUS_INFO:
+        return "info_outline";
+      case StatusService.STATUS_WARN:
+        return "warning_amber";
+      case StatusService.STATUS_ERROR:
+        return "error_outline";
+      default:
+        return "";
+    }
+  }
+  public textclass(): string {
+    switch (this.data.type) {
+      case StatusService.STATUS_INFO:
+        return "status-info";
+      case StatusService.STATUS_WARN:
+        return "status-warn";
+      case StatusService.STATUS_ERROR:
+        return "status-error";
+      default:
+        return "";
+    }
   }
 }
