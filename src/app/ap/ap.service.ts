@@ -207,9 +207,19 @@ export class ApService {
     if (this.electronService.isElectron) {
       void this.electronService.exec(job, ap).then((result) => {
         if (result) {
-          // hat nicht funktioniert, User informieren
-          console.debug("Fehler beim Aufruf von " + job + ": " + result);
-          this.statusService.warn(result);
+          console.debug("Rückmeldung für " + job + ": rc=" + result.rc + " " + result.info);
+          // fuer rc = 0 sollte das externe Programm das Feedback uebernehmen
+          switch (result.rc) {
+            case 1:
+              this.statusService.info(result.info);
+              break;
+            case 2:
+              this.statusService.warn(result.info);
+              break;
+            case 3:
+              this.statusService.error(result.info);
+              break;
+          }
         }
       });
     }
