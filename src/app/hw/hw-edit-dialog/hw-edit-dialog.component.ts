@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { HwVlanChange } from "../../ap/edit-ap-hw/hw-vlan-change";
 import { HwChange } from "../edit-hw-hw/hw-change";
-import { MacChange } from "../edit-hw-mac/mac-change";
 import { HwEditDialogData } from "./hw-edit-dialog-data";
 
 @Component({
@@ -28,7 +28,7 @@ export class HwEditDialogComponent {
     console.dir(form);
   }
 
-  public macReady(evt: MacChange[]): void {
+  public macReady(evt: HwVlanChange[]): void {
     console.debug("HwMacEditDialog macReady");
     console.dir(evt);
     this.data.macs = evt;

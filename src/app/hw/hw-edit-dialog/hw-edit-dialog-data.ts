@@ -1,6 +1,6 @@
+import { HwVlanChange } from "../../ap/edit-ap-hw/hw-vlan-change";
 import { Hardware } from "../../shared/model/hardware";
 import { HwChange } from "../edit-hw-hw/hw-change";
-import { MacChange } from "../edit-hw-mac/mac-change";
 
 export interface HwEditDialogData {
   hw: Hardware;
@@ -11,5 +11,5 @@ export interface HwEditDialogData {
   // Rueckgabe
   removeAp: boolean;
   hwChange: HwChange;
-  macs: MacChange[];
+  macs: HwVlanChange[];
 }

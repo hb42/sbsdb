@@ -1,6 +1,6 @@
 import { Hardware } from "./hardware";
 
 export interface HwTransport {
-  hw: Hardware[];
-  delHwId: number; // >0 -> DEL AP (.ap == null)
+  hw: Hardware;
+  delHwId: number; // >0 -> DEL HW
 }

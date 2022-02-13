@@ -19,7 +19,6 @@ import { RelOp } from "../shared/filter/rel-op.enum";
 import { Download, GetColumn } from "../shared/helper";
 import { KeyboardService } from "../shared/keyboard.service";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
-import { Betrst } from "../shared/model/betrst";
 import { ExtProg } from "../shared/model/ext-prog";
 import { Hardware } from "../shared/model/hardware";
 import { Tag } from "../shared/model/tag";
@@ -677,7 +676,7 @@ export class ApService {
    */
   public async getAPs(each: () => void): Promise<void> {
     // zunaechst die OEs holen
-    await this.getBst();
+    await this.dataService.fetchBstList();
     // Groesse der einzelnen Bloecke
     let pageSize = Number(await this.configService.getConfig(ConfigService.AP_PAGE_SIZE));
     if (pageSize < DataService.defaultpageSize) {
@@ -713,23 +712,6 @@ export class ApService {
     }
   }
 
-  public getBst(): Promise<void> {
-    return this.dataService
-      .get(this.dataService.allBstUrl)
-      .toPromise()
-      .then(
-        (bst: Betrst[]) => {
-          console.debug("fetch Betrst size=", bst.length);
-          this.dataService.bstList = bst;
-          this.prepBst();
-          this.dataService.bstListReady.emit();
-        },
-        (err) => {
-          console.error("ERROR loading OE-Data ", err);
-        }
-      );
-  }
-
   public async getTagTypes(): Promise<TagTyp[]> {
     const rc = await this.dataService.get(this.dataService.allTagTypesUrl).toPromise();
     console.debug("got tagtypes");
@@ -757,36 +739,5 @@ export class ApService {
     } else {
       return "";
     }
-  }
-
-  // OE-Hierarchie aufbauen
-  // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
-  private prepBst() {
-    this.dataService.bstList.forEach((bst) => {
-      // idx 0 -> BST "Reserve" => 0 als parent == kein parent
-      bst.fullname = `00${bst.bstNr}`.slice(-3) + " " + bst.betriebsstelle;
-      if (bst.parentId) {
-        const parent = this.dataService.bstList.find((b) => b.bstId === bst.parentId);
-        if (parent) {
-          bst.parent = parent;
-          if (!parent.children) {
-            parent.children = [];
-          }
-          parent.children.push(bst);
-        } else {
-          bst.parent = null;
-        }
-      }
-    });
-    this.dataService.bstList.forEach((bst) => {
-      bst.hierarchy = bst.fullname;
-      if (bst.parent) {
-        let p = bst.parent;
-        while (p) {
-          bst.hierarchy = p.fullname + "/" + bst.hierarchy;
-          p = p.parent;
-        }
-      }
-    });
   }
 }

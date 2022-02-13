@@ -7,16 +7,16 @@
     <div [formGroup]="formGroup" class="abstand-top">
       <!--AP anzeigen/entfernen (zuordnen???)-->
       <div class="row-align">
-        <div class="ap-text">{{ hw.apStr }}</div>
+        <div class="ap-text">{{ apStr }}</div>
         <div class="fill"></div>
         <button
           #apdelbtn
-          *ngIf="!!hw.ap"
+          *ngIf="!!apStr"
           mat-icon-button
           class="abstand"
           title="AP entfernen"
           type="button"
-          (click)="removeAp()"
+          (click)="delAp()"
         >
           <mat-icon [color]="apdelbtn.disabled ? '' : 'accent'">delete_outline</mat-icon>
         </button>

@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { HwVlanChange } from "../../ap/edit-ap-hw/hw-vlan-change";
 import { DataService } from "../../shared/data.service";
 import { Hardware } from "../../shared/model/hardware";
 import { HwService } from "../hw.service";
-import { MacChange } from "./mac-change";
 
 @Component({
   selector: "sbsdb-edit-hw-mac",
@@ -14,7 +14,7 @@ export class EditHwMacComponent {
   @Input() public hw: Hardware;
   @Input() public formGroup: FormGroup; // uebergeordnete formGroup
   @Input() public onSubmit: EventEmitter<void>; // fuer den submit der form
-  @Output() public macReady: EventEmitter<MacChange[]>; // liefert die zu aenderenden Daten
+  @Output() public macReady: EventEmitter<HwVlanChange[]>; // liefert die zu aenderenden Daten
 
   constructor(
     private dataService: DataService,
@@ -23,7 +23,7 @@ export class EditHwMacComponent {
     private hwService: HwService
   ) {
     console.debug("c'tor EditHwMacCompomnenmt");
-    this.macReady = new EventEmitter<MacChange[]>();
+    this.macReady = new EventEmitter<HwVlanChange[]>();
     // this.hwFormGroup = this.formBuilder.group({});
   }
 }

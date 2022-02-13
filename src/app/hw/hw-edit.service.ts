@@ -22,16 +22,44 @@ export class HwEditService extends BaseEditService {
   }
 
   public hwEdit(hw: Hardware): void {
-    this.edit({ hw: hw, editAp: true, editHw: true, editMac: true } as HwEditDialogData);
+    this.edit({
+      hw: hw,
+      editAp: true,
+      editHw: true,
+      editMac: true,
+      macs: [],
+      removeAp: false,
+    } as HwEditDialogData);
   }
   public hwapEdit(hw: Hardware): void {
-    this.edit({ hw: hw, editAp: true } as HwEditDialogData);
+    this.edit({
+      hw: hw,
+      editAp: true,
+      editHw: false,
+      editMac: false,
+      macs: [],
+      removeAp: false,
+    } as HwEditDialogData);
   }
   public hwhwEdit(hw: Hardware): void {
-    this.edit({ hw: hw, editHw: true } as HwEditDialogData);
+    this.edit({
+      hw: hw,
+      editAp: false,
+      editHw: true,
+      editMac: false,
+      macs: [],
+      removeAp: false,
+    } as HwEditDialogData);
   }
   public hwmacEdit(hw: Hardware): void {
-    this.edit({ hw: hw, editMac: true } as HwEditDialogData);
+    this.edit({
+      hw: hw,
+      editAp: false,
+      editHw: false,
+      editMac: true,
+      macs: [],
+      removeAp: false,
+    } as HwEditDialogData);
   }
 
   public newHw(): void {
@@ -65,7 +93,9 @@ export class HwEditService extends BaseEditService {
 
   private saveDlg(result: HwEditDialogData): void {
     const post = {
-      hw: result.hw.id,
+      id: result.hw.id,
+      removeAp: result.removeAp,
+      vlans: result.macs,
     } as EditHwTransport;
     this.save(post);
   }
