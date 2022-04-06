@@ -5,6 +5,7 @@ import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-
 import { IpHelper } from "../../shared/ip-helper";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { Hardware } from "../../shared/model/hardware";
+import { HwKonfig } from "../../shared/model/hw-konfig";
 import { Vlan } from "../../shared/model/vlan";
 import { HwInput } from "./hw-input";
 import { HwInputVlan } from "./hw-input-vlan";
@@ -106,6 +107,9 @@ export class EditHwComponent implements OnInit {
   }
 
   public hwSelectionChange(hw: Hardware): void {
+    console.debug("##### hwselectionchange");
+    console.dir(hw);
+    console.dir(this.hw.hwCtrl.value);
     this.addVlanInputs(hw);
   }
 
@@ -114,7 +118,7 @@ export class EditHwComponent implements OnInit {
   }
 
   public isFremdeHw(flag: number): boolean {
-    return (flag & DataService.FREMDE_HW_FLAG) !== 0;
+    return (flag & HwKonfig.FREMDE_HW_FLAG) !== 0;
   }
 
   // --- Validators ---

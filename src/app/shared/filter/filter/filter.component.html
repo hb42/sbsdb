@@ -4,27 +4,25 @@
       <span class="panel-title"> Erweiterte Suche </span>
       <mat-form-field class="abstand">
         <mat-label>Gespeicherte Filter</mat-label>
-        <mat-select
-          [(value)]="editFilter.filterService.selectedFilter"
-          (selectionChange)="editFilter.filterService.selectFilter($event)"
+        <select
+          matNativeControl
+          [(ngModel)]="editFilter.filterService.selectedFilter"
+          (change)="editFilter.filterService.selectFilter(editFilter.filterService.selectedFilter)"
         >
-          <mat-optgroup label="Vordefinierte Filter">
-            <mat-option
+          <optgroup label="Vordefinierte Filter">
+            <option
               *ngFor="let filt of editFilter.filterService.extGlobalFilterList()"
-              [value]="filt"
+              [ngValue]="filt"
             >
               {{ filt.name }}
-            </mat-option>
-          </mat-optgroup>
-          <mat-optgroup label="Benutzerdefinierte Filter">
-            <mat-option
-              *ngFor="let filt of editFilter.filterService.extFilterList()"
-              [value]="filt"
-            >
+            </option>
+          </optgroup>
+          <optgroup label="Benutzerdefinierte Filter">
+            <option *ngFor="let filt of editFilter.filterService.extFilterList()" [ngValue]="filt">
               {{ filt.name }}
-            </mat-option>
-          </mat-optgroup>
-        </mat-select>
+            </option>
+          </optgroup>
+        </select>
       </mat-form-field>
 
       <button

@@ -23,6 +23,7 @@ export class Hardware implements BaseTableRow {
   // public konfiguration: string;
   // public hwTypBezeichnung: string;
   // public apKatBezeichnung: string;
+  public hwStr = ""; // konfig [serNr]
   public vlans: Netzwerk[];
   public ipStr = "";
   public macStr = "";

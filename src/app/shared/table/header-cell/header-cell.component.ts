@@ -47,9 +47,9 @@ export class HeaderCellComponent implements AfterViewInit {
    */
   public focus(): void {
     const nativeElement = this.elementRef.nativeElement as HTMLElement;
-    let input: HTMLInputElement;
+    let input: HTMLElement;
     if (this.column.isDropdown()) {
-      input = nativeElement.querySelector("mat-select");
+      input = nativeElement.querySelector("select");
     } else {
       input = nativeElement.querySelector("input");
     }

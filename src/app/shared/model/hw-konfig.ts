@@ -1,4 +1,6 @@
 export class HwKonfig {
+  public static FREMDE_HW_FLAG = 0b0000_0001;
+
   public id: number;
   public bezeichnung: string;
   public hersteller: string;
@@ -20,6 +22,9 @@ export class HwKonfig {
   public konfiguration: string;
   public deviceCount?: number;
   public apCount?: number;
+  public get fremdeHw(): boolean {
+    return (this.hwTypFlag & HwKonfig.FREMDE_HW_FLAG) > 0;
+  }
   // Darstellung
   public expanded?: boolean;
   public selected?: boolean;

@@ -7,11 +7,11 @@
   <mat-dialog-content class="panel"> </mat-dialog-content>
   <mat-form-field>
     <mat-label>Arbeitsplatz-Typ</mat-label>
-    <mat-select [formControl]="typCtrl" [errorStateMatcher]="matcher">
-      <mat-option *ngFor="let t of aptypList" [value]="t">
+    <select [formControl]="typCtrl" [errorStateMatcher]="matcher" matNativeControl>
+      <option *ngFor="let t of aptypList" [ngValue]="t">
         {{ t.bezeichnung }}
-      </mat-option>
-    </mat-select>
+      </option>
+    </select>
     <mat-error *ngIf="typCtrl.invalid">{{ getErrorMessage(typCtrl) }}</mat-error>
   </mat-form-field>
   <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>

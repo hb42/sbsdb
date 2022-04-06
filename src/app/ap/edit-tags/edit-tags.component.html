@@ -22,16 +22,16 @@
     <div [formGroup]="tagFormGroup" class="tag-box">
       <div *ngFor="let tag of tagInput">
         <mat-form-field class="abstand">
-          <mat-select
-            [formControl]="tag.tagCtrl"
+          <select
+            matNativeControl
             [errorStateMatcher]="matcher"
-            #tagsel
-            (selectionChange)="onSelectionChange($event, tag)"
+            [formControl]="tag.tagCtrl"
+            (change)="onSelectionChange(tag)"
           >
-            <mat-option *ngFor="let t of apTagTypes" [value]="t">
+            <option *ngFor="let t of apTagTypes" [ngValue]="t">
               {{ t.bezeichnung }}
-            </mat-option>
-          </mat-select>
+            </option>
+          </select>
           <mat-error *ngIf="tag.tagCtrl.invalid">{{ getErrorMessage(tag.tagCtrl) }}</mat-error>
         </mat-form-field>
         <mat-form-field class="abstand">
@@ -40,7 +40,7 @@
             matInput
             [formControl]="tag.textCtrl"
             [errorStateMatcher]="matcher"
-            [sbsdbDisableControl]="tagsel.value && isBoolTag(tagsel.value.flag)"
+            [sbsdbDisableControl]="tag.tagCtrl.value && isBoolTag(tag.tagCtrl.value.flag)"
           />
           <mat-error *ngIf="tag.textCtrl.invalid">{{ getErrorMessage(tag.textCtrl) }}</mat-error>
         </mat-form-field>

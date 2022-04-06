@@ -8,28 +8,30 @@
   <div mat-dialog-content>
     <mat-form-field>
       <mat-label>Feld</mat-label>
-      <mat-select
+      <select
+        matNativeControl
         [formControl]="fieldCtrl"
         [errorStateMatcher]="matcher"
-        (selectionChange)="onFieldSelectionChange()"
+        (change)="onFieldSelectionChange()"
       >
-        <mat-option *ngFor="let col of columnList()" [value]="col">
+        <option *ngFor="let col of columnList()" [ngValue]="col">
           {{ col.displayName }}
-        </mat-option>
-      </mat-select>
+        </option>
+      </select>
       <mat-error *ngIf="fieldCtrl.invalid">{{ getErrorMessage(fieldCtrl) }}</mat-error>
     </mat-form-field>
     <mat-form-field class="abstand">
       <mat-label>Verknüpfung</mat-label>
-      <mat-select
+      <select
+        matNativeControl
         [formControl]="opCtrl"
         [errorStateMatcher]="matcher"
-        (selectionChange)="onOpSelectionChange()"
+        (change)="onOpSelectionChange()"
       >
-        <mat-option *ngFor="let oper of selectedColumn()?.operators" [value]="oper">
+        <option *ngFor="let oper of selectedColumn()?.operators" [ngValue]="oper">
           {{ oper.toString() }}
-        </mat-option>
-      </mat-select>
+        </option>
+      </select>
       <mat-error *ngIf="opCtrl.invalid">{{ getErrorMessage(opCtrl) }}</mat-error>
     </mat-form-field>
     <mat-form-field class="abstand">
@@ -40,11 +42,16 @@
         [formControl]="valCtrl"
         [errorStateMatcher]="matcher"
       />
-      <mat-select *ngIf="compareAsList()" [formControl]="valCtrl" [errorStateMatcher]="matcher">
-        <mat-option *ngFor="let sel of selectedColumn()?.selectList" [value]="sel">
+      <select
+        *ngIf="compareAsList()"
+        matNativeControl
+        [formControl]="valCtrl"
+        [errorStateMatcher]="matcher"
+      >
+        <option *ngFor="let sel of selectedColumn()?.selectList" [ngValue]="sel">
           {{ sel }}
-        </mat-option>
-      </mat-select>
+        </option>
+      </select>
       <mat-error *ngIf="valCtrl.invalid">{{ getErrorMessage(valCtrl) }}</mat-error>
     </mat-form-field>
   </div>

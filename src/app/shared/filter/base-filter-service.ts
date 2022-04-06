@@ -1,5 +1,4 @@
 import { MatDialog } from "@angular/material/dialog";
-import { MatSelectChange } from "@angular/material/select";
 import { MatTableDataSource } from "@angular/material/table";
 import { Base64 } from "js-base64";
 import { debounceTime } from "rxjs/operators";
@@ -343,10 +342,8 @@ export abstract class BaseFilterService {
     this.globalFilters.sort((a, b) => this.dataService.collator.compare(a.name, b.name));
     return this.globalFilters;
   }
-  public selectFilter(evt: MatSelectChange): void {
+  public selectFilter(tf: TransportFilter): void {
     console.debug("list select change");
-    console.dir(evt);
-    const tf: TransportFilter = evt.value as TransportFilter;
     this.setFilterExpression(tf.key, tf.type);
   }
 

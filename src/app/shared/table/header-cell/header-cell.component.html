@@ -18,17 +18,18 @@
     [tabIndex]="column.tabIndex"
     *ngIf="!column.isDropdown()"
   />
-  <mat-select
+  <select
+    matNativeControl
     [formControl]="column.filterControl"
     *ngIf="column.isDropdown()"
     [tabIndex]="column.tabIndex"
   >
     <!-- liefert undefined als value -->
-    <mat-option>&lt;alle&gt;</mat-option>
-    <mat-option *ngFor="let sel of column.selectList" [value]="sel">
+    <option>&lt;alle&gt;</option>
+    <option *ngFor="let sel of column.selectList" [ngValue]="sel">
       {{ sel }}
-    </mat-option>
-  </mat-select>
+    </option>
+  </select>
   <button
     mat-button
     [disabled]="!column.filterControl.value"

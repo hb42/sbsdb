@@ -10,6 +10,7 @@ import { HwTransport } from "./model/hw-transport";
 export class NotificationService {
   public apChange: EventEmitter<ApTransport> = new EventEmitter<ApTransport>();
   public hwChange: EventEmitter<HwTransport> = new EventEmitter<HwTransport>();
+  // TODO public hwKonfigChange: EventEmitter<HwTransport> = new EventEmitter<HwKonfigTransport>();
   private hubConnection: HubConnection | undefined;
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

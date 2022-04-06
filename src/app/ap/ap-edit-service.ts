@@ -41,7 +41,7 @@ export class ApEditService extends BaseEditService {
           bezeichnung: "",
           hw: [],
           hwStr: "",
-          hwTypStr: "",
+          // hwTypStr: "",
           ipStr: "",
           macStr: IpHelper.getMacString("0"),
           macsearch: "",
@@ -54,25 +54,25 @@ export class ApEditService extends BaseEditService {
           vlanStr: "",
           apId: 0,
         };
-        if ((result.typ.flag & DataService.FREMDE_HW_FLAG) !== 0) {
+        if ((result.typ.flag & HwKonfig.FREMDE_HW_FLAG) !== 0) {
           // fremde HW: hier nur das Noetigste eintragen, der Rest wird auf dem Server erledigt
-          const hwkonfig: HwKonfig = {
-            apKatBezeichnung: "",
-            apKatFlag: 0,
-            apKatId: 0,
-            bezeichnung: "",
-            hd: "",
-            hersteller: "",
-            hwTypBezeichnung: "",
-            hwTypFlag: DataService.FREMDE_HW_FLAG,
-            hwTypId: 0,
-            id: 0,
-            prozessor: "",
-            ram: "",
-            sonst: "",
-            video: "",
-            konfiguration: "",
-          };
+          const hwkonfig: HwKonfig = new HwKonfig();
+          hwkonfig.apKatBezeichnung = "";
+          hwkonfig.apKatFlag = 0;
+          hwkonfig.apKatId = 0;
+          hwkonfig.bezeichnung = "";
+          hwkonfig.hd = "";
+          hwkonfig.hersteller = "";
+          hwkonfig.hwTypBezeichnung = "";
+          hwkonfig.hwTypFlag = HwKonfig.FREMDE_HW_FLAG;
+          hwkonfig.hwTypId = 0;
+          hwkonfig.id = 0;
+          hwkonfig.prozessor = "";
+          hwkonfig.ram = "";
+          hwkonfig.sonst = "";
+          hwkonfig.video = "";
+          hwkonfig.konfiguration = "";
+
           const hw = new Hardware();
           hw.anschWert = 0;
           hw.apId = 0;

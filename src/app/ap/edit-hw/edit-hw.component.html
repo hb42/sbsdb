@@ -1,16 +1,17 @@
 <div class="col-align">
   <div class="row-align">
     <mat-form-field class="hw-select">
-      <mat-select
+      <select
+        matNativeControl
         [formControl]="hw.hwCtrl"
         [errorStateMatcher]="matcher"
-        (selectionChange)="hwSelectionChange(hw.hwCtrl.value)"
+        (change)="hwSelectionChange(hw.hwCtrl.value)"
         [sbsdbDisableControl]="pri && isFremdeHw(ap.apTypFlag)"
       >
-        <mat-option *ngFor="let h of hwSelectList()" [value]="h">
+        <option *ngFor="let h of hwSelectList()" [ngValue]="h">
           {{ h ? h.hwKonfig.konfiguration + " [" + h.sernr + "]" : "<--->" }}
-        </mat-option>
-      </mat-select>
+        </option>
+      </select>
       <mat-error *ngIf="hw.hwCtrl.invalid">{{ getErrorMessage(hw.hwCtrl) }}</mat-error>
     </mat-form-field>
     <div class="fill"></div>
@@ -51,15 +52,16 @@
     </mat-form-field>
     <mat-form-field class="vlan-select abstand">
       <mat-label>VLAN</mat-label>
-      <mat-select
+      <select
+        matNativeControl
         [formControl]="v.vlanCtrl"
         [errorStateMatcher]="matcher"
-        (selectionChange)="vlanSelectionChange(v)"
+        (change)="vlanSelectionChange(v)"
       >
-        <mat-option *ngFor="let vl of vlans" [value]="vl">
+        <option *ngFor="let vl of vlans" [ngValue]="vl">
           {{ vl ? vl.bezeichnung : "<--->" }}
-        </mat-option>
-      </mat-select>
+        </option>
+      </select>
       <mat-error *ngIf="v.vlanCtrl.invalid">{{ getErrorMessage(v.vlanCtrl) }}</mat-error>
       <mat-hint align="start">{{ getNetworkInfo(v.vlanCtrl.value) }}</mat-hint>
       <mat-hint align="end">{{ getIpInfo(v.vlanCtrl.value) }}</mat-hint>

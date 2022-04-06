@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
-import { MatSelectChange } from "@angular/material/select";
 import { Tag } from "app/shared/model/tag";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
@@ -104,10 +103,9 @@ export class EditTagsComponent implements OnInit {
   /**
    * Wenn neuer TAG ausgewaehlt wird, Text-Input leeren.
    *
-   * @param evt
    * @param input
    */
-  public onSelectionChange(evt: MatSelectChange, input: TagInput): void {
+  public onSelectionChange(input: TagInput): void {
     input.textCtrl.setValue("");
     input.textCtrl.markAsTouched();
   }

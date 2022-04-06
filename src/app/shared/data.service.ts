@@ -24,7 +24,7 @@ export class DataService {
   public static defaultpageSize = 200;
   public static TAG_DISPLAY_NAME = "TAG";
   public static BOOL_TAG_FLAG = 0b0000_0001;
-  public static FREMDE_HW_FLAG = 0b0000_0001;
+  // public static FREMDE_HW_FLAG = 0b0000_0001;
   public static PERIPHERIE_FLAG = 0b0000_0001;
 
   public apList: Arbeitsplatz[] = [];
@@ -153,9 +153,9 @@ export class DataService {
     notification.initialize();
 
     notification.apChange.subscribe((data) => {
-      console.debug("dataService start update");
+      console.debug("dataService start update ap");
       this.updateAp(data);
-      this.prepareHwKonfigList();
+      this.updateHwKonfigListCount();
       if (!notification.isOpen()) {
         console.debug("reopening Notification");
         notification.initialize();
@@ -164,15 +164,34 @@ export class DataService {
     });
 
     notification.hwChange.subscribe((data) => {
-      console.debug("dataService start update");
+      console.debug("dataService start update hw");
       this.updateHw(data);
-      this.prepareHwKonfigList();
+      this.updateHwKonfigListCount();
       if (!notification.isOpen()) {
         console.debug("reopening Notification");
         notification.initialize();
       }
       this.apListChanged.emit();
     });
+
+    // TODO hwKonfig-Aenderung
+    // notification.hwKonfigChange.subscribe((data) => {
+    //   console.debug("dataService start update hwKonfig");
+    //   this.updateHwKonfig(data);
+    //   -> update list ...
+    //      this.apList.forEach((ap) => {
+    //        this.updateApHw(ap.apId);
+    //      })
+    //
+    //   this.updateHwKonfigListCount();
+    //   --- TODO auslagern
+    //   if (!notification.isOpen()) {
+    //     console.debug("reopening Notification");
+    //     notification.initialize();
+    //   }
+    //   ---
+    //   this.hwKonfigListChanged.emit();
+    // });
   }
 
   public get(url: string): Observable<unknown> {
@@ -249,7 +268,7 @@ export class DataService {
   }
 
   public prepareHwList(): void {
-    this.prepareHwKonfigList();
+    this.updateHwKonfigListCount();
     this.hwList.forEach((hw) => {
       this.prepareHw(hw);
     });
@@ -261,7 +280,7 @@ export class DataService {
   /**
    * Anzahl der Zuordnungen in der HwKonfigList eintragen
    */
-  public prepareHwKonfigList(): void {
+  public updateHwKonfigListCount(): void {
     this.hwKonfigList.forEach((conf) => {
       conf.konfiguration = conf.hersteller + " - " + conf.bezeichnung;
       let count = 0;
@@ -361,7 +380,7 @@ export class DataService {
    * @private
    */
   private updateHw(data: HwTransport): void {
-    this.changeHw(data.hw, data.delHwId);
+    this.changeHw(data.hw, data.delHwId > 0);
   }
 
   /**
@@ -424,6 +443,7 @@ export class DataService {
     hw.ap = null;
     hw.apStr = "";
     hw.anschDat = new Date(hw.anschDat);
+    // TODO ext MAC?
     if (hw.vlans && hw.vlans[0]) {
       hw.vlans.forEach((v) => {
         const dhcp = v.ip === 0 ? " (DHCP)" : "";
@@ -441,14 +461,14 @@ export class DataService {
       const ap = this.apList.find((a) => a.apId === hw.apId);
       if (ap) {
         hw.ap = ap;
-        hw.apStr = ap.apname + " | " + ap.oe.betriebsstelle + " | " + ap.bezeichnung;
+        hw.apStr = ap.apname + " | " + ap.oe.betriebsstelle + " | " + ap.bezeichnung; // TODO ext OE
         ap.hw.push(hw);
         if (hw.pri) {
-          if ((hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0) {
-            ap.hwTypStr = hw.hwKonfig.konfiguration;
-          }
+          // if ((hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0) {
+          //   ap.hwTypStr = hw.hwKonfig.konfiguration;
+          // }
           ap.macsearch = macsearch;
-          ap.hwStr = hw.hwKonfig.konfiguration + " [" + hw.sernr + "]";
+          ap.hwStr = hw.hwKonfig.konfiguration + " [" + hw.sernr + "]"; // TODO ext KONFIG
           ap.ipStr += ap.ipStr ? " / " + hw.ipStr : hw.ipStr;
           ap.macStr += ap.macStr ? " / " + hw.macStr : hw.macStr;
           ap.vlanStr += ap.vlanStr ? " / " + hw.vlanStr : hw.vlanStr;
@@ -457,15 +477,13 @@ export class DataService {
           ap.sonstHwStr +=
             (ap.sonstHwStr ? " / " : "") +
             " " +
-            hw.hwKonfig.konfiguration +
-            (hw.sernr && (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0
-              ? " [" + hw.sernr + "]"
-              : "");
+            hw.hwKonfig.konfiguration + // TODO ext KONFIG
+            (hw.sernr && !hw.hwKonfig.fremdeHw ? " [" + hw.sernr + "]" : "");
         }
       }
     } else {
       // no AP
-      if ((hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) > 0) {
+      if (hw.hwKonfig.fremdeHw) {
         // fremde HW ohne AP loeschen
         this.hwList.splice(
           this.hwList.findIndex((h) => h.id === hw.id),
@@ -531,49 +549,52 @@ export class DataService {
   /**
    * Geaenderte HW eintragen
    */
-  private changeHw(neu: Hardware, del: number): void {
+  private changeHw(neu: Hardware, del: boolean): void {
     const old = this.hwList.find((h) => h.id === neu.id);
-    let oldId = 0;
+    let oldApId = 0;
     if (old && old.apId !== neu.apId) {
-      oldId = old.apId;
+      oldApId = old.apId;
     }
-    let aphw: Hardware[] = [];
-    // Falls AP-Wechsel, aus altem AP austragen
-    if (oldId) {
-      const ap = this.apList.find((a) => a.apId === oldId);
-      ap.hw.forEach((h) => {
-        if (h.id !== neu.id) {
-          aphw.push(h);
-        }
-      });
-      this.prepareAp(ap);
-      aphw.forEach((h) => this.prepareHw(h));
-      aphw = [];
+    // Falls AP-Wechsel, HW aus altem AP austragen
+    if (oldApId) {
+      this.updateApHw(oldApId, neu.id);
     }
-    if (del === 0) {
-      // HW-Aenderung
-      const hw = this.addOrChangeHw(neu);
-      // wenn zugeordnet, bei AP eintragen
-      if (hw.apId) {
-        const ap = this.apList.find((a) => a.apId === hw.apId);
-        aphw.push(hw);
-        ap.hw.forEach((h) => {
-          if (h.id !== hw.id) {
-            aphw.push(h);
-          }
-        });
-        this.prepareAp(ap);
-        aphw.forEach((h) => this.prepareHw(h));
-      } else {
-        this.prepareHw(hw);
-      }
-    } else {
+    if (del) {
       // DEL HW
       this.hwList.splice(
         this.hwList.findIndex((h) => h.id === neu.id),
         1
       );
+    } else {
+      // HW-Aenderung
+      const hw = this.addOrChangeHw(neu);
+      // wenn zugeordnet, bei AP eintragen/updaten
+      if (hw.apId) {
+        this.updateApHw(hw.apId);
+      } else {
+        this.prepareHw(hw);
+      }
     }
+  }
+
+  /**
+   * Hardware beim AP neu eintragen bei Aenderung HW-Daten
+   *
+   * @param apId - der Arbeitsplatz
+   * @param delHwId - wenn > 0, die zu entfernende HW
+   * @private
+   */
+  private updateApHw(apId: number, delHwId: number = 0): void {
+    const aphw: Hardware[] = [];
+    const ap = this.apList.find((a) => a.apId === apId);
+    ap.hw.forEach((h) => {
+      if (h.id !== delHwId) {
+        aphw.push(h);
+      }
+    });
+    this.prepareAp(ap);
+    aphw.forEach((h) => this.prepareHw(h));
+    this.apSortHw(ap);
   }
 
   private newAp(id: number): Arbeitsplatz {
@@ -589,7 +610,7 @@ export class DataService {
       bezeichnung: "",
       hw: [],
       hwStr: "",
-      hwTypStr: "",
+      // hwTypStr: "",
       ipStr: "",
       macStr: "",
       macsearch: "",
