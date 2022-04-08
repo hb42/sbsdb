@@ -1,3 +1,4 @@
+import { Location } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ConfigService } from "../config/config.service";
@@ -13,12 +14,19 @@ export class ErrorComponent implements OnInit {
   public message: string;
   public stack: string;
 
+  public backToApp: string;
+
   constructor(
     private route: ActivatedRoute,
     private configService: ConfigService,
+    private location: Location,
     private navigationService: NavigationService
   ) {
     console.debug("c'tor ErrorComponent");
+    // Bevor die App zurueckgesetzt wird, noch den Pfad, der fuer den User
+    // gespeichert ist auf default setzen (sonst dreht sich ein 404 im Kreis).
+    this.configService.getUser().path = "/";
+    this.backToApp = this.location.prepareExternalUrl("/");
   }
 
   public ngOnInit(): void {
@@ -27,12 +35,7 @@ export class ErrorComponent implements OnInit {
     this.stack = this.navigationService.lastError.stack;
   }
 
-  /**
-   * Bevor die App zurueckgesetzt wird, noch den Pfad, der fuer den User
-   * gespeichert ist auf default setzen (sonst dreht sich ein 404 im Kreis).
-   */
-  public restartApp(): void {
-    this.configService.getUser().path = "/";
-    this.navigationService.resetApp();
-  }
+  // public restartApp(): void {
+  //   this.navigationService.resetApp();
+  // }
 }
