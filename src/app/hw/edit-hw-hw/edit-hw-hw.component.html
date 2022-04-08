@@ -9,4 +9,63 @@
     multiline
     - bemerkung
 -->
-<p>edit-hw works!</p>
+<mat-card>
+  <div class="input-title card-title">Hardware</div>
+
+  <mat-card-content class="fields">
+    <!-- umgebende FORM muss die uebergeordnete component bereitstellen -->
+    <!--    <div [formGroup]="apFormGroup"></div>-->
+
+    <mat-form-field class="abstand-top abstand textinp">
+      <mat-label>Serien-Nr.</mat-label>
+      <input matInput [formControl]="serCtrl" [errorStateMatcher]="matcher" />
+      <mat-error *ngIf="serCtrl.invalid">{{ getErrorMessage(serCtrl) }}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="abstand textinp">
+      <mat-label>Inventar-Nr.</mat-label>
+      <input matInput [formControl]="invCtrl" [errorStateMatcher]="matcher" />
+      <mat-error *ngIf="invCtrl.invalid">{{ getErrorMessage(invCtrl) }}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="abstand textinp">
+      <mat-label>Anschaffungs-Wert</mat-label>
+      <!-- currency -->
+      <input matInput [formControl]="anschwCtrl" [errorStateMatcher]="matcher" />
+      <mat-error *ngIf="anschwCtrl.invalid">{{ getErrorMessage(anschwCtrl) }}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="abstand textinp">
+      <mat-label>Anschaffungs-Datum</mat-label>
+      <!-- date -->
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [formControl]="anschdCtrl"
+        [errorStateMatcher]="matcher"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="anschdCtrl.invalid">{{ getErrorMessage(anschdCtrl) }}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="abstand textinp">
+      <mat-label>SMBIOS-GUID</mat-label>
+      <input matInput [formControl]="guidCtrl" [errorStateMatcher]="matcher" />
+      <mat-error *ngIf="guidCtrl.invalid">{{ getErrorMessage(guidCtrl) }}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="abstand textinp">
+      <mat-label>Wartungs-Firma</mat-label>
+      <input matInput [formControl]="wfaCtrl" [errorStateMatcher]="matcher" />
+      <mat-error *ngIf="wfaCtrl.invalid">{{ getErrorMessage(wfaCtrl) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="abstand bemerkung">
+      <mat-label>Bemerkung</mat-label>
+      <textarea
+        matInput
+        [formControl]="bemCtrl"
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="2"
+        cdkAutosizeMaxRows="5"
+      ></textarea>
+      <mat-error *ngIf="bemCtrl.invalid">{{ getErrorMessage(bemCtrl) }}</mat-error>
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>

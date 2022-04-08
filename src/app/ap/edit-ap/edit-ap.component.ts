@@ -62,7 +62,7 @@ export class EditApComponent implements OnInit {
     );
     this.formGroup.addControl("apverantw", this.verantwCtrl);
     this.bemCtrl = new FormControl(this.ap.bemerkung, []);
-    this.formGroup.addControl("apbezeichnung", this.bemCtrl);
+    this.formGroup.addControl("apbemerkung", this.bemCtrl);
   }
 
   public getErrorMessage(control: FormControl): string {

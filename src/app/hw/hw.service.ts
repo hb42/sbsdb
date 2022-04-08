@@ -122,6 +122,8 @@ export class HwService {
 
   public editConfig(conf: HwKonfig): void {
     console.debug("** edit config clicked");
+    // TODO evtl. aus HW page zu Konfig page wechseln und edit konfig starten???
+    //      (edit button in HW detail/konfig pane)
   }
 
   public hwEdit(hw: Hardware): void {

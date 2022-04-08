@@ -9,16 +9,25 @@
               <span *ngIf="hwService.userSettings.debug" class="debug">
                 #{{ element.hwKonfig.id }}
               </span>
-              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">
+              <!--              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">-->
+              <div class="sub-table-head-button">
                 <button
                   mat-icon-button
                   color="primary"
-                  title="Konfiguration bearbeiten"
-                  [disabled]="hwService.hwFilterService.isFremdeHw(element)"
-                  (click)="hwService.editConfig(element.hwKonfig)"
+                  title="zur Konfiguration"
+                  (click)="hwService.gotoKonf(element); $event.stopPropagation()"
                 >
-                  <mat-icon>edit</mat-icon>
+                  <mat-icon>open_in_new</mat-icon>
                 </button>
+                <!--                <button-->
+                <!--                  mat-icon-button-->
+                <!--                  color="primary"-->
+                <!--                  title="Konfiguration bearbeiten"-->
+                <!--                  [disabled]="hwService.hwFilterService.isFremdeHw(element)"-->
+                <!--                  (click)="hwService.editConfig(element.hwKonfig)"-->
+                <!--                >-->
+                <!--                  <mat-icon>edit</mat-icon>-->
+                <!--                </button>-->
               </div>
             </th>
           </tr>

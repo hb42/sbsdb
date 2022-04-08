@@ -96,6 +96,14 @@ export class HwEditService extends BaseEditService {
       id: result.hw.id,
       removeAp: result.removeAp,
       vlans: result.macs,
+
+      anschDat: result.hwChange.anschDat,
+      anschWert: result.hwChange.anschWert,
+      sernr: result.hwChange.sernr,
+      invNr: result.hwChange.invNr,
+      bemerkung: result.hwChange.bemerkung,
+      smbiosgiud: result.hwChange.smbiosgiud,
+      wartungFa: result.hwChange.wartungFa,
     } as EditHwTransport;
     this.save(post);
   }
