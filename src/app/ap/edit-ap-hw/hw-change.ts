@@ -1,5 +1,5 @@
+import { HwVlanChange } from "../../shared/edit/edit-vlan/hw-vlan-change";
 import { HwPeriChange } from "./hw-peri-change";
-import { HwVlanChange } from "./hw-vlan-change";
 
 export interface HwChange {
   apid: number;

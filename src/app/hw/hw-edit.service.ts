@@ -7,6 +7,8 @@ import { Hardware } from "../shared/model/hardware";
 import { HwHistory } from "../shared/model/hw-history";
 import { EditConfigData } from "./edit-config-dialog/edit-config-data";
 import { EditConfigDialogComponent } from "./edit-config-dialog/edit-config-dialog.component";
+import { HwAussondData } from "./hw-aussond-dialog/hw-aussond-data";
+import { HwAussondDialogComponent } from "./hw-aussond-dialog/hw-aussond-dialog.component";
 import { EditHwTransport } from "./hw-edit-dialog/edit-hw-transport";
 import { HwEditDialogData } from "./hw-edit-dialog/hw-edit-dialog-data";
 import { HwEditDialogComponent } from "./hw-edit-dialog/hw-edit-dialog.component";
@@ -16,6 +18,8 @@ import { ShowHistoryDialogComponent } from "./show-history-dialog/show-history-d
   providedIn: "root",
 })
 export class HwEditService extends BaseEditService {
+  private aussondGrund = "defekt";
+
   constructor(public dialog: MatDialog, public dataService: DataService) {
     super(dialog, dataService);
     console.debug("c'tor HwEditService");
@@ -29,6 +33,7 @@ export class HwEditService extends BaseEditService {
       editMac: true,
       macs: [],
       removeAp: false,
+      delHw: false,
     } as HwEditDialogData);
   }
   public hwapEdit(hw: Hardware): void {
@@ -39,6 +44,7 @@ export class HwEditService extends BaseEditService {
       editMac: false,
       macs: [],
       removeAp: false,
+      delHw: false,
     } as HwEditDialogData);
   }
   public hwhwEdit(hw: Hardware): void {
@@ -49,6 +55,7 @@ export class HwEditService extends BaseEditService {
       editMac: false,
       macs: [],
       removeAp: false,
+      delHw: false,
     } as HwEditDialogData);
   }
   public hwmacEdit(hw: Hardware): void {
@@ -59,6 +66,7 @@ export class HwEditService extends BaseEditService {
       editMac: true,
       macs: [],
       removeAp: false,
+      delHw: false,
     } as HwEditDialogData);
   }
 
@@ -72,6 +80,29 @@ export class HwEditService extends BaseEditService {
     const dialogRef = this.dialog.open(ShowHistoryDialogComponent, {
       disableClose: true,
       data: { hw: hw, list: hwh },
+    });
+  }
+
+  public deleteHw(hw: Hardware): void {
+    const dialogRef = this.dialog.open(HwAussondDialogComponent, {
+      data: {
+        title: `${hw.hwKonfig.hwTypBezeichnung}: ${hw.hwKonfig.konfiguration} [${hw.sernr}] aussondern`,
+        reason: this.aussondGrund,
+      } as HwAussondData,
+    });
+    dialogRef.afterClosed().subscribe((result: HwAussondData) => {
+      if (result) {
+        this.aussondGrund = result.reason;
+        const post = {
+          id: hw.id,
+          delHw: true,
+          removeAp: false,
+          vlans: [],
+          sernr: "",
+          aussonderung: result.reason,
+        } as EditHwTransport;
+        this.save(post);
+      }
     });
   }
 
@@ -92,14 +123,16 @@ export class HwEditService extends BaseEditService {
   }
 
   private saveDlg(result: HwEditDialogData): void {
+    // FIXME hier knallt's, wenn nur MAC bearbeitet wird -> hwChange undef
     const post = {
       id: result.hw.id,
+      delHw: result.delHw,
       removeAp: result.removeAp,
       vlans: result.macs,
 
+      sernr: result.hwChange.sernr,
       anschDat: result.hwChange.anschDat,
       anschWert: result.hwChange.anschWert,
-      sernr: result.hwChange.sernr,
       invNr: result.hwChange.invNr,
       bemerkung: result.hwChange.bemerkung,
       smbiosgiud: result.hwChange.smbiosgiud,

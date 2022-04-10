@@ -12,7 +12,9 @@
           [ap]="ap"
           [pri]="true"
           [formGroup]="hwFormGroup"
+          [onSubmit]="onSubmit"
           (delete)="delPeripherie($event)"
+          (editHwReady)="editHwReady()"
         ></sbsdb-edit-hw>
       </div>
       <div class="input-title card-title periph-title">
@@ -35,7 +37,9 @@
           [ap]="ap"
           [pri]="false"
           [formGroup]="periFormGroup"
+          [onSubmit]="onSubmit"
           (delete)="delPeripherie($event)"
+          (editHwReady)="editHwReady()"
         ></sbsdb-edit-hw>
       </div>
     </div>

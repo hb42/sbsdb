@@ -97,8 +97,7 @@ export class EditHwHwComponent implements OnInit {
   }
 
   public submit(): void {
-    // NaN -> null
-    const newAnschW: number = StringToNumber(this.anschwCtrl.value as string) || null;
+    const newAnschW: number = StringToNumber(this.anschwCtrl.value as string) || null; // NaN -> null
     const newAnschD: Date = this.anschdCtrl.value as Date;
     const neu: HwChange = {
       hwid: this.hw.id,

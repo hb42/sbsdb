@@ -1,5 +1,5 @@
 import { FormControl } from "@angular/forms";
-import { Vlan } from "../../shared/model/vlan";
+import { Vlan } from "../../model/vlan";
 
 export interface HwInputVlan {
   hwMacId: number;

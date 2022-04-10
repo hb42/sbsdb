@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { HwVlanChange } from "../../ap/edit-ap-hw/hw-vlan-change";
+import { HwVlanChange } from "../../shared/edit/edit-vlan/hw-vlan-change";
 import { HwChange } from "../edit-hw-hw/hw-change";
 import { HwEditDialogData } from "./hw-edit-dialog-data";
 

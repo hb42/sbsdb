@@ -110,7 +110,8 @@
             >
               <mat-icon>open_in_new</mat-icon>
             </button>
-            {{ column.displayText(row) }}</div>
+            {{ column.displayText(row) }}
+          </div>
         </td>
       </ng-container>
 
@@ -325,6 +326,10 @@
       >
         <mat-icon>add_to_queue</mat-icon>
         Neue Geräte
+      </button>
+      <button mat-menu-item *ngIf="hwService.userSettings.isAdmin" (click)="hwService.deleteHw(hw)">
+        <mat-icon>delete_forever</mat-icon>
+        Hardware aussondern
       </button>
     </ng-template>
   </mat-menu>

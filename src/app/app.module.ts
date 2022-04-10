@@ -28,6 +28,7 @@ import { EditConfigDialogComponent } from "./hw/edit-config-dialog/edit-config-d
 import { EditHwApComponent } from "./hw/edit-hw-ap/edit-hw-ap.component";
 import { EditHwHwComponent } from "./hw/edit-hw-hw/edit-hw-hw.component";
 import { EditHwMacComponent } from "./hw/edit-hw-mac/edit-hw-mac.component";
+import { HwAussondDialogComponent } from "./hw/hw-aussond-dialog/hw-aussond-dialog.component";
 import { HwDetailCellComponent } from "./hw/hw-detail-cell/hw-detail-cell.component";
 import { HwEditDialogComponent } from "./hw/hw-edit-dialog/hw-edit-dialog.component";
 import { HwListComponent } from "./hw/hw-list/hw-list.component";
@@ -43,6 +44,7 @@ import { DialogActionsComponent } from "./shared/dialog-actions/dialog-actions.c
 import { DialogTitleComponent } from "./shared/dialog-title/dialog-title.component";
 import { DisableControlDirective } from "./shared/edit/disable-control.directive";
 import { EditDialogComponent } from "./shared/edit/edit-dialog/edit-dialog.component";
+import { EditVlanComponent } from "./shared/edit/edit-vlan/edit-vlan.component";
 import { ErrorComponent } from "./shared/error/error.component";
 import { ErrorService } from "./shared/error/error.service";
 import { ExpandHeaderComponent } from "./shared/filter/expand-header/expand-header.component";
@@ -133,6 +135,8 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     ShowHistoryDialogComponent,
     ConfComponent,
     ConfDetailCellComponent,
+    HwAussondDialogComponent,
+    EditVlanComponent,
   ],
   imports: [
     BrowserModule,

@@ -143,6 +143,10 @@ export class HwService {
     void this.editService.showHistory(hw);
   }
 
+  public deleteHw(hw: Hardware): void {
+    this.editService.deleteHw(hw);
+  }
+
   public test(hw: Hardware): void {
     console.dir(hw);
   }

@@ -7,4 +7,5 @@ export interface HwChange {
   sernr: string;
   smbiosgiud: string;
   wartungFa: string;
+  hwKonfigId?: number; // nur f. new HW
 }

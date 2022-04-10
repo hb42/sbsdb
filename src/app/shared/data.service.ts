@@ -380,7 +380,7 @@ export class DataService {
    * @private
    */
   private updateHw(data: HwTransport): void {
-    this.changeHw(data.hw, data.delHwId > 0);
+    this.changeHw(data.hw, data.delHwId);
   }
 
   /**
@@ -548,21 +548,25 @@ export class DataService {
 
   /**
    * Geaenderte HW eintragen
+   *
+   * AP-Wechsel nur, indem alter AP entfernt wird. Alles andere passiert
+   * auf der AP-Seite. Dementsprechend wird neue HW nur ohne AP
+   * eingetragen.
    */
-  private changeHw(neu: Hardware, del: boolean): void {
-    const old = this.hwList.find((h) => h.id === neu.id);
+  private changeHw(neu: Hardware, del: number): void {
+    const hwid = del ? del : neu.id;
+    const old = this.hwList.find((h) => h.id === hwid);
+    const newApId = del ? 0 : neu.apId;
     let oldApId = 0;
-    if (old && old.apId !== neu.apId) {
+    if (old && old.apId && old.apId !== newApId) {
       oldApId = old.apId;
-    }
-    // Falls AP-Wechsel, HW aus altem AP austragen
-    if (oldApId) {
-      this.updateApHw(oldApId, neu.id);
+      // Falls AP-Wechsel, HW aus altem AP austragen
+      this.updateApHw(oldApId, hwid);
     }
     if (del) {
       // DEL HW
       this.hwList.splice(
-        this.hwList.findIndex((h) => h.id === neu.id),
+        this.hwList.findIndex((h) => h.id === del),
         1
       );
     } else {
