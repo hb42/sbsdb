@@ -3,6 +3,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { lastValueFrom } from "rxjs";
 import { DataService } from "../shared/data.service";
 import { BaseEditService } from "../shared/filter/base-edit-service";
+import { PrepDateForDB } from "../shared/helper";
 import { Hardware } from "../shared/model/hardware";
 import { HwHistory } from "../shared/model/hw-history";
 import { EditConfigData } from "./edit-config-dialog/edit-config-data";
@@ -34,6 +35,7 @@ export class HwEditService extends BaseEditService {
       macs: [],
       removeAp: false,
       delHw: false,
+      hwChange: null,
     } as HwEditDialogData);
   }
   public hwapEdit(hw: Hardware): void {
@@ -45,6 +47,7 @@ export class HwEditService extends BaseEditService {
       macs: [],
       removeAp: false,
       delHw: false,
+      hwChange: null,
     } as HwEditDialogData);
   }
   public hwhwEdit(hw: Hardware): void {
@@ -56,6 +59,7 @@ export class HwEditService extends BaseEditService {
       macs: [],
       removeAp: false,
       delHw: false,
+      hwChange: null,
     } as HwEditDialogData);
   }
   public hwmacEdit(hw: Hardware): void {
@@ -67,6 +71,7 @@ export class HwEditService extends BaseEditService {
       macs: [],
       removeAp: false,
       delHw: false,
+      hwChange: null,
     } as HwEditDialogData);
   }
 
@@ -98,7 +103,6 @@ export class HwEditService extends BaseEditService {
           delHw: true,
           removeAp: false,
           vlans: [],
-          sernr: "",
           aussonderung: result.reason,
         } as EditHwTransport;
         this.save(post);
@@ -123,21 +127,23 @@ export class HwEditService extends BaseEditService {
   }
 
   private saveDlg(result: HwEditDialogData): void {
-    // FIXME hier knallt's, wenn nur MAC bearbeitet wird -> hwChange undef
     const post = {
       id: result.hw.id,
       delHw: result.delHw,
       removeAp: result.removeAp,
       vlans: result.macs,
-
-      sernr: result.hwChange.sernr,
-      anschDat: result.hwChange.anschDat,
-      anschWert: result.hwChange.anschWert,
-      invNr: result.hwChange.invNr,
-      bemerkung: result.hwChange.bemerkung,
-      smbiosgiud: result.hwChange.smbiosgiud,
-      wartungFa: result.hwChange.wartungFa,
     } as EditHwTransport;
+    if (result.hwChange) {
+      post.sernr = result.hwChange.sernr;
+      post.anschDat = PrepDateForDB(result.hwChange.anschDat);
+      post.anschWert = result.hwChange.anschWert;
+      post.invNr = result.hwChange.invNr;
+      post.bemerkung = result.hwChange.bemerkung;
+      post.smbiosgiud = result.hwChange.smbiosgiud;
+      post.wartungFa = result.hwChange.wartungFa;
+    } else {
+      post.sernr = null;
+    }
     this.save(post);
   }
 

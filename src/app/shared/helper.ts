@@ -107,3 +107,30 @@ export function GetFieldContent(record: unknown, fieldname: string): unknown {
       .reduce((prev, curr) => (prev.hasOwnProperty(curr) ? prev[curr] : undefined), record)
   );
 }
+
+/**
+ * Date fuer die Uebertragung zum Server vorbereiten
+ *
+ * Die Daten werden per JSON an den Server uebergeben. Date wird dabei in einen ISO-String
+ * umgewandelt (==UTC). .NET beruecksichtigt aber keine Timezone, daher geht die
+ * Timezone-Differenz verloren (1 oder 2 Stunden).
+ *
+ * Beispiel:
+ * - Datum: 25.06.1999
+ *   JavaScript Date = Fri Jun 25 1999 00:00:00 GMT+0200 (Mitteleuropäische Sommerzeit)
+ *   Date.toISOString() = Date.toJSON() = "1999-06-24T22:00:00.000Z" (Timezone-Diff!)
+ * - Serverseitig wird der JSON-String unveraendert uebernommen
+ *   .NET DateTime = 06/24/1999 22:00:00
+ *   Damit fehlen dann 2 Stunden (Winterzeit 1)
+ *
+ * Die, nicht sehr elegante, Loesung ist, vor der Umwandlung in JSON die GMT-Differenz
+ * zu addieren, dann kommt beim Server der Originale Timestamp an.
+ *
+ * @param date
+ * @constructor
+ */
+export function PrepDateForDB(date: Date): Date {
+  const rc = new Date(date);
+  rc.setMinutes(-1 * rc.getTimezoneOffset());
+  return rc;
+}

@@ -97,8 +97,12 @@ export class EditHwHwComponent implements OnInit {
   }
 
   public submit(): void {
+    console.debug("hw.anschDat " + this.hw.anschDat);
+    console.debug("ctrl " + this.anschdCtrl.value);
+
     const newAnschW: number = StringToNumber(this.anschwCtrl.value as string) || null; // NaN -> null
     const newAnschD: Date = this.anschdCtrl.value as Date;
+    console.debug("ctrl as Date " + newAnschD);
     const neu: HwChange = {
       hwid: this.hw.id,
       anschDat: newAnschD,
@@ -110,6 +114,7 @@ export class EditHwHwComponent implements OnInit {
       wartungFa: this.wfaCtrl.value as string,
     };
     console.debug("#######");
+    console.dir(this.anschdCtrl);
     console.dir(neu);
     this.hwReady.emit(neu);
   }

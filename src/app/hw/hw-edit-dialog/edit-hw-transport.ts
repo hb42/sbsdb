@@ -6,7 +6,7 @@ export interface EditHwTransport {
   removeAp: boolean;
   vlans: HwVlanChange[]; // MAC == null|"" -> del
 
-  sernr: string;
+  sernr?: string;
   hwKonfigId?: number; // nur f. new HW
   anschDat?: Date;
   anschWert?: number;
