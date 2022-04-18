@@ -12,6 +12,7 @@ import { HwEditDialogData } from "./hw-edit-dialog-data";
 })
 export class HwEditDialogComponent {
   public formGroup: FormGroup;
+  public onDelAp: EventEmitter<void> = new EventEmitter<void>();
   public onSubmitEvent: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(

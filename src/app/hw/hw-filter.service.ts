@@ -7,7 +7,6 @@ import { DataService } from "../shared/data.service";
 import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { TransportFilters } from "../shared/filter/transport-filters";
 import { Hardware } from "../shared/model/hardware";
-import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
 
 @Injectable({
@@ -41,13 +40,10 @@ export class HwFilterService extends BaseFilterService {
       return true;
     }
     const hw = row as Hardware;
-    return !this.isFremdeHw(hw);
+    return !this.dataService.isFremdeHardware(hw);
     // return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0;
   }
 
-  public isFremdeHw(hw: Hardware): boolean {
-    return (hw.hwKonfig.hwTypFlag & HwKonfig.FREMDE_HW_FLAG) !== 0;
-  }
   public getLatestUserFilter(): string {
     return this.userSettings.latestHwFilter;
   }

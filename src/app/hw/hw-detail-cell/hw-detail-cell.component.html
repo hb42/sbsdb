@@ -92,7 +92,7 @@
                   mat-icon-button
                   color="primary"
                   title="Hardware bearbeiten"
-                  [disabled]="hwService.hwFilterService.isFremdeHw(element)"
+                  [disabled]="hwService.dataService.isFremdeHardware(element)"
                   (click)="hwService.hwhwEdit(element)"
                 >
                   <mat-icon>edit</mat-icon>
@@ -137,13 +137,18 @@
             <th><div class="sub-table-head-title">IP</div></th>
             <th>
               <div class="sub-table-head-title">VLAN</div>
-              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">
+              <div
+                *ngIf="
+                  hwService.userSettings.isAdmin && !hwService.dataService.isPeripherie(element)
+                "
+                class="sub-table-head-button edit-button"
+              >
                 <button
                   mat-icon-button
                   color="primary"
                   title="MACs bearbeiten"
-                  [disabled]="hwService.hwFilterService.isFremdeHw(element)"
                   (click)="hwService.hwmacEdit(element)"
+                  [disabled]="hwService.dataService.isFremdeHardware(element)"
                 >
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -175,9 +180,9 @@
         mat-icon-button
         color="primary"
         title="Gerät bearbeiten"
-        [disabled]="hwService.hwFilterService.isFremdeHw(element)"
         (click)="hwService.hwEdit(element)"
       >
+        <!--        [disabled]="hwService.dataService.isFremdeHardware(element)"-->
         <mat-icon>edit</mat-icon>
       </button>
     </div>

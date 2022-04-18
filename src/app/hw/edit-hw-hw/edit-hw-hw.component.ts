@@ -12,7 +12,7 @@ import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } fro
 import { MatDatepicker } from "@angular/material/datepicker";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
-import { StringToNumber } from "../../shared/helper";
+import { CurrencyCheck, StringToNumber } from "../../shared/helper";
 import { Hardware } from "../../shared/model/hardware";
 import { HwService } from "../hw.service";
 import { HwChange } from "./hw-change";
@@ -59,7 +59,6 @@ export class EditHwHwComponent implements OnInit {
     this.serCtrl = new FormControl(this.hw.sernr, [Validators.required]);
     // an die uebergeordnete Form anhaengen
     this.formGroup.addControl("sernr", this.serCtrl);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.invCtrl = new FormControl(this.hw.invNr);
     this.formGroup.addControl("invnr", this.invCtrl);
     this.anschwCtrl = new FormControl(
@@ -97,12 +96,8 @@ export class EditHwHwComponent implements OnInit {
   }
 
   public submit(): void {
-    console.debug("hw.anschDat " + this.hw.anschDat);
-    console.debug("ctrl " + this.anschdCtrl.value);
-
     const newAnschW: number = StringToNumber(this.anschwCtrl.value as string) || null; // NaN -> null
     const newAnschD: Date = this.anschdCtrl.value as Date;
-    console.debug("ctrl as Date " + newAnschD);
     const neu: HwChange = {
       hwid: this.hw.id,
       anschDat: newAnschD,
@@ -113,15 +108,11 @@ export class EditHwHwComponent implements OnInit {
       smbiosgiud: this.guidCtrl.value as string,
       wartungFa: this.wfaCtrl.value as string,
     };
-    console.debug("#######");
-    console.dir(this.anschdCtrl);
-    console.dir(neu);
     this.hwReady.emit(neu);
   }
 
   public currencyCheck = (control: FormControl): ValidationErrors => {
-    const check = /^[1-9]\d{0,2}(\.?\d{3})*(,\d{1,2})?$/;
-    if (control.value && !check.test(control.value as string)) {
+    if (!CurrencyCheck(control.value as string)) {
       return { invalidCurrency: true };
     }
     return null;

@@ -70,10 +70,10 @@ export class ApService {
     public editFilterService: EditFilterService,
     public editService: ApEditService,
     public electronService: ElectronService,
+    public dataService: DataService,
     private configService: ConfigService,
     private keyboardService: KeyboardService,
     private navigationService: NavigationService,
-    private dataService: DataService,
     public statusService: StatusService
   ) {
     console.debug("c'tor ArbeitsplatzService");

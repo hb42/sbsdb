@@ -90,6 +90,20 @@ export function StringToNumber(input: string): number {
 }
 
 /**
+ * String auf gueltige Zahl mit max. zwei Nachkommastellen ueberpruefen.
+ *
+ * Gueltig ist ein leerer String oder eine Zahl mit Tausenderpunkten (optional) und
+ * Komma (optional). Fuehrende Nullen werden ignoriert.
+ *
+ * @param input
+ * @constructor
+ */
+export function CurrencyCheck(input: string): boolean {
+  const check = /^[0-9]\d{0,2}(\.?\d{3})*(,\d{1,2})?$/;
+  return !(input && !check.test(input));
+}
+
+/**
  * Feldinhalt holen
  *
  * Der Feldname kann in der Form "feld1.feld2 ..." fuer den Zugriff auf "Unterobjekte"

@@ -54,7 +54,7 @@ export class ApEditService extends BaseEditService {
           vlanStr: "",
           apId: 0,
         };
-        if ((result.typ.flag & HwKonfig.FREMDE_HW_FLAG) !== 0) {
+        if (this.dataService.isFremderApTyp(result.typ)) {
           // fremde HW: hier nur das Noetigste eintragen, der Rest wird auf dem Server erledigt
           const hwkonfig: HwKonfig = new HwKonfig();
           hwkonfig.apKatBezeichnung = "";
@@ -64,7 +64,7 @@ export class ApEditService extends BaseEditService {
           hwkonfig.hd = "";
           hwkonfig.hersteller = "";
           hwkonfig.hwTypBezeichnung = "";
-          hwkonfig.hwTypFlag = HwKonfig.FREMDE_HW_FLAG;
+          hwkonfig.hwTypFlag = DataService.FREMDE_HW_FLAG;
           hwkonfig.hwTypId = 0;
           hwkonfig.id = 0;
           hwkonfig.prozessor = "";

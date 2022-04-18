@@ -1,4 +1,18 @@
 <div class="col-align">
+  <div *ngIf="vlanInp.vlans.length === 0" class="row-align empty-mac">
+    <mat-icon *ngIf="vlanInp.editap" class="vlan-icon">subdirectory_arrow_right</mat-icon>
+    Keine MAC-Adresse
+    <button
+      mat-icon-button
+      title="Neue MAC-Adresse"
+      type="button"
+      (click)="addMac()"
+      [color]="'primary'"
+    >
+      <!--      [disabled]="formGroup.invalid"-->
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+  </div>
   <div *ngFor="let v of vlanInp.vlans" class="row-align">
     <mat-icon *ngIf="vlanInp.editap" class="vlan-icon">subdirectory_arrow_right</mat-icon>
     <mat-form-field>
@@ -57,7 +71,11 @@
       <mat-icon>delete_outline</mat-icon>
       IP-Adresse löschen
     </button>
-    <button mat-menu-item [disabled]="vlanInp.vlans.length <= 1">
+    <button
+      mat-menu-item
+      [disabled]="vlanInp.vlans.length <= 1 && vlanInp.hw.pri"
+      (click)="delMac(v)"
+    >
       <mat-icon>delete_outline</mat-icon>
       MAC-Adresse löschen
     </button>

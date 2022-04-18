@@ -302,19 +302,15 @@
   <!-- Zeilen-Menue -->
   <mat-menu #hwMenu="matMenu">
     <ng-template matMenuContent let-hw="hw">
-      <button
-        mat-menu-item
-        *ngIf="hwService.userSettings.isAdmin"
-        (click)="hwService.hwEdit(hw)"
-        [disabled]="hwService.hwFilterService.isFremdeHw(hw)"
-      >
+      <button mat-menu-item *ngIf="hwService.userSettings.isAdmin" (click)="hwService.hwEdit(hw)">
+        <!--        [disabled]="hwService.dataService.isFremdeHardware(hw)"-->
         <mat-icon>edit</mat-icon>
         Hardware bearbeiten
       </button>
       <button
         mat-menu-item
         (click)="hwService.showHistory(hw)"
-        [disabled]="hwService.hwFilterService.isFremdeHw(hw)"
+        [disabled]="hwService.dataService.isFremdeHardware(hw)"
       >
         <mat-icon>list</mat-icon>
         Hardware-Historie
@@ -322,7 +318,8 @@
       <button
         mat-menu-item
         *ngIf="hwService.userSettings.isAdmin"
-        (click)="hwService.editService.newHw()"
+        (click)="hwService.editService.newHw(hw.hwKonfig)"
+        [disabled]="hwService.dataService.isFremdeHardware(hw)"
       >
         <mat-icon>add_to_queue</mat-icon>
         Neue Geräte

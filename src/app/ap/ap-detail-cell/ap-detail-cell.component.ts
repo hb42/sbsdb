@@ -25,7 +25,7 @@ export class ApDetailCellComponent {
   }
 
   public isFremdeHw(hw: Hardware): boolean {
-    return this.apService.filterService.isFremdeHw(hw);
+    return this.apService.dataService.isFremdeHardware(hw);
   }
 
   public isBoolTag(flag: number): boolean {

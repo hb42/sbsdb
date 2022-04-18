@@ -14,6 +14,7 @@ import { HwService } from "../hw.service";
 export class EditHwMacComponent implements OnInit {
   @Input() public hw: Hardware;
   @Input() public formGroup: FormGroup; // uebergeordnete formGroup
+  @Input() public onDelAp: EventEmitter<void>;
   @Input() public onSubmit: EventEmitter<void>; // fuer den submit der form
   @Output() public macReady: EventEmitter<HwVlanChange[]>; // liefert die zu aenderenden Daten
 

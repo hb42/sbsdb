@@ -60,7 +60,7 @@ export class EditApHwComponent implements OnInit {
   }
 
   public submit(): void {
-    console.debug("edit hw submit");
+    console.debug("**** edit-ap-hw submit");
     const changes: HwChange = {
       apid: this.ap.apId,
       priVlans: [],
@@ -76,10 +76,9 @@ export class EditApHwComponent implements OnInit {
       changes.newpriId = newpriId;
     }
     // vlan-changes priHw
-    // (this.data.priHw.hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) !== 0)
     if (
       newpriId ||
-      (this.data.priHw.hw && this.apService.filterService.isFremdeHw(this.data.priHw.hw))
+      (this.data.priHw.hw && this.apService.dataService.isFremdeHardware(this.data.priHw.hw))
     ) {
       changes.priVlans = this.data.priHw.vlans.out; // this.submitVlans(this.data.priHw);
     }
@@ -153,51 +152,4 @@ export class EditApHwComponent implements OnInit {
       // remove[0].hwCtrl = null;
     }
   }
-
-  // /**
-  //  * Geaenderte Vlans als HwVlanChange-Arrray liefern
-  //  *
-  //  * @param input
-  //  * @private
-  //  */
-  // private submitVlans(input: HwInput): HwVlanChange[] {
-  //   console.debug("--- submitVlans input ---");
-  //   console.dir(input);
-  //   const rc: HwVlanChange[] = [];
-  //   const oldvlans = (input.hwCtrl.value as Hardware)?.vlans ?? [];
-  //   const del = oldvlans.filter(
-  //     (v) => input.vlans.findIndex((vi) => v.hwMacId === vi.hwMacId) === -1
-  //   );
-  //   // MAC == "" => DEL
-  //   del.forEach((d) => rc.push({ hwMacId: d.hwMacId, mac: "", ip: 0, vlanId: 0 }));
-  //
-  //   input.vlans.forEach((v) => {
-  //     const newVlan = v.vlanCtrl.value as Vlan;
-  //     const newVlanId = newVlan.id;
-  //     const newMac = IpHelper.checkMacString(v.macCtrl.value as string);
-  //     // relevanter Teil der HostIp
-  //     const newIp = IpHelper.getHostIp(
-  //       IpHelper.getIpPartial(v.ipCtrl.value as string),
-  //       newVlan.netmask
-  //     );
-  //     if (v.hwMacId === 0) {
-  //       // hwMacId == 0 => NEW
-  //       rc.push({
-  //         hwMacId: 0,
-  //         vlanId: newVlanId,
-  //         mac: newMac,
-  //         ip: newIp,
-  //       });
-  //     } else if ((v.vlan?.id ?? 0) !== newVlanId || v.mac !== newMac || v.ip != newIp) {
-  //       // changed
-  //       rc.push({
-  //         hwMacId: v.hwMacId,
-  //         vlanId: newVlanId,
-  //         mac: newMac,
-  //         ip: newIp,
-  //       });
-  //     }
-  //   });
-  //   return rc;
-  // }
 }

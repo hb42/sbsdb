@@ -9,4 +9,5 @@ export interface HwInputVlan {
   macCtrl: FormControl;
   vlanCtrl: FormControl;
   ipCtrl: FormControl;
+  groupId: string;
 }

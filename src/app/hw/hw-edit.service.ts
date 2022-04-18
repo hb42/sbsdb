@@ -6,6 +6,7 @@ import { BaseEditService } from "../shared/filter/base-edit-service";
 import { PrepDateForDB } from "../shared/helper";
 import { Hardware } from "../shared/model/hardware";
 import { HwHistory } from "../shared/model/hw-history";
+import { HwKonfig } from "../shared/model/hw-konfig";
 import { EditConfigData } from "./edit-config-dialog/edit-config-data";
 import { EditConfigDialogComponent } from "./edit-config-dialog/edit-config-dialog.component";
 import { HwAussondData } from "./hw-aussond-dialog/hw-aussond-data";
@@ -13,6 +14,8 @@ import { HwAussondDialogComponent } from "./hw-aussond-dialog/hw-aussond-dialog.
 import { EditHwTransport } from "./hw-edit-dialog/edit-hw-transport";
 import { HwEditDialogData } from "./hw-edit-dialog/hw-edit-dialog-data";
 import { HwEditDialogComponent } from "./hw-edit-dialog/hw-edit-dialog.component";
+import { NewHwData } from "./new-hw-dialog/new-hw-data";
+import { NewHwDialogComponent } from "./new-hw-dialog/new-hw-dialog.component";
 import { ShowHistoryDialogComponent } from "./show-history-dialog/show-history-dialog.component";
 
 @Injectable({
@@ -30,7 +33,7 @@ export class HwEditService extends BaseEditService {
     this.edit({
       hw: hw,
       editAp: true,
-      editHw: true,
+      editHw: !this.dataService.isFremdeHardware(hw),
       editMac: true,
       macs: [],
       removeAp: false,
@@ -75,8 +78,22 @@ export class HwEditService extends BaseEditService {
     } as HwEditDialogData);
   }
 
-  public newHw(): void {
+  public newHw(hwkonfig: HwKonfig): void {
     console.debug("new HW clicked");
+    const dialogRef = this.dialog.open(NewHwDialogComponent, {
+      disableClose: true,
+      data: hwkonfig,
+    });
+
+    // Dialog-Ergebnis
+    dialogRef.afterClosed().subscribe((result: NewHwData) => {
+      console.debug("dialog closed");
+      console.dir(result);
+      if (result) {
+        // TODO save new HW
+        result.anschDat = PrepDateForDB(result.anschDat);
+      }
+    });
   }
 
   public async showHistory(hw: Hardware): Promise<void> {
@@ -111,6 +128,9 @@ export class HwEditService extends BaseEditService {
   }
 
   private edit(hwe: HwEditDialogData): void {
+    if (this.dataService.isPeripherie(hwe.hw)) {
+      hwe.editMac = false;
+    }
     const dialogRef = this.dialog.open(HwEditDialogComponent, {
       disableClose: true,
       data: hwe,

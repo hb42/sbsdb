@@ -70,7 +70,7 @@ export class HwService {
       this.hwFilterService.filterFor(dat.col, dat.search);
     });
 
-    this.newHwEvent.subscribe(() => this.editService.newHw());
+    this.newHwEvent.subscribe(() => this.editService.newHw(null));
   }
 
   public onSort(event: Sort): void {
@@ -210,7 +210,7 @@ export class HwService {
             const a = this.hwDataSource.data
               .filter((h1) => {
                 const val = GetColumn("kategorie", this.columns).filterControl.value as string;
-                if (!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h1)) {
+                if (!this.userSettings.showFremde && this.dataService.isFremdeHardware(h1)) {
                   return false;
                 }
                 return val ? h1.hwKonfig.apKatBezeichnung === val : true;
@@ -225,7 +225,8 @@ export class HwService {
               ...new Set(
                 this.hwDataSource.data
                   .filter(
-                    (h3) => !(!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h3))
+                    (h3) =>
+                      !(!this.userSettings.showFremde && this.dataService.isFremdeHardware(h3))
                   )
                   .map((h) => h.hwKonfig.hwTypBezeichnung)
               ),
@@ -260,7 +261,7 @@ export class HwService {
             const a = this.hwDataSource.data
               .filter((h1) => {
                 const val = GetColumn("typ", this.columns).filterControl.value as string;
-                if (!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h1)) {
+                if (!this.userSettings.showFremde && this.dataService.isFremdeHardware(h1)) {
                   return false;
                 }
                 return val ? h1.hwKonfig.hwTypBezeichnung === val : true;
@@ -275,7 +276,8 @@ export class HwService {
               ...new Set(
                 this.hwDataSource.data
                   .filter(
-                    (h3) => !(!this.userSettings.showFremde && this.hwFilterService.isFremdeHw(h3))
+                    (h3) =>
+                      !(!this.userSettings.showFremde && this.dataService.isFremdeHardware(h3))
                   )
                   .map((h) => h.hwKonfig.konfiguration)
               ),

@@ -12,6 +12,7 @@ import { HwService } from "../hw.service";
 export class EditHwApComponent implements OnInit {
   @Input() public hw: Hardware;
   @Input() public formGroup: FormGroup; // uebergeordnete formGroup
+  @Input() public onDelAp: EventEmitter<void>;
   @Input() public onSubmit: EventEmitter<void>; // fuer den submit der form
   @Output() public apReady: EventEmitter<boolean>; // liefert die zu aenderenden Daten
 
@@ -42,6 +43,7 @@ export class EditHwApComponent implements OnInit {
       this.apStr = null;
       this.removeAp = true;
     }
+    this.onDelAp.emit(); // edit-vlan bebachrichtigen
   }
 
   public submit(): void {

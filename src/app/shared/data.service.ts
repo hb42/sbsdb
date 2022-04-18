@@ -24,7 +24,7 @@ export class DataService {
   public static defaultpageSize = 200;
   public static TAG_DISPLAY_NAME = "TAG";
   public static BOOL_TAG_FLAG = 0b0000_0001;
-  // public static FREMDE_HW_FLAG = 0b0000_0001;
+  public static FREMDE_HW_FLAG = 0b0000_0001;
   public static PERIPHERIE_FLAG = 0b0000_0001;
 
   public apList: Arbeitsplatz[] = [];
@@ -324,6 +324,44 @@ export class DataService {
     return `${DataService.TAG_DISPLAY_NAME}${name}`;
   }
 
+  public isPeripherie(hw: Hardware): boolean {
+    if (hw && hw.hwKonfig) {
+      return (hw.hwKonfig.apKatFlag & DataService.PERIPHERIE_FLAG) > 0;
+    } else {
+      return true;
+    }
+  }
+
+  public isFremdeHardware(hw: Hardware): boolean {
+    if (hw && hw.hwKonfig) {
+      return this.isFremdeKonfig(hw.hwKonfig);
+    } else {
+      return false;
+    }
+  }
+  public isFremdeKonfig(konf: HwKonfig): boolean {
+    if (konf) {
+      return (konf.hwTypFlag & DataService.FREMDE_HW_FLAG) > 0;
+    } else {
+      return false;
+    }
+  }
+  public isFremderAp(ap: Arbeitsplatz): boolean {
+    if (ap) {
+      const aptyp = this.aptypList.find((typ) => typ.id === ap.apTypId);
+      return this.isFremderApTyp(aptyp);
+    } else {
+      return false;
+    }
+  }
+  public isFremderApTyp(aptyp: ApTyp): boolean {
+    if (aptyp) {
+      return (aptyp.flag & DataService.FREMDE_HW_FLAG) > 0;
+    } else {
+      return false;
+    }
+  }
+
   // OE-Hierarchie aufbauen
   // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
   private prepBst() {
@@ -478,12 +516,12 @@ export class DataService {
             (ap.sonstHwStr ? " / " : "") +
             " " +
             hw.hwKonfig.konfiguration + // TODO ext KONFIG
-            (hw.sernr && !hw.hwKonfig.fremdeHw ? " [" + hw.sernr + "]" : "");
+            (hw.sernr && !this.isFremdeHardware(hw) ? " [" + hw.sernr + "]" : "");
         }
       }
     } else {
       // no AP
-      if (hw.hwKonfig.fremdeHw) {
+      if (this.isFremdeHardware(hw)) {
         // fremde HW ohne AP loeschen
         this.hwList.splice(
           this.hwList.findIndex((h) => h.id === hw.id),

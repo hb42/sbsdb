@@ -6,8 +6,6 @@ import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { TransportFilters } from "../shared/filter/transport-filters";
-import { Hardware } from "../shared/model/hardware";
-import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
 
 @Injectable({ providedIn: "root" })
@@ -43,8 +41,5 @@ export class ApFilterService extends BaseFilterService {
   }
   public getUrl(): string {
     return "/" + AP_PATH;
-  }
-  public isFremdeHw(hw: Hardware): boolean {
-    return (hw.hwKonfig.hwTypFlag & HwKonfig.FREMDE_HW_FLAG) !== 0;
   }
 }

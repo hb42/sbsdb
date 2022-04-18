@@ -21,6 +21,7 @@
       *ngIf="data.editAp"
       [formGroup]="formGroup"
       [hw]="data.hw"
+      [onDelAp]="onDelAp"
       [onSubmit]="onSubmitEvent"
       (apReady)="apReady($event)"
     ></sbsdb-edit-hw-ap>
@@ -37,6 +38,7 @@
       *ngIf="data.editMac"
       [hw]="data.hw"
       [formGroup]="formGroup"
+      [onDelAp]="onDelAp"
       [onSubmit]="onSubmitEvent"
       (macReady)="macReady($event)"
     ></sbsdb-edit-hw-mac>

@@ -17,6 +17,7 @@
           title="AP entfernen"
           type="button"
           (click)="delAp()"
+          [disabled]="hwService.dataService.isFremdeHardware(hw)"
         >
           <mat-icon [color]="apdelbtn.disabled ? '' : 'accent'">delete_outline</mat-icon>
         </button>

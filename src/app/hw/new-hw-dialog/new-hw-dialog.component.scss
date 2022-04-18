@@ -1,0 +1,36 @@
+.panel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-bottom: 5px;
+}
+
+.mat-dialog-title {
+  margin: 0;
+}
+
+// max-height fuer Dialog ist per default auf 65vh eingestellt,
+// 85vh ist der max. nutzbare Wert
+.mat-dialog-content {
+  max-height: 85vh;
+}
+
+.abstand-top {
+  margin-top: 10px !important;
+}
+
+.abstand {
+  margin-left: 8px;
+}
+
+.fields {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.textinp {
+  width: 360px;
+}
+.bemerkung {
+  width: 736px;
+}

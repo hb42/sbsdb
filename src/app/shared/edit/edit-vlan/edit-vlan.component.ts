@@ -18,20 +18,18 @@ export class EditVlanComponent implements OnInit {
   public static count = 0;
 
   @Input() public vlanInp: VlansInput; //HwInputVlan[];
-  // @Input() public hw: Hardware;
+  @Input() public pri: boolean;
   @Input() public formGroup: FormGroup; // uebergeordnete formGroup
   @Input() public hwchange: EventEmitter<Hardware>; // HW wurde geaendert
+  @Input() public onDelAp: EventEmitter<void>; // AP entfernt -> alle IP loeschen
   @Input() public onSubmit: EventEmitter<void>;
   @Output() public vlanReady: EventEmitter<HwVlanChange[]>;
 
   public matcher = new FormFieldErrorStateMatcher();
   public macFormGroup: FormGroup;
 
-  // public inpVlans: HwInputVlan[] = [];
   public vlanList: Vlan[];
-  // public hwInput: HwInput;
-
-  private hardware: Hardware;
+  private idCounter = -1;
 
   constructor(private dataService: DataService, private formBuilder: FormBuilder) {
     console.debug("c'tor EditVlanComponent");
@@ -39,26 +37,52 @@ export class EditVlanComponent implements OnInit {
     this.macFormGroup = this.formBuilder.group({});
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.onSubmit.subscribe(() => {
       this.submitVlans();
     });
+    // andere HW ausgewaehlt
     this.hwchange.subscribe((hw: Hardware) => {
-      this.hardware = hw;
-      this.addVlanInputs(this.hardware);
+      console.debug("edit-vlan hwchange handler");
+      this.vlanInp.hw = hw;
+      // IP sichern
+      const sav: { vlan: Vlan; ip: number }[] = [];
+      this.vlanInp.vlans.forEach((v) => {
+        sav.push({ vlan: v.vlanCtrl.value as Vlan, ip: v.ipCtrl.value as number });
+      });
+      // controls fuer neue HW
+      this.addVlanInputs();
+      // IP aus vorheriger HW eintragen
+      sav.forEach((s, idx) => {
+        if (idx < this.vlanInp.vlans.length) {
+          this.vlanInp.vlans[idx].vlanCtrl.setValue(s.vlan, { emitEvent: false });
+          this.vlanInp.vlans[idx].ipCtrl.setValue(s.ip, { emitEvent: false });
+        }
+      });
     });
+    // AP entfernt, loesche IPs
+    if (this.onDelAp) {
+      this.onDelAp.subscribe(() => {
+        this.pri = false;
+        this.delAllIp();
+      });
+    }
+
     // vlan select list
     this.vlanList = this.dataService.vlanList
       .map((v) => v)
       .sort((a, b) => this.dataService.collator.compare(a.bezeichnung, b.bezeichnung));
     this.vlanList.unshift(null);
 
-    this.hardware = this.vlanInp.hw;
-    this.addVlanInputs(this.hardware);
-    // this.mFormGroup.addControl(`mac${EditVlanComponent.count++}`, this.macFormGroup);
-
-    // an die uebergeordnete Form anhaengen
-    this.formGroup.addControl(`mac${EditVlanComponent.count++}`, this.macFormGroup);
+    // Das Anhaengen einer neuen MAC aendert u.U. den Status der form auf invalid
+    // und das triggert NG0100 *ExpressionChangedAfterItHasBeenCheckedError*.
+    // setTimeout() verhindert diesen Fehler.
+    setTimeout(() => {
+      this.addVlanInputs();
+      // an die uebergeordnete Form anhaengen
+      this.formGroup.addControl(`mac${EditVlanComponent.count++}`, this.macFormGroup);
+      this.formGroup.updateValueAndValidity();
+    }, 0);
   }
 
   public getErrorMessage(control: FormControl): string {
@@ -109,11 +133,26 @@ export class EditVlanComponent implements OnInit {
   };
 
   public vlanCheck = (control: FormControl): ValidationErrors => {
-    // '==' beruecksichtigt null + undefined
-    if (control.value == null && this.hardware.pri) {
-      return { required: true };
+    let error: ValidationErrors = null;
+    if (this.pri) {
+      // mind. eine MAC muss eine IP haben
+      if (
+        this.vlanInp.vlans.filter((vlan) => vlan.vlanCtrl && !!vlan.vlanCtrl.value).length === 0
+      ) {
+        error = { required: true };
+      }
     }
-    return null;
+    // Fehler muss bei allen MACs eingetragen werden
+    this.vlanInp.vlans
+      .filter((v) => control != v.vlanCtrl)
+      .forEach((vl) => {
+        if (vl.vlanCtrl) {
+          console.debug("### vlan set error");
+          vl.vlanCtrl.setErrors(error);
+        }
+      });
+
+    return error;
   };
 
   public getNetworkInfo(vlan: Vlan): string {
@@ -160,37 +199,50 @@ export class EditVlanComponent implements OnInit {
     vlan.vlanCtrl.setValue(null);
   }
 
+  public delAllIp(): void {
+    this.vlanInp.vlans.forEach((v) => this.delIp(v));
+  }
+
   private getVlan(id: number): Vlan {
     return this.vlanList.find((v) => (v ? v.id === id : false));
   }
 
-  public isPeripherie(hw: Hardware): boolean {
-    return (hw.hwKonfig.apKatFlag & DataService.PERIPHERIE_FLAG) !== 0;
-  }
-
   public addMac(): void {
-    // this.hardware.vlans.push({
-    //   hwMacId: 0,
-    //   mac: IpHelper.NULL_MAC,
-    //   vlanId: 0,
-    //   ip: 0,
-    //   ipStr: "",
-    //   macStr: "",
-    // });
-    this.addVlanInputs(this.hardware, true);
-  }
-  public delMac(): void {
-    console.error("delMac() not yet implemented");
-    // TODO ist es sinnvoll hier die MAC zu loeschen? UI?
-    //      falls ja -> .vlan.mac = ""
-    //      fuer fremde HW muss min. eine MAC bleiben
+    this.idCounter--;
+    const newVlan: HwInputVlan = {
+      hwMacId: this.idCounter,
+      mac: IpHelper.NULL_MAC,
+      vlan: null,
+      ip: 0,
+      ipCtrl: undefined,
+      macCtrl: undefined,
+      vlanCtrl: undefined,
+      groupId: "",
+    };
+    this.vlanInp.vlans.push(newVlan);
+    this.addVlanInput(newVlan);
   }
 
-  private addVlanInputs(hw: Hardware, addnew: boolean = false) {
+  public delMac(v: HwInputVlan): void {
+    const idx = this.vlanInp.vlans.findIndex((vl) => vl.hwMacId === v.hwMacId);
+    const remove = this.vlanInp.vlans.splice(idx, 1);
+    if (remove && remove.length === 1) {
+      this.macFormGroup.removeControl(remove[0].groupId);
+    }
+  }
+
+  // alle Controls neu aufbauen
+  private addVlanInputs() {
     this.removeVlanInputs();
 
-    if (hw && !this.isPeripherie(hw)) {
-      hw.vlans.forEach((v) => {
+    // fuer pri immer eine MAC+IP anzeigen
+    if (this.vlanInp.hw && this.vlanInp.hw.vlans.length === 0 && this.pri) {
+      this.addMac();
+      return;
+    }
+
+    if (this.vlanInp.hw && !this.dataService.isPeripherie(this.vlanInp.hw)) {
+      this.vlanInp.hw.vlans.forEach((v) => {
         this.vlanInp.vlans.push({
           hwMacId: v.hwMacId,
           mac: v.mac,
@@ -199,35 +251,27 @@ export class EditVlanComponent implements OnInit {
           ipCtrl: undefined,
           macCtrl: undefined,
           vlanCtrl: undefined,
+          groupId: "",
         });
       });
-      // fuer pri immer eine MAC+IP anzeigen (bzw. f. "neue MAC")
-      if ((hw.vlans.length === 0 && hw.pri) || addnew) {
-        this.vlanInp.vlans.push({
-          hwMacId: 0,
-          mac: IpHelper.NULL_MAC,
-          vlan: null,
-          ip: 0,
-          ipCtrl: undefined,
-          macCtrl: undefined,
-          vlanCtrl: undefined,
-        });
-      }
-      this.vlanInp.vlans.forEach((vl) => {
-        const vlanFormGroup = this.formBuilder.group({});
-        vl.macCtrl = new FormControl(vl.mac, [this.macCheck]);
-        vl.vlanCtrl = new FormControl(vl.vlan, [this.vlanCheck]);
-        vl.ipCtrl = new FormControl(vl.ip, [this.ipCheck]);
-        vl.macCtrl.markAsTouched();
-        vl.ipCtrl.markAsTouched();
-        vl.vlanCtrl.markAsTouched();
-        // this.macFormGroup.addControl(`hw${EditHwComponent.count++}`, vl.macCtrl);
-        vlanFormGroup.addControl("macinp", vl.macCtrl);
-        vlanFormGroup.addControl("vlaninp", vl.vlanCtrl);
-        vlanFormGroup.addControl("ipinp", vl.ipCtrl);
-        this.macFormGroup.addControl(`vlan${EditVlanComponent.count++}`, vlanFormGroup);
-      });
+      this.vlanInp.vlans.forEach((vl) => this.addVlanInput(vl));
     }
+  }
+
+  // Controls fuer einzelne MAC
+  private addVlanInput(vl: HwInputVlan) {
+    const vlanFormGroup = this.formBuilder.group({});
+    vl.macCtrl = new FormControl(vl.mac, [this.macCheck]);
+    vl.vlanCtrl = new FormControl(vl.vlan, [this.vlanCheck]);
+    vl.ipCtrl = new FormControl(vl.ip, [this.ipCheck]);
+    vl.macCtrl.markAsTouched();
+    vl.ipCtrl.markAsTouched();
+    vl.vlanCtrl.markAsTouched();
+    vlanFormGroup.addControl("macinp", vl.macCtrl);
+    vlanFormGroup.addControl("vlaninp", vl.vlanCtrl);
+    vlanFormGroup.addControl("ipinp", vl.ipCtrl);
+    vl.groupId = `vlan${EditVlanComponent.count++}`;
+    this.macFormGroup.addControl(vl.groupId, vlanFormGroup);
   }
 
   private removeVlanInputs() {
@@ -239,7 +283,7 @@ export class EditVlanComponent implements OnInit {
   private submitVlans(): void {
     console.debug("edit vlan submit");
     const rc: HwVlanChange[] = [];
-    const oldvlans = this.hardware?.vlans ?? [];
+    const oldvlans = this.vlanInp.hw?.vlans ?? [];
     const del = oldvlans.filter(
       (v) => this.vlanInp.vlans.findIndex((vi) => v.hwMacId === vi.hwMacId) === -1
     );
@@ -254,7 +298,7 @@ export class EditVlanComponent implements OnInit {
       const newIp = newVlan
         ? IpHelper.getHostIp(IpHelper.getIpPartial(v.ipCtrl.value as string), newVlan.netmask)
         : 0;
-      if (v.hwMacId === 0) {
+      if (v.hwMacId <= 0) {
         // hwMacId == 0 => NEW
         rc.push({
           hwMacId: 0,

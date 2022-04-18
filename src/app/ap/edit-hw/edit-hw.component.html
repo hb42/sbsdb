@@ -6,7 +6,7 @@
         [formControl]="hw.hwCtrl"
         [errorStateMatcher]="matcher"
         (change)="hwSelectionChange(hw.hwCtrl.value)"
-        [sbsdbDisableControl]="pri && isFremdeHw(ap.apTypFlag)"
+        [sbsdbDisableControl]="pri && dataService.isFremderAp(ap)"
       >
         <option *ngFor="let h of hwSelectList()" [ngValue]="h">
           {{ h ? h.hwKonfig.konfiguration + " [" + h.sernr + "]" : "<--->" }}
@@ -25,7 +25,7 @@
       [disabled]="
         pri &&
         (hw.hwCtrl.value === null ||
-          (hw.hwCtrl.value && isFremdeHw(hw.hwCtrl.value.hwKonfig.hwTypFlag)))
+          (hw.hwCtrl.value && dataService.isFremdeHardware(hw.hwCtrl.value)))
       "
     >
       <mat-icon [color]="hwdelbtn.disabled ? '' : 'accent'">delete_outline</mat-icon>
@@ -44,7 +44,9 @@
   </div>
 
   <sbsdb-edit-vlan
+    *ngIf="!dataService.isPeripherie(hw.hwCtrl.value)"
     [formGroup]="formGroup"
+    [pri]="pri"
     [vlanInp]="hw.vlans"
     [hwchange]="hwchange"
     [onSubmit]="onSubmit"
