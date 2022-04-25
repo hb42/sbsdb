@@ -197,7 +197,7 @@ export class SbsdbColumn<C, E> {
     if (text) {
       const t = SbsdbColumn.checkSearchString(text);
       if (this.typekey === ColumnType.IP) {
-        t.text = t.text.replace(/-/g, "").replace(/:/g, "").toUpperCase();
+        t.text = t.text.replace(/-/g, "").replace(/:/g, "");
       }
       return t;
     } else {

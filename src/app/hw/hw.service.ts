@@ -606,6 +606,9 @@ export class HwService {
 
     // Aenderungen in der AP-Liste muessen, wg. HW zu AP, auch hier beruecksichtigt werden
     this.dataService.apListChanged.subscribe(() => this.hwFilterService.triggerColumnFilter());
+
+    // Neue HW wurde eingetragen
+    this.dataService.hwListChanged.subscribe(() => this.hwFilterService.triggerColumnFilter());
   }
 
   // --- fetch data ---

@@ -176,8 +176,8 @@ export class ApEditService extends BaseEditService {
   private save(post: EditApTransport): void {
     console.debug("save changes");
     console.dir(post);
-    this.dataService.post(this.dataService.changeApUrl, post).subscribe(
-      (a: never) => {
+    this.dataService.post(this.dataService.changeApUrl, post).subscribe({
+      next: (a: never) => {
         console.debug("post succeeded");
         console.dir(a);
         // if (a) {
@@ -193,10 +193,10 @@ export class ApEditService extends BaseEditService {
         //   console.error("Server liefert kein Ergebnis für apchange");
         // }
       },
-      (err: Error) => {
+      error: (err: Error) => {
         console.error("Error " + err.message);
         console.dir(err);
-      }
-    );
+      },
+    });
   }
 }

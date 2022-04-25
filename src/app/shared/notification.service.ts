@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { ConfigService } from "./config/config.service";
+import { AddHwTransport } from "./model/add-hw-transport";
 import { ApTransport } from "./model/ap-transport";
 import { HwTransport } from "./model/hw-transport";
 
@@ -10,6 +11,7 @@ import { HwTransport } from "./model/hw-transport";
 export class NotificationService {
   public apChange: EventEmitter<ApTransport> = new EventEmitter<ApTransport>();
   public hwChange: EventEmitter<HwTransport> = new EventEmitter<HwTransport>();
+  public addHw: EventEmitter<AddHwTransport> = new EventEmitter<AddHwTransport>();
   // TODO public hwKonfigChange: EventEmitter<HwTransport> = new EventEmitter<HwKonfigTransport>();
   private hubConnection: HubConnection | undefined;
 
@@ -43,6 +45,12 @@ export class NotificationService {
         console.debug("## Event hwchange");
         console.dir(data);
         this.hwChange.emit(data);
+      });
+
+      this.hubConnection.on("addhw", (data: AddHwTransport) => {
+        console.debug("## Event addhw");
+        console.dir(data);
+        this.addHw.emit(data);
       });
 
       this.hubConnection.onclose((err: Error) => {

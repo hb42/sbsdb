@@ -57,10 +57,7 @@ export class Expression implements Term {
         ? this.field.fieldName
         : [this.field.fieldName];
       if (record) {
-        compValue = fields.reduce(
-          (prev, curr) => (prev += GetFieldContent(record, curr) ?? ""),
-          ""
-        );
+        compValue = fields.map((f) => GetFieldContent(record, f) ?? "").join(" ");
       }
     } else if (this.field.type === ColumnType.ARRAY) {
       const fields = (this.field.fieldName as string).split("$");

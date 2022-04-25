@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } fro
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
-import { CurrencyCheck } from "../../shared/helper";
+import { CurrencyCheck, StringToNumber } from "../../shared/helper";
 import { IpHelper } from "../../shared/ip-helper";
 import { HwKonfig } from "../../shared/model/hw-konfig";
 import { NewHwData } from "./new-hw-data";
@@ -132,7 +132,7 @@ export class NewHwDialogComponent implements OnInit {
   private prepareData() {
     this.newhw.konfig = this.konfCtrl.value as HwKonfig;
     this.newhw.invNr = this.invCtrl.value as string;
-    this.newhw.anschWert = this.anschwCtrl.value as number;
+    this.newhw.anschWert = StringToNumber(this.anschwCtrl.value as string);
     this.newhw.anschDat = this.anschdCtrl.value as Date;
     this.newhw.wartungFa = this.wfaCtrl.value as string;
     this.newhw.bemerkung = this.bemCtrl.value as string;
@@ -146,7 +146,7 @@ export class NewHwDialogComponent implements OnInit {
       if (l) {
         const item = l.split(/\s*;\s*/);
         if (item.length === 1) {
-          rc.push({ sernr: item[0].trim(), mac: "" });
+          rc.push({ sernr: item[0].trim(), mac: null });
         } else if (item.length === 2) {
           const mac = IpHelper.checkMacString(item[1]);
           if (mac) {

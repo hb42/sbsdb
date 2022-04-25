@@ -5,6 +5,7 @@ import { lastValueFrom, Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { ConfigService } from "./config/config.service";
 import { IpHelper } from "./ip-helper";
+import { AddHwTransport } from "./model/add-hw-transport";
 import { ApTransport } from "./model/ap-transport";
 import { ApTyp } from "./model/ap-typ";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
@@ -56,6 +57,7 @@ export class DataService {
   public aptypListReady: EventEmitter<void> = new EventEmitter<void>();
 
   public apListChanged: EventEmitter<void> = new EventEmitter<void>();
+  public hwListChanged: EventEmitter<void> = new EventEmitter<void>();
 
   // Web-API calls
   public readonly oeTreeUrl: string;
@@ -73,6 +75,7 @@ export class DataService {
   public readonly allApTypUrl: string;
   public readonly changeApUrl: string;
   public readonly changeHwUrl: string;
+  public readonly addHwUrl: string;
   public readonly hwHistoryUrl: string;
   public readonly extProgUrl: string;
 
@@ -113,6 +116,7 @@ export class DataService {
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
     this.changeHwUrl = this.configService.webservice + "/hw/changehw";
+    this.addHwUrl = this.configService.webservice + "/hw/addhw";
 
     this.hwHistoryUrl = this.configService.webservice + "/hw/hwhistoryfor";
 
@@ -172,6 +176,17 @@ export class DataService {
         notification.initialize();
       }
       this.apListChanged.emit();
+    });
+
+    notification.addHw.subscribe((data) => {
+      console.debug("dataService start adding hw");
+      this.addHw(data);
+      this.updateHwKonfigListCount();
+      if (!notification.isOpen()) {
+        console.debug("reopening Notification");
+        notification.initialize();
+      }
+      this.hwListChanged.emit();
     });
 
     // TODO hwKonfig-Aenderung
@@ -419,6 +434,16 @@ export class DataService {
    */
   private updateHw(data: HwTransport): void {
     this.changeHw(data.hw, data.delHwId);
+  }
+
+  /**
+   * Neue Hardware eintragen
+   *
+   * @param data
+   * @private
+   */
+  private addHw(data: AddHwTransport): void {
+    data.newHw.forEach((hw) => this.changeHw(hw, 0));
   }
 
   /**

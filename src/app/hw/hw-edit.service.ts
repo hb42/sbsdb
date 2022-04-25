@@ -7,6 +7,7 @@ import { PrepDateForDB } from "../shared/helper";
 import { Hardware } from "../shared/model/hardware";
 import { HwHistory } from "../shared/model/hw-history";
 import { HwKonfig } from "../shared/model/hw-konfig";
+import { StatusService } from "../shared/status.service";
 import { EditConfigData } from "./edit-config-dialog/edit-config-data";
 import { EditConfigDialogComponent } from "./edit-config-dialog/edit-config-dialog.component";
 import { HwAussondData } from "./hw-aussond-dialog/hw-aussond-data";
@@ -16,6 +17,7 @@ import { HwEditDialogData } from "./hw-edit-dialog/hw-edit-dialog-data";
 import { HwEditDialogComponent } from "./hw-edit-dialog/hw-edit-dialog.component";
 import { NewHwData } from "./new-hw-dialog/new-hw-data";
 import { NewHwDialogComponent } from "./new-hw-dialog/new-hw-dialog.component";
+import { NewHwTransport } from "./new-hw-dialog/new-hw-transport";
 import { ShowHistoryDialogComponent } from "./show-history-dialog/show-history-dialog.component";
 
 @Injectable({
@@ -24,7 +26,11 @@ import { ShowHistoryDialogComponent } from "./show-history-dialog/show-history-d
 export class HwEditService extends BaseEditService {
   private aussondGrund = "defekt";
 
-  constructor(public dialog: MatDialog, public dataService: DataService) {
+  constructor(
+    public dialog: MatDialog,
+    public dataService: DataService,
+    private statusService: StatusService
+  ) {
     super(dialog, dataService);
     console.debug("c'tor HwEditService");
   }
@@ -90,8 +96,28 @@ export class HwEditService extends BaseEditService {
       console.debug("dialog closed");
       console.dir(result);
       if (result) {
-        // TODO save new HW
         result.anschDat = PrepDateForDB(result.anschDat);
+        const post: NewHwTransport = {
+          konfigId: result.konfig.id,
+          invNr: result.invNr ?? "",
+          anschWert: result.anschWert ?? 0,
+          anschDat: result.anschDat,
+          wartungFa: result.wartungFa ?? "",
+          bemerkung: result.bemerkung ?? "",
+          devices: result.devices,
+        };
+        this.dataService.post(this.dataService.addHwUrl, post).subscribe({
+          next: (a: never) => {
+            console.debug("post addHw succeeded");
+            console.dir(a);
+            this.statusService.info("Neue Hardware gespeichert.");
+          },
+          error: (err: Error) => {
+            console.error("Error " + err.message);
+            console.dir(err);
+            this.statusService.error("Fehler beim Speichern: " + err.message);
+          },
+        });
       }
     });
   }
@@ -170,8 +196,8 @@ export class HwEditService extends BaseEditService {
   private save(post: EditHwTransport): void {
     console.debug("save changes");
     console.dir(post);
-    this.dataService.post(this.dataService.changeHwUrl, post).subscribe(
-      (a: never) => {
+    this.dataService.post(this.dataService.changeHwUrl, post).subscribe({
+      next: (a: never) => {
         console.debug("post succeeded");
         console.dir(a);
         // if (a) {
@@ -187,11 +213,11 @@ export class HwEditService extends BaseEditService {
         //   console.error("Server liefert kein Ergebnis für apchange");
         // }
       },
-      (err: Error) => {
+      error: (err: Error) => {
         console.error("Error " + err.message);
         console.dir(err);
-      }
-    );
+      },
+    });
   }
 
   private editConf(hwe: EditConfigData): void {

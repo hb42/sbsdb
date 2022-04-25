@@ -189,23 +189,25 @@ export class RelationalOperator {
       }
     }
   };
-  // string
+  // verwendet LIKE -> RegEx
   private static startsWith = (fieldContent: string, compare: string, type: number): boolean => {
-    if (type !== ColumnType.STRING && type !== ColumnType.IP) {
-      return false;
-    }
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent.startsWith(compare);
+    return this.like(fieldContent, "^" + compare, type);
+    // if (type !== ColumnType.STRING && type !== ColumnType.IP) {
+    //   return false;
+    // }
+    // fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    // compare = compare ? compare.toLocaleLowerCase() : "";
+    // return fieldContent.startsWith(compare);
   };
-  // string
+  // verwendet LIKE -> RegEx
   private static endsWith = (fieldContent: string, compare: string, type: number): boolean => {
-    if (type !== ColumnType.STRING && type !== ColumnType.IP) {
-      return false;
-    }
-    fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    compare = compare ? compare.toLocaleLowerCase() : "";
-    return fieldContent.endsWith(compare);
+    return this.like(fieldContent, compare + "$", type);
+    // if (type !== ColumnType.STRING && type !== ColumnType.IP) {
+    //   return false;
+    // }
+    // fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
+    // compare = compare ? compare.toLocaleLowerCase() : "";
+    // return fieldContent.endsWith(compare);
   };
   // alle
   private static exist = (fieldContent: string | number | null): boolean => {
