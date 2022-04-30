@@ -23,6 +23,6 @@ export class EditConfigDialogComponent {
   public onSubmit(form: unknown): void {
     this.onSubmitEvent.emit();
     console.log("EditConfigDialog onSubmit");
-    console.dir(form);
+    console.dir(this.data);
   }
 }

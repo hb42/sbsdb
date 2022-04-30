@@ -49,6 +49,7 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
   @Input() public mainMenu: MatMenu;
 
   public userSettings: UserSession;
+  public showMenu = false;
 
   public navLinks = [
     {
@@ -188,18 +189,7 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
   }
 
   public about(): void {
-    // throw new SyntaxError("Test exception");
-    // TODO dialog starten
     this.dialog.open(AboutDialogComponent);
-
-    // Dialog-Ergebnis
-    // dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {
-    //   console.debug("dialog closed");
-    //   console.dir(result);
-    //   if (result) {
-    //     this.saveDlg(result);
-    //   }
-    // });
   }
 
   public backBtn(): void {

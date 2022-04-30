@@ -23,7 +23,7 @@ export class EditHwApComponent implements OnInit {
     private dataService: DataService,
     private formBuilder: FormBuilder,
     private cdRef: ChangeDetectorRef,
-    private hwService: HwService
+    public hwService: HwService
   ) {
     console.debug("c'tor EditHwApCompomnenmt");
     this.apReady = new EventEmitter<boolean>();

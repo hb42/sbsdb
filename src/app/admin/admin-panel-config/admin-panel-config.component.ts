@@ -39,7 +39,7 @@ export class AdminPanelConfigComponent implements OnInit {
   // als Variable deklarieren ('bound'), damit die Uebergabe als Param sauber ist
   public blocksizeValidator = (control: FormControl): { [s: string]: boolean } => {
     const val: string = control.value as string;
-    const regexNumeric = /^\s*[0-9]+\s*$/;
+    const regexNumeric = /^\s*\d+\s*$/;
     if (!regexNumeric.test(val) || Number.parseInt(val, 10) < 100) {
       console.debug("not an integer > 100");
       return { [AdminPanelConfigComponent.bsValidator]: true };

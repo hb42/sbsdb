@@ -176,27 +176,6 @@ export class ApEditService extends BaseEditService {
   private save(post: EditApTransport): void {
     console.debug("save changes");
     console.dir(post);
-    this.dataService.post(this.dataService.changeApUrl, post).subscribe({
-      next: (a: never) => {
-        console.debug("post succeeded");
-        console.dir(a);
-        // if (a) {
-        //   this.dataService.updateAp(a.ap, a.hw, a.delApId);
-        //   // TODO trigger apfilter f. new ap/hw
-        //   //      braucht wohl einen event zu ap-filter-service -> einbauen im Kontext
-        //   //      der SSE-Impementierung
-        //   filterChange.emit();
-        //
-        //   console.debug("post succeeded");
-        //   console.dir(a);
-        // } else {
-        //   console.error("Server liefert kein Ergebnis für apchange");
-        // }
-      },
-      error: (err: Error) => {
-        console.error("Error " + err.message);
-        console.dir(err);
-      },
-    });
+    this.dataService.post(this.dataService.changeApUrl, post);
   }
 }

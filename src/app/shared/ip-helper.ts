@@ -3,7 +3,7 @@ export class IpHelper {
 
   private static macString = /^(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})$/;
   private static macCheck =
-    /^\s*([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})[-:.]?([0-9a-fA-F]{2})\s*$/;
+    /^\s*([\da-fA-F]{2})[-:.]?([\da-fA-F]{2})[-:.]?([\da-fA-F]{2})[-:.]?([\da-fA-F]{2})[-:.]?([\da-fA-F]{2})[-:.]?([\da-fA-F]{2})\s*$/;
   private static ipString =
     /^\s*(\d|[01]?\d\d|2[0-4]\d|25[0-5])\.(\d|[01]?\d\d|2[0-4]\d|25[0-5])\.(\d|[01]?\d\d|2[0-4]\d|25[0-5])\.(\d|[01]?\d\d|2[0-4]\d|25[0-5])\s*$/;
   private static ipStringPart =

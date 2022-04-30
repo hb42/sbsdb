@@ -1,6 +1,10 @@
 <!--Konfiguration bearbeiten -> neu/aend
 -->
-<sbsdb-dialog-title dialogTitle="Konfiguration bearbeiten"></sbsdb-dialog-title>
+<sbsdb-dialog-title
+  dialogTitle="{{
+    data.konfig ? data.konfig.hwTypBezeichnung + '-Konfiguration' : 'Neue Konfiguration'
+  }} bearbeiten"
+></sbsdb-dialog-title>
 <form
   [formGroup]="formGroup"
   (ngSubmit)="onSubmit(formGroup.value)"
@@ -8,6 +12,12 @@
 >
   <div class="panel"><!-- config data --></div>
   <mat-dialog-content class="panel"> </mat-dialog-content>
+
+  <sbsdb-edit-config
+    [data]="data"
+    [formGroup]="formGroup"
+    [onSubmit]="onSubmitEvent"
+  ></sbsdb-edit-config>
 
   <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
 </form>

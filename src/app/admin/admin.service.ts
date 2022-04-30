@@ -1,14 +1,15 @@
 import { Injectable } from "@angular/core";
 import { ConfigService } from "../shared/config/config.service";
+import { UserSession } from "../shared/config/user.session";
 
 @Injectable({
   providedIn: "root",
 })
 export class AdminService {
-  constructor(public configService: ConfigService) {}
+  public userSettings: UserSession;
 
-  // public async getConfig(conf: string, dflt: string) {
-  //   const c: string = await this.configService.getConfig(conf);
-  //   return c; // ?? dflt;
-  // }
+  constructor(public configService: ConfigService) {
+    console.debug("c'tor AdminService");
+    this.userSettings = configService.getUser();
+  }
 }

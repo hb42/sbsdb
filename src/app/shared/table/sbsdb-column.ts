@@ -9,6 +9,9 @@ import { Netzwerk } from "../model/netzwerk";
 import { ColumnType } from "./column-type.enum";
 
 export class SbsdbColumn<C, E> {
+  // fuer selects
+  public static EMPTY_OPTION = String.fromCharCode(187) + "alle" + String.fromCharCode(171);
+
   private readonly filtercontrol: FormControl = null;
 
   /*
@@ -194,7 +197,7 @@ export class SbsdbColumn<C, E> {
    */
   private valueChange(): ColumnFilter {
     const text = this.filterControl.value as string;
-    if (text) {
+    if (text && text !== SbsdbColumn.EMPTY_OPTION) {
       const t = SbsdbColumn.checkSearchString(text);
       if (this.typekey === ColumnType.IP) {
         t.text = t.text.replace(/-/g, "").replace(/:/g, "");

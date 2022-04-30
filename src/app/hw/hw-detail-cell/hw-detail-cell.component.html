@@ -10,14 +10,22 @@
                 #{{ element.hwKonfig.id }}
               </span>
               <!--              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">-->
-              <div class="sub-table-head-button">
+              <div class="sub-table-head-button edit-button">
+                <!--                <button-->
+                <!--                  mat-icon-button-->
+                <!--                  color="primary"-->
+                <!--                  title="zur Konfiguration"-->
+                <!--                  (click)="hwService.gotoKonf(element); $event.stopPropagation()"-->
+                <!--                >-->
+                <!--                  <mat-icon>open_in_new</mat-icon>-->
+                <!--                </button>-->
                 <button
                   mat-icon-button
                   color="primary"
-                  title="zur Konfiguration"
-                  (click)="hwService.gotoKonf(element); $event.stopPropagation()"
+                  title="Konfiguration bearbeiten"
+                  (click)="hwService.confService.confEdit(element.hwKonfig)"
                 >
-                  <mat-icon>open_in_new</mat-icon>
+                  <mat-icon>edit</mat-icon>
                 </button>
                 <!--                <button-->
                 <!--                  mat-icon-button-->
@@ -126,6 +134,7 @@
           <td>{{ element.wartungFa }}</td>
         </tr>
       </table>
+      <div class="detail-cell-bemerk">{{ element.bemerkung }}</div>
     </div>
     <div class="detail-cell-margin">
       <table *ngIf="element.vlans.length > 0">
@@ -187,5 +196,5 @@
       </button>
     </div>
   </div>
-  <div class="detail-cell-bemerk">{{ element.bemerkung }}</div>
+  <!--  <div class="detail-cell-bemerk">{{ element.bemerkung }}</div>-->
 </div>

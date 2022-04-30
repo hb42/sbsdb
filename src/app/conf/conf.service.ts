@@ -34,7 +34,6 @@ export class ConfService {
 
   public newConfEvent: EventEmitter<void> = new EventEmitter<void>();
 
-  private filterChanged = 1;
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
@@ -63,7 +62,7 @@ export class ConfService {
   }
 
   public confEdit(conf: HwKonfig): void {
-    console.debug("** edit conf button");
+    this.editService.editConf(conf);
   }
 
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
@@ -448,6 +447,9 @@ export class ConfService {
         return "";
       }
     };
+    this.dataService.hwKonfigListChanged.subscribe(() =>
+      this.confFilterService.triggerColumnFilter()
+    );
     this.confFilterService.initService(this.columns, this.confDataSource);
   }
 }

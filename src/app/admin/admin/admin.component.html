@@ -1,5 +1,5 @@
 <div class="flex-col">
-  <sbsdb-head>
+  <sbsdb-head [mainMenu]="tableMenu">
     <!-- TODO Admin-Menue -->
   </sbsdb-head>
 
@@ -7,9 +7,40 @@
     <div class="flex-panel optionsPanel">
       <sbsdb-admin-options></sbsdb-admin-options>
     </div>
-    <div fb-splitter></div>
+
     <div class="flex-panel flex-max listPanel">
       <router-outlet></router-outlet>
     </div>
   </div>
+
+  <!-- Header-Menue -->
+  <mat-menu #tableMenu="matMenu">
+    <ng-template matMenuContent>
+      <button
+        mat-menu-item
+        class="menue-entry"
+        (click)="adminService.userSettings.showNavMenu = !adminService.userSettings.showNavMenu"
+        title="Hauptnavigation als Menü oder einzelne Buttons"
+      >
+        <mat-icon>menu</mat-icon>
+        Navigation als Menü
+        <span class="fill"></span>
+        <mat-icon class="menue-checkbox">{{
+          adminService.userSettings.showNavMenu ? "check_box" : "check_box_outline_blank"
+        }}</mat-icon>
+      </button>
+      <button
+        mat-menu-item
+        class="menue-entry"
+        (click)="adminService.userSettings.debug = !adminService.userSettings.debug"
+      >
+        <mat-icon>pest_control</mat-icon>
+        Debug-Info
+        <span class="fill"></span>
+        <mat-icon class="menue-checkbox">{{
+          adminService.userSettings.debug ? "check_box" : "check_box_outline_blank"
+        }}</mat-icon>
+      </button>
+    </ng-template>
+  </mat-menu>
 </div>

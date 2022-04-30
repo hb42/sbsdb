@@ -99,7 +99,7 @@ export function StringToNumber(input: string): number {
  * @constructor
  */
 export function CurrencyCheck(input: string): boolean {
-  const check = /^[0-9]\d{0,2}(\.?\d{3})*(,\d{1,2})?$/;
+  const check = /^\d\d{0,2}(\.?\d{3})*(,\d{1,2})?$/;
   return !(input && !check.test(input));
 }
 

@@ -18,7 +18,7 @@
   </mat-menu>
 
   <span class="spacer"></span>
-  <button mat-raised-button [mat-menu-trigger-for]="navmenu">
+  <button mat-raised-button [mat-menu-trigger-for]="navmenu" *ngIf="userSettings.showNavMenu">
     <mat-icon class="dd-icon">{{ btnTitleIcon() }}</mat-icon>
     {{ btnTitle() }}
     <mat-icon>arrow_drop_down</mat-icon>
@@ -27,7 +27,7 @@
     <div *ngFor="let link of navLinks">
       <button
         mat-menu-item
-        routerLinkActive
+        routerLinkActive=""
         #rla="routerLinkActive"
         [style.display]="rla.isActive ? 'none' : 'inline-block'"
         [routerLink]="link.path"
@@ -36,8 +36,25 @@
         <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
       </button>
     </div>
-    <!--    <span class="spacer2"></span>-->
   </mat-menu>
+
+  <div *ngIf="!userSettings.showNavMenu" class="btn-menu">
+    <div *ngFor="let link of navLinks">
+      <button
+        mat-stroked-button
+        color="primary"
+        routerLinkActive="routerlinkactive"
+        #rla="routerLinkActive"
+        [disabled]="rla.isActive"
+        [routerLink]="link.path"
+        class="menu-btn"
+      >
+        <mat-icon class="menu-icon">{{ link.icon }}</mat-icon>
+        <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
+      </button>
+    </div>
+  </div>
+  <!--    <span class="spacer2"></span>-->
 
   <span class="spacer2"></span>
 

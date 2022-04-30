@@ -1,6 +1,7 @@
 import { Location } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { Version } from "../version";
 import { VersionService } from "../version.service";
@@ -96,9 +97,7 @@ export class ConfigService {
     // Jeder Benutzer wird authorisiert, was er dann sehen darf muss in der
     // Oberflaeche entschiweden werden.
     return (
-      this.http
-        .get<User>(this.getUserConfUrl)
-        .toPromise()
+      firstValueFrom(this.http.get<User>(this.getUserConfUrl))
         .then((data) => {
           this.userSession = new UserSession(this.userDataChange, data);
           console.debug(">>> user config done");
@@ -126,16 +125,13 @@ export class ConfigService {
   // --- config in der Server-DB ---
 
   public getConfig(confName: string): Promise<unknown> {
-    return this.http
-      .get<string>(this.getConfUrl + "/" + confName)
-      .toPromise()
-      .then((val) => {
-        try {
-          return JSON.parse(val) as unknown;
-        } catch {
-          return val;
-        }
-      });
+    return firstValueFrom(this.http.get<string>(this.getConfUrl + "/" + confName)).then((val) => {
+      try {
+        return JSON.parse(val) as unknown;
+      } catch {
+        return val;
+      }
+    });
   }
 
   public saveConfig(confName: string, value: unknown): Promise<unknown> {
@@ -146,17 +142,11 @@ export class ConfigService {
       return this.deleteConfig(confName);
     }
     const val: string = JSON.stringify(value);
-    return this.http
-      .post(this.setConfUrl + "/" + confName, val)
-      .toPromise()
-      .then((rc) => rc);
+    return firstValueFrom(this.http.post(this.setConfUrl + "/" + confName, val)).then((rc) => rc);
   }
 
   public deleteConfig(confName: string): Promise<unknown> {
-    return this.http
-      .delete(this.delConfUrl + "/" + confName)
-      .toPromise()
-      .then((rc) => rc);
+    return firstValueFrom(this.http.delete(this.delConfUrl + "/" + confName)).then((rc) => rc);
   }
 
   // --- Benutzer-Config ---

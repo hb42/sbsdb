@@ -34,6 +34,7 @@ export class UserSession {
     }
 
     // sicherstellen, dass alle Einstellungen definiert sind
+    this.settings.showNavMenu = !!this.settings.showNavMenu;
     this.settings.path = this.settings.path ?? "";
     this.settings.debug = !!this.settings.debug;
     this.settings.showStandort =
@@ -86,6 +87,14 @@ export class UserSession {
   }
   public set debug(d: boolean) {
     this.settings.debug = d;
+    this.change();
+  }
+
+  public get showNavMenu(): boolean {
+    return this.settings.showNavMenu;
+  }
+  public set showNavMenu(d: boolean) {
+    this.settings.showNavMenu = d;
     this.change();
   }
 

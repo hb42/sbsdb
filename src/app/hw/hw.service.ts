@@ -4,6 +4,7 @@ import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { lastValueFrom } from "rxjs";
+import { ConfService } from "../conf/conf.service";
 import {
   KEY_SORT_ADAT,
   KEY_SORT_AP,
@@ -57,6 +58,7 @@ export class HwService {
     public editFilterService: EditFilterService,
     public hwFilterService: HwFilterService,
     public editService: HwEditService,
+    public confService: ConfService,
     private configService: ConfigService
   ) {
     console.debug("c'tor HwService ");
@@ -256,34 +258,36 @@ export class HwService {
           RelOp.like,
           RelOp.notlike,
         ],
-        () => {
-          if (this.hwFilterService.stdFilter) {
-            const a = this.hwDataSource.data
-              .filter((h1) => {
-                const val = GetColumn("typ", this.columns).filterControl.value as string;
-                if (!this.userSettings.showFremde && this.dataService.isFremdeHardware(h1)) {
-                  return false;
-                }
-                return val ? h1.hwKonfig.hwTypBezeichnung === val : true;
-              })
-              .map((h2) => h2.hwKonfig.konfiguration);
-            if (GetColumn("konfiguration", this.columns).filterControl.value) {
-              a.push(GetColumn("konfiguration", this.columns).filterControl.value as string);
-            }
-            return [...new Set(a)].sort();
-          } else {
-            return [
-              ...new Set(
-                this.hwDataSource.data
-                  .filter(
-                    (h3) =>
-                      !(!this.userSettings.showFremde && this.dataService.isFremdeHardware(h3))
-                  )
-                  .map((h) => h.hwKonfig.konfiguration)
-              ),
-            ].sort();
-          }
-        },
+        null,
+        // filter als dropdown:
+        // () => {
+        //   if (this.hwFilterService.stdFilter) {
+        //     const a = this.hwDataSource.data
+        //       .filter((h1) => {
+        //         const val = GetColumn("typ", this.columns).filterControl.value as string;
+        //         if (!this.userSettings.showFremde && this.dataService.isFremdeHardware(h1)) {
+        //           return false;
+        //         }
+        //         return val ? h1.hwKonfig.hwTypBezeichnung === val : true;
+        //       })
+        //       .map((h2) => h2.hwKonfig.konfiguration);
+        //     if (GetColumn("konfiguration", this.columns).filterControl.value) {
+        //       a.push(GetColumn("konfiguration", this.columns).filterControl.value as string);
+        //     }
+        //     return [...new Set(a)].sort();
+        //   } else {
+        //     return [
+        //       ...new Set(
+        //         this.hwDataSource.data
+        //           .filter(
+        //             (h3) =>
+        //               !(!this.userSettings.showFremde && this.dataService.isFremdeHardware(h3))
+        //           )
+        //           .map((h) => h.hwKonfig.konfiguration)
+        //       ),
+        //     ].sort();
+        //   }
+        // },
         true
       )
     );
@@ -636,22 +640,22 @@ export class HwService {
     const count = Math.ceil(recs / pageSize);
     let fetched = 0;
     for (let page = 0; page < count; page++) {
-      this.dataService.get(`${this.dataService.pageHwUrl}${page}/${pageSize}`).subscribe(
-        (hw: Hardware[]) => {
+      this.dataService.get(`${this.dataService.pageHwUrl}${page}/${pageSize}`).subscribe({
+        next: (hw: Hardware[]) => {
           console.debug("fetch HW page #", page, " size=", hw.length);
           this.dataService.hwList = [...this.dataService.hwList, ...hw];
         },
-        (err) => {
+        error: (err) => {
           console.error("ERROR loading HW-Data ", err);
         },
-        () => {
+        complete: () => {
           fetched++;
           if (fetched === count) {
             console.debug("fetch HW READY");
             this.dataService.hwListReady.emit();
           }
-        }
-      );
+        },
+      });
     }
   }
 }

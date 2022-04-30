@@ -8,8 +8,6 @@ import { ColumnType } from "../table/column-type.enum";
 import { RelOp } from "./rel-op.enum";
 
 export class RelationalOperator {
-  // public static LIST_ALL = "<alle>";
-
   public execute: (
     fieldContent: string | Array<unknown> | number | Date,
     compare: string | number | Date,

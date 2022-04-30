@@ -4,6 +4,7 @@ import { ColumnFilter } from "./column-filter";
 export interface UserSettings {
   path: string;
   debug?: boolean;
+  showNavMenu?: boolean;
 
   // AP-Page
   showStandort?: boolean;

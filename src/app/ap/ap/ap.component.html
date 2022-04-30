@@ -283,7 +283,12 @@
     <!--      <mat-icon>close</mat-icon>-->
     <!--      Alle Filter löschen-->
     <!--    </button>-->
-    <button mat-menu-item class="menue-entry" (click)="apService.toggleStandort()">
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.toggleStandort()"
+      title="Standort oder verantwortliche OE anzeigen"
+    >
       <mat-icon>home</mat-icon>
       Standort anzeigen
       <span class="fill"></span>
@@ -295,6 +300,7 @@
       mat-menu-item
       class="menue-entry"
       (click)="apService.userSettings.searchSonstHw = !apService.userSettings.searchSonstHw"
+      title="Suchfeld sucht auch in sonstiger HW"
     >
       <mat-icon>devices</mat-icon>
       Suche in sonstiger HW
@@ -307,12 +313,26 @@
       mat-menu-item
       class="menue-entry"
       (click)="apService.tableWrapCell = !apService.tableWrapCell"
+      title="Zeilenumbruch in der Tabelle zulassen"
     >
       <mat-icon>wrap_text</mat-icon>
       Zeilenumbruch
       <span class="fill"></span>
       <mat-icon class="menue-checkbox">{{
         apService.tableWrapCell ? "check_box" : "check_box_outline_blank"
+      }}</mat-icon>
+    </button>
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.userSettings.showNavMenu = !apService.userSettings.showNavMenu"
+      title="Hauptnavigation als Menü oder einzelne Buttons"
+    >
+      <mat-icon>menu</mat-icon>
+      Navigation als Menü
+      <span class="fill"></span>
+      <mat-icon class="menue-checkbox">{{
+        apService.userSettings.showNavMenu ? "check_box" : "check_box_outline_blank"
       }}</mat-icon>
     </button>
     <button

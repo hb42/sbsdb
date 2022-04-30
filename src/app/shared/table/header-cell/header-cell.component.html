@@ -1,4 +1,4 @@
-<span mat-sort-header class="sort-header">
+<span mat-sort-header="" class="sort-header">
   <!-- die ngIf-Bedingung ist noetig, weil eine Aenderung am Text nicht erkannt wird -->
   <sbsdb-accelerator-string
     [text]="column.displayName"
@@ -24,8 +24,7 @@
     *ngIf="column.isDropdown()"
     [tabIndex]="column.tabIndex"
   >
-    <!-- liefert undefined als value -->
-    <option>&lt;alle&gt;</option>
+    <option value="">{{ classSbsdbColumnRef.EMPTY_OPTION }}</option>
     <option *ngFor="let sel of column.selectList" [ngValue]="sel">
       {{ sel }}
     </option>

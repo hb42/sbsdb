@@ -29,6 +29,8 @@ export class HeaderCellComponent implements AfterViewInit {
    */
   @Input() public size: string; // "XS", "s", "M"
 
+  public classSbsdbColumnRef = SbsdbColumn;
+
   constructor(private elementRef: ElementRef) {
     console.debug("c'tor HeadCellComponent");
   }

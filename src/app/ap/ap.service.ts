@@ -2,6 +2,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { firstValueFrom } from "rxjs";
 import {
   KEY_SORT_AP,
   KEY_SORT_BEZ,
@@ -206,7 +207,6 @@ export class ApService {
     if (this.electronService.isElectron) {
       void this.electronService.exec(job, ap).then((result) => {
         if (result) {
-          console.debug("Rückmeldung für " + job + ": rc=" + result.rc + " " + result.info);
           // fuer rc = 0 sollte das externe Programm das Feedback uebernehmen
           switch (result.rc) {
             case 1:
@@ -683,21 +683,23 @@ export class ApService {
       pageSize = DataService.defaultpageSize;
     }
     // Anzahl der Datensaetze
-    const recs = (await this.dataService.get(this.dataService.countApUrl).toPromise()) as number;
+    const recs = (await firstValueFrom(this.dataService.get(this.dataService.countApUrl), {
+      defaultValue: 0,
+    })) as number;
     // zu holende Seiten
     const count = Math.ceil(recs / pageSize);
     let fetched = 0;
     for (let page = 0; page < count; page++) {
-      this.dataService.get(`${this.dataService.pageApsUrl}${page}/${pageSize}`).subscribe(
-        (aps: Arbeitsplatz[]) => {
+      this.dataService.get(`${this.dataService.pageApsUrl}${page}/${pageSize}`).subscribe({
+        next: (aps: Arbeitsplatz[]) => {
           console.debug("fetch AP page #", page, " size=", aps.length);
           //      aps.forEach((ap) => this.dataService.prepareAP(ap));
           this.dataService.apList = [...this.dataService.apList, ...aps];
         },
-        (err) => {
+        error: (err) => {
           console.error("ERROR loading AP-Data ", err);
         },
-        () => {
+        complete: () => {
           each();
           fetched++;
           if (fetched === count) {
@@ -707,13 +709,13 @@ export class ApService {
             // ready.emit();
             // this.onDataReady();
           }
-        }
-      );
+        },
+      });
     }
   }
 
   public async getTagTypes(): Promise<TagTyp[]> {
-    const rc = await this.dataService.get(this.dataService.allTagTypesUrl).toPromise();
+    const rc = await firstValueFrom(this.dataService.get(this.dataService.allTagTypesUrl));
     console.debug("got tagtypes");
     return rc as TagTyp[];
   }

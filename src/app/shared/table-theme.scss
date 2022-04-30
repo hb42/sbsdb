@@ -103,8 +103,10 @@
 
   .detail-cell-bemerk {
     white-space: pre-wrap;
-    margin-top: 25px;
+    margin-top: 15px;
     margin-bottom: 25px;
+    padding: 4px 15px;
+    max-width: 600px;
   }
 
   .detail-cell-bemerk-td {

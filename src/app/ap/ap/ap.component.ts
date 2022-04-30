@@ -145,23 +145,23 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public sortHeading(column: string): string {
-    const col = GetColumn(column, this.apService.columns);
-    if (col) {
-      return col.displayName;
-    } else {
-      return "";
-    }
-  }
-
-  public sortAccel(column: string): string {
-    const col = GetColumn(column, this.apService.columns);
-    if (col) {
-      return col.accelerator;
-    } else {
-      return "";
-    }
-  }
+  // public sortHeading(column: string): string {
+  //   const col = GetColumn(column, this.apService.columns);
+  //   if (col) {
+  //     return col.displayName;
+  //   } else {
+  //     return "";
+  //   }
+  // }
+  //
+  // public sortAccel(column: string): string {
+  //   const col = GetColumn(column, this.apService.columns);
+  //   if (col) {
+  //     return col.accelerator;
+  //   } else {
+  //     return "";
+  //   }
+  // }
 
   public getColumn(name: string): SbsdbColumn<unknown, unknown> {
     return GetColumn(name, this.apService.columns);

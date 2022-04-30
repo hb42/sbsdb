@@ -7,8 +7,6 @@ import { UserSession } from "../config/user.session";
 import { CsvDialogData } from "../csv-dialog/csv-dialog-data";
 import { CsvDialogComponent } from "../csv-dialog/csv-dialog.component";
 import { DataService } from "../data.service";
-import { EditDialogData } from "../edit/edit-dialog/edit-dialog-data";
-import { EditDialogComponent } from "../edit/edit-dialog/edit-dialog.component";
 import { BOM, Download, GetColumn, GetFieldContent } from "../helper";
 import { BaseTableRow } from "../model/base-table-row";
 import { NavigationService } from "../navigation.service";
@@ -74,21 +72,6 @@ export abstract class BaseFilterService {
   ) {
     console.debug("c'tor BaseFilterService");
     this.userSettings = configService.getUser();
-  }
-
-  public testEdit(): void {
-    const dialogRef = this.dialog.open(EditDialogComponent, {
-      disableClose: true,
-      data: { name: "noch'n Test" } as EditDialogData,
-    });
-
-    // Dialog-Ergebnis
-    dialogRef.afterClosed().subscribe((result: EditDialogData) => {
-      console.debug("dialog closed");
-      if (result) {
-        console.dir(result);
-      }
-    });
   }
 
   /**

@@ -268,12 +268,30 @@
   <!-- Header-Menue -->
   <mat-menu #tableMenu="matMenu">
     <ng-template matMenuContent>
-      <button mat-menu-item class="menue-entry" (click)="hwService.toggleFremdeHw()">
+      <button
+        mat-menu-item
+        class="menue-entry"
+        (click)="hwService.toggleFremdeHw()"
+        title="Auch fremde Hardware anzeigen"
+      >
         <mat-icon>devices</mat-icon>
         Fremde HW anzeigen
         <span class="fill"></span>
         <mat-icon class="menue-checkbox">{{
           hwService.userSettings.showFremde ? "check_box" : "check_box_outline_blank"
+        }}</mat-icon>
+      </button>
+      <button
+        mat-menu-item
+        class="menue-entry"
+        (click)="hwService.userSettings.showNavMenu = !hwService.userSettings.showNavMenu"
+        title="Hauptnavigation als Menü oder einzelne Buttons"
+      >
+        <mat-icon>menu</mat-icon>
+        Navigation als Menü
+        <span class="fill"></span>
+        <mat-icon class="menue-checkbox">{{
+          hwService.userSettings.showNavMenu ? "check_box" : "check_box_outline_blank"
         }}</mat-icon>
       </button>
       <!--    <button mat-menu-item class="menue-entry" (click)="extendedFilter()">-->

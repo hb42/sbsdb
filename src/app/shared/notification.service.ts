@@ -3,6 +3,7 @@ import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { ConfigService } from "./config/config.service";
 import { AddHwTransport } from "./model/add-hw-transport";
 import { ApTransport } from "./model/ap-transport";
+import { HwKonfig } from "./model/hw-konfig";
 import { HwTransport } from "./model/hw-transport";
 
 @Injectable({
@@ -12,7 +13,7 @@ export class NotificationService {
   public apChange: EventEmitter<ApTransport> = new EventEmitter<ApTransport>();
   public hwChange: EventEmitter<HwTransport> = new EventEmitter<HwTransport>();
   public addHw: EventEmitter<AddHwTransport> = new EventEmitter<AddHwTransport>();
-  // TODO public hwKonfigChange: EventEmitter<HwTransport> = new EventEmitter<HwKonfigTransport>();
+  public konfigChange: EventEmitter<HwKonfig> = new EventEmitter<HwKonfig>();
   private hubConnection: HubConnection | undefined;
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -51,6 +52,12 @@ export class NotificationService {
         console.debug("## Event addhw");
         console.dir(data);
         this.addHw.emit(data);
+      });
+
+      this.hubConnection.on("konfigchange", (data: HwKonfig) => {
+        console.debug("## Event konfigchange");
+        console.dir(data);
+        this.konfigChange.emit(data);
       });
 
       this.hubConnection.onclose((err: Error) => {

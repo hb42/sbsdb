@@ -14,9 +14,11 @@ import { ExtProg } from "./model/ext-prog";
 import { Hardware } from "./model/hardware";
 import { HwKonfig } from "./model/hw-konfig";
 import { HwTransport } from "./model/hw-transport";
+import { HwTyp } from "./model/hw-typ";
 import { TagTyp } from "./model/tagTyp";
 import { Vlan } from "./model/vlan";
 import { NotificationService } from "./notification.service";
+import { StatusService } from "./status.service";
 
 @Injectable({
   providedIn: "root",
@@ -35,6 +37,7 @@ export class DataService {
   public tagTypList: TagTyp[] = [];
   public vlanList: Vlan[] = [];
   public aptypList: ApTyp[] = [];
+  public hwtypList: HwTyp[] = [];
   public extProgList: ExtProg[] = [];
 
   // Signale fuer das Laden der benoetigten Daten:
@@ -55,9 +58,11 @@ export class DataService {
   public tagTypListReady: EventEmitter<void> = new EventEmitter<void>();
   public vlanListReady: EventEmitter<void> = new EventEmitter<void>();
   public aptypListReady: EventEmitter<void> = new EventEmitter<void>();
+  public hwtypListReady: EventEmitter<void> = new EventEmitter<void>();
 
   public apListChanged: EventEmitter<void> = new EventEmitter<void>();
   public hwListChanged: EventEmitter<void> = new EventEmitter<void>();
+  public hwKonfigListChanged: EventEmitter<void> = new EventEmitter<void>();
 
   // Web-API calls
   public readonly oeTreeUrl: string;
@@ -73,8 +78,10 @@ export class DataService {
   public readonly allTagTypesUrl: string;
   public readonly allVlansUrl: string;
   public readonly allApTypUrl: string;
+  public readonly allHwTypUrl: string;
   public readonly changeApUrl: string;
   public readonly changeHwUrl: string;
+  public readonly changeKonfigUrl: string;
   public readonly addHwUrl: string;
   public readonly hwHistoryUrl: string;
   public readonly extProgUrl: string;
@@ -93,10 +100,15 @@ export class DataService {
   private hwlistready = false;
   private hwkonfiglistready = false;
 
+  private static prepKonfigBezeichnung(conf: HwKonfig) {
+    conf.konfiguration = conf.hersteller + " - " + conf.bezeichnung;
+  }
+
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private statusService: StatusService
   ) {
     console.debug("c'tor DataService");
 
@@ -113,10 +125,12 @@ export class DataService {
     this.allTagTypesUrl = this.configService.webservice + "/ap/tagtypes";
     this.allVlansUrl = this.configService.webservice + "/ap/vlans";
     this.allApTypUrl = this.configService.webservice + "/ap/aptypes";
+    this.allHwTypUrl = this.configService.webservice + "/hw/hwtypes";
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
     this.changeHwUrl = this.configService.webservice + "/hw/changehw";
     this.addHwUrl = this.configService.webservice + "/hw/addhw";
+    this.changeKonfigUrl = this.configService.webservice + "/hwkonfig/changekonfig";
 
     this.hwHistoryUrl = this.configService.webservice + "/hw/hwhistoryfor";
 
@@ -153,6 +167,7 @@ export class DataService {
     this.fetchTagTypList();
     this.fetchVlanList();
     this.fetchApTypList();
+    this.fetchHwTypList();
 
     notification.initialize();
 
@@ -189,32 +204,67 @@ export class DataService {
       this.hwListChanged.emit();
     });
 
-    // TODO hwKonfig-Aenderung
-    // notification.hwKonfigChange.subscribe((data) => {
-    //   console.debug("dataService start update hwKonfig");
-    //   this.updateHwKonfig(data);
-    //   -> update list ...
-    //      this.apList.forEach((ap) => {
-    //        this.updateApHw(ap.apId);
-    //      })
-    //
-    //   this.updateHwKonfigListCount();
-    //   --- TODO auslagern
-    //   if (!notification.isOpen()) {
-    //     console.debug("reopening Notification");
-    //     notification.initialize();
-    //   }
-    //   ---
-    //   this.hwKonfigListChanged.emit();
-    // });
+    notification.konfigChange.subscribe((data) => {
+      console.debug("dataService start update hwKonfig");
+      const chg = this.hwKonfigList.find((k) => k.id === data.id);
+      if (chg) {
+        // change
+        chg.ram = data.ram;
+        chg.bezeichnung = data.bezeichnung;
+        chg.hd = data.hd;
+        chg.sonst = data.sonst;
+        chg.video = data.video;
+        chg.prozessor = data.prozessor;
+        chg.hersteller = data.hersteller;
+        DataService.prepKonfigBezeichnung(chg);
+
+        let refreshap = false;
+        this.hwList.forEach((hw) => {
+          if (hw.hwKonfigId === chg.id && hw.ap) {
+            this.updateApHw(hw.apId);
+            refreshap = true;
+          }
+        });
+        if (refreshap) {
+          this.apListChanged.emit();
+        }
+        this.hwListChanged.emit();
+      } else {
+        // new
+        this.hwKonfigList.push(data);
+        DataService.prepKonfigBezeichnung(data);
+        data.deviceCount = 0;
+        data.apCount = 0;
+      }
+      this.hwKonfigListChanged.emit();
+
+      if (!notification.isOpen()) {
+        console.debug("reopening Notification");
+        notification.initialize();
+      }
+    });
   }
 
   public get(url: string): Observable<unknown> {
     return this.http.get(url);
   }
 
-  public post(url: string, data: unknown): Observable<unknown> {
-    return this.http.post(url, data).pipe(catchError(this.handleError));
+  public post(url: string, data: unknown): void {
+    this.http
+      .post(url, data)
+      .pipe(catchError(this.handleError))
+      .subscribe({
+        next: (a: never) => {
+          console.debug("post succeeded");
+          console.dir(a);
+          this.statusService.info("Änderungen erfolgreich gespeichert.");
+        },
+        error: (err: Error) => {
+          console.error("Error " + err.message);
+          console.dir(err);
+          this.statusService.error("Fehler beim Speichern: " + err.message);
+        },
+      });
   }
 
   public isDataReady(): boolean {
@@ -225,9 +275,9 @@ export class DataService {
     return this.aplistfetched;
   }
 
-  public isApListReady(): boolean {
-    return this.aplistready;
-  }
+  // public isApListReady(): boolean {
+  //   return this.aplistready;
+  // }
 
   public isBstListReady(): boolean {
     return this.bstlistready;
@@ -270,6 +320,13 @@ export class DataService {
     });
   }
 
+  public fetchHwTypList(): void {
+    this.get(this.allHwTypUrl).subscribe((t: HwTyp[]) => {
+      this.hwtypList = t;
+      this.hwtypListReady.emit();
+    });
+  }
+
   public fetchExtProgList(): void {
     this.get(this.extProgUrl).subscribe((e: ExtProg[]) => {
       this.extProgList = e;
@@ -297,7 +354,7 @@ export class DataService {
    */
   public updateHwKonfigListCount(): void {
     this.hwKonfigList.forEach((conf) => {
-      conf.konfiguration = conf.hersteller + " - " + conf.bezeichnung;
+      DataService.prepKonfigBezeichnung(conf);
       let count = 0;
       let inuse = 0;
       for (let i = 0; i < this.hwList.length; i++) {
@@ -372,6 +429,14 @@ export class DataService {
   public isFremderApTyp(aptyp: ApTyp): boolean {
     if (aptyp) {
       return (aptyp.flag & DataService.FREMDE_HW_FLAG) > 0;
+    } else {
+      return false;
+    }
+  }
+
+  public isFremderHwTyp(hwtyp: HwTyp): boolean {
+    if (hwtyp) {
+      return (hwtyp.flag & DataService.FREMDE_HW_FLAG) > 0;
     } else {
       return false;
     }
@@ -751,6 +816,6 @@ export class DataService {
       console.error(`Backend returned code ${error.status}, ` + `body was: `, error.error);
     }
     // Return an observable with a user-facing error message.
-    return throwError("Something bad happened; please try again later.");
+    return throwError(() => new Error("Something bad happened; please try again later."));
   };
 }

@@ -24,7 +24,8 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { ConfDetailCellComponent } from "./conf/conf-detail-cell/conf-detail-cell.component";
 import { ConfComponent } from "./conf/conf/conf.component";
-import { EditConfigDialogComponent } from "./hw/edit-config-dialog/edit-config-dialog.component";
+import { EditConfigDialogComponent } from "./conf/edit-config-dialog/edit-config-dialog.component";
+import { EditConfigComponent } from "./conf/edit-config/edit-config.component";
 import { EditHwApComponent } from "./hw/edit-hw-ap/edit-hw-ap.component";
 import { EditHwHwComponent } from "./hw/edit-hw-hw/edit-hw-hw.component";
 import { EditHwMacComponent } from "./hw/edit-hw-mac/edit-hw-mac.component";
@@ -137,6 +138,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     ConfDetailCellComponent,
     HwAussondDialogComponent,
     EditVlanComponent,
+    EditConfigComponent,
   ],
   imports: [
     BrowserModule,

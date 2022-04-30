@@ -10,6 +10,17 @@
   font-size: 26px;
 }
 
+.btn-menu {
+  display: flex;
+  flex-direction: row;
+}
+.menu-btn {
+  margin-right: 15px;
+}
+.menu-icon {
+  padding-right: 10px;
+}
+
 .page-btn {
   width: 160px;
   min-width: 160px;
@@ -17,8 +28,9 @@
 }
 
 .mat-stroked-button {
-  font-size: large;
+  //font-size: large;
   border-color: rgba(0,0,0,0.5);
+  color: white;
 }
 
 .dd-icon {
@@ -32,4 +44,13 @@
 }
 .mat-raised-button:not(.mat-button-disabled):hover {
   background-color: var(--md-row-active-background-color);
+}
+.mat-stroked-button:not(.mat-button-disabled):hover {
+  background-color: rgba(0,0,0,0.3);
+}
+
+.mat-button-disabled.routerlinkactive {
+  background-color: var(--md-details-background-color);
+  color: rgba(0,0,0,0.4);
+  border-bottom: solid 3px darkorange;
 }

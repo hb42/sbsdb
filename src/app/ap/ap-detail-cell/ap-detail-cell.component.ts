@@ -2,7 +2,6 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { Component, Input } from "@angular/core";
 import { DataService } from "../../shared/data.service";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
-import { Hardware } from "../../shared/model/hardware";
 import { ApService } from "../ap.service";
 
 @Component({
@@ -22,10 +21,6 @@ export class ApDetailCellComponent {
 
   constructor(public apService: ApService) {
     // noop
-  }
-
-  public isFremdeHw(hw: Hardware): boolean {
-    return this.apService.dataService.isFremdeHardware(hw);
   }
 
   public isBoolTag(flag: number): boolean {
