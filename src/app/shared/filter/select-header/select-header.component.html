@@ -1,8 +1,4 @@
-<button
-  style="font-size: 18px; width: 16px"
-  mat-icon-button
-  (click)="filterService.toggleSelection()"
->
+<button class="btn-sel" mat-icon-button (click)="filterService.toggleSelection()">
   <mat-icon
     inline
     title="Nur Ausgewählte anzeigen"
@@ -21,6 +17,7 @@
   </mat-icon>
 </button>
 <mat-checkbox
+  class="btn-check"
   (change)="$event ? filterService.masterToggle() : null"
   [checked]="filterService.isAllSelected()"
   [indeterminate]="filterService.isSelected() && !filterService.isAllSelected()"

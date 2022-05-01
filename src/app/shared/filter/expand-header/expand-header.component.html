@@ -1,14 +1,6 @@
-<button
-  style="font-size: 18px; height: 1px"
-  mat-icon-button
-  (click)="filterService.expandAllRows()"
->
+<button class="exp-btn" mat-icon-button (click)="filterService.expandAllRows()">
   <mat-icon inline title="Alle aufklappen" color="primary">web_asset </mat-icon>
 </button>
-<button
-  style="font-size: 18px; height: 1px"
-  mat-icon-button
-  (click)="filterService.collapseAllRows()"
->
+<button class="exp-btn" mat-icon-button (click)="filterService.collapseAllRows()">
   <mat-icon inline title="Alle zuklappen" color="primary">maximize </mat-icon>
 </button>

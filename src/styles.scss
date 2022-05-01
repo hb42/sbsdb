@@ -152,7 +152,7 @@ sbsdb-foot {
 /* ap.component */
 .bst-tooltip {
   white-space: pre-wrap;
-  font-family: "Roboto Mono";
+  font-family: "Roboto Mono", sans-serif;
   font-size: 11px;
   max-width: 300px !important;
 }
@@ -246,10 +246,7 @@ table:not(.wrap-cell) .mat-cell > div {
 // mat-card custom title
 
 .card-title {
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 16px;
-  padding-right: 8px;
+  padding: 5px 8px 5px 16px;
   border-radius: 4px;
   display: flex;
   flex-direction: row;
@@ -264,13 +261,44 @@ table:not(.wrap-cell) .mat-cell > div {
   cursor: pointer;
 }
 
-.sub-table-link-button.mat-icon-button {
-  width: 14px;
-  height: 20px;
+// detail cell
+
+.sub-table {
+  min-width: 300px;
+  margin-bottom: 25px;
+}
+.sub-table-head-title {
+  float: left;
+}
+.sub-table-head-button {
+  float: right;
+}
+.sub-table-head-button .mat-icon-button {
+  height: 24px;
+  width: 24px;
   line-height: 16px;
-  left: -4px;
+  padding-left: 1px;
+}
+.sub-table-head-button .material-icons {
+  font-size: 18px;
+  line-height: 16px;
+}
+.edit-button {
+  color: gray;
+}
+
+.sub-table-link-button.mat-icon-button {
+  width: 22px;
+  height: 22px;
+  line-height: 16px;
 }
 .sub-table-link-button .material-icons {
   font-size: inherit;
   padding-bottom: 3px;
+}
+
+// hover-Effekt fuer iccon-button + stroked-button
+.mat-stroked-button:not(.mat-button-disabled):hover,
+.mat-icon-button:not(.mat-button-disabled):hover {
+  background-color: rgba(0,0,0,0.1);
 }

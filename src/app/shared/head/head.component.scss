@@ -45,12 +45,9 @@
 .mat-raised-button:not(.mat-button-disabled):hover {
   background-color: var(--md-row-active-background-color);
 }
-.mat-stroked-button:not(.mat-button-disabled):hover {
-  background-color: rgba(0,0,0,0.3);
-}
 
 .mat-button-disabled.routerlinkactive {
   background-color: var(--md-details-background-color);
-  color: rgba(0,0,0,0.4);
+  color: rgba(0,0,0,0.7);
   border-bottom: solid 3px darkorange;
 }
