@@ -191,6 +191,16 @@ export class ApService {
     this.filterService.triggerFilter();
   }
 
+  public toggleSonstHw(): void {
+    this.userSettings.searchSonstHw = !this.userSettings.searchSonstHw;
+    // falls ein Filter auf Spalte "Hardware" aktiv ist, so muss dieser erneut ausgefuehrt werden
+    const hwcol = GetColumn("hardware", this.columns);
+    if (hwcol && hwcol.filterControl.value) {
+      // setValue() triggert valueChanges-Event (s. BaseFilter#initService())
+      hwcol.filterControl.setValue(hwcol.filterControl.value);
+    }
+  }
+
   public extProgListFor(ap: Arbeitsplatz): ExtProg[] {
     if (!this.electronService.isElectron) {
       return [];

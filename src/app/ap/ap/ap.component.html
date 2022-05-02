@@ -299,9 +299,10 @@
     <button
       mat-menu-item
       class="menue-entry"
-      (click)="apService.userSettings.searchSonstHw = !apService.userSettings.searchSonstHw"
+      (click)="apService.toggleSonstHw()"
       title="Suchfeld sucht auch in sonstiger HW"
     >
+<!--      (click)="apService.userSettings.searchSonstHw = !apService.userSettings.searchSonstHw"-->
       <mat-icon>devices</mat-icon>
       Suche in sonstiger HW
       <span class="fill"></span>

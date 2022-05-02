@@ -29,8 +29,9 @@
 
 .mat-stroked-button {
   //font-size: large;
-  border-color: rgba(0,0,0,0.5);
   color: white;
+  border: 0;
+  border-bottom: 3px solid rgba(255,255,255,0.7);
 }
 
 .dd-icon {
@@ -47,7 +48,7 @@
 }
 
 .mat-button-disabled.routerlinkactive {
-  background-color: var(--md-details-background-color);
+  background-color: rgba(255,255,255,0.9);
   color: rgba(0,0,0,0.7);
-  border-bottom: solid 3px darkorange;
+  border-bottom: solid 3px rgba(255,140,0,0.8);
 }
