@@ -4,5 +4,5 @@ export class ExtProg {
   public program: string;
   public param: string;
   public flag: number;
-  public apkategorieId: number;
+  public aptypId: number;
 }
