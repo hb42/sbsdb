@@ -302,7 +302,7 @@
       (click)="apService.toggleSonstHw()"
       title="Suchfeld sucht auch in sonstiger HW"
     >
-<!--      (click)="apService.userSettings.searchSonstHw = !apService.userSettings.searchSonstHw"-->
+      <!--      (click)="apService.userSettings.searchSonstHw = !apService.userSettings.searchSonstHw"-->
       <mat-icon>devices</mat-icon>
       Suche in sonstiger HW
       <span class="fill"></span>
@@ -381,7 +381,7 @@
     <button
       *ngFor="let ext of apService.extProgListFor(ap)"
       mat-menu-item
-      (click)="apService.runProgram(ext.program, ap)"
+      (click)="apService.runProgram(ext, ap)"
     >
       <mat-icon>play_circle</mat-icon>
       {{ ext.bezeichnung }}

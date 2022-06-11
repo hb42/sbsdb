@@ -213,7 +213,7 @@ export class ApService {
     return allProgs.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
   }
 
-  public runProgram(job: string, ap: Arbeitsplatz) {
+  public runProgram(job: ExtProg, ap: Arbeitsplatz) {
     if (this.electronService.isElectron) {
       void this.electronService.exec(job, ap).then((result) => {
         if (result) {

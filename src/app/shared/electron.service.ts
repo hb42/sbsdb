@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { ElectronRc } from "./electron-rc";
+import { Arbeitsplatz } from "./model/arbeitsplatz";
+import { ExtProg } from "./model/ext-prog";
 
 // im electron-Startscript (bzw. im preload) wird 'electron' als globale Variable definiert:
 //   contextBridge.exposeInMainWorld("electron", { a: () => doSomething, ... });
@@ -8,7 +9,7 @@ import { ElectronRc } from "./electron-rc";
 interface LocalApi {
   test(msg: string): void;
   version(): string;
-  exec(job: string, ap: Arbeitsplatz): Promise<ElectronRc>;
+  exec(job: string, param: string, ap: Arbeitsplatz): Promise<ElectronRc>;
 }
 
 /**
@@ -43,9 +44,9 @@ export class ElectronService {
     }
   }
 
-  public async exec(job: string, ap: Arbeitsplatz): Promise<ElectronRc | null> {
+  public async exec(job: ExtProg, ap: Arbeitsplatz): Promise<ElectronRc | null> {
     if (this.isElectron) {
-      const result = await this.electron.exec(job, ap);
+      const result = await this.electron.exec(job.program, job.param, ap);
       console.debug("electron.exec ended rc=" + result.rc.toString() + ", msg=" + result.info);
       if (result.rc > 0) {
         return result;
@@ -54,7 +55,7 @@ export class ElectronService {
       }
     } else {
       // should not happen
-      console.error("Electron call while on browser. AP=" + ap.apname + ", Job=" + job);
+      console.error("Electron call while on browser. AP=" + ap.apname + ", Job=" + job.program);
       return { rc: 3, info: "Fehler: das funktioniert nur in der Standalone-Anwendung" };
     }
   }
