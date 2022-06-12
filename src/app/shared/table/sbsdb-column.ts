@@ -103,6 +103,10 @@ export class SbsdbColumn<C, E> {
     return this.outputtocsv;
   }
 
+  public get size(): string {
+    return this._size ?? "";
+  }
+
   constructor(
     private context: C,
     private colname: string,
@@ -116,7 +120,8 @@ export class SbsdbColumn<C, E> {
     private typekey: ColumnType,
     private op: RelOp[] | null, // erlaubte Verknuepfungen
     private selectlist: (() => string[]) | null, // soweit sinnvoll: no dup list fuer das Feld
-    private outputtocsv: boolean
+    private outputtocsv: boolean,
+    private _size?: string // param size f. sbsdb-header-cell
   ) {
     if (this.fieldName && this.show) {
       this.filtercontrol = new FormControl("");

@@ -1,10 +1,10 @@
 <mat-action-list class="btn-list">
   <button
     mat-raised-button
-    [routerLink]="admConfig"
+    [routerLink]="admConfigPath"
     class="adm-btn"
-    [color]="navigationService.currentPath === admConfig ? '' : 'primary'"
-    [skipLocationChange]="navigationService.currentPath === admConfig"
+    [color]="navigationService.currentPath === admConfigPath ? '' : 'primary'"
+    [skipLocationChange]="navigationService.currentPath === admConfigPath"
     title="Allgemeine Programmparameter"
   >
     Konfiguration
@@ -18,5 +18,25 @@
     title="Selbstdefinierte Filter allen Benutzern bereitstellen"
   >
     Globale Arbeitsplatzfilter
+  </button>
+  <button
+    mat-raised-button
+    [routerLink]="admAptypPath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admAptypPath"
+    [color]="navigationService.currentPath === admAptypPath ? '' : 'primary'"
+    title="AP-Typen bearbeiten"
+  >
+    AP-Typen
+  </button>
+  <button
+    mat-raised-button
+    [routerLink]="admExtprogPath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admExtprogPath"
+    [color]="navigationService.currentPath === admExtprogPath ? '' : 'primary'"
+    title="Externe Programmaufrufe zu AP-Typen zuordnen"
+  >
+    Externe Programme
   </button>
 </mat-action-list>

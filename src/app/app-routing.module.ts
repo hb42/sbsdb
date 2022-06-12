@@ -1,11 +1,15 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
+import { AdminPanelAptypComponent } from "./admin/admin-panel-aptyp/admin-panel-aptyp.component";
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
+import { AdminPanelExtprogComponent } from "./admin/admin-panel-extprog/admin-panel-extprog.component";
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ApComponent } from "./ap/ap/ap.component";
 import { ConfComponent } from "./conf/conf/conf.component";
 import {
+  ADM_APTYP_PATH,
+  ADM_EXTPROG_PATH,
   ADM_FILTER_PATH,
   ADM_OPTIONS_PATH,
   ADM_PATH,
@@ -28,16 +32,10 @@ const routes: Routes = [
     component: AdminComponent,
     canActivate: [AdminGuard],
     children: [
-      {
-        path: ADM_FILTER_PATH,
-        component: AdminPanelApFilterComponent,
-        canActivate: [AdminGuard],
-      },
-      {
-        path: ADM_OPTIONS_PATH,
-        component: AdminPanelConfigComponent,
-        canActivate: [AdminGuard],
-      },
+      { path: ADM_FILTER_PATH, component: AdminPanelApFilterComponent, canActivate: [AdminGuard] },
+      { path: ADM_OPTIONS_PATH, component: AdminPanelConfigComponent, canActivate: [AdminGuard] },
+      { path: ADM_APTYP_PATH, component: AdminPanelAptypComponent, canActivate: [AdminGuard] },
+      { path: ADM_EXTPROG_PATH, component: AdminPanelExtprogComponent, canActivate: [AdminGuard] },
     ],
   },
   { path: ERROR_PATH, component: ErrorComponent },

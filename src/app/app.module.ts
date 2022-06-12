@@ -65,6 +65,10 @@ import { PaginatorStatusDirective } from "./shared/table/paginator-status.direct
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
+import { AdminPanelExtprogComponent } from './admin/admin-panel-extprog/admin-panel-extprog.component';
+import { StdTableComponent } from './shared/table/std-table/std-table.component';
+import { AdminPanelAptypComponent } from './admin/admin-panel-aptyp/admin-panel-aptyp.component';
+import { EditAptypDialogComponent } from './admin/edit-aptyp-dialog/edit-aptyp-dialog.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -139,6 +143,10 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     HwAussondDialogComponent,
     EditVlanComponent,
     EditConfigComponent,
+    AdminPanelExtprogComponent,
+    StdTableComponent,
+    AdminPanelAptypComponent,
+    EditAptypDialogComponent,
   ],
   imports: [
     BrowserModule,

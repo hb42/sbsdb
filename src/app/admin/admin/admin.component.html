@@ -1,15 +1,25 @@
 <div class="flex-col">
-  <sbsdb-head [mainMenu]="tableMenu">
-    <!-- TODO Admin-Menue -->
+  <sbsdb-head
+    [mainMenu]="tableMenu"
+    [csv]="adminService.exportEvent"
+    [newElement]="adminService.newRecordEvent"
+    newTitle="Neuen Datensatz anlegen."
+    [disableButtons]="adminService.disableMainMenuButtons"
+  >
   </sbsdb-head>
 
-  <div class="flex-row">
-    <div class="flex-panel optionsPanel">
-      <sbsdb-admin-options></sbsdb-admin-options>
+  <div class="flex-content">
+    <div class="spinner-container" *ngIf="adminService.loading">
+      <mat-spinner></mat-spinner>
     </div>
+    <div class="flex-row" *ngIf="!adminService.loading">
+      <div class="flex-panel optionsPanel">
+        <sbsdb-admin-options></sbsdb-admin-options>
+      </div>
 
-    <div class="flex-panel flex-max listPanel">
-      <router-outlet></router-outlet>
+      <div class="flex-panel flex-max listPanel">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
 

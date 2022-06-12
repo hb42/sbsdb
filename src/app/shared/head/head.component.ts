@@ -47,6 +47,8 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
   @Input() public newTitle: string;
   @Input() public newElement: EventEmitter<void>;
   @Input() public mainMenu: MatMenu;
+  @Input() public csv: EventEmitter<void>; // alt. zu filterService: kein Filter, nur CSV-Output
+  @Input() public disableButtons: boolean; // f. StdTable/Adminpanel
 
   public userSettings: UserSession;
   public showMenu = false;
@@ -157,6 +159,14 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
       this.newElement.emit();
     }
   }
+  public csvBtnClick(): void {
+    if (this.filterService) {
+      void this.filterService.toCsv();
+    } else if (this.csv) {
+      this.csv.emit();
+    }
+  }
+
   public btnTitle(): string {
     let rc = "";
     this.navLinks.forEach((nav) => {

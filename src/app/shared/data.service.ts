@@ -6,6 +6,7 @@ import { catchError } from "rxjs/operators";
 import { ConfigService } from "./config/config.service";
 import { IpHelper } from "./ip-helper";
 import { AddHwTransport } from "./model/add-hw-transport";
+import { ApKategorie } from "./model/ap-kategorie";
 import { ApTransport } from "./model/ap-transport";
 import { ApTyp } from "./model/ap-typ";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
@@ -37,6 +38,7 @@ export class DataService {
   public tagTypList: TagTyp[] = [];
   public vlanList: Vlan[] = [];
   public aptypList: ApTyp[] = [];
+  public apkatList: ApKategorie[] = [];
   public hwtypList: HwTyp[] = [];
   public extProgList: ExtProg[] = [];
 
@@ -78,6 +80,7 @@ export class DataService {
   public readonly allTagTypesUrl: string;
   public readonly allVlansUrl: string;
   public readonly allApTypUrl: string;
+  public readonly allApKatUrl: string;
   public readonly allHwTypUrl: string;
   public readonly changeApUrl: string;
   public readonly changeHwUrl: string;
@@ -125,6 +128,7 @@ export class DataService {
     this.allTagTypesUrl = this.configService.webservice + "/ap/tagtypes";
     this.allVlansUrl = this.configService.webservice + "/ap/vlans";
     this.allApTypUrl = this.configService.webservice + "/ap/aptypes";
+    this.allApKatUrl = this.configService.webservice + "/ap/apkat";
     this.allHwTypUrl = this.configService.webservice + "/hw/hwtypes";
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
@@ -316,7 +320,10 @@ export class DataService {
   public fetchApTypList(): void {
     this.get(this.allApTypUrl).subscribe((t: ApTyp[]) => {
       this.aptypList = t;
-      this.aptypListReady.emit();
+      this.get(this.allApKatUrl).subscribe((k: ApKategorie[]) => {
+        this.apkatList = k;
+        this.aptypListReady.emit();
+      });
     });
   }
 

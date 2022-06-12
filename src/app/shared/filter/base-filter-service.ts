@@ -4,10 +4,8 @@ import { Base64 } from "js-base64";
 import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../config/config.service";
 import { UserSession } from "../config/user.session";
-import { CsvDialogData } from "../csv-dialog/csv-dialog-data";
-import { CsvDialogComponent } from "../csv-dialog/csv-dialog.component";
 import { DataService } from "../data.service";
-import { BOM, Download, GetColumn, GetFieldContent } from "../helper";
+import { GetColumn, OutputToCsv } from "../helper";
 import { BaseTableRow } from "../model/base-table-row";
 import { NavigationService } from "../navigation.service";
 import { ColumnType } from "../table/column-type.enum";
@@ -590,75 +588,71 @@ export abstract class BaseFilterService {
   /**
    * CSV ausgeben
    *
-   * Mal sehen ...
-   * das duerfte Overkill sein:
-   * https://www.npmjs.com/package/mat-table-exporter
-   * einfacherer Ansatz:
-   * https://www.npmjs.com/package/mat-table-exporter
    */
   public async toCsv(): Promise<void> {
     // csv-separator als Parameter in DB (wenn sich's M$ mal wieder anders ueberlegt)
-    let separator: string =
+    const separator: string =
       ((await this.configService.getConfig(ConfigService.CSV_SEPARATOR)) as string) ??
       BaseFilterService.DEFAULT_CSV_SEPARATOR;
+    OutputToCsv(this.columns, this.dataTable, separator, this.dialog);
     // separator \t wird in der DB als "TAB" gespeichert
-    separator = separator === BaseFilterService.DEFAULT_CSV_SEPARATOR_TAB ? "\t" : separator;
-    const replacer = (key, value: unknown) => (value === null ? "" : value); // specify how you want to handle null values here
-    let csvCols = this.columns.filter((co) => co.outputToCsv);
-
-    // Dialog oeffnen
-    const dialogRef = this.dialog.open(CsvDialogComponent, {
-      disableClose: true,
-      data: { all: true, fields: csvCols, resultList: [] } as CsvDialogData,
-    });
-
-    // Dialog-Ergebnis
-    dialogRef.afterClosed().subscribe((result: CsvDialogData) => {
-      if (result) {
-        if (!result.all) {
-          // nur eine Teilmengwe der Felder ausgeben
-          csvCols = result.resultList;
-        }
-        // header
-        const header: string[] = csvCols.map((c) => c.displayName);
-        // data
-        const csv: string[] = [
-          header.join(separator),
-          ...this.dataTable.filteredData.map((row) =>
-            csvCols
-              .map((col) => {
-                let content;
-                // fuer Number/Date muss die jew. Foramtierung in column.displayName definiert werden
-                if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
-                  content = col.displayText(row);
-                } else {
-                  // fuer alle anderen den Feldinhalt holen (ggf. aus mehreren Feldern)
-                  if (Array.isArray(col.fieldName)) {
-                    content = col.fieldName.reduce(
-                      (prev, curr) =>
-                        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                        (prev += (prev ? " / " : "") + GetFieldContent(row, curr) ?? ""),
-                      ""
-                    );
-                  } else {
-                    content = GetFieldContent(row, col.fieldName);
-                  }
-                }
-                const line = content ? JSON.stringify(content, replacer) : "";
-                // JSON.stringify escaped " als \", das versteht Excel nicht -> ersetzen mit ""
-                return line.replace(/\\"/g, '""');
-              })
-              .join(separator)
-          ),
-        ];
-        const csvblob: string = csv.join("\n");
-        // Excel versteht UTF-8 nur mit BOM (Microsoft halt);
-        const blob: Blob = new Blob([BOM, csvblob], {
-          type: "text/csv;charset=utf-8",
-        });
-        Download(blob, "sbsdb.csv");
-      }
-    });
+    // separator = separator === BaseFilterService.DEFAULT_CSV_SEPARATOR_TAB ? "\t" : separator;
+    // const replacer = (key, value: unknown) => (value === null ? "" : value); // specify how you want to handle null values here
+    // let csvCols = this.columns.filter((co) => co.outputToCsv);
+    //
+    // // Dialog oeffnen
+    // const dialogRef = this.dialog.open(CsvDialogComponent, {
+    //   disableClose: true,
+    //   data: { all: true, fields: csvCols, resultList: [] } as CsvDialogData,
+    // });
+    //
+    // // Dialog-Ergebnis
+    // dialogRef.afterClosed().subscribe((result: CsvDialogData) => {
+    //   if (result) {
+    //     if (!result.all) {
+    //       // nur eine Teilmengwe der Felder ausgeben
+    //       csvCols = result.resultList;
+    //     }
+    //     // header
+    //     const header: string[] = csvCols.map((c) => c.displayName);
+    //     // data
+    //     const csv: string[] = [
+    //       header.join(separator),
+    //       ...this.dataTable.filteredData.map((row) =>
+    //         csvCols
+    //           .map((col) => {
+    //             let content;
+    //             // fuer Number/Date muss die jew. Foramtierung in column.displayName definiert werden
+    //             if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
+    //               content = col.displayText(row);
+    //             } else {
+    //               // fuer alle anderen den Feldinhalt holen (ggf. aus mehreren Feldern)
+    //               if (Array.isArray(col.fieldName)) {
+    //                 content = col.fieldName.reduce(
+    //                   (prev, curr) =>
+    //                     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+    //                     (prev += (prev ? " / " : "") + GetFieldContent(row, curr) ?? ""),
+    //                   ""
+    //                 );
+    //               } else {
+    //                 content = GetFieldContent(row, col.fieldName);
+    //               }
+    //             }
+    //             const line = content ? JSON.stringify(content, replacer) : "";
+    //             // JSON.stringify escaped " als \", das versteht Excel nicht -> ersetzen mit ""
+    //             return line.replace(/\\"/g, '""');
+    //           })
+    //           .join(separator)
+    //       ),
+    //     ];
+    //     const csvblob: string = csv.join("\n");
+    //     // Excel versteht UTF-8 nur mit BOM (Microsoft halt);
+    //     const blob: Blob = new Blob([BOM, csvblob], {
+    //       type: "text/csv;charset=utf-8",
+    //     });
+    //     Download(blob, "sbsdb.csv");
+    //   }
+    // });
   }
 
   private async readGlobalFilters() {

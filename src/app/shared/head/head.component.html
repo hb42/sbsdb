@@ -76,6 +76,7 @@
     title="Erweiterte Suche (Alt+E)"
     (click)="filterService.toggleExtendedFilter()"
     [class.ext-filter-button-select]="!filterService.stdFilter"
+    [disabled]="disableButtons"
   >
     <mat-icon>search</mat-icon>
   </button>
@@ -84,24 +85,27 @@
     mat-icon-button
     title="Alle Filter löschen (Alt+L)"
     (click)="filterService.resetFilters()"
-    [disabled]="filterService.filterExpression.isEmpty() && filterService.stdFilter"
+    [disabled]="
+      (filterService.filterExpression.isEmpty() && filterService.stdFilter) || disableButtons
+    "
   >
     <mat-icon>search_off</mat-icon>
   </button>
   <span class="menu-spacer" *ngIf="filterService">|</span>
   <button
-    *ngIf="filterService"
+    *ngIf="filterService || csv"
     mat-icon-button
     title="Als CSV ausgeben (Alt+X)"
-    (click)="filterService.toCsv()"
+    (click)="csvBtnClick()"
+    [disabled]="disableButtons"
   >
-          <mat-icon>ios_share</mat-icon>
-<!--    <mat-icon>file_download</mat-icon>-->
+    <mat-icon>ios_share</mat-icon>
+    <!--    <mat-icon>file_download</mat-icon>-->
   </button>
   <span class="menu-spacer" *ngIf="filterService">|</span>
   <button
     *ngIf="newElement"
-    [disabled]="!userSettings.isAdmin"
+    [disabled]="!userSettings.isAdmin || disableButtons"
     mat-icon-button
     [title]="newTitle + ' (Alt+N)'"
     (click)="newBtnClick()"

@@ -8,6 +8,8 @@ export const CONF_PATH = "conf";
 export const ADM_PATH = "admin";
 export const ADM_FILTER_PATH = "apfilter";
 export const ADM_OPTIONS_PATH = "config";
+export const ADM_APTYP_PATH = "aptyp";
+export const ADM_EXTPROG_PATH = "extprog";
 export const ERROR_PATH = "error";
 
 /**
