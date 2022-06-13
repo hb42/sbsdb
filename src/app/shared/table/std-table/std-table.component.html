@@ -84,7 +84,7 @@
       <mat-icon>add_to_queue</mat-icon>
       {{ recordName }} anlegen
     </button>
-    <button mat-menu-item *ngIf="userSettings.isAdmin" (click)="delRecord(row)">
+    <button mat-menu-item *ngIf="userSettings.isAdmin" (click)="delRecord(row)" [disabled]="row.inUse">
       <mat-icon>delete_forever</mat-icon>
       {{ recordName }} löschen
     </button>

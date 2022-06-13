@@ -143,6 +143,7 @@ export class DataService {
     const readyEventCheck = () => {
       if (this.isDataReady()) {
         console.debug("## all data ready");
+        this.apTypDeps();
         this.dataReady.emit();
       }
     };
@@ -449,6 +450,18 @@ export class DataService {
     }
   }
 
+  private apTypDeps(): void {
+    // select count(aptypId) from ap group by aptypId
+    const apcount = this.apList.reduce(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      (prev, curr) => ((prev[curr.apTypId] = ((prev[curr.apTypId] as number) || 0) + 1), prev),
+      {}
+    );
+    Object.keys(apcount).forEach((k) => {
+      const apt = this.aptypList.find((at) => at.id.toString(10) == k);
+      apt.inUse = apcount[k] as number;
+    });
+  }
   // OE-Hierarchie aufbauen
   // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
   private prepBst() {

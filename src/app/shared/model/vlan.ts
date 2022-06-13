@@ -3,4 +3,6 @@ export class Vlan {
   ip: number;
   netmask: number;
   bezeichnung: string;
+  // berechnet
+  public inUse?: number;
 }

@@ -5,4 +5,6 @@ export class TagTyp {
   public param: string;
   public apKategorieId: number;
   public apkategorie: string;
+  // berechnet
+  public inUse?: number;
 }

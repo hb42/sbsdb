@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSort } from "@angular/material/sort";
+import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../../config/config.service";
@@ -34,6 +34,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   @Input() public newEvent: EventEmitter<void>;
   @Input() public chgEvent: EventEmitter<unknown>;
   @Input() public delEvent: EventEmitter<unknown>;
+  @Input() public sortColumn: string;
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
 
@@ -78,7 +79,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     if (this.csvEvent) {
-      this.csvEvent.subscribe(() => this.csvOutput());
+      this.csvEvent.subscribe(() => void this.csvOutput());
     } else {
       console.error("StdTable: Input csvEvent ist undefined");
     }
@@ -92,7 +93,12 @@ export class StdTableComponent implements OnInit, AfterViewInit {
           return "";
         }
       };
-
+      if (this.sortColumn) {
+        this.dataSource.sort.active = this.sortColumn;
+        this.dataSource.sort.direction = "";
+        const sortheader = this.dataSource.sort.sortables.get(this.sortColumn) as MatSortHeader;
+        this.dataSource.sort.sort(sortheader);
+      }
       this.dataSource.filterPredicate = (row: unknown): boolean => {
         const valid = this.filterExpression.validate(
           row as Record<string, string | Array<string> | number | Date>

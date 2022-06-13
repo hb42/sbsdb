@@ -4,4 +4,6 @@ export class ApTyp {
   public flag: number;
   public apKategorieId: number;
   public apkategorie: string;
+  // berechnet
+  public inUse?: number;
 }

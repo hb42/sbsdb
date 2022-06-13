@@ -16,4 +16,6 @@ export class Betrst {
   public hierarchy: string; // Pfad der Ueberstellung (parent1/parent2/this), jew. fullname
   public parent?: Betrst;
   public children: Betrst[] = [];
+  // berechnet
+  public inUse?: number;
 }

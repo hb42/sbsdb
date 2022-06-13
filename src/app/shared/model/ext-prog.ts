@@ -5,4 +5,6 @@ export class ExtProg {
   public param: string;
   public flag: number;
   public aptypId: number;
+  // berechnet
+  public inUse?: number;
 }
