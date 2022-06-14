@@ -53,6 +53,16 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     this.apService.editFilterService.setFilterService(this.apService.filterService);
   }
 
+  public testopen(event: any /*, trigger: any*/) {
+    console.debug("menuOpened()");
+    console.dir(event);
+    // console.dir(trigger);
+  }
+  public testclose(event: any /*, trigger: any*/) {
+    console.debug("menuClosed()");
+    console.dir(event);
+    // console.dir(trigger);
+  }
   public ngOnInit(): void {
     // const par = this.route.snapshot.params["tree"];
     // console.debug("onInit ApComponent par=" + par);

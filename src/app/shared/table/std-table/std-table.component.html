@@ -1,7 +1,12 @@
 <div class="flex-content">
-  <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows>
+  <table
+    mat-table
+    [dataSource]="dataSource"
+    matSort
+    multiTemplateDataRows
+    [class.wrap-cell]="userSettings.cellLineBreak"
+  >
     <!--  (matSortChange)="apService.onSort($event)" wuerde nur gebraucht, wenn der sort in den User-Settings abgelegt wird -->
-    <!--  [class.wrap-cell]="apService.tableWrapCell"-->
 
     <!-- COLUMN begin -->
     <ng-container *ngFor="let col of textColumns" [matColumnDef]="col">
@@ -33,11 +38,13 @@
         <!--        </button>-->
       </th>
       <!-- DATA -->
-      <td mat-cell *matCellDef="let element">
+      <td mat-cell *matCellDef="let element" #menuCell>
         <button
           mat-icon-button
           [matMenuTriggerFor]="rowmenu"
           [matMenuTriggerData]="{ row: element }"
+          (menuOpened)="menuCell.parentElement.classList.add('row-menu-open')"
+          (menuClosed)="menuCell.parentElement.classList.remove('row-menu-open')"
           color="primary"
         >
           <mat-icon>more_vert</mat-icon>
@@ -84,7 +91,12 @@
       <mat-icon>add_to_queue</mat-icon>
       {{ recordName }} anlegen
     </button>
-    <button mat-menu-item *ngIf="userSettings.isAdmin" (click)="delRecord(row)" [disabled]="row.inUse">
+    <button
+      mat-menu-item
+      *ngIf="userSettings.isAdmin"
+      (click)="delRecord(row)"
+      [disabled]="row.inUse"
+    >
       <mat-icon>delete_forever</mat-icon>
       {{ recordName }} löschen
     </button>

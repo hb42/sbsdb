@@ -35,9 +35,6 @@ import { ApFilterService } from "./ap-filter.service";
 export class ApService {
   public apDataSource: MatTableDataSource<Arbeitsplatz> = new MatTableDataSource<Arbeitsplatz>();
 
-  // DEBUG Zeilenumbruch in den Tabellenzellen (drin lassen??)
-  public tableWrapCell = false;
-
   // Text fuer Statuszeile
   public statusText = "";
 

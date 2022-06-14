@@ -41,9 +41,6 @@ export class HwService {
 
   public stdFilter = true; // TODO evtl. in FilterService auslagern
 
-  // Zeilenumbruch in der Zelle umschalten
-  public tableWrapCell = false;
-
   public newHwEvent: EventEmitter<void> = new EventEmitter<void>();
 
   private filterChanged = 1;

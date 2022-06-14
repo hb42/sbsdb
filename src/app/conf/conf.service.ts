@@ -29,9 +29,6 @@ export class ConfService {
 
   public stdFilter = true; // TODO evtl. in FilterService auslagern
 
-  // Zeilenumbruch in der Zelle umschalten
-  public tableWrapCell = false;
-
   public newConfEvent: EventEmitter<void> = new EventEmitter<void>();
 
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen

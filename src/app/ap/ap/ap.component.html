@@ -24,7 +24,7 @@
       matSort
       multiTemplateDataRows
       (matSortChange)="apService.onSort($event)"
-      [class.wrap-cell]="apService.tableWrapCell"
+      [class.wrap-cell]="apService.userSettings.cellLineBreak"
     >
       <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
@@ -195,13 +195,17 @@
           <sbsdb-expand-header [filterService]="apService.filterService"></sbsdb-expand-header>
         </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" #menuCell >
           <button
             mat-icon-button
             [matMenuTriggerFor]="apMenu"
             [matMenuTriggerData]="{ ap: element }"
+            (menuOpened)="menuCell.parentElement.classList.add('row-menu-open')"
+            (menuClosed)="menuCell.parentElement.classList.remove('row-menu-open')"
             color="primary"
           >
+<!--            #rowMenuTrigger="matMenuTrigger"-->
+<!--            [class.row-menu-open]="rowMenuTrigger.menuOpen"-->
             <mat-icon>more_vert</mat-icon>
           </button>
         </td>
@@ -242,7 +246,9 @@
         *matRowDef="let element; columns: apService.displayedColumns"
         class="table-row table-row-clickable"
         [class.detail-cell-expanded]="element.expanded"
+
       ></tr>
+<!--        [class.row-menu-selected]="this."-->
       <tr
         mat-row
         *matRowDef="let element; columns: ['apdetails']"
@@ -313,14 +319,14 @@
     <button
       mat-menu-item
       class="menue-entry"
-      (click)="apService.tableWrapCell = !apService.tableWrapCell"
+      (click)="apService.userSettings.cellLineBreak = !apService.userSettings.cellLineBreak"
       title="Zeilenumbruch in der Tabelle zulassen"
     >
       <mat-icon>wrap_text</mat-icon>
       Zeilenumbruch
       <span class="fill"></span>
       <mat-icon class="menue-checkbox">{{
-        apService.tableWrapCell ? "check_box" : "check_box_outline_blank"
+        apService.userSettings.cellLineBreak ? "check_box" : "check_box_outline_blank"
       }}</mat-icon>
     </button>
     <button

@@ -1,0 +1,17 @@
+
+.row-align {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.col-align {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.abstand {
+  margin-left: 15px;
+}

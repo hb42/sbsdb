@@ -34,17 +34,6 @@ export class AdminPanelAptypComponent implements OnDestroy {
     setTimeout(() => (this.adminService.disableMainMenuButtons = false), 0);
     this.dataSource.data = this.dataService.aptypList;
 
-    // FIXME: das muss beim Laden der Tabellen bzw. beim Update beruecksichtigt werden
-    const apcount = this.dataService.apList.reduce(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      (prev, curr) => ((prev[curr.apTypId] = ((prev[curr.apTypId] as number) || 0) + 1), prev),
-      {}
-    );
-    Object.keys(apcount).forEach(
-      (k) => (this.dataService.aptypList.find((at) => at.id.toString(10) == k).inUse = apcount[k])
-    );
-    // ---
-
     this.buildColumns();
     this.newRecordHandler = this.adminService.newRecordEvent.subscribe(() => {
       console.debug("new AP-Typ called");

@@ -5,6 +5,7 @@ export interface UserSettings {
   path: string;
   debug?: boolean;
   showNavMenu?: boolean;
+  cellLineBreak?: boolean;
 
   // AP-Page
   showStandort?: boolean;

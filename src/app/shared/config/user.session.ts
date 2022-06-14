@@ -35,6 +35,7 @@ export class UserSession {
 
     // sicherstellen, dass alle Einstellungen definiert sind
     this.settings.showNavMenu = !!this.settings.showNavMenu;
+    this.settings.cellLineBreak = !!this.settings.cellLineBreak;
     this.settings.path = this.settings.path ?? "";
     this.settings.debug = !!this.settings.debug;
     this.settings.showStandort =
@@ -95,6 +96,14 @@ export class UserSession {
   }
   public set showNavMenu(d: boolean) {
     this.settings.showNavMenu = d;
+    this.change();
+  }
+
+  public get cellLineBreak(): boolean {
+    return this.settings.cellLineBreak;
+  }
+  public set cellLineBreak(b: boolean) {
+    this.settings.cellLineBreak = b;
     this.change();
   }
 
