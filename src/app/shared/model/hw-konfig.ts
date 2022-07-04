@@ -1,4 +1,6 @@
-export class HwKonfig {
+import { BaseTableRow } from "./base-table-row";
+
+export class HwKonfig implements BaseTableRow {
   public id: number;
   public bezeichnung: string;
   public hersteller: string;

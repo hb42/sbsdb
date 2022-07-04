@@ -565,7 +565,7 @@ export class DataService {
 
     // ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
     // ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
-    // ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle; // .toLowerCase();
+    // ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle;
     // ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
 
     // ap.subTypes = [];
