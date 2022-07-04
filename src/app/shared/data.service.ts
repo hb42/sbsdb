@@ -180,73 +180,34 @@ export class DataService {
       console.debug("dataService start update ap");
       this.updateAp(data);
       this.updateHwKonfigListCount();
-      if (!notification.isOpen()) {
-        console.debug("reopening Notification");
-        notification.initialize();
-      }
       this.apListChanged.emit();
+
+      this.checkNotification();
     });
 
     notification.hwChange.subscribe((data) => {
       console.debug("dataService start update hw");
       this.updateHw(data);
       this.updateHwKonfigListCount();
-      if (!notification.isOpen()) {
-        console.debug("reopening Notification");
-        notification.initialize();
-      }
       this.apListChanged.emit();
+
+      this.checkNotification();
     });
 
     notification.addHw.subscribe((data) => {
       console.debug("dataService start adding hw");
       this.addHw(data);
       this.updateHwKonfigListCount();
-      if (!notification.isOpen()) {
-        console.debug("reopening Notification");
-        notification.initialize();
-      }
       this.hwListChanged.emit();
+
+      this.checkNotification();
     });
 
     notification.konfigChange.subscribe((data) => {
       console.debug("dataService start update hwKonfig");
-      const chg = this.hwKonfigList.find((k) => k.id === data.id);
-      if (chg) {
-        // change
-        chg.ram = data.ram;
-        chg.bezeichnung = data.bezeichnung;
-        chg.hd = data.hd;
-        chg.sonst = data.sonst;
-        chg.video = data.video;
-        chg.prozessor = data.prozessor;
-        chg.hersteller = data.hersteller;
-        DataService.prepKonfigBezeichnung(chg);
+      this.updateKonfig(data);
 
-        let refreshap = false;
-        this.hwList.forEach((hw) => {
-          if (hw.hwKonfigId === chg.id && hw.ap) {
-            this.updateApHw(hw.apId);
-            refreshap = true;
-          }
-        });
-        if (refreshap) {
-          this.apListChanged.emit();
-        }
-        this.hwListChanged.emit();
-      } else {
-        // new
-        this.hwKonfigList.push(data);
-        DataService.prepKonfigBezeichnung(data);
-        data.deviceCount = 0;
-        data.apCount = 0;
-      }
-      this.hwKonfigListChanged.emit();
-
-      if (!notification.isOpen()) {
-        console.debug("reopening Notification");
-        notification.initialize();
-      }
+      this.checkNotification();
     });
   }
 
@@ -450,6 +411,13 @@ export class DataService {
     }
   }
 
+  private checkNotification(): void {
+    if (!this.notification.isOpen()) {
+      console.debug("reopening Notification");
+      this.notification.initialize();
+    }
+  }
+
   private apTypDeps(): void {
     // select count(aptypId) from ap group by aptypId
     const apcount = this.apList.reduce(
@@ -532,19 +500,59 @@ export class DataService {
   }
 
   /**
+   * HwKonfig-Aenderung eintragen
+   *
+   * @param data
+   * @private
+   */
+  private updateKonfig(data: HwKonfig): void {
+    const chg = this.hwKonfigList.find((k) => k.id === data.id);
+    if (chg) {
+      // change
+      chg.ram = data.ram;
+      chg.bezeichnung = data.bezeichnung;
+      chg.hd = data.hd;
+      chg.sonst = data.sonst;
+      chg.video = data.video;
+      chg.prozessor = data.prozessor;
+      chg.hersteller = data.hersteller;
+      DataService.prepKonfigBezeichnung(chg);
+
+      let refreshap = false;
+      this.hwList.forEach((hw) => {
+        if (hw.hwKonfigId === chg.id && hw.ap) {
+          this.updateApHw(hw.apId);
+          refreshap = true;
+        }
+      });
+      if (refreshap) {
+        this.apListChanged.emit();
+      }
+      this.hwListChanged.emit();
+    } else {
+      // new
+      this.hwKonfigList.push(data);
+      DataService.prepKonfigBezeichnung(data);
+      data.deviceCount = 0;
+      data.apCount = 0;
+    }
+    this.hwKonfigListChanged.emit();
+  }
+
+  /**
    * AP-Daten vom Server in lokale Datenstruktur ueberfuehren
    *
    * HW-Daten werden in prepareHw() eingetragen
    */
   private prepareAp(ap: Arbeitsplatz): void {
-    ap.hwStr = ""; // keine undef Felder!
-    ap.sonstHwStr = ""; // keine undef Felder!
-    ap.hw = [];
+    ap.hwStr = ap.hwStr || ""; // keine undef Felder!
+    ap.sonstHwStr = ap.sonstHwStr || ""; // keine undef Felder!
+    ap.hw = ap.hw || [];
 
-    ap.ipStr = ""; // aus priHW
-    ap.macStr = ""; // aus priHW
-    ap.vlanStr = ""; // aus priHW
-    ap.macsearch = ""; // alle MACs
+    ap.ipStr = ap.ipStr || ""; // aus priHW
+    ap.macStr = ap.macStr || ""; // aus priHW
+    ap.vlanStr = ap.vlanStr || ""; // aus priHW
+    ap.macsearch = ap.macsearch || ""; // alle MACs
 
     const oe = this.bstList.find((bst) => ap.oeId === bst.bstId);
     if (oe) {
@@ -553,7 +561,7 @@ export class DataService {
       // TODO leere OE anhaengen
     }
     if (ap.verantwOeId) {
-      const voe = this.bstList.find((bst) => ap.verantwOeId === bst.bstId);
+      const voe = this.bstList.find((bst) => ap.verantwOeId === bst.bstId); // TODO ext OE
       if (voe) {
         ap.verantwOe = voe;
       } else {
@@ -650,13 +658,14 @@ export class DataService {
     if (!ap) {
       console.debug("updateAp() new ap");
       ap = this.newAp(neu.apId);
+    } else {
+      const keys = Object.keys(ap);
+      keys.forEach((key) => {
+        if (key.startsWith(DataService.TAG_DISPLAY_NAME)) {
+          delete ap[key];
+        }
+      });
     }
-    const keys = Object.keys(ap);
-    keys.forEach((key) => {
-      if (key.startsWith(DataService.TAG_DISPLAY_NAME)) {
-        delete ap[key];
-      }
-    });
     ap.oeId = neu.oeId;
     ap.verantwOeId = neu.verantwOeId;
     ap.oe = null;
