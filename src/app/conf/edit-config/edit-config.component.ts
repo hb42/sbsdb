@@ -51,7 +51,7 @@ export class EditConfigComponent implements OnInit {
     this.hwtyplist.unshift(null);
 
     this.hwtypCtrl = new FormControl(
-      { value: this.data.konfig?.hwTypId ?? null, disabled: this.data.konfig },
+      { value: this.data.konfig?.hwTypId ?? null, disabled: !!this.data.konfig },
       // eslint-disable-next-line @typescript-eslint/unbound-method
       [Validators.required]
     );
