@@ -40,15 +40,7 @@ export class EditConfigComponent implements OnInit {
     this.onSubmit.subscribe(() => {
       this.submit();
     });
-    this.hwtyplist = this.dataService.hwtypList
-      .filter((ht) => !this.dataService.isFremderHwTyp(ht))
-      .sort((a, b) =>
-        this.dataService.collator.compare(
-          a.apkategorie + a.bezeichnung,
-          b.apkategorie + b.bezeichnung
-        )
-      );
-    this.hwtyplist.unshift(null);
+    this.hwtyplist = this.dataService.dropdownHwTypList();
 
     this.hwtypCtrl = new FormControl(
       { value: this.data.konfig?.hwTypId ?? null, disabled: !!this.data.konfig },

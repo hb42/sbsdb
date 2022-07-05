@@ -254,6 +254,7 @@ table:not(.wrap-cell) .mat-cell > div {
   color: rgba(0, 0, 0, 0.54);
   font-size: 14px;
   height: 40px;
+  margin-bottom: 15px;
 }
 
 // links ohne a | button
@@ -301,4 +302,12 @@ table:not(.wrap-cell) .mat-cell > div {
 .mat-stroked-button:not(.mat-button-disabled):hover,
 .mat-icon-button:not(.mat-button-disabled):hover {
   background-color: rgba(0,0,0,0.1);
+}
+
+/* Fehler bei Eingabefeldern:
+   Label nicht rot faerben (Fehlermeldung in rot genuegt)
+   statt dessen originale Label-Farbe
+*/
+.mat-form-field.mat-form-field-invalid .mat-form-field-label {
+  color: rgba(0, 0, 0, 0.54);
 }

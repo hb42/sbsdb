@@ -9,6 +9,7 @@ import { IpHelper } from "../../shared/ip-helper";
 import { HwKonfig } from "../../shared/model/hw-konfig";
 import { NewHwData } from "./new-hw-data";
 import { NewHwDetail } from "./new-hw-detail";
+import { HwTyp } from "../../shared/model/hw-typ";
 
 @Component({
   selector: "sbsdb-new-hw-dialog",
@@ -23,6 +24,7 @@ export class NewHwDialogComponent implements OnInit {
   public konfigList: HwKonfig[];
 
   public matcher = new FormFieldErrorStateMatcher();
+  public hwtypCtrl: FormControl;
   public konfCtrl: FormControl;
   public invCtrl: FormControl;
   public anschwCtrl: FormControl;
@@ -30,6 +32,8 @@ export class NewHwDialogComponent implements OnInit {
   public wfaCtrl: FormControl;
   public bemCtrl: FormControl;
   public serCtrl: FormControl;
+
+  public hwtyplist: HwTyp[];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: HwKonfig,
@@ -52,16 +56,15 @@ export class NewHwDialogComponent implements OnInit {
       bemerkung: "",
       devices: [],
     };
-    // konfig select list
-    this.konfigList = this.dataService.hwKonfigList
-      .filter((k) => !this.dataService.isFremdeKonfig(k))
-      .sort((a, b) => this.dataService.collator.compare(a.konfiguration, b.konfiguration));
-    this.konfigList.unshift(null);
-
+    this.hwtyplist = this.dataService.dropdownHwTypList();
+    this.hwtypCtrl = new FormControl(null);
+    this.formGroup.addControl("hwtyp", this.hwtypCtrl);
     // eslint-disable-next-line @typescript-eslint/unbound-method
     this.konfCtrl = new FormControl(this.newhw.konfig, [Validators.required]);
     this.konfCtrl.markAsTouched();
     this.formGroup.addControl("konf", this.konfCtrl);
+    this.setKonfigList();
+
     this.invCtrl = new FormControl(this.newhw.invNr);
     this.formGroup.addControl("invnr", this.invCtrl);
     this.anschwCtrl = new FormControl(
@@ -127,6 +130,20 @@ export class NewHwDialogComponent implements OnInit {
     // this.onSubmitEvent.emit();
     console.log("NewHwDialog onSubmit");
     console.dir(form);
+  }
+
+  public setKonfigList(): void {
+    const typfilter = this.hwtypCtrl.value as number;
+    if (typfilter && (this.konfCtrl.value as HwKonfig).hwTypId !== typfilter) {
+      this.konfCtrl.setValue(null);
+    }
+    // konfig select list
+    this.konfigList = this.dataService.hwKonfigList
+      .filter(
+        (k) => !this.dataService.isFremdeKonfig(k) && (typfilter ? k.hwTypId === typfilter : true)
+      )
+      .sort((a, b) => this.dataService.collator.compare(a.konfiguration, b.konfiguration));
+    this.konfigList.unshift(null);
   }
 
   private prepareData() {

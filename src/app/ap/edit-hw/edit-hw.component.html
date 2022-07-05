@@ -9,7 +9,7 @@
         [sbsdbDisableControl]="pri && dataService.isFremderAp(ap)"
       >
         <option *ngFor="let h of hwSelectList()" [ngValue]="h">
-          {{ h ? h.hwKonfig.konfiguration + " [" + h.sernr + "]" : "<--->" }}
+          {{ h ? h.hwKonfig.konfiguration + " [" + h.sernr + "]" : "- bitte auswählen -" }}
         </option>
       </select>
       <mat-error *ngIf="hw.hwCtrl.invalid">{{ getErrorMessage(hw.hwCtrl) }}</mat-error>

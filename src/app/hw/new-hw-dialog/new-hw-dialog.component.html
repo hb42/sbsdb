@@ -4,70 +4,85 @@
   (ngSubmit)="onSubmit(formGroup.value)"
   [class.error]="!formGroup.valid && formGroup.touched"
 >
-  <mat-dialog-content class="fields">
-    <mat-form-field class="abstand">
-      <mat-label>Konfiguration</mat-label>
-      <select matNativeControl [formControl]="konfCtrl" [errorStateMatcher]="matcher">
-        <option *ngFor="let ko of konfigList" [ngValue]="ko">
-          {{ ko ? ko.konfiguration : "<--->" }}
-        </option>
-      </select>
-      <mat-error *ngIf="konfCtrl.invalid">{{ getErrorMessage(konfCtrl) }}</mat-error>
-    </mat-form-field>
-    <mat-form-field class="abstand textinp">
-      <mat-label>Inventar-Nr.</mat-label>
-      <input matInput [formControl]="invCtrl" [errorStateMatcher]="matcher" />
-      <mat-error *ngIf="invCtrl.invalid">{{ getErrorMessage(invCtrl) }}</mat-error>
-    </mat-form-field>
-    <mat-form-field class="abstand textinp">
-      <mat-label>Anschaffungs-Wert</mat-label>
-      <!-- currency -->
-      <input matInput [formControl]="anschwCtrl" [errorStateMatcher]="matcher" />
-      <mat-error *ngIf="anschwCtrl.invalid">{{ getErrorMessage(anschwCtrl) }}</mat-error>
-    </mat-form-field>
-    <mat-form-field class="abstand textinp">
-      <mat-label>Anschaffungs-Datum</mat-label>
-      <!-- date -->
-      <input
-        matInput
-        [matDatepicker]="picker"
-        [formControl]="anschdCtrl"
-        [errorStateMatcher]="matcher"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-      <mat-error *ngIf="anschdCtrl.invalid">{{ getErrorMessage(anschdCtrl) }}</mat-error>
-    </mat-form-field>
-    <mat-form-field class="abstand textinp">
-      <mat-label>Wartungs-Firma</mat-label>
-      <input matInput [formControl]="wfaCtrl" [errorStateMatcher]="matcher" />
-      <mat-error *ngIf="wfaCtrl.invalid">{{ getErrorMessage(wfaCtrl) }}</mat-error>
-    </mat-form-field>
+  <mat-card>
+    <div class="input-title card-title">Hardware</div>
 
-    <mat-form-field class="abstand bemerkung">
-      <mat-label>Bemerkung</mat-label>
-      <textarea
-        matInput
-        [formControl]="bemCtrl"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="2"
-        cdkAutosizeMaxRows="5"
-      ></textarea>
-      <mat-error *ngIf="bemCtrl.invalid">{{ getErrorMessage(bemCtrl) }}</mat-error>
-    </mat-form-field>
+    <mat-card-content class="fields">
+      <mat-dialog-content class="fields">
+        <mat-form-field class="abstand abstand-top">
+          <mat-label>Typ</mat-label>
+          <select matNativeControl [formControl]="hwtypCtrl" (change)="setKonfigList()">
+            <option *ngFor="let ht of hwtyplist" [ngValue]="ht?.id ?? null">
+              {{ ht ? ht.apkategorie + " - " + ht.bezeichnung : "- bitte auswählen -" }}
+            </option>
+          </select>
+          <mat-hint align="end">Konfigurations-Auswahl begrenzen</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="abstand">
+          <mat-label>Konfiguration</mat-label>
+          <select matNativeControl [formControl]="konfCtrl" [errorStateMatcher]="matcher">
+            <option *ngFor="let ko of konfigList" [ngValue]="ko">
+              {{ ko ? ko.konfiguration : "- bitte auswählen -" }}
+            </option>
+          </select>
+          <mat-error *ngIf="konfCtrl.invalid">{{ getErrorMessage(konfCtrl) }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="abstand textinp abstand-top2">
+          <mat-label>Inventar-Nr.</mat-label>
+          <input matInput [formControl]="invCtrl" [errorStateMatcher]="matcher" />
+          <mat-error *ngIf="invCtrl.invalid">{{ getErrorMessage(invCtrl) }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="abstand textinp">
+          <mat-label>Anschaffungs-Wert</mat-label>
+          <!-- currency -->
+          <input matInput [formControl]="anschwCtrl" [errorStateMatcher]="matcher" />
+          <mat-error *ngIf="anschwCtrl.invalid">{{ getErrorMessage(anschwCtrl) }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="abstand textinp">
+          <mat-label>Anschaffungs-Datum</mat-label>
+          <!-- date -->
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [formControl]="anschdCtrl"
+            [errorStateMatcher]="matcher"
+          />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="anschdCtrl.invalid">{{ getErrorMessage(anschdCtrl) }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="abstand textinp">
+          <mat-label>Wartungs-Firma</mat-label>
+          <input matInput [formControl]="wfaCtrl" [errorStateMatcher]="matcher" />
+          <mat-error *ngIf="wfaCtrl.invalid">{{ getErrorMessage(wfaCtrl) }}</mat-error>
+        </mat-form-field>
 
-    <mat-form-field class="abstand bemerkung">
-      <mat-label>Serien-Nummern (je Zeile &lt;Serien-Nr.&gt;[;&lt;MAC-Adresse&gt;])</mat-label>
-      <textarea
-        matInput
-        [formControl]="serCtrl"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="4"
-        cdkAutosizeMaxRows="10"
-      ></textarea>
-      <mat-error *ngIf="serCtrl.invalid">{{ getErrorMessage(serCtrl) }}</mat-error>
-    </mat-form-field>
-  </mat-dialog-content>
+        <mat-form-field class="abstand bemerkung">
+          <mat-label>Bemerkung</mat-label>
+          <textarea
+            matInput
+            [formControl]="bemCtrl"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="2"
+            cdkAutosizeMaxRows="5"
+          ></textarea>
+          <mat-error *ngIf="bemCtrl.invalid">{{ getErrorMessage(bemCtrl) }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="abstand bemerkung">
+          <mat-label>Serien-Nummern (je Zeile &lt;Serien-Nr.&gt;[;&lt;MAC-Adresse&gt;])</mat-label>
+          <textarea
+            matInput
+            [formControl]="serCtrl"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="4"
+            cdkAutosizeMaxRows="10"
+          ></textarea>
+          <mat-error *ngIf="serCtrl.invalid">{{ getErrorMessage(serCtrl) }}</mat-error>
+        </mat-form-field>
+      </mat-dialog-content>
+    </mat-card-content>
+  </mat-card>
 
   <sbsdb-dialog-actions [data]="newhw" [formGroup]="formGroup"></sbsdb-dialog-actions>
 </form>

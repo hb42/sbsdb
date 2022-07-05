@@ -37,7 +37,7 @@
         <select matNativeControl [formControl]="verantwCtrl" [errorStateMatcher]="matcher">
           <!--                (change)="onStandortSelectionChange($event)"-->
           <option *ngFor="let o of oeListNull" [ngValue]="o">
-            {{ o ? o.fullname : "<--->" }}
+            {{ o ? o.fullname : "- bitte auswählen -" }}
           </option>
         </select>
         <mat-error *ngIf="standCtrl.invalid">{{ getErrorMessage(standCtrl) }}</mat-error>

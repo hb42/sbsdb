@@ -9,7 +9,7 @@
       <mat-label>Typ</mat-label>
       <select matNativeControl [formControl]="hwtypCtrl" [errorStateMatcher]="matcher">
         <option *ngFor="let ht of hwtyplist" [ngValue]="ht?.id ?? null">
-          {{ ht ? ht.apkategorie + " - " + ht.bezeichnung : "<--->" }}
+          {{ ht ? ht.apkategorie + " - " + ht.bezeichnung : "- bitte auswählen -" }}
         </option>
       </select>
       <mat-error *ngIf="hwtypCtrl.invalid">{{ getErrorMessage(hwtypCtrl) }}</mat-error>

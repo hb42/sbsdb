@@ -411,6 +411,20 @@ export class DataService {
     }
   }
 
+  /**
+   * HwTyp-Liste ohne "fremde HW" fuer Dropdown-Listen
+   */
+  public dropdownHwTypList(): HwTyp[] {
+    const hwt = this.hwtypList
+      .filter((ht) => !this.isFremderHwTyp(ht))
+      .sort((a, b) =>
+        this.collator.compare(a.apkategorie + a.bezeichnung, b.apkategorie + b.bezeichnung)
+      );
+    // "leere" Auswahl an den Anfang
+    hwt.unshift(null);
+    return hwt;
+  }
+
   private checkNotification(): void {
     if (!this.notification.isOpen()) {
       console.debug("reopening Notification");

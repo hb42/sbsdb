@@ -29,7 +29,7 @@
         (change)="vlanSelectionChange(v)"
       >
         <option *ngFor="let vl of vlanList" [ngValue]="vl">
-          {{ vl ? vl.bezeichnung : "<--->" }}
+          {{ vl ? vl.bezeichnung : "- bitte auswählen -" }}
         </option>
       </select>
       <mat-error *ngIf="v.vlanCtrl.invalid">{{ getErrorMessage(v.vlanCtrl) }}</mat-error>
