@@ -64,7 +64,7 @@ export class DataService {
 
   public apListChanged: EventEmitter<void> = new EventEmitter<void>();
   public hwListChanged: EventEmitter<void> = new EventEmitter<void>();
-  public hwKonfigListChanged: EventEmitter<void> = new EventEmitter<void>();
+  public hwKonfigListChanged: EventEmitter<HwKonfig> = new EventEmitter<HwKonfig>();
 
   // Web-API calls
   public readonly oeTreeUrl: string;
@@ -543,14 +543,16 @@ export class DataService {
         this.apListChanged.emit();
       }
       this.hwListChanged.emit();
+      this.hwKonfigListChanged.emit();
     } else {
       // new
       this.hwKonfigList.push(data);
       DataService.prepKonfigBezeichnung(data);
       data.deviceCount = 0;
       data.apCount = 0;
+      // nur fuer neue Konfig wird der Datensatz weitergegeben
+      this.hwKonfigListChanged.emit(data);
     }
-    this.hwKonfigListChanged.emit();
   }
 
   /**

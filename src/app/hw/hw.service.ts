@@ -1,5 +1,6 @@
 import { formatDate, formatNumber } from "@angular/common";
 import { EventEmitter, Injectable } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
@@ -25,6 +26,7 @@ import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
 import { ColumnType } from "../shared/table/column-type.enum";
 import { SbsdbColumn } from "../shared/table/sbsdb-column";
+import { YesNoDialogComponent } from "../shared/yes-no-dialog/yes-no-dialog.component";
 import { HwEditService } from "./hw-edit.service";
 import { HwFilterService } from "./hw-filter.service";
 
@@ -56,6 +58,7 @@ export class HwService {
     public hwFilterService: HwFilterService,
     public editService: HwEditService,
     public confService: ConfService,
+    public dialog: MatDialog,
     private configService: ConfigService
   ) {
     console.debug("c'tor HwService ");
@@ -610,6 +613,24 @@ export class HwService {
 
     // Neue HW wurde eingetragen
     this.dataService.hwListChanged.subscribe(() => this.hwFilterService.triggerColumnFilter());
+
+    // falls neue Konfig angelegt wurde koennten auch gleich die neuen Geraete angelegt werden
+    this.dataService.hwKonfigListChanged.subscribe((konf) => {
+      // nur bei neuer Konfig ist 'konf' nicht null
+      if (konf) {
+        const dialogRef = this.dialog.open(YesNoDialogComponent, {
+          data: {
+            title: "Hardware eingeben?",
+            text: `Neue Konfiguration "${konf.konfiguration}" angelegt. Soll auch neue Hardware eingegeben werden?`,
+          },
+        });
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+          if (result) {
+            this.editService.newHw(konf);
+          }
+        });
+      }
+    });
   }
 
   // --- fetch data ---

@@ -7,9 +7,9 @@ import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-
 import { CurrencyCheck, StringToNumber } from "../../shared/helper";
 import { IpHelper } from "../../shared/ip-helper";
 import { HwKonfig } from "../../shared/model/hw-konfig";
+import { HwTyp } from "../../shared/model/hw-typ";
 import { NewHwData } from "./new-hw-data";
 import { NewHwDetail } from "./new-hw-detail";
-import { HwTyp } from "../../shared/model/hw-typ";
 
 @Component({
   selector: "sbsdb-new-hw-dialog",
@@ -134,7 +134,10 @@ export class NewHwDialogComponent implements OnInit {
 
   public setKonfigList(): void {
     const typfilter = this.hwtypCtrl.value as number;
-    if (typfilter && (this.konfCtrl.value as HwKonfig).hwTypId !== typfilter) {
+    if (
+      typfilter &&
+      (this.konfCtrl.value === null || (this.konfCtrl.value as HwKonfig).hwTypId !== typfilter)
+    ) {
       this.konfCtrl.setValue(null);
     }
     // konfig select list
@@ -149,7 +152,9 @@ export class NewHwDialogComponent implements OnInit {
   private prepareData() {
     this.newhw.konfig = this.konfCtrl.value as HwKonfig;
     this.newhw.invNr = this.invCtrl.value as string;
-    this.newhw.anschWert = StringToNumber(this.anschwCtrl.value as string);
+    this.newhw.anschWert = this.anschwCtrl.value
+      ? StringToNumber(this.anschwCtrl.value as string)
+      : 0;
     this.newhw.anschDat = this.anschdCtrl.value as Date;
     this.newhw.wartungFa = this.wfaCtrl.value as string;
     this.newhw.bemerkung = this.bemCtrl.value as string;
