@@ -118,7 +118,7 @@ export class EditVlanComponent implements OnInit {
     if (control.parent) {
       const vlan = control.parent.get("vlaninp").value as Vlan;
       if (vlan) {
-        const min = this.getMinIp(vlan);
+        const min = IpHelper.getHostIpMin(vlan.ip, vlan.netmask);
         const max = IpHelper.getHostIpMax(vlan.ip, vlan.netmask);
         const ipval = IpHelper.getIpPartial(control.value as string);
         // console.debug(`${ipval} > ${min} && ${ipval} < ${max}`);
@@ -172,26 +172,13 @@ export class EditVlanComponent implements OnInit {
   }
   public getIpInfo(vlan: Vlan): string {
     if (vlan) {
-      const bytes = IpHelper.getHostBytes(vlan.netmask);
-      const min = this.getMinIp(vlan);
-      const max = IpHelper.getHostIpMax(vlan.ip, vlan.netmask);
-
-      return `IP: ${IpHelper.getPartialIpString(min + 1, bytes)} - ${IpHelper.getPartialIpString(
-        max - 1,
-        bytes
-      )}`;
+      return `IP: ${IpHelper.getHostIpMinString(
+        vlan.ip,
+        vlan.netmask
+      )} - ${IpHelper.getHostIpMaxString(vlan.ip, vlan.netmask)}`;
     } else {
       return "";
     }
-  }
-
-  /**
-   * Min IP -> DHCP
-   *
-   * @param vlan
-   */
-  public getMinIp(vlan: Vlan): number {
-    return IpHelper.getHostIpMin(vlan.ip, vlan.netmask);
   }
 
   public delIp(vlan: HwInputVlan): void {
