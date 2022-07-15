@@ -69,6 +69,7 @@ import { AdminPanelExtprogComponent } from './admin/admin-panel-extprog/admin-pa
 import { StdTableComponent } from './shared/table/std-table/std-table.component';
 import { AdminPanelAptypComponent } from './admin/admin-panel-aptyp/admin-panel-aptyp.component';
 import { EditAptypDialogComponent } from './admin/edit-aptyp-dialog/edit-aptyp-dialog.component';
+import { AdminPanelTclogsComponent } from './admin/admin-panel-tclogs/admin-panel-tclogs.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -147,6 +148,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     StdTableComponent,
     AdminPanelAptypComponent,
     EditAptypDialogComponent,
+    AdminPanelTclogsComponent,
   ],
   imports: [
     BrowserModule,

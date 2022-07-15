@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from "@angular/core";
+import { Observable } from "rxjs";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
@@ -25,5 +26,9 @@ export class AdminService {
         this.loading = false;
       });
     }
+  }
+
+  public getTcLogs(): Observable<unknown> {
+    return this.dataService.get(this.dataService.importTcLogUrl, { responseType: "text" });
   }
 }

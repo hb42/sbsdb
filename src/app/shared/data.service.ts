@@ -88,6 +88,7 @@ export class DataService {
   public readonly addHwUrl: string;
   public readonly hwHistoryUrl: string;
   public readonly extProgUrl: string;
+  public readonly importTcLogUrl: string;
 
   // case-insensitive alpha sort
   // deutlich schneller als String.localeCompare()
@@ -140,6 +141,7 @@ export class DataService {
 
     this.extProgUrl = this.configService.webservice + "/svz/extprog/all";
 
+    this.importTcLogUrl = this.configService.webservice + "/external/gettclogs";
     const readyEventCheck = () => {
       if (this.isDataReady()) {
         console.debug("## all data ready");
@@ -211,8 +213,8 @@ export class DataService {
     });
   }
 
-  public get(url: string): Observable<unknown> {
-    return this.http.get(url);
+  public get(url: string, options?: unknown): Observable<unknown> {
+    return this.http.get(url, options);
   }
 
   public post(url: string, data: unknown): void {

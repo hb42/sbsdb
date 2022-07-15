@@ -39,4 +39,14 @@
   >
     Externe Programme
   </button>
+  <button
+    mat-raised-button
+    [routerLink]="admTcLogsPath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admTcLogsPath"
+    [color]="navigationService.currentPath === admTcLogsPath ? '' : 'primary'"
+    title="Protokoll des letzten Thin-Client-IP-Imports"
+  >
+    Thin-Client-Log
+  </button>
 </mat-action-list>
