@@ -8,9 +8,14 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AdminOptionsComponent } from "./admin/admin-options/admin-options.component";
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
+import { AdminPanelAptypComponent } from "./admin/admin-panel-aptyp/admin-panel-aptyp.component";
 import { AdminPanelConfigInputComponent } from "./admin/admin-panel-config-input/admin-panel-config-input.component";
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
+import { AdminPanelExtprogComponent } from "./admin/admin-panel-extprog/admin-panel-extprog.component";
+import { AdminPanelTclogsComponent } from "./admin/admin-panel-tclogs/admin-panel-tclogs.component";
 import { AdminComponent } from "./admin/admin/admin.component";
+import { EditAptypDialogComponent } from "./admin/edit-aptyp-dialog/edit-aptyp-dialog.component";
+import { EditExtprogDialogComponent } from "./admin/edit-extprog-dialog/edit-extprog-dialog.component";
 import { ApDetailCellComponent } from "./ap/ap-detail-cell/ap-detail-cell.component";
 import { ApEditDialogComponent } from "./ap/ap-edit-dialog/ap-edit-dialog.component";
 import { ApComponent } from "./ap/ap/ap.component";
@@ -62,14 +67,10 @@ import { MatPaginatorIntlDe } from "./shared/mat.paginator.intl.de";
 import { StatusComponent } from "./shared/status/status.component";
 import { HeaderCellComponent } from "./shared/table/header-cell/header-cell.component";
 import { PaginatorStatusDirective } from "./shared/table/paginator-status.directive";
+import { StdTableComponent } from "./shared/table/std-table/std-table.component";
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
-import { AdminPanelExtprogComponent } from './admin/admin-panel-extprog/admin-panel-extprog.component';
-import { StdTableComponent } from './shared/table/std-table/std-table.component';
-import { AdminPanelAptypComponent } from './admin/admin-panel-aptyp/admin-panel-aptyp.component';
-import { EditAptypDialogComponent } from './admin/edit-aptyp-dialog/edit-aptyp-dialog.component';
-import { AdminPanelTclogsComponent } from './admin/admin-panel-tclogs/admin-panel-tclogs.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -149,6 +150,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     AdminPanelAptypComponent,
     EditAptypDialogComponent,
     AdminPanelTclogsComponent,
+    EditExtprogDialogComponent,
   ],
   imports: [
     BrowserModule,

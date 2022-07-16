@@ -311,3 +311,17 @@ table:not(.wrap-cell) .mat-cell > div {
 .mat-form-field.mat-form-field-invalid .mat-form-field-label {
   color: rgba(0, 0, 0, 0.54);
 }
+
+/* Dialog fuer Extprog-Aenderungen am oberen Bildschirmrand positionieren.
+   (der class-Name wird als Parameter "panelClass" in dialog.open() gesetzt)
+ */
+.extProgDialogPosition {
+  top: 30px !important;
+  position: absolute !important;
+}
+/* Select-Box fuer Extprog-Aenderungen vergroessern.
+   (class muss global definiert werden, da das panel an body haengt)
+ */
+.extProgSelect {
+  max-height: 50% !important;
+}

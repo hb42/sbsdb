@@ -6,6 +6,8 @@ import { DataService } from "../../shared/data.service";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
+import { EditExtprogData } from "../edit-extprog-dialog/edit-extprog-data";
+import { EditExtprogDialogComponent } from "../edit-extprog-dialog/edit-extprog-dialog.component";
 import { ExtProgList } from "./ext-prog-list";
 
 @Component({
@@ -37,7 +39,15 @@ export class AdminPanelExtprogComponent implements OnDestroy {
     this.buildColumns();
     this.newRecordHandler = adminService.newRecordEvent.subscribe(() => {
       console.debug("new ExtProg called");
-      // TODO
+      const dialogRef = this.dialog.open(EditExtprogDialogComponent, {
+        data: {},
+        panelClass: "extProgDialogPosition", // class muss global definiert werden
+      });
+      dialogRef.afterClosed().subscribe((result: EditExtprogData) => {
+        console.debug("dlg closed");
+        console.dir(result);
+        // TODO
+      });
     });
     this.exportHandler = adminService.exportEvent.subscribe(() => {
       console.debug("output to csv called - ExtProg");
@@ -45,12 +55,15 @@ export class AdminPanelExtprogComponent implements OnDestroy {
     });
     this.changeEvent.subscribe((ex: ExtProgList) => {
       console.debug("change ExtProg");
-      // TODO
-      // const dialogRef = this.dialog.open(EditAptypDialogComponent, { data: at });
-      // dialogRef.afterClosed().subscribe((result: ApTyp) => {
-      //   console.debug("dlg closed");
-      //   console.dir(result);
-      // });
+      const dialogRef = this.dialog.open(EditExtprogDialogComponent, {
+        data: { in: ex },
+        panelClass: "extProgDialogPosition",
+      });
+      dialogRef.afterClosed().subscribe((result: EditExtprogData) => {
+        console.debug("dlg closed");
+        console.dir(result);
+        // TODO
+      });
     });
     this.delEvent.subscribe((ex: ExtProgList) => {
       console.debug("del ExtProg");
@@ -147,8 +160,8 @@ export class AdminPanelExtprogComponent implements OnDestroy {
         (a: ExtProgList) =>
           a.types.reduce((prev, curr) => {
             const txt = this.adminService.userSettings.debug
-              ? `${curr.aptyp} (#${curr.id})`
-              : curr.aptyp;
+              ? `${curr.aptyp.bezeichnung} (#${curr.id})`
+              : curr.aptyp.bezeichnung;
             return (prev += prev ? ", " + txt : txt);
           }, ""),
         "",
@@ -167,17 +180,17 @@ export class AdminPanelExtprogComponent implements OnDestroy {
     this.extProgList = [];
     this.dataService.extProgList.forEach((ex) => {
       const aptyp = this.dataService.aptypList.find((at) => at.id === ex.aptypId);
-      const aptypStr = aptyp ? aptyp.bezeichnung : "??";
       const neu = this.extProgList.find((ep) => ep.program === ex.program);
       if (neu) {
-        neu.types.push({ id: ex.id, aptypid: ex.aptypId, aptyp: aptypStr });
+        neu.types.push({ id: ex.id, aptyp: aptyp });
       } else {
         this.extProgList.push({
+          id: ex.id,
           program: ex.program,
           bezeichnung: ex.bezeichnung,
           param: ex.param,
           flag: ex.flag,
-          types: [{ id: ex.id, aptypid: ex.aptypId, aptyp: aptypStr }],
+          types: [{ id: ex.id, aptyp: aptyp }],
         });
       }
     });
