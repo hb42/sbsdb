@@ -12,7 +12,7 @@ export class SbsdbColumn<C, E> {
   // fuer selects
   public static EMPTY_OPTION = String.fromCharCode(187) + "alle" + String.fromCharCode(171);
 
-  private readonly filtercontrol: FormControl = null;
+  private filtercontrol: FormControl = null;
 
   /*
    * Filter-String
@@ -76,6 +76,12 @@ export class SbsdbColumn<C, E> {
   public get show(): boolean {
     return this.showcolumn;
   }
+  public set show(s: boolean) {
+    if (s && this.fieldName && !this.filtercontrol) {
+      this.filtercontrol = new FormControl("");
+    }
+    this.showcolumn = s;
+  }
 
   public get tabIndex(): number {
     return this.tabindex;
@@ -123,9 +129,7 @@ export class SbsdbColumn<C, E> {
     private outputtocsv: boolean,
     private _size?: string // param size f. sbsdb-header-cell
   ) {
-    if (this.fieldName && this.show) {
-      this.filtercontrol = new FormControl("");
-    }
+    this.show = showcolumn;
   }
 
   /**

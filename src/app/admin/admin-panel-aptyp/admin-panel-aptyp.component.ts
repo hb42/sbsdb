@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { Subscription } from "rxjs";
@@ -14,16 +14,18 @@ import { EditAptypDialogComponent } from "../edit-aptyp-dialog/edit-aptyp-dialog
   templateUrl: "./admin-panel-aptyp.component.html",
   styleUrls: ["./admin-panel-aptyp.component.scss"],
 })
-export class AdminPanelAptypComponent implements OnDestroy {
+export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
   public dataSource: MatTableDataSource<ApTyp> = new MatTableDataSource<ApTyp>();
   public columns: SbsdbColumn<AdminPanelAptypComponent, ApTyp>[] = [];
   public csvEvent: EventEmitter<void> = new EventEmitter<void>();
+  public refreshEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public changeEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
   public delEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
 
   private newRecordHandler: Subscription;
   private exportHandler: Subscription;
+  private debugHandler: Subscription;
 
   constructor(
     public dataService: DataService,
@@ -35,6 +37,7 @@ export class AdminPanelAptypComponent implements OnDestroy {
     this.dataSource.data = this.dataService.aptypList;
 
     this.buildColumns();
+
     this.newRecordHandler = this.adminService.newRecordEvent.subscribe(() => {
       console.debug("new AP-Typ called");
       // TODO
@@ -46,11 +49,17 @@ export class AdminPanelAptypComponent implements OnDestroy {
         console.dir(result);
       });
     });
+
     this.exportHandler = this.adminService.exportEvent.subscribe(() => {
       console.debug("output to csv called - AP-Typ");
       this.csvEvent.emit();
       // TODO
     });
+
+    this.debugHandler = this.adminService.debugEvent.subscribe(() => {
+      this.changeDebug();
+    });
+
     this.changeEvent.subscribe((at: ApTyp) => {
       console.debug("change AP-Typ");
       // TODO
@@ -66,11 +75,17 @@ export class AdminPanelAptypComponent implements OnDestroy {
     });
   }
 
+  public ngAfterViewInit(): void {
+    // ID-Spalte gemaess config.DEBUG ein- oder ausblenden
+    setTimeout(() => this.changeDebug(), 0);
+  }
+
   public ngOnDestroy(): void {
     console.debug("onDestroy AdminPanelAptypComponent");
     this.adminService.disableMainMenuButtons = true;
     this.newRecordHandler.unsubscribe();
     this.exportHandler.unsubscribe();
+    this.debugHandler.unsubscribe();
   }
 
   private buildColumns() {
@@ -80,15 +95,16 @@ export class AdminPanelAptypComponent implements OnDestroy {
         "id",
         () => "ID",
         () => "id",
-        () => null,
-        (a) => a.id.toString(10),
+        () => "id",
+        (a: ApTyp) => a.id.toString(10),
         "",
-        false,
+        true,
         0,
         ColumnType.NUMBER,
         null,
         null,
-        true
+        true,
+        "S"
       )
     );
     this.columns.push(
@@ -162,5 +178,13 @@ export class AdminPanelAptypComponent implements OnDestroy {
         true
       )
     );
+  }
+
+  private changeDebug() {
+    // const idCol = this.columns.find((c) => c.columnName === "id");
+    // if (idCol) {
+    //   idCol.show = this.adminService.userSettings.debug;
+    // }
+    this.refreshEvent.emit(this.adminService.userSettings.debug);
   }
 }

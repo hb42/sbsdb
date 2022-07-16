@@ -37,7 +37,7 @@
         <span class="fill"></span>
         <mat-icon class="menue-checkbox">{{
           adminService.userSettings.cellLineBreak ? "check_box" : "check_box_outline_blank"
-          }}</mat-icon>
+        }}</mat-icon>
       </button>
       <button
         mat-menu-item
@@ -52,11 +52,7 @@
           adminService.userSettings.showNavMenu ? "check_box" : "check_box_outline_blank"
         }}</mat-icon>
       </button>
-      <button
-        mat-menu-item
-        class="menue-entry"
-        (click)="adminService.userSettings.debug = !adminService.userSettings.debug"
-      >
+      <button mat-menu-item class="menue-entry" (click)="adminService.changeDebugState()">
         <mat-icon>pest_control</mat-icon>
         Debug-Info
         <span class="fill"></span>

@@ -145,7 +145,12 @@ export class AdminPanelExtprogComponent implements OnDestroy {
         () => "types",
         () => "types",
         (a: ExtProgList) =>
-          a.types.reduce((prev, curr) => (prev += prev ? ", " + curr.aptyp : curr.aptyp), ""),
+          a.types.reduce((prev, curr) => {
+            const txt = this.adminService.userSettings.debug
+              ? `${curr.aptyp} (#${curr.id})`
+              : curr.aptyp;
+            return (prev += prev ? ", " + txt : txt);
+          }, ""),
         "",
         true,
         4,

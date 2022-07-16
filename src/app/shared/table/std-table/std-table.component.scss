@@ -2,3 +2,7 @@
   background-color:   var(--md-light-gray-background-color);
   font-size: 12px;
 }
+
+.detail-cell-clicked div {
+  white-space: unset !important;
+}

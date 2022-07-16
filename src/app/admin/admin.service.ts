@@ -14,6 +14,7 @@ export class AdminService {
   public disableMainMenuButtons = true;
   public newRecordEvent: EventEmitter<void> = new EventEmitter<void>();
   public exportEvent: EventEmitter<void> = new EventEmitter<void>();
+  public debugEvent: EventEmitter<void> = new EventEmitter<void>();
   public newRecordLabel = "Neuen Datensatz anlegen.";
 
   constructor(public configService: ConfigService, public dataService: DataService) {
@@ -26,6 +27,11 @@ export class AdminService {
         this.loading = false;
       });
     }
+  }
+
+  public changeDebugState(): void {
+    this.userSettings.debug = !this.userSettings.debug;
+    this.debugEvent.emit();
   }
 
   public getTcLogs(): Observable<unknown> {

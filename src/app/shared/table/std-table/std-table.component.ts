@@ -18,6 +18,7 @@ import { BaseFilterService } from "../../filter/base-filter-service";
 import { Bracket } from "../../filter/bracket";
 import { LogicalAnd } from "../../filter/logical-and";
 import { GetColumn, OutputToCsv } from "../../helper";
+import { BaseTableRow } from "../../model/base-table-row";
 import { SbsdbColumn } from "../sbsdb-column";
 
 @Component({
@@ -31,6 +32,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   @Input() public dataSource: MatTableDataSource<unknown>;
   @Input() public recordName: string;
   @Input() public csvEvent: EventEmitter<void>;
+  @Input() public refreshEvent: EventEmitter<boolean>;
   @Input() public newEvent: EventEmitter<void>;
   @Input() public chgEvent: EventEmitter<unknown>;
   @Input() public delEvent: EventEmitter<unknown>;
@@ -54,24 +56,29 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit() {
-    this.textColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
-    this.columns.push(
-      new SbsdbColumn<unknown, unknown>(
-        this,
-        "menu",
-        () => null,
-        () => null,
-        () => null,
-        () => null,
-        "",
-        true,
-        this.textColumns.length,
-        -1,
-        null,
-        null,
-        false
-      )
-    );
+    const menuCol = "menu";
+    this.textColumns = this.columns
+      .filter((c) => c.show && c.columnName !== menuCol)
+      .map((col) => col.columnName);
+    if (this.columns.findIndex((c) => c.columnName === menuCol) === -1) {
+      this.columns.push(
+        new SbsdbColumn<unknown, unknown>(
+          this,
+          menuCol,
+          () => null,
+          () => null,
+          () => null,
+          () => null,
+          "",
+          true,
+          this.textColumns.length,
+          -1,
+          null,
+          null,
+          false
+        )
+      );
+    }
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 
@@ -82,6 +89,16 @@ export class StdTableComponent implements OnInit, AfterViewInit {
       this.csvEvent.subscribe(() => void this.csvOutput());
     } else {
       console.error("StdTable: Input csvEvent ist undefined");
+    }
+    if (this.refreshEvent) {
+      this.refreshEvent.subscribe((b) => {
+        const idCol = this.columns.find((c) => c.columnName === "id");
+        if (idCol) {
+          idCol.show = b;
+          this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
+          this.triggerFilter();
+        }
+      });
     }
     setTimeout(() => {
       this.dataSource.sort = this.sort;
@@ -110,7 +127,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
         // }
         return valid;
       };
-      this.dataSource.filter = `${this.filterChanged++}`;
+      this.triggerFilter();
 
       // Filter triggern
       this.columns.forEach((c) => {
@@ -119,7 +136,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
             .pipe(debounceTime(500))
             .subscribe(() => {
               this.buildStdFilterExpression();
-              this.dataSource.filter = `${this.filterChanged++}`;
+              this.triggerFilter();
             });
         }
       });
@@ -139,6 +156,12 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   public delRecord(row: unknown): void {
     this.delEvent.emit(row);
   }
+
+  public expandRow(row: BaseTableRow, evt: Event): void {
+    row.expanded = !row.expanded;
+    evt.stopPropagation();
+  }
+
   public testclick(row: unknown): void {
     // TODO das hier muss in die aufrufende component
     console.debug("### test click");
@@ -164,5 +187,9 @@ export class StdTableComponent implements OnInit, AfterViewInit {
         }
       }
     });
+  }
+
+  private triggerFilter(): void {
+    this.dataSource.filter = `${this.filterChanged++}`;
   }
 }
