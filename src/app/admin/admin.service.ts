@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
+import { EditExtprogTransport } from "./edit-extprog-dialog/edit-extprog-transport";
 
 @Injectable({
   providedIn: "root",
@@ -36,5 +37,13 @@ export class AdminService {
 
   public getTcLogs(): Observable<unknown> {
     return this.dataService.get(this.dataService.importTcLogUrl, { responseType: "text" });
+  }
+
+  public saveExtprog(data: EditExtprogTransport): void {
+    console.debug("save extprog data");
+    console.dir(data);
+    if (data.outChg || data.outDel || data.outNew) {
+      this.dataService.post(this.dataService.changeExtprogUrl, data);
+    }
   }
 }

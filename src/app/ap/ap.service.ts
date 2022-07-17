@@ -205,7 +205,7 @@ export class ApService {
     let allProgs = this.dataService.extProgList.filter((ex) => ex.aptypId === ap.apTypId);
     // fuer Nichtadmin nur Programme, bei denen in flag das Bit 0 gesetzt ist
     if (!this.userSettings.isAdmin && this.userSettings.isHotline) {
-      allProgs = allProgs.filter((ex) => (ex.flag & 0x0001) > 0);
+      allProgs = allProgs.filter((ex) => (ex.flag & DataService.EXTPROG_ALL_USERS_FLAG) > 0);
     }
     return allProgs.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
   }

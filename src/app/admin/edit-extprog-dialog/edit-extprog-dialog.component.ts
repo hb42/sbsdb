@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { ApTyp } from "../../shared/model/ap-typ";
-import { EditExtprogData } from "./edit-extprog-data";
+import { EditExtprogTransport } from "./edit-extprog-transport";
 
 @Component({
   selector: "sbsdb-edit-extprog-dialog",
@@ -22,7 +22,7 @@ export class EditExtprogDialogComponent implements OnInit {
   public matcher = new FormFieldErrorStateMatcher();
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: EditExtprogData,
+    @Inject(MAT_DIALOG_DATA) public data: EditExtprogTransport,
     public formBuilder: FormBuilder,
     public dataService: DataService
   ) {
@@ -49,30 +49,25 @@ export class EditExtprogDialogComponent implements OnInit {
   }
 
   public onSubmit(value: unknown): void {
-    console.log("you submitted value: ");
-    console.dir(value);
-
     const prg = this.keyControl.value as string;
     const bez = this.nameControl.value as string;
     const par = (this.paramControl.value as string) ?? "";
     const flg = Number.parseInt(this.flagControl.value as string, 10);
     const aptypes = (this.aptypControl.value as ApTyp[]) ?? [];
-    const oldTypes = this.data.in ? this.data.in.types.map((t) => t.aptyp) : [];
+    const oldTypes = this.data.in ? this.data.in.types.map((t) => t) : [];
     const onlyTypes = this.data.in
       ? prg === this.data.in.program &&
         bez === this.data.in.bezeichnung &&
         par === (this.data.in.param ?? "") &&
         flg === this.data.in.flag
       : false;
-    const myindex = this.data.in?.id ?? 0;
 
     aptypes.forEach((at) => {
-      const idx = oldTypes.findIndex((o) => o.id === at.id);
+      const idx = oldTypes.findIndex((o) => o.aptyp.id === at.id);
       if (idx === -1) {
         // new
         if (!this.data.outNew) {
           this.data.outNew = {
-            id: myindex,
             program: prg,
             bezeichnung: bez,
             param: par,
@@ -80,14 +75,13 @@ export class EditExtprogDialogComponent implements OnInit {
             types: [],
           };
         }
-        this.data.outNew.types.push({ id: myindex, aptyp: at });
+        this.data.outNew.types.push({ id: 0, aptyp: at });
       } else {
-        oldTypes.splice(idx, 1);
-        if (!onlyTypes) {
+        const old = oldTypes.splice(idx, 1);
+        if (!onlyTypes && old) {
           // chg
           if (!this.data.outChg) {
             this.data.outChg = {
-              id: myindex,
               program: prg,
               bezeichnung: bez,
               param: par,
@@ -95,7 +89,7 @@ export class EditExtprogDialogComponent implements OnInit {
               types: [],
             };
           }
-          this.data.outChg.types.push({ id: myindex, aptyp: at });
+          this.data.outChg.types.push({ id: old[0].id, aptyp: at });
         }
       }
     });
@@ -103,7 +97,6 @@ export class EditExtprogDialogComponent implements OnInit {
       // del
       if (!this.data.outDel) {
         this.data.outDel = {
-          id: myindex,
           program: prg,
           bezeichnung: bez,
           param: par,
@@ -111,7 +104,7 @@ export class EditExtprogDialogComponent implements OnInit {
           types: [],
         };
       }
-      this.data.outDel.types.push({ id: myindex, aptyp: ot });
+      this.data.outDel.types.push(ot);
     });
   }
 

@@ -18,10 +18,11 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
   public dataSource: MatTableDataSource<ApTyp> = new MatTableDataSource<ApTyp>();
   public columns: SbsdbColumn<AdminPanelAptypComponent, ApTyp>[] = [];
   public csvEvent: EventEmitter<void> = new EventEmitter<void>();
-  public refreshEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public changeEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
   public delEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
+
+  public refreshTableEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   private newRecordHandler: Subscription;
   private exportHandler: Subscription;
@@ -185,6 +186,6 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
     // if (idCol) {
     //   idCol.show = this.adminService.userSettings.debug;
     // }
-    this.refreshEvent.emit(this.adminService.userSettings.debug);
+    this.refreshTableEvent.emit(this.adminService.userSettings.debug);
   }
 }

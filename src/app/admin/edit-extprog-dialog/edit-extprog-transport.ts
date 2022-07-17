@@ -1,6 +1,6 @@
 import { ExtProgList } from "../admin-panel-extprog/ext-prog-list";
 
-export interface EditExtprogData {
+export interface EditExtprogTransport {
   in?: ExtProgList;
   outChg?: ExtProgList;
   outNew?: ExtProgList;

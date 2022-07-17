@@ -32,11 +32,11 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   @Input() public dataSource: MatTableDataSource<unknown>;
   @Input() public recordName: string;
   @Input() public csvEvent: EventEmitter<void>;
-  @Input() public refreshEvent: EventEmitter<boolean>;
   @Input() public newEvent: EventEmitter<void>;
   @Input() public chgEvent: EventEmitter<unknown>;
   @Input() public delEvent: EventEmitter<unknown>;
   @Input() public sortColumn: string;
+  @Input() public refreshTableEvent: EventEmitter<boolean>;
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
 
@@ -85,21 +85,27 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
+
     if (this.csvEvent) {
       this.csvEvent.subscribe(() => void this.csvOutput());
     } else {
       console.error("StdTable: Input csvEvent ist undefined");
     }
-    if (this.refreshEvent) {
-      this.refreshEvent.subscribe((b) => {
+
+    // Tabelle updaten
+    // Falls eine Spalte "id" existiert, wird sie abhaengig vom uebergebenen
+    // Parameter ein- oder ausgeblendet.
+    if (this.refreshTableEvent) {
+      this.refreshTableEvent.subscribe((b) => {
         const idCol = this.columns.find((c) => c.columnName === "id");
         if (idCol) {
           idCol.show = b;
           this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
-          this.triggerFilter();
         }
+        this.triggerFilter();
       });
     }
+
     setTimeout(() => {
       this.dataSource.sort = this.sort;
       this.dataSource.sortingDataAccessor = (row: unknown, id: string) => {

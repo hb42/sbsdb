@@ -14,6 +14,7 @@ export class NotificationService {
   public hwChange: EventEmitter<HwTransport> = new EventEmitter<HwTransport>();
   public addHw: EventEmitter<AddHwTransport> = new EventEmitter<AddHwTransport>();
   public konfigChange: EventEmitter<HwKonfig> = new EventEmitter<HwKonfig>();
+  public extprogChange: EventEmitter<void> = new EventEmitter<void>();
   private hubConnection: HubConnection | undefined;
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -58,6 +59,11 @@ export class NotificationService {
         console.debug("## Event konfigchange");
         console.dir(data);
         this.konfigChange.emit(data);
+      });
+
+      this.hubConnection.on("extprogchange", () => {
+        console.debug("## Event extprogchange");
+        this.extprogChange.emit();
       });
 
       this.hubConnection.onclose((err: Error) => {

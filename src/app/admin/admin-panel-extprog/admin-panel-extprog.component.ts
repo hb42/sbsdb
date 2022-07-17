@@ -5,9 +5,10 @@ import { Subscription } from "rxjs";
 import { DataService } from "../../shared/data.service";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
+import { YesNoDialogComponent } from "../../shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminService } from "../admin.service";
-import { EditExtprogData } from "../edit-extprog-dialog/edit-extprog-data";
 import { EditExtprogDialogComponent } from "../edit-extprog-dialog/edit-extprog-dialog.component";
+import { EditExtprogTransport } from "../edit-extprog-dialog/edit-extprog-transport";
 import { ExtProgList } from "./ext-prog-list";
 
 @Component({
@@ -23,9 +24,12 @@ export class AdminPanelExtprogComponent implements OnDestroy {
   public changeEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
   public delEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
 
+  public refreshTableEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   private newRecordHandler: Subscription;
   private exportHandler: Subscription;
-  private extProgList: ExtProgList[];
+  private notificationHandler: Subscription;
+  private extProgList: ExtProgList[] = [];
 
   constructor(
     public dataService: DataService,
@@ -37,37 +41,36 @@ export class AdminPanelExtprogComponent implements OnDestroy {
     this.buildList();
     this.dataSource.data = this.extProgList;
     this.buildColumns();
+    this.notificationHandler = this.dataService.extprogListChanged.subscribe(() =>
+      this.buildList()
+    );
+
+    // new
     this.newRecordHandler = adminService.newRecordEvent.subscribe(() => {
-      console.debug("new ExtProg called");
-      const dialogRef = this.dialog.open(EditExtprogDialogComponent, {
-        data: {},
-        panelClass: "extProgDialogPosition", // class muss global definiert werden
-      });
-      dialogRef.afterClosed().subscribe((result: EditExtprogData) => {
-        console.debug("dlg closed");
-        console.dir(result);
-        // TODO
-      });
+      this.handleChangeOrNew();
     });
+    // csv export
     this.exportHandler = adminService.exportEvent.subscribe(() => {
-      console.debug("output to csv called - ExtProg");
       this.csvEvent.emit();
     });
+    // change
     this.changeEvent.subscribe((ex: ExtProgList) => {
-      console.debug("change ExtProg");
-      const dialogRef = this.dialog.open(EditExtprogDialogComponent, {
-        data: { in: ex },
-        panelClass: "extProgDialogPosition",
-      });
-      dialogRef.afterClosed().subscribe((result: EditExtprogData) => {
-        console.debug("dlg closed");
-        console.dir(result);
-        // TODO
-      });
+      this.handleChangeOrNew(ex);
     });
+    // del
     this.delEvent.subscribe((ex: ExtProgList) => {
-      console.debug("del ExtProg");
-      // TODO
+      const dialogRef = this.dialog.open(YesNoDialogComponent, {
+        data: {
+          title: "Externes Programm löschen",
+          text: `Soll das externe Programm "${ex.program}" gelöscht werden?`,
+        },
+      });
+      dialogRef.afterClosed().subscribe((result: boolean) => {
+        if (result) {
+          const rc: EditExtprogTransport = { outDel: ex };
+          this.adminService.saveExtprog(rc);
+        }
+      });
     });
   }
 
@@ -75,6 +78,19 @@ export class AdminPanelExtprogComponent implements OnDestroy {
     this.adminService.disableMainMenuButtons = true;
     this.newRecordHandler.unsubscribe();
     this.exportHandler.unsubscribe();
+    this.notificationHandler.unsubscribe();
+  }
+
+  private handleChangeOrNew(ex?: ExtProgList) {
+    const dialogRef = this.dialog.open(EditExtprogDialogComponent, {
+      data: ex ? { in: ex } : {},
+      panelClass: "extProgDialogPosition",
+    });
+    dialogRef.afterClosed().subscribe((result: EditExtprogTransport) => {
+      if (result) {
+        this.adminService.saveExtprog(result);
+      }
+    });
   }
 
   private buildColumns() {
@@ -177,7 +193,7 @@ export class AdminPanelExtprogComponent implements OnDestroy {
   }
 
   private buildList() {
-    this.extProgList = [];
+    this.extProgList.splice(0);
     this.dataService.extProgList.forEach((ex) => {
       const aptyp = this.dataService.aptypList.find((at) => at.id === ex.aptypId);
       const neu = this.extProgList.find((ep) => ep.program === ex.program);
@@ -185,7 +201,6 @@ export class AdminPanelExtprogComponent implements OnDestroy {
         neu.types.push({ id: ex.id, aptyp: aptyp });
       } else {
         this.extProgList.push({
-          id: ex.id,
           program: ex.program,
           bezeichnung: ex.bezeichnung,
           param: ex.param,
@@ -194,5 +209,6 @@ export class AdminPanelExtprogComponent implements OnDestroy {
         });
       }
     });
+    this.refreshTableEvent.emit();
   }
 }

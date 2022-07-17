@@ -30,6 +30,7 @@ export class DataService {
   public static BOOL_TAG_FLAG = 0b0000_0001;
   public static FREMDE_HW_FLAG = 0b0000_0001;
   public static PERIPHERIE_FLAG = 0b0000_0001;
+  public static EXTPROG_ALL_USERS_FLAG = 0b0000_0001;
 
   public apList: Arbeitsplatz[] = [];
   public bstList: Betrst[] = [];
@@ -65,6 +66,7 @@ export class DataService {
   public apListChanged: EventEmitter<void> = new EventEmitter<void>();
   public hwListChanged: EventEmitter<void> = new EventEmitter<void>();
   public hwKonfigListChanged: EventEmitter<HwKonfig> = new EventEmitter<HwKonfig>();
+  public extprogListChanged: EventEmitter<void> = new EventEmitter<void>();
 
   // Web-API calls
   public readonly oeTreeUrl: string;
@@ -82,12 +84,15 @@ export class DataService {
   public readonly allApTypUrl: string;
   public readonly allApKatUrl: string;
   public readonly allHwTypUrl: string;
+  public readonly allAdresseUrl: string;
+  public readonly allOeUrl: string;
   public readonly changeApUrl: string;
   public readonly changeHwUrl: string;
   public readonly changeKonfigUrl: string;
   public readonly addHwUrl: string;
   public readonly hwHistoryUrl: string;
   public readonly extProgUrl: string;
+  public readonly changeExtprogUrl: string;
   public readonly importTcLogUrl: string;
 
   // case-insensitive alpha sort
@@ -126,11 +131,13 @@ export class DataService {
     this.pageHwUrl = this.configService.webservice + "/hw/page/";
     this.countHwUrl = this.configService.webservice + "/hw/count";
     this.allHwKonfig = this.configService.webservice + "/hwkonfig/all";
-    this.allTagTypesUrl = this.configService.webservice + "/ap/tagtypes";
-    this.allVlansUrl = this.configService.webservice + "/ap/vlans";
-    this.allApTypUrl = this.configService.webservice + "/ap/aptypes";
-    this.allApKatUrl = this.configService.webservice + "/ap/apkat";
-    this.allHwTypUrl = this.configService.webservice + "/hw/hwtypes";
+    this.allTagTypesUrl = this.configService.webservice + "/svz/tagtyp/all";
+    this.allVlansUrl = this.configService.webservice + "/svz/vlan/all";
+    this.allApTypUrl = this.configService.webservice + "/svz/aptyp/all";
+    this.allApKatUrl = this.configService.webservice + "/svz/apkategorie/all";
+    this.allHwTypUrl = this.configService.webservice + "/svz/hwtyp/all";
+    this.allAdresseUrl = this.configService.webservice + "/svz/adresse/all";
+    this.allOeUrl = this.configService.webservice + "/svz/oe/all";
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
     this.changeHwUrl = this.configService.webservice + "/hw/changehw";
@@ -140,8 +147,10 @@ export class DataService {
     this.hwHistoryUrl = this.configService.webservice + "/hw/hwhistoryfor";
 
     this.extProgUrl = this.configService.webservice + "/svz/extprog/all";
+    this.changeExtprogUrl = this.configService.webservice + "/svz/extprog/change";
 
     this.importTcLogUrl = this.configService.webservice + "/external/gettclogs";
+
     const readyEventCheck = () => {
       if (this.isDataReady()) {
         console.debug("## all data ready");
@@ -208,6 +217,12 @@ export class DataService {
     notification.konfigChange.subscribe((data) => {
       console.debug("dataService start update hwKonfig");
       this.updateKonfig(data);
+
+      this.checkNotification();
+    });
+    notification.extprogChange.subscribe(() => {
+      console.debug("dataService start update extprog");
+      this.fetchExtProgList();
 
       this.checkNotification();
     });
@@ -301,6 +316,7 @@ export class DataService {
   public fetchExtProgList(): void {
     this.get(this.extProgUrl).subscribe((e: ExtProg[]) => {
       this.extProgList = e;
+      this.extprogListChanged.emit();
     });
   }
 
