@@ -93,6 +93,7 @@ export class DataService {
   public readonly hwHistoryUrl: string;
   public readonly extProgUrl: string;
   public readonly changeExtprogUrl: string;
+  public readonly changeAptypUrl: string;
   public readonly importTcLogUrl: string;
 
   // case-insensitive alpha sort
@@ -134,6 +135,7 @@ export class DataService {
     this.allTagTypesUrl = this.configService.webservice + "/svz/tagtyp/all";
     this.allVlansUrl = this.configService.webservice + "/svz/vlan/all";
     this.allApTypUrl = this.configService.webservice + "/svz/aptyp/all";
+    this.changeAptypUrl = this.configService.webservice + "/svz/aptyp/change";
     this.allApKatUrl = this.configService.webservice + "/svz/apkategorie/all";
     this.allHwTypUrl = this.configService.webservice + "/svz/hwtyp/all";
     this.allAdresseUrl = this.configService.webservice + "/svz/adresse/all";
@@ -220,9 +222,19 @@ export class DataService {
 
       this.checkNotification();
     });
+
     notification.extprogChange.subscribe(() => {
       console.debug("dataService start update extprog");
       this.fetchExtProgList();
+
+      this.checkNotification();
+    });
+
+    notification.aptypChange.subscribe((data) => {
+      console.debug("dataService start update aptyp TODO");
+      console.dir(data);
+      this.fetchApTypList();
+      // TODO update AP + ApTyp
 
       this.checkNotification();
     });
@@ -239,11 +251,10 @@ export class DataService {
       .subscribe({
         next: (a: never) => {
           console.debug("post succeeded");
-          console.dir(a);
           this.statusService.info("Änderungen erfolgreich gespeichert.");
         },
         error: (err: Error) => {
-          console.error("Error " + err.message);
+          console.error("Error on POST: " + err.message);
           console.dir(err);
           this.statusService.error("Fehler beim Speichern: " + err.message);
         },

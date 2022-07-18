@@ -46,7 +46,7 @@ export class EditAptypDialogComponent implements OnInit {
     console.log("you submitted value: ");
     console.dir(value);
     this.data.bezeichnung = this.bezeichControl.value as string;
-    this.data.flag = this.flagControl.value as number;
+    this.data.flag = Number.parseInt(this.flagControl.value as string, 10);
     this.data.apKategorieId = this.katControl.value as number;
   }
 

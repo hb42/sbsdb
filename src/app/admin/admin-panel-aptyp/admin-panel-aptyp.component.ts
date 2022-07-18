@@ -6,6 +6,7 @@ import { DataService } from "../../shared/data.service";
 import { ApTyp } from "../../shared/model/ap-typ";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
+import { YesNoDialogComponent } from "../../shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminService } from "../admin.service";
 import { EditAptypDialogComponent } from "../edit-aptyp-dialog/edit-aptyp-dialog.component";
 
@@ -39,40 +40,45 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
 
     this.buildColumns();
 
+    // new
     this.newRecordHandler = this.adminService.newRecordEvent.subscribe(() => {
-      console.debug("new AP-Typ called");
-      // TODO
-      const dialogRef = this.dialog.open(EditAptypDialogComponent, {
-        data: { id: 0, bezeichnung: "", flag: 0, apKategorieId: null, apkategorie: "" },
-      });
-      dialogRef.afterClosed().subscribe((result: ApTyp) => {
-        console.debug("dlg closed");
-        console.dir(result);
+      this.handleChangeOrNew({
+        id: 0,
+        bezeichnung: "",
+        flag: 0,
+        apKategorieId: null,
+        apkategorie: "",
       });
     });
 
     this.exportHandler = this.adminService.exportEvent.subscribe(() => {
       console.debug("output to csv called - AP-Typ");
       this.csvEvent.emit();
-      // TODO
     });
 
     this.debugHandler = this.adminService.debugEvent.subscribe(() => {
       this.changeDebug();
     });
 
+    // chg
     this.changeEvent.subscribe((at: ApTyp) => {
-      console.debug("change AP-Typ");
-      // TODO
-      const dialogRef = this.dialog.open(EditAptypDialogComponent, { data: at });
-      dialogRef.afterClosed().subscribe((result: ApTyp) => {
-        console.debug("dlg closed");
-        console.dir(result);
-      });
+      this.handleChangeOrNew(at);
     });
+
+    // del
     this.delEvent.subscribe((at: ApTyp) => {
-      console.debug("del AP-Typ");
-      // TODO
+      const dialogRef = this.dialog.open(YesNoDialogComponent, {
+        data: {
+          title: "AP-Typ löschen",
+          text: `Soll der Arbeitsplatz-Typ "${at.bezeichnung}" gelöscht werden?`,
+        },
+      });
+      dialogRef.afterClosed().subscribe((result: boolean) => {
+        if (result) {
+          console.debug("del AP-Typ");
+          this.adminService.saveAptyp({ aptyp: at, del: true });
+        }
+      });
     });
   }
 
@@ -87,6 +93,17 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
     this.newRecordHandler.unsubscribe();
     this.exportHandler.unsubscribe();
     this.debugHandler.unsubscribe();
+  }
+
+  private handleChangeOrNew(aptyp: ApTyp) {
+    const dialogRef = this.dialog.open(EditAptypDialogComponent, { data: aptyp });
+    dialogRef.afterClosed().subscribe((result: ApTyp) => {
+      console.debug("dlg closed");
+      console.dir(result);
+      if (result) {
+        this.adminService.saveAptyp({ aptyp: result, del: false });
+      }
+    });
   }
 
   private buildColumns() {

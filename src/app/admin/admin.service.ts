@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
+import { EditAptypTransport } from "./edit-aptyp-dialog/edit-aptyp-transport";
 import { EditExtprogTransport } from "./edit-extprog-dialog/edit-extprog-transport";
 
 @Injectable({
@@ -45,5 +46,11 @@ export class AdminService {
     if (data.outChg || data.outDel || data.outNew) {
       this.dataService.post(this.dataService.changeExtprogUrl, data);
     }
+  }
+
+  public saveAptyp(data: EditAptypTransport): void {
+    console.debug("save aptyp data");
+    console.dir(data);
+    this.dataService.post(this.dataService.changeAptypUrl, data);
   }
 }
