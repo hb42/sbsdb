@@ -32,6 +32,7 @@ import { BaseFilterService } from "../filter/base-filter-service";
 import { KeyboardListener } from "../keyboard-listener";
 import { KeyboardService } from "../keyboard.service";
 import { NavigationService } from "../navigation.service";
+import { StatusService } from "../status.service";
 
 @Component({
   selector: "sbsdb-head",
@@ -91,6 +92,7 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
     public navigationService: NavigationService,
     public configService: ConfigService,
     public dialog: MatDialog,
+    public statusService: StatusService,
     private keyboardService: KeyboardService
   ) {
     this.userSettings = configService.getUser();

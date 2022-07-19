@@ -41,7 +41,6 @@ export class ApService {
   public userSettings: UserSession;
 
   public loading = false;
-  // public typtagSelect: TypTag[];
 
   public columns: SbsdbColumn<ApService, Arbeitsplatz>[] = [];
 
@@ -212,6 +211,7 @@ export class ApService {
 
   public runProgram(job: ExtProg, ap: Arbeitsplatz) {
     if (this.electronService.isElectron) {
+      this.statusService.loadingIndicator = true;
       void this.electronService.exec(job, ap).then((result) => {
         if (result) {
           // fuer rc = 0 sollte das externe Programm das Feedback uebernehmen
@@ -227,6 +227,7 @@ export class ApService {
               break;
           }
         }
+        this.statusService.loadingIndicator = false;
       });
     }
   }

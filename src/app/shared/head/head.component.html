@@ -70,6 +70,17 @@
 
   <span class="spacer"></span>
   <div class="fill"></div>
+
+  <div class="menu-spinner" *ngIf="statusService.loadingIndicator">
+    <mat-progress-spinner
+      mode="indeterminate"
+      color="accent"
+      diameter="30"
+      strokeWidth="3"
+    ></mat-progress-spinner>
+  </div>
+  <span class="spacer" *ngIf="statusService.loadingIndicator"></span>
+
   <button
     *ngIf="filterService"
     mat-icon-button
@@ -99,7 +110,7 @@
     (click)="csvBtnClick()"
     [disabled]="disableButtons"
   >
-<!--    <mat-icon>ios_share</mat-icon>-->
+    <!--    <mat-icon>ios_share</mat-icon>-->
     <mat-icon>download</mat-icon>
   </button>
   <span class="menu-spacer" *ngIf="filterService">|</span>

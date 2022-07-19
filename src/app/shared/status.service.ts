@@ -10,14 +10,22 @@ export class StatusService {
   public static STATUS_WARN = "WARN";
   public static STATUS_ERROR = "ERROR";
 
+  set loadingIndicator(b: boolean) {
+    this.loadingindicator = b;
+  }
+  get loadingIndicator(): boolean {
+    return this.loadingindicator;
+  }
+  private loadingindicator = false;
+
   constructor(private snackBar: MatSnackBar) {}
 
   /**
-   * Fuer hat-geklappt-Nachricht: msg 4 Sekunden anzeigen
+   * Fuer hat-geklappt-Nachricht: msg 5 Sekunden anzeigen
    */
   public info(msg: string): void {
     this.snackBar.openFromComponent(StatusComponent, {
-      duration: 4000,
+      duration: 5000,
       data: { msg: msg, type: StatusService.STATUS_INFO },
     });
   }
@@ -39,16 +47,5 @@ export class StatusService {
     this.snackBar.openFromComponent(StatusComponent, {
       data: { msg: msg, type: StatusService.STATUS_ERROR },
     });
-  }
-
-  public test(): void {
-    console.debug("SnackBar.TEST");
-    this.snackBar.open("test message", "OK", { duration: 10000 });
-
-    // const snackBarRef =
-    // this.snackBar.open(result, "OK", { duration: 10000 });
-    // snackBarRef.onAction().subscribe(() => {
-    //   snackBarRef.dismiss();
-    // });
   }
 }

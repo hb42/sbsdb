@@ -195,7 +195,7 @@
           <sbsdb-expand-header [filterService]="apService.filterService"></sbsdb-expand-header>
         </th>
         <!-- DATA -->
-        <td mat-cell *matCellDef="let element" #menuCell >
+        <td mat-cell *matCellDef="let element" #menuCell>
           <button
             mat-icon-button
             [matMenuTriggerFor]="apMenu"
@@ -204,8 +204,8 @@
             (menuClosed)="menuCell.parentElement.classList.remove('row-menu-open')"
             color="primary"
           >
-<!--            #rowMenuTrigger="matMenuTrigger"-->
-<!--            [class.row-menu-open]="rowMenuTrigger.menuOpen"-->
+            <!--            #rowMenuTrigger="matMenuTrigger"-->
+            <!--            [class.row-menu-open]="rowMenuTrigger.menuOpen"-->
             <mat-icon>more_vert</mat-icon>
           </button>
         </td>
@@ -246,9 +246,8 @@
         *matRowDef="let element; columns: apService.displayedColumns"
         class="table-row table-row-clickable"
         [class.detail-cell-expanded]="element.expanded"
-
       ></tr>
-<!--        [class.row-menu-selected]="this."-->
+      <!--        [class.row-menu-selected]="this."-->
       <tr
         mat-row
         *matRowDef="let element; columns: ['apdetails']"
@@ -365,7 +364,11 @@
     <!--    <button-->
     <!--      mat-menu-item-->
     <!--      class="menue-entry"-->
-    <!--      (click)="apService.statusService.warn('Das ist eine Warnung')"-->
+    <!--      (click)="-->
+    <!--        apService.statusService.warn(-->
+    <!--          'Das ist eine Warnung mit einem längeren Text, damit ich den Umruch testen kann.'-->
+    <!--        )-->
+    <!--      "-->
     <!--    >-->
     <!--      <mat-icon>play_circle</mat-icon>-->
     <!--      Test Status warn-->
@@ -385,6 +388,7 @@
 <mat-menu #apMenu="matMenu">
   <ng-template matMenuContent let-ap="ap">
     <button
+      #btn
       *ngFor="let ext of apService.extProgListFor(ap)"
       mat-menu-item
       (click)="apService.runProgram(ext, ap)"
