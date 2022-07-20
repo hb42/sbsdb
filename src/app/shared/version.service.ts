@@ -74,7 +74,8 @@ export class VersionService {
     return firstValueFrom(this.http.get(webserver + "package.json")).then(async (pj: JSON) => {
       const ver = ["Basis: Angular " + VERSION.full];
       if (this.electronService.isElectron) {
-        ver.push("Runtime: Electron " + this.electronService.electronVersion);
+        ver.push("Runtime: Electron " + this.electronService.electronRuntimeVersion);
+        ver.push("Local App " + this.electronService.electronAppVersion);
       }
       pj["versions"] = ver;
       this.version = VersionService.makeVer(pj);

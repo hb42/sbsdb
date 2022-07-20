@@ -8,7 +8,7 @@ import { ExtProg } from "./model/ext-prog";
 //
 interface LocalApi {
   test(msg: string): void;
-  version(): string;
+  version(): string[]; // 0: electron runtime, 1: local app
   exec(job: string, param: string, ap: Arbeitsplatz): Promise<ElectronRc>;
 }
 
@@ -23,9 +23,16 @@ export class ElectronService {
   get isElectron(): boolean {
     return !!this.electron;
   }
-  get electronVersion(): string {
+  get electronRuntimeVersion(): string {
     if (this.isElectron) {
-      return this.electron.version();
+      return this.electron.version()[0];
+    } else {
+      return null;
+    }
+  }
+  get electronAppVersion(): string {
+    if (this.isElectron) {
+      return this.electron.version()[1];
     } else {
       return null;
     }
@@ -39,7 +46,7 @@ export class ElectronService {
     }
     console.debug("c'tor ElectronService");
     if (this.isElectron) {
-      console.log("Running on electron runtime " + this.electronVersion);
+      console.log("Running on electron runtime " + this.electronRuntimeVersion);
       this.electron.test("calling sbsdb-local");
     }
   }

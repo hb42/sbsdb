@@ -216,13 +216,16 @@ export class ApService {
         if (result) {
           // fuer rc = 0 sollte das externe Programm das Feedback uebernehmen
           switch (result.rc) {
-            case 1:
+            case 1: // runtime error
+              this.statusService.error(result.info);
+              break;
+            case 2: // Hinweis aus dem Script
               this.statusService.info(result.info);
               break;
-            case 2:
+            case 3: // Warnung aus dem Script
               this.statusService.warn(result.info);
               break;
-            case 3:
+            case 4: // Fehler, den das Script erkannt hat
               this.statusService.error(result.info);
               break;
           }
