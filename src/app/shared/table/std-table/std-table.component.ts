@@ -102,7 +102,18 @@ export class StdTableComponent implements OnInit, AfterViewInit {
           idCol.show = b;
           this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
         }
+        // FIXME so fkt das nicht
+        // const sav = this.filterExpression;
+        // this.filterExpression.reset();
+        // const col = this.columns.find((c) => c.filterControl);
+        // const f = new Field(col.fieldName, col.displayName, col.typeKey);
+        // const ex = new Expression(f, new RelationalOperator(RelOp.like), "dummy");
+        // this.filterExpression.addElement(new LogicalAnd(), ex);
+        // this.triggerFilter();
+        // setTimeout(() => {
+        //   this.buildStdFilterExpression();
         this.triggerFilter();
+        // }, 0);
       });
     }
 

@@ -5,6 +5,7 @@ import {
   ADM_FILTER_PATH,
   ADM_OPTIONS_PATH,
   ADM_PATH,
+  ADM_TAGTYP_PATH,
   ADM_TCLOGS_PATH,
 } from "../../const";
 import { NavigationService } from "../../shared/navigation.service";
@@ -19,6 +20,7 @@ export class AdminOptionsComponent {
   public admApFilterPath = "/" + ADM_PATH + "/" + ADM_FILTER_PATH;
   public admConfigPath = "/" + ADM_PATH + "/" + ADM_OPTIONS_PATH;
   public admAptypPath = "/" + ADM_PATH + "/" + ADM_APTYP_PATH;
+  public admTagtypPath = "/" + ADM_PATH + "/" + ADM_TAGTYP_PATH;
   public admExtprogPath = "/" + ADM_PATH + "/" + ADM_EXTPROG_PATH;
   public admTcLogsPath = "/" + ADM_PATH + "/" + ADM_TCLOGS_PATH;
 

@@ -3,21 +3,21 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { Subscription } from "rxjs";
 import { DataService } from "../../shared/data.service";
-import { ApTyp } from "../../shared/model/ap-typ";
+import { TagTyp } from "../../shared/model/tagTyp";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { YesNoDialogComponent } from "../../shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminService } from "../admin.service";
-import { EditAptypDialogComponent } from "../edit-aptyp-dialog/edit-aptyp-dialog.component";
+import { EditTagtypDialogComponent } from "../edit-tagtyp-dialog/edit-tagtyp-dialog.component";
 
 @Component({
-  selector: "sbsdb-admin-panel-aptyp",
-  templateUrl: "./admin-panel-aptyp.component.html",
-  styleUrls: ["./admin-panel-aptyp.component.scss"],
+  selector: "sbsdb-admin-panel-tagtyp",
+  templateUrl: "./admin-panel-tagtyp.component.html",
+  styleUrls: ["./admin-panel-tagtyp.component.scss"],
 })
-export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
-  public dataSource: MatTableDataSource<ApTyp> = new MatTableDataSource<ApTyp>();
-  public columns: SbsdbColumn<AdminPanelAptypComponent, ApTyp>[] = [];
+export class AdminPanelTagtypComponent implements OnDestroy, AfterViewInit {
+  public dataSource: MatTableDataSource<TagTyp> = new MatTableDataSource<TagTyp>();
+  public columns: SbsdbColumn<AdminPanelTagtypComponent, TagTyp>[] = [];
   public csvEvent: EventEmitter<void> = new EventEmitter<void>();
 
   public changeEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
@@ -36,20 +36,26 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
   ) {
     console.debug("c'tor AdminPanelAptypComponent");
     setTimeout(() => (this.adminService.disableMainMenuButtons = false), 0);
-    this.dataService.apTypDeps();
-    this.dataSource.data = this.dataService.aptypList;
+    this.dataService.tagTypDeps();
+    this.dataSource.data = this.dataService.tagTypList;
 
     this.buildColumns();
 
-    this.dataService.aptypListChanged.subscribe(() => {
+    this.dataService.tagtypListChanged.subscribe(() => {
       this.changeDebug();
     });
+
+    // TODO x deps -> AP_TAG
+    //      - new
+    //      - chg
+    //      - del
 
     // new
     this.newRecordHandler = this.adminService.newRecordEvent.subscribe(() => {
       this.handleChangeOrNew({
         id: 0,
         bezeichnung: "",
+        param: "",
         flag: 0,
         apKategorieId: null,
         apkategorie: "",
@@ -57,7 +63,7 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
     });
 
     this.exportHandler = this.adminService.exportEvent.subscribe(() => {
-      console.debug("output to csv called - AP-Typ");
+      console.debug("output to csv called - TAG-Typ");
       this.csvEvent.emit();
     });
 
@@ -66,22 +72,22 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
     });
 
     // chg
-    this.changeEvent.subscribe((at: ApTyp) => {
-      this.handleChangeOrNew(at);
+    this.changeEvent.subscribe((tt: TagTyp) => {
+      this.handleChangeOrNew(tt);
     });
 
     // del
-    this.delEvent.subscribe((at: ApTyp) => {
+    this.delEvent.subscribe((tt: TagTyp) => {
       const dialogRef = this.dialog.open(YesNoDialogComponent, {
         data: {
-          title: "AP-Typ löschen",
-          text: `Soll der Arbeitsplatz-Typ "${at.bezeichnung}" gelöscht werden?`,
+          title: "TAG-Typ löschen",
+          text: `Soll der TAG-Typ "${tt.bezeichnung}" gelöscht werden?`,
         },
       });
       dialogRef.afterClosed().subscribe((result: boolean) => {
         if (result) {
-          console.debug("del AP-Typ");
-          this.adminService.saveAptyp({ aptyp: at, del: true });
+          console.debug("del TAG-Typ");
+          this.adminService.saveTagtyp({ tagtyp: tt, del: true });
         }
       });
     });
@@ -100,26 +106,26 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
     this.debugHandler.unsubscribe();
   }
 
-  private handleChangeOrNew(aptyp: ApTyp) {
-    const dialogRef = this.dialog.open(EditAptypDialogComponent, { data: aptyp });
-    dialogRef.afterClosed().subscribe((result: ApTyp) => {
+  private handleChangeOrNew(tagtyp: TagTyp) {
+    const dialogRef = this.dialog.open(EditTagtypDialogComponent, { data: tagtyp });
+    dialogRef.afterClosed().subscribe((result: TagTyp) => {
       console.debug("dlg closed");
       console.dir(result);
       if (result) {
-        this.adminService.saveAptyp({ aptyp: result, del: false });
+        this.adminService.saveTagtyp({ tagtyp: result, del: false });
       }
     });
   }
 
   private buildColumns() {
     this.columns.push(
-      new SbsdbColumn<AdminPanelAptypComponent, ApTyp>(
+      new SbsdbColumn<AdminPanelTagtypComponent, TagTyp>(
         this,
         "id",
         () => "ID",
         () => "id",
         () => "id",
-        (a: ApTyp) => a.id.toString(10),
+        (a: TagTyp) => a.id.toString(10),
         "",
         true,
         0,
@@ -131,13 +137,13 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
       )
     );
     this.columns.push(
-      new SbsdbColumn<AdminPanelAptypComponent, ApTyp>(
+      new SbsdbColumn<AdminPanelTagtypComponent, TagTyp>(
         this,
-        "aptyp",
-        () => "AP-Typ",
+        "tagtyp",
+        () => "TAG-Typ",
         () => "bezeichnung",
         () => "bezeichnung",
-        (a: ApTyp) => a.bezeichnung,
+        (a: TagTyp) => a.bezeichnung,
         "",
         true,
         0,
@@ -149,13 +155,32 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
       )
     );
     this.columns.push(
-      new SbsdbColumn<AdminPanelAptypComponent, ApTyp>(
+      new SbsdbColumn<AdminPanelTagtypComponent, TagTyp>(
+        this,
+        "param",
+        () => "Parameter",
+        () => "param",
+        () => "param",
+        (a: TagTyp) => a.param,
+        "",
+        true,
+        2,
+        ColumnType.STRING,
+        null,
+        null,
+        true,
+        "M"
+      )
+    );
+
+    this.columns.push(
+      new SbsdbColumn<AdminPanelTagtypComponent, TagTyp>(
         this,
         "flag",
         () => "Flag",
         () => "flag",
         () => "flag",
-        (a: ApTyp) => a.flag.toString(10),
+        (a: TagTyp) => a.flag.toString(10),
         "",
         true,
         1,
@@ -167,13 +192,13 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
       )
     );
     this.columns.push(
-      new SbsdbColumn<AdminPanelAptypComponent, ApTyp>(
+      new SbsdbColumn<AdminPanelTagtypComponent, TagTyp>(
         this,
         "apkategorie",
         () => "AP-Kategorie",
         () => "apkategorie",
         () => "apkategorie",
-        (a: ApTyp) => a.apkategorie,
+        (a: TagTyp) => a.apkategorie,
         "",
         true,
         2,
@@ -185,7 +210,7 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
       )
     );
     this.columns.push(
-      new SbsdbColumn<AdminPanelAptypComponent, ApTyp>(
+      new SbsdbColumn<AdminPanelTagtypComponent, TagTyp>(
         this,
         "apketegorieid",
         () => "AP-Kategorie-ID",

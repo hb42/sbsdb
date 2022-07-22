@@ -41,6 +41,16 @@
   </button>
   <button
     mat-raised-button
+    [routerLink]="admTagtypPath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admTagtypPath"
+    [color]="navigationService.currentPath === admTagtypPath ? '' : 'primary'"
+    title="Sonstige Informations-Typen bearbeiten"
+  >
+    TAG-Typen
+  </button>
+  <button
+    mat-raised-button
     [routerLink]="admTcLogsPath"
     class="adm-btn"
     [skipLocationChange]="navigationService.currentPath === admTcLogsPath"

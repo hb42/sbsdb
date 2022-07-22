@@ -67,6 +67,8 @@ export class DataService {
   public hwListChanged: EventEmitter<void> = new EventEmitter<void>();
   public hwKonfigListChanged: EventEmitter<HwKonfig> = new EventEmitter<HwKonfig>();
   public extprogListChanged: EventEmitter<void> = new EventEmitter<void>();
+  public aptypListChanged: EventEmitter<void> = new EventEmitter<void>();
+  public tagtypListChanged: EventEmitter<void> = new EventEmitter<void>();
 
   // Web-API calls
   public readonly oeTreeUrl: string;
@@ -94,6 +96,7 @@ export class DataService {
   public readonly extProgUrl: string;
   public readonly changeExtprogUrl: string;
   public readonly changeAptypUrl: string;
+  public readonly changeTagtypUrl: string;
   public readonly importTcLogUrl: string;
 
   // case-insensitive alpha sort
@@ -133,6 +136,7 @@ export class DataService {
     this.countHwUrl = this.configService.webservice + "/hw/count";
     this.allHwKonfig = this.configService.webservice + "/hwkonfig/all";
     this.allTagTypesUrl = this.configService.webservice + "/svz/tagtyp/all";
+    this.changeTagtypUrl = this.configService.webservice + "/svz/tagtyp/change";
     this.allVlansUrl = this.configService.webservice + "/svz/vlan/all";
     this.allApTypUrl = this.configService.webservice + "/svz/aptyp/all";
     this.changeAptypUrl = this.configService.webservice + "/svz/aptyp/change";
@@ -157,6 +161,7 @@ export class DataService {
       if (this.isDataReady()) {
         console.debug("## all data ready");
         this.apTypDeps();
+        this.tagTypDeps();
         this.dataReady.emit();
       }
     };
@@ -231,10 +236,75 @@ export class DataService {
     });
 
     notification.aptypChange.subscribe((data) => {
-      console.debug("dataService start update aptyp TODO");
+      console.debug("dataService start update aptyp");
       console.dir(data);
-      this.fetchApTypList();
-      // TODO update AP + ApTyp
+      // this.fetchApTypList();
+      const old = this.aptypList.findIndex((at) => at.id === data.aptyp.id);
+      if (old >= 0) {
+        if (data.del) {
+          // del
+          this.aptypList.splice(old, 1);
+        } else {
+          // chg
+          this.aptypList[old].bezeichnung = data.aptyp.bezeichnung;
+          this.aptypList[old].flag = data.aptyp.flag;
+          this.aptypList[old].apKategorieId = data.aptyp.apKategorieId;
+          this.aptypList[old].apkategorie = data.aptyp.apkategorie;
+          // update AP-List
+          this.apList.forEach((ap) => {
+            if (ap.apTypId === data.aptyp.id) {
+              ap.apTypBezeichnung = data.aptyp.bezeichnung;
+              ap.apTypFlag = data.aptyp.flag;
+            }
+          });
+        }
+      } else {
+        // new
+        this.aptypList.push(data.aptyp);
+      }
+      this.apListChanged.emit();
+      this.aptypListChanged.emit();
+      this.apTypDeps();
+
+      this.checkNotification();
+    });
+
+    notification.tagtypChange.subscribe((data) => {
+      console.debug("dataService start update tagtyp");
+      console.dir(data);
+      const old = this.tagTypList.findIndex((tt) => tt.id === data.tagtyp.id);
+      if (old >= 0) {
+        if (data.del) {
+          // del
+          this.tagTypList.splice(old, 1);
+        } else {
+          //chg
+          this.tagTypList[old].bezeichnung = data.tagtyp.bezeichnung;
+          this.tagTypList[old].param = data.tagtyp.param;
+          this.tagTypList[old].flag = data.tagtyp.flag;
+          this.tagTypList[old].apKategorieId = data.tagtyp.apKategorieId;
+          this.tagTypList[old].apkategorie = data.tagtyp.apkategorie;
+          // TODO
+          //   update aplist
+          this.apList.forEach((ap) => {
+            ap.tags.forEach((t) => {
+              if (t.tagId === data.tagtyp.id) {
+                t.bezeichnung = data.tagtyp.bezeichnung;
+                t.flag = data.tagtyp.flag;
+                t.param = data.tagtyp.param;
+                t.apkategorieId = data.tagtyp.apKategorieId;
+              }
+            });
+          });
+        }
+      } else {
+        // new
+        this.tagTypList.push(data.tagtyp);
+      }
+      // TODO
+      this.apListChanged.emit();
+      this.tagtypListChanged.emit();
+      this.tagTypDeps();
 
       this.checkNotification();
     });
@@ -454,14 +524,7 @@ export class DataService {
     return hwt;
   }
 
-  private checkNotification(): void {
-    if (!this.notification.isOpen()) {
-      console.debug("reopening Notification");
-      this.notification.initialize();
-    }
-  }
-
-  private apTypDeps(): void {
+  public apTypDeps(): void {
     // select count(aptypId) from ap group by aptypId
     const apcount = this.apList.reduce(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -473,6 +536,29 @@ export class DataService {
       apt.inUse = apcount[k] as number;
     });
   }
+
+  public tagTypDeps(): void {
+    const apcount = this.apList.reduce(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      (prev, curr) => (
+        curr.tags.forEach((t) => (prev[t.tagId] = ((prev[t.tagId] as number) || 0) + 1)), prev
+      ),
+      // , prev)
+      {}
+    );
+    Object.keys(apcount).forEach((k) => {
+      const tgt = this.tagTypList.find((tt) => tt.id.toString(10) == k);
+      tgt.inUse = apcount[k] as number;
+    });
+  }
+
+  private checkNotification(): void {
+    if (!this.notification.isOpen()) {
+      console.debug("reopening Notification");
+      this.notification.initialize();
+    }
+  }
+
   // OE-Hierarchie aufbauen
   // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
   private prepBst() {

@@ -3,24 +3,25 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
-import { ApTyp } from "../../shared/model/ap-typ";
+import { TagTyp } from "../../shared/model/tagTyp";
 
 @Component({
-  selector: "sbsdb-edit-aptyp-dialog",
-  templateUrl: "./edit-aptyp-dialog.component.html",
-  styleUrls: ["./edit-aptyp-dialog.component.scss"],
+  selector: "sbsdb-edit-tagtyp-dialog",
+  templateUrl: "./edit-tagtyp-dialog.component.html",
+  styleUrls: ["./edit-tagtyp-dialog.component.scss"],
 })
-export class EditAptypDialogComponent implements OnInit {
+export class EditTagtypDialogComponent implements OnInit {
   public formGroup: FormGroup;
   public bezeichControl: FormControl;
+  public paramControl: FormControl;
   public flagControl: FormControl;
   public katControl: FormControl;
 
   public matcher = new FormFieldErrorStateMatcher();
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: ApTyp,
-    public matDialogRef: MatDialogRef<EditAptypDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: TagTyp,
+    public matDialogRef: MatDialogRef<EditTagtypDialogComponent>,
     public formBuilder: FormBuilder,
     public dataService: DataService
   ) {
@@ -31,16 +32,18 @@ export class EditAptypDialogComponent implements OnInit {
   public ngOnInit(): void {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     this.bezeichControl = new FormControl(this.data.bezeichnung, [Validators.required]);
-    // an die uebergeordnete Form anhaengen
     this.formGroup.addControl("bezeich", this.bezeichControl);
 
-    // an flag haengt Programmlogik ("fremde HW"), da ist eine Aenderung nicht sinnvoll
-    this.flagControl = new FormControl({ value: this.data.flag, disabled: !!this.data.id }, [
-      Validators.pattern(/^\d{1,5}$/),
-    ]);
+    this.paramControl = new FormControl(this.data.param);
+    this.formGroup.addControl("param", this.paramControl);
+
+    // TODO Aendern erlauben? -> Testen, wie das Programm damit klarkommt
+    this.flagControl = new FormControl(this.data.flag, [Validators.pattern(/^\d{1,5}$/)]);
     this.formGroup.addControl("flag", this.flagControl);
 
-    // ueber Kategorie wird die Auswhl der primaeren HW gesteuert, besser nicht anfassen
+    // Aenderung der Kategorie wuerde erfordern, die vorhandenen Eintraege fuer
+    // diesen tag zu loeschen (da falsche Kategorie). Das duerfte in den meisten
+    // Faellen nicht gewuenscht sein => Feld nur fuer NEU erlauben
     this.katControl = new FormControl(
       { value: this.data.apKategorieId, disabled: !!this.data.id },
       // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -53,6 +56,7 @@ export class EditAptypDialogComponent implements OnInit {
     console.log("you submitted value: ");
     console.dir(value);
     this.data.bezeichnung = this.bezeichControl.value as string;
+    this.data.param = this.paramControl.value as string;
     this.data.flag = Number.parseInt(this.flagControl.value as string, 10);
     this.data.apKategorieId = this.katControl.value as number;
   }

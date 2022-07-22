@@ -71,6 +71,8 @@ import { StdTableComponent } from "./shared/table/std-table/std-table.component"
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
+import { AdminPanelTagtypComponent } from './admin/admin-panel-tagtyp/admin-panel-tagtyp.component';
+import { EditTagtypDialogComponent } from './admin/edit-tagtyp-dialog/edit-tagtyp-dialog.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -151,6 +153,8 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditAptypDialogComponent,
     AdminPanelTclogsComponent,
     EditExtprogDialogComponent,
+    AdminPanelTagtypComponent,
+    EditTagtypDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { EditAptypTransport } from "../admin/edit-aptyp-dialog/edit-aptyp-transport";
+import { EditTagtypTransport } from "../admin/edit-tagtyp-dialog/edit-tagtyp-transport";
 import { ConfigService } from "./config/config.service";
 import { AddHwTransport } from "./model/add-hw-transport";
 import { ApTransport } from "./model/ap-transport";
@@ -17,6 +18,7 @@ export class NotificationService {
   public konfigChange: EventEmitter<HwKonfig> = new EventEmitter<HwKonfig>();
   public extprogChange: EventEmitter<void> = new EventEmitter<void>();
   public aptypChange: EventEmitter<EditAptypTransport> = new EventEmitter<EditAptypTransport>();
+  public tagtypChange: EventEmitter<EditTagtypTransport> = new EventEmitter<EditTagtypTransport>();
   private hubConnection: HubConnection | undefined;
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -71,6 +73,11 @@ export class NotificationService {
       this.hubConnection.on("aptypchange", (data: EditAptypTransport) => {
         console.debug("## Event aptypchange");
         this.aptypChange.emit(data);
+      });
+
+      this.hubConnection.on("tagtypchange", (data: EditTagtypTransport) => {
+        console.debug("## Event tagtypchange");
+        this.tagtypChange.emit(data);
       });
 
       this.hubConnection.onclose((err: Error) => {

@@ -19,7 +19,12 @@
         ></sbsdb-header-cell>
       </th>
       <!-- DATA -->
-      <td mat-cell *matCellDef="let row" (click)="expandRow(row, $event)">
+      <td
+        mat-cell
+        *matCellDef="let row"
+        (click)="expandRow(row, $event)"
+        (dblclick)="chgRecord(row)"
+      >
         <!--      class="highlight-when-expanded"-->
         <div sbsdbTooltipOnEllipsis>{{ getColumn(col).displayText(row) }}</div>
       </td>

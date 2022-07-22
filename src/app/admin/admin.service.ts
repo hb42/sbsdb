@@ -5,6 +5,7 @@ import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { EditAptypTransport } from "./edit-aptyp-dialog/edit-aptyp-transport";
 import { EditExtprogTransport } from "./edit-extprog-dialog/edit-extprog-transport";
+import { EditTagtypTransport } from "./edit-tagtyp-dialog/edit-tagtyp-transport";
 
 @Injectable({
   providedIn: "root",
@@ -52,5 +53,11 @@ export class AdminService {
     console.debug("save aptyp data");
     console.dir(data);
     this.dataService.post(this.dataService.changeAptypUrl, data);
+  }
+
+  public saveTagtyp(data: EditTagtypTransport): void {
+    console.debug("save tagtyp data");
+    console.dir(data);
+    this.dataService.post(this.dataService.changeTagtypUrl, data);
   }
 }
