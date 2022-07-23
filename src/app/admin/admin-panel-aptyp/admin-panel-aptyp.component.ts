@@ -1,13 +1,11 @@
-import { AfterViewInit, Component, EventEmitter, OnDestroy } from "@angular/core";
+import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatTableDataSource } from "@angular/material/table";
-import { Subscription } from "rxjs";
 import { DataService } from "../../shared/data.service";
 import { ApTyp } from "../../shared/model/ap-typ";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
-import { YesNoDialogComponent } from "../../shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminService } from "../admin.service";
+import { BaseSvzPanel } from "../base-svz-panel";
 import { EditAptypDialogComponent } from "../edit-aptyp-dialog/edit-aptyp-dialog.component";
 
 @Component({
@@ -15,19 +13,19 @@ import { EditAptypDialogComponent } from "../edit-aptyp-dialog/edit-aptyp-dialog
   templateUrl: "./admin-panel-aptyp.component.html",
   styleUrls: ["./admin-panel-aptyp.component.scss"],
 })
-export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
-  public dataSource: MatTableDataSource<ApTyp> = new MatTableDataSource<ApTyp>();
-  public columns: SbsdbColumn<AdminPanelAptypComponent, ApTyp>[] = [];
-  public csvEvent: EventEmitter<void> = new EventEmitter<void>();
-
-  public changeEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
-  public delEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
-
-  public refreshTableEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  private newRecordHandler: Subscription;
-  private exportHandler: Subscription;
-  private debugHandler: Subscription;
+export class AdminPanelAptypComponent extends BaseSvzPanel<AdminPanelAptypComponent, ApTyp> {
+  // public dataSource: MatTableDataSource<ApTyp> = new MatTableDataSource<ApTyp>();
+  // public columns: SbsdbColumn<AdminPanelAptypComponent, ApTyp>[] = [];
+  // public csvEvent: EventEmitter<void> = new EventEmitter<void>();
+  //
+  // public changeEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
+  // public delEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
+  //
+  // public refreshTableEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+  //
+  // private newRecordHandler: Subscription;
+  // private exportHandler: Subscription;
+  // private debugHandler: Subscription;
 
   constructor(
     public dataService: DataService,
@@ -35,72 +33,82 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
     protected dialog: MatDialog
   ) {
     console.debug("c'tor AdminPanelAptypComponent");
-    setTimeout(() => (this.adminService.disableMainMenuButtons = false), 0);
-    this.dataService.apTypDeps();
-    this.dataSource.data = this.dataService.aptypList;
+    super(dataService, adminService, dialog);
+    // setTimeout(() => (this.adminService.disableMainMenuButtons = false), 0);
+    // this.dataService.apTypDeps();
+    // this.dataSource.data = this.dataService.aptypList;
+    //
+    // this.buildColumns();
 
-    this.buildColumns();
-
-    this.dataService.aptypListChanged.subscribe(() => {
+    this.notificationHandler = this.dataService.aptypListChanged.subscribe(() => {
       this.changeDebug();
     });
 
-    // new
-    this.newRecordHandler = this.adminService.newRecordEvent.subscribe(() => {
-      this.handleChangeOrNew({
+    // // new
+    // this.newRecordHandler = this.adminService.newRecordEvent.subscribe(() => {
+    //   this.handleChangeOrNew({
+    //     id: 0,
+    //     bezeichnung: "",
+    //     flag: 0,
+    //     apKategorieId: null,
+    //     apkategorie: "",
+    //   });
+    // });
+    //
+    // this.exportHandler = this.adminService.exportEvent.subscribe(() => {
+    //   console.debug("output to csv called - AP-Typ");
+    //   this.csvEvent.emit();
+    // });
+    //
+    // this.debugHandler = this.adminService.debugEvent.subscribe(() => {
+    //   this.changeDebug();
+    // });
+    //
+    // // chg
+    // this.changeEvent.subscribe((at: ApTyp) => {
+    //   this.handleChangeOrNew(at);
+    // });
+    //
+    // // del
+    // this.delEvent.subscribe((at: ApTyp) => {
+    //   const dialogRef = this.dialog.open(YesNoDialogComponent, {
+    //     data: {
+    //       title: "AP-Typ löschen",
+    //       text: `Soll der Arbeitsplatz-Typ "${at.bezeichnung}" gelöscht werden?`,
+    //     },
+    //   });
+    //   dialogRef.afterClosed().subscribe((result: boolean) => {
+    //     if (result) {
+    //       console.debug("del AP-Typ");
+    //       this.adminService.saveAptyp({ aptyp: at, del: true });
+    //     }
+    //   });
+    // });
+  }
+
+  // public ngAfterViewInit(): void {
+  //   // ID-Spalte gemaess config.DEBUG ein- oder ausblenden
+  //   setTimeout(() => this.changeDebug(), 0);
+  // }
+  //
+  // public ngOnDestroy(): void {
+  //   console.debug("onDestroy AdminPanelAptypComponent");
+  //   this.adminService.disableMainMenuButtons = true;
+  //   this.newRecordHandler.unsubscribe();
+  //   this.exportHandler.unsubscribe();
+  //   this.debugHandler.unsubscribe();
+  // }
+
+  protected handleChangeOrNew(aptyp: ApTyp) {
+    if (!aptyp) {
+      aptyp = {
         id: 0,
         bezeichnung: "",
         flag: 0,
         apKategorieId: null,
         apkategorie: "",
-      });
-    });
-
-    this.exportHandler = this.adminService.exportEvent.subscribe(() => {
-      console.debug("output to csv called - AP-Typ");
-      this.csvEvent.emit();
-    });
-
-    this.debugHandler = this.adminService.debugEvent.subscribe(() => {
-      this.changeDebug();
-    });
-
-    // chg
-    this.changeEvent.subscribe((at: ApTyp) => {
-      this.handleChangeOrNew(at);
-    });
-
-    // del
-    this.delEvent.subscribe((at: ApTyp) => {
-      const dialogRef = this.dialog.open(YesNoDialogComponent, {
-        data: {
-          title: "AP-Typ löschen",
-          text: `Soll der Arbeitsplatz-Typ "${at.bezeichnung}" gelöscht werden?`,
-        },
-      });
-      dialogRef.afterClosed().subscribe((result: boolean) => {
-        if (result) {
-          console.debug("del AP-Typ");
-          this.adminService.saveAptyp({ aptyp: at, del: true });
-        }
-      });
-    });
-  }
-
-  public ngAfterViewInit(): void {
-    // ID-Spalte gemaess config.DEBUG ein- oder ausblenden
-    setTimeout(() => this.changeDebug(), 0);
-  }
-
-  public ngOnDestroy(): void {
-    console.debug("onDestroy AdminPanelAptypComponent");
-    this.adminService.disableMainMenuButtons = true;
-    this.newRecordHandler.unsubscribe();
-    this.exportHandler.unsubscribe();
-    this.debugHandler.unsubscribe();
-  }
-
-  private handleChangeOrNew(aptyp: ApTyp) {
+      };
+    }
     const dialogRef = this.dialog.open(EditAptypDialogComponent, { data: aptyp });
     dialogRef.afterClosed().subscribe((result: ApTyp) => {
       console.debug("dlg closed");
@@ -111,7 +119,24 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
     });
   }
 
-  private buildColumns() {
+  protected handleDelete(aptyp: ApTyp) {
+    void this.askDelete(
+      "AP-Typ löschen",
+      `Soll der Arbeitsplatz-Typ "${aptyp.bezeichnung}" gelöscht werden?`
+    ).then((result) => {
+      if (result) {
+        console.debug("del AP-Typ");
+        this.adminService.saveAptyp({ aptyp: aptyp, del: true });
+      }
+    });
+  }
+
+  protected getTableData(): ApTyp[] {
+    this.dataService.apTypDeps();
+    return this.dataService.aptypList;
+  }
+
+  protected buildColumns() {
     this.columns.push(
       new SbsdbColumn<AdminPanelAptypComponent, ApTyp>(
         this,
@@ -203,7 +228,7 @@ export class AdminPanelAptypComponent implements OnDestroy, AfterViewInit {
     );
   }
 
-  private changeDebug() {
-    this.refreshTableEvent.emit(this.adminService.userSettings.debug);
-  }
+  // private changeDebug() {
+  //   this.refreshTableEvent.emit(this.adminService.userSettings.debug);
+  // }
 }

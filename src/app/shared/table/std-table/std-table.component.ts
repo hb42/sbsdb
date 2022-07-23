@@ -93,27 +93,12 @@ export class StdTableComponent implements OnInit, AfterViewInit {
     }
 
     // Tabelle updaten
-    // Falls eine Spalte "id" existiert, wird sie abhaengig vom uebergebenen
-    // Parameter ein- oder ausgeblendet.
+    // Falls eine Spalte "id" existiert, wird sie abhaengig vom Parameter
+    // this.debug ein- oder ausgeblendet.
     if (this.refreshTableEvent) {
-      this.refreshTableEvent.subscribe((b) => {
-        const idCol = this.columns.find((c) => c.columnName === "id");
-        if (idCol) {
-          idCol.show = b;
-          this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
-        }
-        // FIXME so fkt das nicht
-        // const sav = this.filterExpression;
-        // this.filterExpression.reset();
-        // const col = this.columns.find((c) => c.filterControl);
-        // const f = new Field(col.fieldName, col.displayName, col.typeKey);
-        // const ex = new Expression(f, new RelationalOperator(RelOp.like), "dummy");
-        // this.filterExpression.addElement(new LogicalAnd(), ex);
-        // this.triggerFilter();
-        // setTimeout(() => {
-        //   this.buildStdFilterExpression();
+      this.refreshTableEvent.subscribe(() => {
+        this.checkIdColumn();
         this.triggerFilter();
-        // }, 0);
       });
     }
 
@@ -144,6 +129,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
         // }
         return valid;
       };
+      this.checkIdColumn();
       this.triggerFilter();
 
       // Filter triggern
@@ -208,5 +194,13 @@ export class StdTableComponent implements OnInit, AfterViewInit {
 
   private triggerFilter(): void {
     this.dataSource.filter = `${this.filterChanged++}`;
+  }
+
+  private checkIdColumn() {
+    const idCol = this.columns.find((c) => c.columnName === "id");
+    if (idCol) {
+      idCol.show = this.userSettings.debug;
+      this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
+    }
   }
 }

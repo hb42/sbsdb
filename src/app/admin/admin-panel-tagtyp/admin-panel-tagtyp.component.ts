@@ -1,13 +1,11 @@
-import { AfterViewInit, Component, EventEmitter, OnDestroy } from "@angular/core";
+import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatTableDataSource } from "@angular/material/table";
-import { Subscription } from "rxjs";
 import { DataService } from "../../shared/data.service";
 import { TagTyp } from "../../shared/model/tagTyp";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
-import { YesNoDialogComponent } from "../../shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminService } from "../admin.service";
+import { BaseSvzPanel } from "../base-svz-panel";
 import { EditTagtypDialogComponent } from "../edit-tagtyp-dialog/edit-tagtyp-dialog.component";
 
 @Component({
@@ -15,98 +13,31 @@ import { EditTagtypDialogComponent } from "../edit-tagtyp-dialog/edit-tagtyp-dia
   templateUrl: "./admin-panel-tagtyp.component.html",
   styleUrls: ["./admin-panel-tagtyp.component.scss"],
 })
-export class AdminPanelTagtypComponent implements OnDestroy, AfterViewInit {
-  public dataSource: MatTableDataSource<TagTyp> = new MatTableDataSource<TagTyp>();
-  public columns: SbsdbColumn<AdminPanelTagtypComponent, TagTyp>[] = [];
-  public csvEvent: EventEmitter<void> = new EventEmitter<void>();
-
-  public changeEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
-  public delEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
-
-  public refreshTableEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  private newRecordHandler: Subscription;
-  private exportHandler: Subscription;
-  private debugHandler: Subscription;
-
+export class AdminPanelTagtypComponent extends BaseSvzPanel<AdminPanelTagtypComponent, TagTyp> {
   constructor(
     public dataService: DataService,
     public adminService: AdminService,
     protected dialog: MatDialog
   ) {
+    super(dataService, adminService, dialog);
     console.debug("c'tor AdminPanelAptypComponent");
-    setTimeout(() => (this.adminService.disableMainMenuButtons = false), 0);
-    this.dataService.tagTypDeps();
-    this.dataSource.data = this.dataService.tagTypList;
 
-    this.buildColumns();
-
-    this.dataService.tagtypListChanged.subscribe(() => {
+    this.notificationHandler = this.dataService.tagtypListChanged.subscribe(() => {
       this.changeDebug();
     });
+  }
 
-    // TODO x deps -> AP_TAG
-    //      - new
-    //      - chg
-    //      - del
-
-    // new
-    this.newRecordHandler = this.adminService.newRecordEvent.subscribe(() => {
-      this.handleChangeOrNew({
+  protected handleChangeOrNew(tagtyp: TagTyp) {
+    if (!tagtyp) {
+      tagtyp = {
         id: 0,
         bezeichnung: "",
         param: "",
         flag: 0,
         apKategorieId: null,
         apkategorie: "",
-      });
-    });
-
-    this.exportHandler = this.adminService.exportEvent.subscribe(() => {
-      console.debug("output to csv called - TAG-Typ");
-      this.csvEvent.emit();
-    });
-
-    this.debugHandler = this.adminService.debugEvent.subscribe(() => {
-      this.changeDebug();
-    });
-
-    // chg
-    this.changeEvent.subscribe((tt: TagTyp) => {
-      this.handleChangeOrNew(tt);
-    });
-
-    // del
-    this.delEvent.subscribe((tt: TagTyp) => {
-      const dialogRef = this.dialog.open(YesNoDialogComponent, {
-        data: {
-          title: "TAG-Typ löschen",
-          text: `Soll der TAG-Typ "${tt.bezeichnung}" gelöscht werden?`,
-        },
-      });
-      dialogRef.afterClosed().subscribe((result: boolean) => {
-        if (result) {
-          console.debug("del TAG-Typ");
-          this.adminService.saveTagtyp({ tagtyp: tt, del: true });
-        }
-      });
-    });
-  }
-
-  public ngAfterViewInit(): void {
-    // ID-Spalte gemaess config.DEBUG ein- oder ausblenden
-    setTimeout(() => this.changeDebug(), 0);
-  }
-
-  public ngOnDestroy(): void {
-    console.debug("onDestroy AdminPanelAptypComponent");
-    this.adminService.disableMainMenuButtons = true;
-    this.newRecordHandler.unsubscribe();
-    this.exportHandler.unsubscribe();
-    this.debugHandler.unsubscribe();
-  }
-
-  private handleChangeOrNew(tagtyp: TagTyp) {
+      };
+    }
     const dialogRef = this.dialog.open(EditTagtypDialogComponent, { data: tagtyp });
     dialogRef.afterClosed().subscribe((result: TagTyp) => {
       console.debug("dlg closed");
@@ -117,7 +48,24 @@ export class AdminPanelTagtypComponent implements OnDestroy, AfterViewInit {
     });
   }
 
-  private buildColumns() {
+  protected handleDelete(tagtyp: TagTyp) {
+    void this.askDelete(
+      "TAG-Typ löschen",
+      `Soll der TAG-Typ "${tagtyp.bezeichnung}" gelöscht werden?`
+    ).then((result) => {
+      if (result) {
+        console.debug("del TAG-Typ");
+        this.adminService.saveTagtyp({ tagtyp: tagtyp, del: true });
+      }
+    });
+  }
+
+  protected getTableData(): TagTyp[] {
+    this.dataService.tagTypDeps();
+    return this.dataService.tagTypList;
+  }
+
+  protected buildColumns() {
     this.columns.push(
       new SbsdbColumn<AdminPanelTagtypComponent, TagTyp>(
         this,
@@ -226,9 +174,5 @@ export class AdminPanelTagtypComponent implements OnDestroy, AfterViewInit {
         true
       )
     );
-  }
-
-  private changeDebug() {
-    this.refreshTableEvent.emit(this.adminService.userSettings.debug);
   }
 }

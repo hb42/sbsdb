@@ -1,12 +1,10 @@
-import { Component, EventEmitter, OnDestroy } from "@angular/core";
+import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatTableDataSource } from "@angular/material/table";
-import { Subscription } from "rxjs";
 import { DataService } from "../../shared/data.service";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
-import { YesNoDialogComponent } from "../../shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminService } from "../admin.service";
+import { BaseSvzPanel } from "../base-svz-panel";
 import { EditExtprogDialogComponent } from "../edit-extprog-dialog/edit-extprog-dialog.component";
 import { EditExtprogTransport } from "../edit-extprog-dialog/edit-extprog-transport";
 import { ExtProgList } from "./ext-prog-list";
@@ -16,20 +14,11 @@ import { ExtProgList } from "./ext-prog-list";
   templateUrl: "./admin-panel-extprog.component.html",
   styleUrls: ["./admin-panel-extprog.component.scss"],
 })
-export class AdminPanelExtprogComponent implements OnDestroy {
-  public dataSource: MatTableDataSource<ExtProgList> = new MatTableDataSource<ExtProgList>();
-  public columns: SbsdbColumn<AdminPanelExtprogComponent, ExtProgList>[] = [];
-  public csvEvent: EventEmitter<void> = new EventEmitter<void>();
-
-  public changeEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
-  public delEvent: EventEmitter<unknown> = new EventEmitter<unknown>();
-
-  public refreshTableEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  private newRecordHandler: Subscription;
-  private exportHandler: Subscription;
-  private notificationHandler: Subscription;
-  private extProgList: ExtProgList[] = [];
+export class AdminPanelExtprogComponent extends BaseSvzPanel<
+  AdminPanelExtprogComponent,
+  ExtProgList
+> {
+  private extProgList: ExtProgList[];
 
   constructor(
     public dataService: DataService,
@@ -37,51 +26,14 @@ export class AdminPanelExtprogComponent implements OnDestroy {
     protected dialog: MatDialog
   ) {
     console.debug("c'tor AdminPanelExtprogComponent");
-    setTimeout(() => (this.adminService.disableMainMenuButtons = false), 0);
-    this.buildList();
-    this.dataSource.data = this.extProgList;
-    this.buildColumns();
+    super(dataService, adminService, dialog);
+
     this.notificationHandler = this.dataService.extprogListChanged.subscribe(() =>
       this.buildList()
     );
-
-    // new
-    this.newRecordHandler = adminService.newRecordEvent.subscribe(() => {
-      this.handleChangeOrNew();
-    });
-    // csv export
-    this.exportHandler = adminService.exportEvent.subscribe(() => {
-      this.csvEvent.emit();
-    });
-    // change
-    this.changeEvent.subscribe((ex: ExtProgList) => {
-      this.handleChangeOrNew(ex);
-    });
-    // del
-    this.delEvent.subscribe((ex: ExtProgList) => {
-      const dialogRef = this.dialog.open(YesNoDialogComponent, {
-        data: {
-          title: "Externes Programm löschen",
-          text: `Soll das externe Programm "${ex.program}" gelöscht werden?`,
-        },
-      });
-      dialogRef.afterClosed().subscribe((result: boolean) => {
-        if (result) {
-          const rc: EditExtprogTransport = { outDel: ex };
-          this.adminService.saveExtprog(rc);
-        }
-      });
-    });
   }
 
-  public ngOnDestroy(): void {
-    this.adminService.disableMainMenuButtons = true;
-    this.newRecordHandler.unsubscribe();
-    this.exportHandler.unsubscribe();
-    this.notificationHandler.unsubscribe();
-  }
-
-  private handleChangeOrNew(ex?: ExtProgList) {
+  protected handleChangeOrNew(ex?: ExtProgList) {
     const dialogRef = this.dialog.open(EditExtprogDialogComponent, {
       data: ex ? { in: ex } : {},
       panelClass: "extProgDialogPosition",
@@ -93,7 +45,24 @@ export class AdminPanelExtprogComponent implements OnDestroy {
     });
   }
 
-  private buildColumns() {
+  protected handleDelete(ex: ExtProgList) {
+    void this.askDelete(
+      "Externes Programm löschen",
+      `Soll das externe Programm "${ex.program}" gelöscht werden?`
+    ).then((result) => {
+      if (result) {
+        const rc: EditExtprogTransport = { outDel: ex };
+        this.adminService.saveExtprog(rc);
+      }
+    });
+  }
+
+  protected getTableData(): ExtProgList[] {
+    this.buildList();
+    return this.extProgList;
+  }
+
+  protected buildColumns() {
     this.columns.push(
       new SbsdbColumn<AdminPanelExtprogComponent, ExtProgList>(
         this,
@@ -193,7 +162,11 @@ export class AdminPanelExtprogComponent implements OnDestroy {
   }
 
   private buildList() {
-    this.extProgList.splice(0);
+    if (this.extProgList) {
+      this.extProgList.splice(0);
+    } else {
+      this.extProgList = [];
+    }
     this.dataService.extProgList.forEach((ex) => {
       const aptyp = this.dataService.aptypList.find((at) => at.id === ex.aptypId);
       const neu = this.extProgList.find((ep) => ep.program === ex.program);
