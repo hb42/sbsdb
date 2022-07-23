@@ -31,6 +31,7 @@ export class AdminPanelExtprogComponent extends BaseSvzPanel<
     this.notificationHandler = this.dataService.extprogListChanged.subscribe(() =>
       this.buildList()
     );
+    this.dataService.aptypList.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
   }
 
   protected handleChangeOrNew(ex?: ExtProgList) {

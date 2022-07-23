@@ -25,6 +25,7 @@ export class AdminPanelTagtypComponent extends BaseSvzPanel<AdminPanelTagtypComp
     this.notificationHandler = this.dataService.tagtypListChanged.subscribe(() => {
       this.changeDebug();
     });
+    this.dataService.apkatList.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
   }
 
   protected handleChangeOrNew(tagtyp: TagTyp) {

@@ -16,12 +16,13 @@
           [formControl]="keyControl"
           [errorStateMatcher]="matcher"
           (change)="onKeyChange()"
+          required="true"
         />
         <mat-error *ngIf="keyControl.invalid">{{ getErrorMessage(keyControl) }}</mat-error>
       </mat-form-field>
       <mat-form-field class="abstand">
         <mat-label>Bezeichnung</mat-label>
-        <input matInput [formControl]="nameControl" [errorStateMatcher]="matcher" />
+        <input matInput [formControl]="nameControl" [errorStateMatcher]="matcher" required="true" />
         <mat-error *ngIf="nameControl.invalid">{{ getErrorMessage(nameControl) }}</mat-error>
       </mat-form-field>
       <mat-form-field class="abstand">
@@ -31,7 +32,7 @@
       </mat-form-field>
       <mat-form-field class="abstand">
         <mat-label>Flag</mat-label>
-        <input matInput [formControl]="flagControl" [errorStateMatcher]="matcher" />
+        <input matInput [formControl]="flagControl" [errorStateMatcher]="matcher" required="true" />
         <mat-hint align="start">1 = Für alle Benutzer sichtbar</mat-hint>
         <mat-error *ngIf="flagControl.invalid">{{ getErrorMessage(flagControl) }}</mat-error>
       </mat-form-field>
@@ -41,6 +42,7 @@
         <mat-select
           [formControl]="aptypControl"
           multiple
+          required="true"
           [errorStateMatcher]="matcher"
           panelClass="extProgSelect"
         >
