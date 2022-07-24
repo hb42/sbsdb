@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { AdminPanelAdresseComponent } from "./admin/admin-panel-adresse/admin-panel-adresse.component";
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
 import { AdminPanelApkategorieComponent } from "./admin/admin-panel-apkategorie/admin-panel-apkategorie.component";
 import { AdminPanelAptypComponent } from "./admin/admin-panel-aptyp/admin-panel-aptyp.component";
@@ -12,6 +13,7 @@ import { AdminComponent } from "./admin/admin/admin.component";
 import { ApComponent } from "./ap/ap/ap.component";
 import { ConfComponent } from "./conf/conf/conf.component";
 import {
+  ADM_ADR_PATH,
   ADM_APKAT_PATH,
   ADM_APTYP_PATH,
   ADM_EXTPROG_PATH,
@@ -42,7 +44,7 @@ const routes: Routes = [
     children: [
       { path: ADM_FILTER_PATH, component: AdminPanelApFilterComponent, canActivate: [AdminGuard] },
       { path: ADM_OPTIONS_PATH, component: AdminPanelConfigComponent, canActivate: [AdminGuard] },
-      // { path: ADM_ADR_PATH, component: AdminPanelAdresseComponent, canActivate: [AdminGuard] },
+      { path: ADM_ADR_PATH, component: AdminPanelAdresseComponent, canActivate: [AdminGuard] },
       {
         path: ADM_APKAT_PATH,
         component: AdminPanelApkategorieComponent,

@@ -1,0 +1,39 @@
+<sbsdb-dialog-title
+  dialogTitle="{{ data.id ? 'Adresse bearbeiten' : 'Neue Adresse' }}"
+></sbsdb-dialog-title>
+
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit(formGroup.value)"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <mat-dialog-content>
+    <div class="flex-col">
+      <mat-form-field>
+        <mat-label>Postleitzahl</mat-label>
+        <input matInput [formControl]="plzControl" [errorStateMatcher]="matcher" />
+        <mat-error *ngIf="plzControl.invalid">{{ getErrorMessage(plzControl) }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="abstand">
+        <mat-label>Ort</mat-label>
+        <input matInput [formControl]="ortControl" [errorStateMatcher]="matcher" />
+        <mat-error *ngIf="ortControl.invalid">{{ getErrorMessage(ortControl) }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="abstand">
+        <mat-label>Straße</mat-label>
+        <input matInput [formControl]="strasseControl" [errorStateMatcher]="matcher" />
+        <mat-error *ngIf="strasseControl.invalid">{{ getErrorMessage(strasseControl) }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="abstand">
+        <mat-label>Haus-Nr.</mat-label>
+        <input matInput [formControl]="hausnrControl" [errorStateMatcher]="matcher" />
+        <mat-error *ngIf="hausnrControl.invalid">{{ getErrorMessage(hausnrControl) }}</mat-error>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

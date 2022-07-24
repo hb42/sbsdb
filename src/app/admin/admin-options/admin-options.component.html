@@ -21,17 +21,6 @@
   </button>
   <button
     mat-raised-button
-    [routerLink]="admAdressePath"
-    class="adm-btn"
-    [skipLocationChange]="navigationService.currentPath === admAdressePath"
-    [color]="navigationService.currentPath === admAdressePath ? '' : 'primary'"
-    title="Adressen für OEs bearbeiten"
-    disabled="true"
-  >
-    Hausanschriften
-  </button>
-  <button
-    mat-raised-button
     [routerLink]="admApkategoriePath"
     class="adm-btn"
     [skipLocationChange]="navigationService.currentPath === admApkategoriePath"
@@ -59,6 +48,16 @@
     title="Externe Programmaufrufe zu AP-Typen zuordnen"
   >
     Externe Programme
+  </button>
+  <button
+    mat-raised-button
+    [routerLink]="admAdressePath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admAdressePath"
+    [color]="navigationService.currentPath === admAdressePath ? '' : 'primary'"
+    title="Adressen für OEs bearbeiten"
+  >
+    Hausanschriften
   </button>
   <button
     mat-raised-button

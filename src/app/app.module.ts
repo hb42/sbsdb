@@ -77,6 +77,8 @@ import { AdminPanelApkategorieComponent } from './admin/admin-panel-apkategorie/
 import { EditApkategorieDialogComponent } from './admin/edit-apkategorie-dialog/edit-apkategorie-dialog.component';
 import { AdminPanelHwtypComponent } from './admin/admin-panel-hwtyp/admin-panel-hwtyp.component';
 import { EditHwtypDialogComponent } from './admin/edit-hwtyp-dialog/edit-hwtyp-dialog.component';
+import { AdminPanelAdresseComponent } from './admin/admin-panel-adresse/admin-panel-adresse.component';
+import { EditAdresseDialogComponent } from './admin/edit-adresse-dialog/edit-adresse-dialog.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -163,6 +165,8 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditApkategorieDialogComponent,
     AdminPanelHwtypComponent,
     EditHwtypDialogComponent,
+    AdminPanelAdresseComponent,
+    EditAdresseDialogComponent,
   ],
   imports: [
     BrowserModule,
