@@ -21,11 +21,32 @@
   </button>
   <button
     mat-raised-button
+    [routerLink]="admAdressePath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admAdressePath"
+    [color]="navigationService.currentPath === admAdressePath ? '' : 'primary'"
+    title="Adressen für OEs bearbeiten"
+    disabled="true"
+  >
+    Hausanschriften
+  </button>
+  <button
+    mat-raised-button
+    [routerLink]="admApkategoriePath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admApkategoriePath"
+    [color]="navigationService.currentPath === admApkategoriePath ? '' : 'primary'"
+    title="Arbeitsplatz-Kategorien bearbeiten"
+  >
+    AP-Kategorien
+  </button>
+  <button
+    mat-raised-button
     [routerLink]="admAptypPath"
     class="adm-btn"
     [skipLocationChange]="navigationService.currentPath === admAptypPath"
     [color]="navigationService.currentPath === admAptypPath ? '' : 'primary'"
-    title="AP-Typen bearbeiten"
+    title="Arbeitsplatz-Typen bearbeiten"
   >
     AP-Typen
   </button>
@@ -41,6 +62,27 @@
   </button>
   <button
     mat-raised-button
+    [routerLink]="admHwtypPath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admHwtypPath"
+    [color]="navigationService.currentPath === admHwtypPath ? '' : 'primary'"
+    title="Hardware-Typen bearbeiten"
+  >
+    HW-Typen
+  </button>
+  <button
+    mat-raised-button
+    [routerLink]="admOePath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admOePath"
+    [color]="navigationService.currentPath === admOePath ? '' : 'primary'"
+    title="Organisationseinheiten bearbeiten"
+    disabled="true"
+  >
+    OE
+  </button>
+  <button
+    mat-raised-button
     [routerLink]="admTagtypPath"
     class="adm-btn"
     [skipLocationChange]="navigationService.currentPath === admTagtypPath"
@@ -49,6 +91,18 @@
   >
     TAG-Typen
   </button>
+  <button
+    mat-raised-button
+    [routerLink]="admVlanPath"
+    class="adm-btn"
+    [skipLocationChange]="navigationService.currentPath === admVlanPath"
+    [color]="navigationService.currentPath === admVlanPath ? '' : 'primary'"
+    title="Netzwerke bearbeiten"
+    disabled="true"
+  >
+    VLAN
+  </button>
+
   <button
     mat-raised-button
     [routerLink]="admTcLogsPath"

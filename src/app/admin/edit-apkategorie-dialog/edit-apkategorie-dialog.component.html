@@ -1,0 +1,33 @@
+<sbsdb-dialog-title
+  dialogTitle="{{ data.id ? 'AP-Kategorie bearbeiten' : 'Neue AP-Kategorie' }}"
+></sbsdb-dialog-title>
+
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit(formGroup.value)"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <mat-dialog-content>
+    <div class="row-align">
+      <mat-form-field>
+        <mat-label>AP-Kategorie</mat-label>
+        <input
+          matInput
+          [formControl]="bezeichControl"
+          [errorStateMatcher]="matcher"
+          required="true"
+        />
+        <mat-error *ngIf="bezeichControl.invalid">{{ getErrorMessage(bezeichControl) }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="abstand">
+        <mat-label>Flag</mat-label>
+        <input matInput [formControl]="flagControl" [errorStateMatcher]="matcher" required="true" />
+        <mat-hint align="start">1 = Peripherie</mat-hint>
+        <mat-error *ngIf="flagControl.invalid">{{ getErrorMessage(flagControl) }}</mat-error>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

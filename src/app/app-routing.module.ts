@@ -1,18 +1,22 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
+import { AdminPanelApkategorieComponent } from "./admin/admin-panel-apkategorie/admin-panel-apkategorie.component";
 import { AdminPanelAptypComponent } from "./admin/admin-panel-aptyp/admin-panel-aptyp.component";
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminPanelExtprogComponent } from "./admin/admin-panel-extprog/admin-panel-extprog.component";
+import { AdminPanelHwtypComponent } from "./admin/admin-panel-hwtyp/admin-panel-hwtyp.component";
 import { AdminPanelTagtypComponent } from "./admin/admin-panel-tagtyp/admin-panel-tagtyp.component";
 import { AdminPanelTclogsComponent } from "./admin/admin-panel-tclogs/admin-panel-tclogs.component";
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ApComponent } from "./ap/ap/ap.component";
 import { ConfComponent } from "./conf/conf/conf.component";
 import {
+  ADM_APKAT_PATH,
   ADM_APTYP_PATH,
   ADM_EXTPROG_PATH,
   ADM_FILTER_PATH,
+  ADM_HWTYP_PATH,
   ADM_OPTIONS_PATH,
   ADM_PATH,
   ADM_TAGTYP_PATH,
@@ -38,9 +42,18 @@ const routes: Routes = [
     children: [
       { path: ADM_FILTER_PATH, component: AdminPanelApFilterComponent, canActivate: [AdminGuard] },
       { path: ADM_OPTIONS_PATH, component: AdminPanelConfigComponent, canActivate: [AdminGuard] },
+      // { path: ADM_ADR_PATH, component: AdminPanelAdresseComponent, canActivate: [AdminGuard] },
+      {
+        path: ADM_APKAT_PATH,
+        component: AdminPanelApkategorieComponent,
+        canActivate: [AdminGuard],
+      },
       { path: ADM_APTYP_PATH, component: AdminPanelAptypComponent, canActivate: [AdminGuard] },
       { path: ADM_EXTPROG_PATH, component: AdminPanelExtprogComponent, canActivate: [AdminGuard] },
+      { path: ADM_HWTYP_PATH, component: AdminPanelHwtypComponent, canActivate: [AdminGuard] },
+      // { path: ADM_OE_PATH, component: AdminPanelOeComponent, canActivate: [AdminGuard] },
       { path: ADM_TAGTYP_PATH, component: AdminPanelTagtypComponent, canActivate: [AdminGuard] },
+      // { path: ADM_VLAN_PATH, component: AdminPanelVlanComponent, canActivate: [AdminGuard] },
       { path: ADM_TCLOGS_PATH, component: AdminPanelTclogsComponent, canActivate: [AdminGuard] },
     ],
   },

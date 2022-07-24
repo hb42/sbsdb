@@ -3,8 +3,10 @@ import { Observable } from "rxjs";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
+import { EditApkategorieTransport } from "./edit-apkategorie-dialog/edit-apkategorie-transport";
 import { EditAptypTransport } from "./edit-aptyp-dialog/edit-aptyp-transport";
 import { EditExtprogTransport } from "./edit-extprog-dialog/edit-extprog-transport";
+import { EditHwtypTransport } from "./edit-hwtyp-dialog/edit-hwtyp-transport";
 import { EditTagtypTransport } from "./edit-tagtyp-dialog/edit-tagtyp-transport";
 
 @Injectable({
@@ -49,6 +51,12 @@ export class AdminService {
     }
   }
 
+  public saveApkategorie(data: EditApkategorieTransport): void {
+    console.debug("save apkategorie data");
+    console.dir(data);
+    this.dataService.post(this.dataService.changeApKatUrl, data);
+  }
+
   public saveAptyp(data: EditAptypTransport): void {
     console.debug("save aptyp data");
     console.dir(data);
@@ -60,4 +68,29 @@ export class AdminService {
     console.dir(data);
     this.dataService.post(this.dataService.changeTagtypUrl, data);
   }
+
+  // public saveOe(data: EditOeTransport): void {
+  //   console.debug("save oe data");
+  //   console.dir(data);
+  //   this.dataService.post(this.dataService.changeOeUrl, data);
+  //
+  // }
+  // public saveAdresse(data: EditAdresseTransport): void {
+  //   console.debug("save adresse data");
+  //   console.dir(data);
+  //   this.dataService.post(this.dataService.changeAdresseUrl, data);
+  // }
+
+  public saveHwtyp(data: EditHwtypTransport): void {
+    console.debug("save hwtyp data");
+    console.dir(data);
+    this.dataService.post(this.dataService.changeHwtypUrl, data);
+  }
+
+  // public saveVlan(data: EditVlanTransport): void {
+  //   console.debug("save vlan data");
+  //   console.dir(data);
+  //   this.dataService.post(this.dataService.changeVlanUrl, data);
+  //
+  // }
 }

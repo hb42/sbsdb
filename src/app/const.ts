@@ -8,9 +8,14 @@ export const CONF_PATH = "conf";
 export const ADM_PATH = "admin";
 export const ADM_FILTER_PATH = "apfilter";
 export const ADM_OPTIONS_PATH = "config";
+export const ADM_ADR_PATH = "apdresse";
+export const ADM_APKAT_PATH = "apkategorie";
 export const ADM_APTYP_PATH = "aptyp";
-export const ADM_TAGTYP_PATH = "tagtyp";
 export const ADM_EXTPROG_PATH = "extprog";
+export const ADM_HWTYP_PATH = "hwtyp";
+export const ADM_OE_PATH = "oe";
+export const ADM_TAGTYP_PATH = "tagtyp";
+export const ADM_VLAN_PATH = "vlan";
 export const ADM_TCLOGS_PATH = "tclogs";
 export const ERROR_PATH = "error";
 

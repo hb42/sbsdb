@@ -73,6 +73,10 @@ import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminPanelTagtypComponent } from './admin/admin-panel-tagtyp/admin-panel-tagtyp.component';
 import { EditTagtypDialogComponent } from './admin/edit-tagtyp-dialog/edit-tagtyp-dialog.component';
+import { AdminPanelApkategorieComponent } from './admin/admin-panel-apkategorie/admin-panel-apkategorie.component';
+import { EditApkategorieDialogComponent } from './admin/edit-apkategorie-dialog/edit-apkategorie-dialog.component';
+import { AdminPanelHwtypComponent } from './admin/admin-panel-hwtyp/admin-panel-hwtyp.component';
+import { EditHwtypDialogComponent } from './admin/edit-hwtyp-dialog/edit-hwtyp-dialog.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -155,6 +159,10 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditExtprogDialogComponent,
     AdminPanelTagtypComponent,
     EditTagtypDialogComponent,
+    AdminPanelApkategorieComponent,
+    EditApkategorieDialogComponent,
+    AdminPanelHwtypComponent,
+    EditHwtypDialogComponent,
   ],
   imports: [
     BrowserModule,

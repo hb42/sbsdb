@@ -13,12 +13,12 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DataService } from "../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../shared/form-field-error-state-matcher";
 
-export class BaseSvzDialog<T> {
+export abstract class BaseSvzDialog<T> {
   public formGroup: FormGroup;
   public matcher = new FormFieldErrorStateMatcher();
   public readonly intPattern = /^\d{1,5}$/;
 
-  constructor(
+  protected constructor(
     @Inject(MAT_DIALOG_DATA) public data: T,
     public formBuilder: FormBuilder,
     public dataService: DataService
@@ -57,4 +57,6 @@ export class BaseSvzDialog<T> {
     this.formGroup.addControl(name, ctl);
     return ctl;
   }
+
+  public abstract onSubmit(value: unknown): void;
 }

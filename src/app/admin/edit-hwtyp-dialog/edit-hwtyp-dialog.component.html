@@ -1,0 +1,48 @@
+<sbsdb-dialog-title
+  dialogTitle="{{ data.id ? 'HW-Typ bearbeiten' : 'Neuer HW-Typ' }}"
+></sbsdb-dialog-title>
+
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit(formGroup.value)"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <mat-dialog-content>
+    <div class="row-align">
+      <mat-form-field>
+        <mat-label>HW-Typ</mat-label>
+        <input
+          matInput
+          [formControl]="bezeichControl"
+          [errorStateMatcher]="matcher"
+          required="true"
+        />
+        <mat-error *ngIf="bezeichControl.invalid">{{ getErrorMessage(bezeichControl) }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="abstand">
+        <mat-label>Flag</mat-label>
+        <input matInput [formControl]="flagControl" [errorStateMatcher]="matcher" required="true" />
+        <mat-hint align="start">1 = Fremde HW</mat-hint>
+        <mat-error *ngIf="flagControl.invalid">{{ getErrorMessage(flagControl) }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="abstand">
+        <mat-label>AP-Kategorie</mat-label>
+        <select
+          matNativeControl
+          [formControl]="katControl"
+          [errorStateMatcher]="matcher"
+          required="true"
+        >
+          <option *ngFor="let k of dataService.apkatList" [ngValue]="k.id">
+            {{ k.bezeichnung }}
+          </option>
+        </select>
+        <mat-error *ngIf="katControl.invalid">{{ getErrorMessage(katControl) }}</mat-error>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>
