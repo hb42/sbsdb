@@ -6,6 +6,7 @@ import { catchError } from "rxjs/operators";
 import { ConfigService } from "./config/config.service";
 import { IpHelper } from "./ip-helper";
 import { AddHwTransport } from "./model/add-hw-transport";
+import { Adresse } from "./model/adresse";
 import { ApKategorie } from "./model/ap-kategorie";
 import { ApTransport } from "./model/ap-transport";
 import { ApTyp } from "./model/ap-typ";
@@ -34,6 +35,7 @@ export class DataService {
 
   public apList: Arbeitsplatz[] = [];
   public bstList: Betrst[] = [];
+  public adresseList: Adresse[] = [];
   public hwList: Hardware[] = [];
   public hwKonfigList: HwKonfig[] = [];
   public tagTypList: TagTyp[] = [];
@@ -153,8 +155,8 @@ export class DataService {
     this.changeApKatUrl = this.configService.webservice + "/svz/apkategorie/change";
     this.allHwTypUrl = this.configService.webservice + "/svz/hwtyp/all";
     this.changeHwtypUrl = this.configService.webservice + "/svz/hwtyp/change";
-    this.allAdresseUrl = this.configService.webservice + "/svz/adresse/all";
-    this.changeAdresseUrl = this.configService.webservice + "/svz/adresse/change";
+    this.allAdresseUrl = this.configService.webservice + "/betrst/adresse";
+    this.changeAdresseUrl = this.configService.webservice + "/betrst/chgadresse";
     this.allOeUrl = this.configService.webservice + "/svz/oe/all";
     this.changeOeUrl = this.configService.webservice + "/svz/oe/change";
 
@@ -473,6 +475,8 @@ export class DataService {
   }
 
   public async fetchBstList(): Promise<void> {
+    const adre = (await lastValueFrom(this.get(this.allAdresseUrl))) as Adresse[];
+    this.adresseList = adre;
     const bst = (await lastValueFrom(this.get(this.allBstUrl))) as Betrst[];
     console.debug("fetch Betrst size=", bst.length);
     this.bstList = bst;
@@ -690,11 +694,25 @@ export class DataService {
   }
 
   public oeDeps(): void {
-    // noop
+    this.bstList.forEach((bst) => {
+      bst.inUse = null;
+      const idx = this.apList.findIndex(
+        (ap) => ap.oeId === bst.bstId || ap.verantwOeId === bst.bstId
+      );
+      if (idx >= 0) {
+        bst.inUse = 1;
+      }
+    });
   }
 
   public adresseDeps(): void {
-    // noop
+    this.adresseList.forEach((adr) => {
+      adr.inUse = null;
+      const idx = this.bstList.findIndex((bst) => bst.adresseId === adr.id);
+      if (idx >= 0) {
+        adr.inUse = 1;
+      }
+    });
   }
 
   public hwtypDeps(): void {
@@ -724,6 +742,7 @@ export class DataService {
   // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
   private prepBst() {
     this.bstList.forEach((bst) => {
+      bst.adresse = this.adresseList.find((ad) => ad.id === bst.adresseId);
       // idx 0 -> BST "Reserve" => 0 als parent == kein parent
       bst.fullname = `00${bst.bstNr}`.slice(-3) + " " + bst.betriebsstelle;
       if (bst.parentId) {

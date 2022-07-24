@@ -4,9 +4,10 @@
     <div class="detail-cell-margin">
       {{ ("000" + element.oe.bstNr).slice(-3) }}<br />
       {{ element.oe.betriebsstelle }}<br /><br />
-      {{ element.oe.strasse ? element.oe.strasse + " " : ""
-      }}{{ element.oe.hausnr ? element.oe.hausnr : "" }}<br />
-      {{ element.oe.plz ? element.oe.plz + " " : "" }}{{ element.oe.ort ? element.oe.ort : "" }}
+      {{ element.oe.adresse.strasse ? element.oe.adresse.strasse + " " : ""
+      }}{{ element.oe.adresse.hausnr ? element.oe.adresse.hausnr : "" }}<br />
+      {{ element.oe.adresse.plz ? element.oe.adresse.plz + " " : ""
+      }}{{ element.oe.adresse.ort ? element.oe.adresse.ort : "" }}
       <br *ngIf="apService.userSettings.debug" />
       <span *ngIf="apService.userSettings.debug" class="debug">#{{ element.oe.bstId }}</span>
     </div>
