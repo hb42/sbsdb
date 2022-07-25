@@ -37,6 +37,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   @Input() public delEvent: EventEmitter<unknown>;
   @Input() public sortColumn: string;
   @Input() public refreshTableEvent: EventEmitter<boolean>;
+  @Input() public multiline = false;
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
 
@@ -163,6 +164,10 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   public expandRow(row: BaseTableRow, evt: Event): void {
     row.expanded = !row.expanded;
     evt.stopPropagation();
+  }
+
+  public isExpanded(row: BaseTableRow): boolean {
+    return this.multiline || row.expanded;
   }
 
   public testclick(row: unknown): void {

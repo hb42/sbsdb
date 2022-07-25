@@ -8,6 +8,9 @@ import { EditAptypTransport } from "./edit-aptyp-dialog/edit-aptyp-transport";
 import { EditExtprogTransport } from "./edit-extprog-dialog/edit-extprog-transport";
 import { EditHwtypTransport } from "./edit-hwtyp-dialog/edit-hwtyp-transport";
 import { EditTagtypTransport } from "./edit-tagtyp-dialog/edit-tagtyp-transport";
+import { EditAdresseTransport } from "./edit-adresse-dialog/edit-adresse-transport";
+import { EditOeTransport } from "./edit-oe-dialog/edit-oe-transport";
+import { EditVlanTransport } from "./edit-vlan-dialog/edit-vlan-transport";
 
 @Injectable({
   providedIn: "root",
@@ -69,17 +72,17 @@ export class AdminService {
     this.dataService.post(this.dataService.changeTagtypUrl, data);
   }
 
-  // public saveOe(data: EditOeTransport): void {
-  //   console.debug("save oe data");
-  //   console.dir(data);
-  //   this.dataService.post(this.dataService.changeOeUrl, data);
-  //
-  // }
-  // public saveAdresse(data: EditAdresseTransport): void {
-  //   console.debug("save adresse data");
-  //   console.dir(data);
-  //   this.dataService.post(this.dataService.changeAdresseUrl, data);
-  // }
+  public saveOe(data: EditOeTransport): void {
+    console.debug("save oe data");
+    console.dir(data);
+    this.dataService.post(this.dataService.changeOeUrl, data);
+  }
+
+  public saveAdresse(data: EditAdresseTransport): void {
+    console.debug("save adresse data");
+    console.dir(data);
+    this.dataService.post(this.dataService.changeAdresseUrl, data);
+  }
 
   public saveHwtyp(data: EditHwtypTransport): void {
     console.debug("save hwtyp data");
@@ -87,10 +90,9 @@ export class AdminService {
     this.dataService.post(this.dataService.changeHwtypUrl, data);
   }
 
-  // public saveVlan(data: EditVlanTransport): void {
-  //   console.debug("save vlan data");
-  //   console.dir(data);
-  //   this.dataService.post(this.dataService.changeVlanUrl, data);
-  //
-  // }
+  public saveVlan(data: EditVlanTransport): void {
+    console.debug("save vlan data");
+    console.dir(data);
+    this.dataService.post(this.dataService.changeVlanUrl, data);
+  }
 }

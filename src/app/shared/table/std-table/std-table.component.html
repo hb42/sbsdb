@@ -73,7 +73,7 @@
       mat-row
       *matRowDef="let element; columns: displayedColumns"
       class="table-row table-row-clickable"
-      [class.detail-cell-clicked]="element.expanded"
+      [class.detail-cell-clicked]="isExpanded(element)"
     ></tr>
     <!-- Footer row -->
     <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true"></tr>

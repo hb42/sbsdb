@@ -47,7 +47,7 @@ export class AdminPanelAdresseComponent extends BaseSvzPanel<AdminPanelAdresseCo
       console.debug("dlg closed");
       console.dir(result);
       if (result) {
-        // TODO this.adminService.saveAdresse({ adresse: result, del: false });
+        this.adminService.saveAdresse({ adresse: result, del: false });
       }
     });
   }
@@ -59,7 +59,7 @@ export class AdminPanelAdresseComponent extends BaseSvzPanel<AdminPanelAdresseCo
     ).then((result) => {
       if (result) {
         console.debug("del Adresse");
-        // TODO this.adminService.saveAdresse({ adresse: adresse, del: true });
+        this.adminService.saveAdresse({ adresse: adresse, del: true });
       }
     });
   }

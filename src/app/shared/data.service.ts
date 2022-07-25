@@ -93,7 +93,6 @@ export class DataService {
   public readonly changeApKatUrl: string;
   public readonly allHwTypUrl: string;
   public readonly allAdresseUrl: string;
-  public readonly allOeUrl: string;
   public readonly changeApUrl: string;
   public readonly changeHwUrl: string;
   public readonly changeKonfigUrl: string;
@@ -141,6 +140,7 @@ export class DataService {
     this.singleApUrl = this.configService.webservice + "/ap/id/";
     this.countApUrl = this.configService.webservice + "/ap/count";
     this.allBstUrl = this.configService.webservice + "/betrst/all";
+    this.changeOeUrl = this.configService.webservice + "/betrst/change";
     this.allHwUrl = this.configService.webservice + "/hw/all";
     this.pageHwUrl = this.configService.webservice + "/hw/page/";
     this.countHwUrl = this.configService.webservice + "/hw/count";
@@ -155,10 +155,8 @@ export class DataService {
     this.changeApKatUrl = this.configService.webservice + "/svz/apkategorie/change";
     this.allHwTypUrl = this.configService.webservice + "/svz/hwtyp/all";
     this.changeHwtypUrl = this.configService.webservice + "/svz/hwtyp/change";
-    this.allAdresseUrl = this.configService.webservice + "/betrst/adresse";
+    this.allAdresseUrl = this.configService.webservice + "/betrst/adressen";
     this.changeAdresseUrl = this.configService.webservice + "/betrst/chgadresse";
-    this.allOeUrl = this.configService.webservice + "/svz/oe/all";
-    this.changeOeUrl = this.configService.webservice + "/svz/oe/change";
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
     this.changeHwUrl = this.configService.webservice + "/hw/changehw";
@@ -250,11 +248,31 @@ export class DataService {
       this.checkNotification();
     });
 
-    // notification.adresseChange.subscribe((data) => {
-    //   console.debug("dataService start update adresse");
-    //   console.dir(data);
-    //
-    // });
+    notification.adresseChange.subscribe((data) => {
+      console.debug("dataService start update adresse");
+      console.dir(data);
+
+      const old = this.adresseList.findIndex((ad) => ad.id === data.adresse.id);
+      if (old >= 0) {
+        if (data.del) {
+          // del
+          this.adresseList.splice(old, 1);
+        } else {
+          // chg
+          this.adresseList[old].plz = data.adresse.plz;
+          this.adresseList[old].ort = data.adresse.ort;
+          this.adresseList[old].strasse = data.adresse.strasse;
+          this.adresseList[old].hausnr = data.adresse.hausnr;
+        }
+      } else {
+        // new
+        this.adresseList.push(data.adresse);
+      }
+      this.adresseListChanged.emit();
+      this.adresseDeps();
+
+      this.checkNotification();
+    });
 
     notification.apkategorieChange.subscribe((data) => {
       console.debug("dataService start update apkategorie");
@@ -313,7 +331,7 @@ export class DataService {
     notification.aptypChange.subscribe((data) => {
       console.debug("dataService start update aptyp");
       console.dir(data);
-      // this.fetchApTypList();
+
       const old = this.aptypList.findIndex((at) => at.id === data.aptyp.id);
       if (old >= 0) {
         if (data.del) {
@@ -379,11 +397,12 @@ export class DataService {
       this.checkNotification();
     });
 
-    // notification.oeChange.subscribe((data) => {
-    //   console.debug("dataService start update oe");
-    //   console.dir(data);
-    //
-    // });
+    notification.oeChange.subscribe((data) => {
+      console.debug("dataService start update oe");
+      console.dir(data);
+
+      // TODO
+    });
 
     notification.tagtypChange.subscribe((data) => {
       console.debug("dataService start update tagtyp");
@@ -422,11 +441,12 @@ export class DataService {
       this.checkNotification();
     });
 
-    // notification.vlanChange.subscribe((data) => {
-    //   console.debug("dataService start update vlan");
-    //   console.dir(data);
-    //
-    // });
+    notification.vlanChange.subscribe((data) => {
+      console.debug("dataService start update vlan");
+      console.dir(data);
+
+      // TODO
+    });
   }
 
   public get(url: string, options?: unknown): Observable<unknown> {

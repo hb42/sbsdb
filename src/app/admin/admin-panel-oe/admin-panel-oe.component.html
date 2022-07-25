@@ -1,11 +1,12 @@
 <sbsdb-std-table
   [columns]="columns"
   [dataSource]="dataSource"
-  recordName="Externes Programm"
+  recordName="OE"
   [refreshTableEvent]="refreshTableEvent"
   [csvEvent]="csvEvent"
   [newEvent]="adminService.newRecordEvent"
   [chgEvent]="changeEvent"
   [delEvent]="delEvent"
+  sortColumn="oenr"
   multiline="true"
 ></sbsdb-std-table>

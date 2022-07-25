@@ -9,6 +9,9 @@ import { AddHwTransport } from "./model/add-hw-transport";
 import { ApTransport } from "./model/ap-transport";
 import { HwKonfig } from "./model/hw-konfig";
 import { HwTransport } from "./model/hw-transport";
+import { EditAdresseTransport } from "../admin/edit-adresse-dialog/edit-adresse-transport";
+import { EditOeTransport } from "../admin/edit-oe-dialog/edit-oe-transport";
+import { EditVlanTransport } from "../admin/edit-vlan-dialog/edit-vlan-transport";
 
 @Injectable({
   providedIn: "root",
@@ -22,10 +25,11 @@ export class NotificationService {
   public apkategorieChange: EventEmitter<EditApkategorieTransport> =
     new EventEmitter<EditApkategorieTransport>();
   public aptypChange: EventEmitter<EditAptypTransport> = new EventEmitter<EditAptypTransport>();
-  // public oeChange: EventEmitter<EditOeTransport> = new EventEmitter<EditOeTransport>();
-  // public adresseChange: EventEmitter<EditAdresseTransport> = new EventEmitter<EditAdresseTransport>();
+  public oeChange: EventEmitter<EditOeTransport> = new EventEmitter<EditOeTransport>();
+  public adresseChange: EventEmitter<EditAdresseTransport> =
+    new EventEmitter<EditAdresseTransport>();
   public hwtypChange: EventEmitter<EditHwtypTransport> = new EventEmitter<EditHwtypTransport>();
-  // public vlanChange: EventEmitter<EditVlanTransport> = new EventEmitter<EditVlanTransport>();
+  public vlanChange: EventEmitter<EditVlanTransport> = new EventEmitter<EditVlanTransport>();
   public tagtypChange: EventEmitter<EditTagtypTransport> = new EventEmitter<EditTagtypTransport>();
   private hubConnection: HubConnection | undefined;
 
@@ -88,25 +92,25 @@ export class NotificationService {
         this.aptypChange.emit(data);
       });
 
-      // this.hubConnection.on("oechange", (data: EditOeTransport) => {
-      //   console.debug("## Event oechange");
-      //   this.oeChange.emit(data);
-      // });
+      this.hubConnection.on("oechange", (data: EditOeTransport) => {
+        console.debug("## Event oechange");
+        this.oeChange.emit(data);
+      });
 
-      // this.hubConnection.on("adressechange", (data: EditAdresseTransport) => {
-      //   console.debug("## Event adressechange");
-      //   this.adresseChange.emit(data);
-      // });
+      this.hubConnection.on("adressechange", (data: EditAdresseTransport) => {
+        console.debug("## Event adressechange");
+        this.adresseChange.emit(data);
+      });
 
       this.hubConnection.on("hwtypchange", (data: EditHwtypTransport) => {
         console.debug("## Event hwtypchange");
         this.hwtypChange.emit(data);
       });
 
-      // this.hubConnection.on("vlanchange", (data: EditVlanTransport) => {
-      //   console.debug("## Event vlanchange");
-      //   this.vlanChange.emit(data);
-      // });
+      this.hubConnection.on("vlanchange", (data: EditVlanTransport) => {
+        console.debug("## Event vlanchange");
+        this.vlanChange.emit(data);
+      });
 
       this.hubConnection.on("tagtypchange", (data: EditTagtypTransport) => {
         console.debug("## Event tagtypchange");

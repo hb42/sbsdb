@@ -79,6 +79,10 @@ import { AdminPanelHwtypComponent } from './admin/admin-panel-hwtyp/admin-panel-
 import { EditHwtypDialogComponent } from './admin/edit-hwtyp-dialog/edit-hwtyp-dialog.component';
 import { AdminPanelAdresseComponent } from './admin/admin-panel-adresse/admin-panel-adresse.component';
 import { EditAdresseDialogComponent } from './admin/edit-adresse-dialog/edit-adresse-dialog.component';
+import { AdminPanelOeComponent } from './admin/admin-panel-oe/admin-panel-oe.component';
+import { EditOeDialogComponent } from './admin/edit-oe-dialog/edit-oe-dialog.component';
+import { AdminPanelVlanComponent } from './admin/admin-panel-vlan/admin-panel-vlan.component';
+import { EditVlanDialogComponent } from './admin/edit-vlan-dialog/edit-vlan-dialog.component';
 
 // FIXME interceptor in lib-client muss auf optional umgebaut werden
 //       (oder farc auf IIS/.NET Core umstellen)
@@ -167,6 +171,10 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditHwtypDialogComponent,
     AdminPanelAdresseComponent,
     EditAdresseDialogComponent,
+    AdminPanelOeComponent,
+    EditOeDialogComponent,
+    AdminPanelVlanComponent,
+    EditVlanDialogComponent,
   ],
   imports: [
     BrowserModule,

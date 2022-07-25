@@ -19,10 +19,12 @@ import {
   ADM_EXTPROG_PATH,
   ADM_FILTER_PATH,
   ADM_HWTYP_PATH,
+  ADM_OE_PATH,
   ADM_OPTIONS_PATH,
   ADM_PATH,
   ADM_TAGTYP_PATH,
   ADM_TCLOGS_PATH,
+  ADM_VLAN_PATH,
   AP_PATH,
   CONF_PATH,
   ERROR_PATH,
@@ -31,6 +33,8 @@ import {
 import { HwComponent } from "./hw/hw/hw.component";
 import { AdminGuard } from "./shared/admin.guard";
 import { ErrorComponent } from "./shared/error/error.component";
+import { AdminPanelOeComponent } from "./admin/admin-panel-oe/admin-panel-oe.component";
+import { AdminPanelVlanComponent } from "./admin/admin-panel-vlan/admin-panel-vlan.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/" + AP_PATH, pathMatch: "full" },
@@ -53,9 +57,9 @@ const routes: Routes = [
       { path: ADM_APTYP_PATH, component: AdminPanelAptypComponent, canActivate: [AdminGuard] },
       { path: ADM_EXTPROG_PATH, component: AdminPanelExtprogComponent, canActivate: [AdminGuard] },
       { path: ADM_HWTYP_PATH, component: AdminPanelHwtypComponent, canActivate: [AdminGuard] },
-      // { path: ADM_OE_PATH, component: AdminPanelOeComponent, canActivate: [AdminGuard] },
+      { path: ADM_OE_PATH, component: AdminPanelOeComponent, canActivate: [AdminGuard] },
       { path: ADM_TAGTYP_PATH, component: AdminPanelTagtypComponent, canActivate: [AdminGuard] },
-      // { path: ADM_VLAN_PATH, component: AdminPanelVlanComponent, canActivate: [AdminGuard] },
+      { path: ADM_VLAN_PATH, component: AdminPanelVlanComponent, canActivate: [AdminGuard] },
       { path: ADM_TCLOGS_PATH, component: AdminPanelTclogsComponent, canActivate: [AdminGuard] },
     ],
   },

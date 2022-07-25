@@ -1,18 +1,32 @@
 ﻿
+5.0.0-beta.1   xx.07.2022
+           Start der neuen Anwendung.
+           Die wichtigsten Dinge funktionieren. Weitere fehlende Funktionalitaeten
+           (.z.B. Aussonderungsliste) folgen nach der Freigabe.
+           SERVER 1.0.0-beta.1 - Nur noch Feinschliff noetig und Ausbau, gemaess Fortschritt
+                                 in der Web-Anwendung.
+           LOCAL  1.0.0 - FAT-Client-Anwendung funktioniert
 
 #######################################################################################
 ## Feb. 2019
 ## v5.x:  Relaunch als JavaScript-Anwendung mit REST-API-Backend (.NET Core/IIS)
 ##
-## Basis
-## Client: Angular + Angular Material + Electron
-## Server: .NET Core auf IIS + Oracle-DB
+##
+## Server          Basis: .NET Core (6.x) auf IIS + Oracle-DB / C#
+##                 Erledigt die Datenbankzugriffe via REST-API und haelt die Web-Anwendung.
+##
+## Web-Anwendung   Basis: Angular (14.x) + Angula-Material / Typescript, HTML, CSS
+##                 Enthaelt die komplette Anwendungslogik.
+##
+## FAT-Client      Basis: Electron (19.x) / Typescript, Powershell
+##                 Der lokale Teil ist fuer den Start der Scripte zustaendig, mit denen
+##                 auf Rechner im Netz zugegriffen wird. Die Web-Anwendung wird vom
+##                 Server gestartet.
 ##
 ## Repos
 ## https://github.com/hb42/sbsdb
 ## https://github.com/hb42/sbsdb-server
-## https://github.com/hb42/lib-client
-## https://github.com/hb42/lib-common
+## https://github.com/hb42/sbsdb-local
 #######################################################################################
 
 
@@ -1445,4 +1459,3 @@
 1.0      initial version zur Abloesung der alten Access-Anwendung
          Nur Info-DB, weitere DB's (Hotline, Bestand) folgen, wenn das Grund-
          system ordentlich laeuft.
-
