@@ -12,7 +12,7 @@
       <span *ngIf="apService.userSettings.debug" class="debug">#{{ element.oe.bstId }}</span>
     </div>
     <div class="detail-cell-margin"></div>
-    <div *ngIf="element.oe.oeff" class="detail-cell-margin detail-cell-oeff">
+    <div *ngIf="element.oe.oeff" class="detail-cell-margin oeffnungszeiten">
       <span>Öffnungszeiten</span><br />{{ element.oe.oeff }}
     </div>
     <div *ngIf="apService.userSettings.debug" class="detail-cell-margin debug">

@@ -6,6 +6,7 @@ import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
 import { BaseSvzPanel } from "../base-svz-panel";
+import { EditOeDialogComponent } from "../edit-oe-dialog/edit-oe-dialog.component";
 
 @Component({
   selector: "sbsdb-admin-panel-oe",
@@ -24,7 +25,12 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
     this.notificationHandler = this.dataService.oeListChanged.subscribe(() => {
       this.changeDebug();
     });
-    // this.dataService.apkatList.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
+    this.dataService.adresseList.sort((a, b) =>
+      this.dataService.collator.compare(a.ort + a.strasse, b.ort + b.strasse)
+    );
+    this.dataService.bstList.sort((a, b) =>
+      this.dataService.collator.compare(a.fullname, b.fullname)
+    );
   }
 
   protected getTableData(): Betrst[] {
@@ -32,9 +38,44 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
     return this.dataService.bstList;
   }
 
-  protected handleChangeOrNew(oe: Betrst) {}
+  protected handleChangeOrNew(oe: Betrst) {
+    if (!oe) {
+      oe = {
+        bstId: 0,
+        betriebsstelle: "",
+        bstNr: 0,
+        fax: "",
+        tel: ",",
+        oeff: "",
+        ap: false,
+        parentId: null,
+        adresseId: null,
+        adresse: undefined,
+        children: [],
+        fullname: "",
+        hierarchy: "",
+      };
+    }
+    const dialogRef = this.dialog.open(EditOeDialogComponent, { data: oe });
+    dialogRef.afterClosed().subscribe((result: Betrst) => {
+      console.debug("dlg closed");
+      console.dir(result);
+      if (result) {
+        this.adminService.saveOe({ oe: result, del: false });
+      }
+    });
+  }
 
-  protected handleDelete(oe: Betrst) {}
+  protected handleDelete(oe: Betrst) {
+    void this.askDelete("OE löschen", `Soll die OE "${oe.fullname}" gelöscht werden?`).then(
+      (result) => {
+        if (result) {
+          console.debug("del OE");
+          this.adminService.saveOe({ oe: oe, del: true });
+        }
+      }
+    );
+  }
 
   protected buildColumns() {
     this.columns.push(
@@ -168,7 +209,7 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
         this,
         "adresse",
         () => "Adresse",
-        () => "adresse.ort",
+        () => ["adresse.plz", "adresse.ort", "adresse.strasse", "adresse.hausnr"],
         () => "adresse.ort",
         (b: Betrst) =>
           b.adresse.plz + " " + b.adresse.ort + ", " + b.adresse.strasse + " " + b.adresse.hausnr,
@@ -187,9 +228,9 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
         this,
         "ueber",
         () => "Übergeordnete OE",
-        () => "parent.bst",
-        () => "parent.bst",
-        (b: Betrst) => (b.parent ? b.parent.betriebsstelle : "---"),
+        () => "parent.fullname",
+        () => "parent.fullname",
+        (b: Betrst) => b.parent.fullname,
         "",
         true,
         8,

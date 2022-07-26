@@ -45,6 +45,10 @@ export class DataService {
   public hwtypList: HwTyp[] = [];
   public extProgList: ExtProg[] = [];
 
+  // leere OE fuer das Feld parent in der bstList
+  // wenn parent == null, dann koennen mit diesem Object Zugriffsfehler vermiden werden
+  public nullBetrst: Betrst;
+
   // Signale fuer das Laden der benoetigten Daten:
   //   apListFetched signalisiert, dass die AP-Liste vollstaendig geladen ist (und
   //   implizit Bst-Liste). Mit hwListReady wurde HW- und HwKonfig-Liste geladen und
@@ -401,7 +405,37 @@ export class DataService {
       console.debug("dataService start update oe");
       console.dir(data);
 
-      // TODO
+      const old = this.bstList.findIndex((b) => b.bstId === data.oe.bstId);
+      if (old >= 0) {
+        if (data.del) {
+          // del
+          this.bstList.splice(old, 1);
+        } else {
+          // chg
+          this.bstList[old].bstId = data.oe.bstId;
+          this.bstList[old].bstNr = data.oe.bstNr;
+          this.bstList[old].betriebsstelle = data.oe.betriebsstelle;
+          this.bstList[old].fax = data.oe.fax;
+          this.bstList[old].tel = data.oe.tel;
+          this.bstList[old].oeff = data.oe.oeff;
+          this.bstList[old].ap = data.oe.ap;
+          this.bstList[old].adresseId = data.oe.adresseId;
+          this.bstList[old].parentId = data.oe.parentId ? data.oe.parentId : null;
+          this.prepBst(this.bstList[old]);
+          this.prepBstHierarchy(this.bstList[old]);
+          // update AP-List ??
+        }
+      } else {
+        // new
+        this.prepBst(data.oe);
+        this.prepBstHierarchy(data.oe);
+        this.bstList.push(data.oe);
+      }
+      this.oeListChanged.emit();
+      // this.aptypListChanged.emit();
+      this.oeDeps();
+
+      this.checkNotification();
     });
 
     notification.tagtypChange.subscribe((data) => {
@@ -500,7 +534,7 @@ export class DataService {
     const bst = (await lastValueFrom(this.get(this.allBstUrl))) as Betrst[];
     console.debug("fetch Betrst size=", bst.length);
     this.bstList = bst;
-    this.prepBst();
+    this.prepBstList();
     this.bstListReady.emit();
   }
 
@@ -760,34 +794,49 @@ export class DataService {
 
   // OE-Hierarchie aufbauen
   // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
-  private prepBst() {
+  private prepBstList() {
+    this.nullBetrst = new Betrst();
+    this.nullBetrst.bstId = 0;
+    this.nullBetrst.bstNr = 0;
+    this.nullBetrst.betriebsstelle = "";
+    this.nullBetrst.fullname = "";
+
     this.bstList.forEach((bst) => {
-      bst.adresse = this.adresseList.find((ad) => ad.id === bst.adresseId);
-      // idx 0 -> BST "Reserve" => 0 als parent == kein parent
-      bst.fullname = `00${bst.bstNr}`.slice(-3) + " " + bst.betriebsstelle;
-      if (bst.parentId) {
-        const parent = this.bstList.find((b) => b.bstId === bst.parentId);
-        if (parent) {
-          bst.parent = parent;
-          if (!parent.children) {
-            parent.children = [];
-          }
-          parent.children.push(bst);
-        } else {
-          bst.parent = null;
-        }
-      }
+      this.prepBst(bst);
     });
     this.bstList.forEach((bst) => {
-      bst.hierarchy = bst.fullname;
-      if (bst.parent) {
-        let p = bst.parent;
-        while (p) {
-          bst.hierarchy = p.fullname + "/" + bst.hierarchy;
-          p = p.parent;
-        }
-      }
+      this.prepBstHierarchy(bst);
     });
+  }
+
+  private prepBst(bst: Betrst) {
+    bst.adresse = this.adresseList.find((ad) => ad.id === bst.adresseId);
+    // idx 0 -> BST "Reserve" => 0 als parent == kein parent
+    bst.fullname = `00${bst.bstNr}`.slice(-3) + " " + bst.betriebsstelle;
+    if (bst.parentId) {
+      const parent = this.bstList.find((b) => b.bstId === bst.parentId);
+      if (parent) {
+        bst.parent = parent;
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(bst);
+      } else {
+        bst.parent = this.nullBetrst;
+      }
+    } else {
+      bst.parent = this.nullBetrst;
+    }
+  }
+  private prepBstHierarchy(bst: Betrst) {
+    bst.hierarchy = bst.fullname;
+    if (bst.parentId) {
+      let p = bst.parent;
+      while (p) {
+        bst.hierarchy = p.fullname + "/" + bst.hierarchy;
+        p = p.parent;
+      }
+    }
   }
 
   /**
