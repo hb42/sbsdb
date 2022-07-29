@@ -7,6 +7,7 @@ import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { TagTyp } from "../../shared/model/tagTyp";
 import { TagChange } from "./tag-change";
 import { TagInput } from "./tag-input";
+import { StringCompare } from "../../shared/helper";
 
 @Component({
   selector: "sbsdb-edit-tags",
@@ -43,7 +44,7 @@ export class EditTagsComponent implements OnInit {
     // select list
     this.apTagTypes = this.dataService.tagTypList
       .filter((t) => t.apKategorieId === this.ap.apKatId)
-      .sort((a, b) => this.dataService.collator.compare(a.bezeichnung, b.bezeichnung));
+      .sort((a, b) => StringCompare(a.bezeichnung, b.bezeichnung));
     // Daten fuer Form
     this.tagInput = this.ap.tags.map((tag) => {
       const rc = {

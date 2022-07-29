@@ -3,13 +3,13 @@ import { Observable } from "rxjs";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
+import { EditAdresseTransport } from "./edit-adresse-dialog/edit-adresse-transport";
 import { EditApkategorieTransport } from "./edit-apkategorie-dialog/edit-apkategorie-transport";
 import { EditAptypTransport } from "./edit-aptyp-dialog/edit-aptyp-transport";
 import { EditExtprogTransport } from "./edit-extprog-dialog/edit-extprog-transport";
 import { EditHwtypTransport } from "./edit-hwtyp-dialog/edit-hwtyp-transport";
-import { EditTagtypTransport } from "./edit-tagtyp-dialog/edit-tagtyp-transport";
-import { EditAdresseTransport } from "./edit-adresse-dialog/edit-adresse-transport";
 import { EditOeTransport } from "./edit-oe-dialog/edit-oe-transport";
+import { EditTagtypTransport } from "./edit-tagtyp-dialog/edit-tagtyp-transport";
 import { EditVlanTransport } from "./edit-vlan-dialog/edit-vlan-transport";
 
 @Injectable({

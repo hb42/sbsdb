@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { DataService } from "../../shared/data.service";
+import { StringCompare } from "../../shared/helper";
 import { Betrst } from "../../shared/model/betrst";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
@@ -26,11 +27,9 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
       this.changeDebug();
     });
     this.dataService.adresseList.sort((a, b) =>
-      this.dataService.collator.compare(a.ort + a.strasse, b.ort + b.strasse)
+      StringCompare(a.ort + a.strasse, b.ort + b.strasse)
     );
-    this.dataService.bstList.sort((a, b) =>
-      this.dataService.collator.compare(a.fullname, b.fullname)
-    );
+    this.dataService.bstList.sort((a, b) => StringCompare(a.fullname, b.fullname));
   }
 
   protected getTableData(): Betrst[] {
@@ -45,7 +44,7 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
         betriebsstelle: "",
         bstNr: 0,
         fax: "",
-        tel: ",",
+        tel: "",
         oeff: "",
         ap: false,
         parentId: null,
@@ -61,7 +60,7 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
       console.debug("dlg closed");
       console.dir(result);
       if (result) {
-        this.adminService.saveOe({ oe: result, del: false });
+        this.save(result, false);
       }
     });
   }
@@ -71,10 +70,25 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
       (result) => {
         if (result) {
           console.debug("del OE");
-          this.adminService.saveOe({ oe: oe, del: true });
+          this.save(oe, true);
         }
       }
     );
+  }
+
+  private save(oe: Betrst, del: boolean) {
+    // notwendig, weil das originale Object Aerger beim Uebertragen zum Server macht
+    const trans = new Betrst();
+    trans.bstId = oe.bstId;
+    trans.bstNr = oe.bstNr;
+    trans.betriebsstelle = oe.betriebsstelle;
+    trans.tel = oe.tel;
+    trans.fax = oe.fax;
+    trans.oeff = oe.oeff;
+    trans.ap = oe.ap;
+    trans.parentId = oe.parentId;
+    trans.adresseId = oe.adresseId;
+    this.adminService.saveOe({ oe: trans, del: del });
   }
 
   protected buildColumns() {
@@ -212,7 +226,15 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
         () => ["adresse.plz", "adresse.ort", "adresse.strasse", "adresse.hausnr"],
         () => "adresse.ort",
         (b: Betrst) =>
-          b.adresse.plz + " " + b.adresse.ort + ", " + b.adresse.strasse + " " + b.adresse.hausnr,
+          b.adresse.plz && b.adresse.ort
+            ? b.adresse.plz +
+              " " +
+              b.adresse.ort +
+              ", " +
+              b.adresse.strasse +
+              " " +
+              b.adresse.hausnr
+            : "---",
         "",
         true,
         7,
@@ -230,10 +252,28 @@ export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, B
         () => "Übergeordnete OE",
         () => "parent.fullname",
         () => "parent.fullname",
-        (b: Betrst) => b.parent.fullname,
+        (b: Betrst) => (b.parent.fullname ? b.parent.fullname : "---"),
         "",
         true,
         8,
+        ColumnType.STRING,
+        null,
+        null,
+        true,
+        "S"
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<AdminPanelOeComponent, Betrst>(
+        this,
+        "hier",
+        () => "Hierarchie",
+        () => "hierarchy",
+        () => "hierarchy",
+        (b: Betrst) => b.hierarchy,
+        "",
+        false,
+        0,
         ColumnType.STRING,
         null,
         null,

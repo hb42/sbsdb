@@ -5,6 +5,7 @@ import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { Betrst } from "../../shared/model/betrst";
 import { ApChange } from "./ap-change";
+import { StringCompare } from "../../shared/helper";
 
 @Component({
   selector: "sbsdb-edit-ap",
@@ -40,10 +41,10 @@ export class EditApComponent implements OnInit {
     });
     this.oeList = this.dataService.bstList
       .filter((b) => b.ap)
-      .sort((a, b) => this.dataService.collator.compare(a.fullname, b.fullname));
+      .sort((a, b) => StringCompare(a.fullname, b.fullname));
     this.oeListNull = this.dataService.bstList
       .filter((b) => b.ap)
-      .sort((a, b) => this.dataService.collator.compare(a.fullname, b.fullname));
+      .sort((a, b) => StringCompare(a.fullname, b.fullname));
     this.oeListNull.unshift(null);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method

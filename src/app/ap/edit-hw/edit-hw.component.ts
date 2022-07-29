@@ -6,6 +6,7 @@ import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { Hardware } from "../../shared/model/hardware";
 import { HwInput } from "./hw-input";
+import { StringCompare } from "../../shared/helper";
 
 @Component({
   selector: "sbsdb-edit-hw",
@@ -89,10 +90,7 @@ export class EditHwComponent implements OnInit {
         }
       })
       .sort((a, b) =>
-        this.dataService.collator.compare(
-          a.hwKonfig.konfiguration + a.sernr,
-          b.hwKonfig.konfiguration + b.sernr
-        )
+        StringCompare(a.hwKonfig.konfiguration + a.sernr, b.hwKonfig.konfiguration + b.sernr)
       );
     sel.unshift(null);
     return sel;

@@ -259,35 +259,6 @@ export class HwService {
           RelOp.notlike,
         ],
         null,
-        // filter als dropdown:
-        // () => {
-        //   if (this.hwFilterService.stdFilter) {
-        //     const a = this.hwDataSource.data
-        //       .filter((h1) => {
-        //         const val = GetColumn("typ", this.columns).filterControl.value as string;
-        //         if (!this.userSettings.showFremde && this.dataService.isFremdeHardware(h1)) {
-        //           return false;
-        //         }
-        //         return val ? h1.hwKonfig.hwTypBezeichnung === val : true;
-        //       })
-        //       .map((h2) => h2.hwKonfig.konfiguration);
-        //     if (GetColumn("konfiguration", this.columns).filterControl.value) {
-        //       a.push(GetColumn("konfiguration", this.columns).filterControl.value as string);
-        //     }
-        //     return [...new Set(a)].sort();
-        //   } else {
-        //     return [
-        //       ...new Set(
-        //         this.hwDataSource.data
-        //           .filter(
-        //             (h3) =>
-        //               !(!this.userSettings.showFremde && this.dataService.isFremdeHardware(h3))
-        //           )
-        //           .map((h) => h.hwKonfig.konfiguration)
-        //       ),
-        //     ].sort();
-        //   }
-        // },
         true
       )
     );
@@ -543,6 +514,40 @@ export class HwService {
         ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
         null,
+        true
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "hier1",
+        () => "OE-Hierarchie",
+        () => "ap.oe.hierarchy",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.inlistlike, RelOp.notinlistlike],
+        () => [...new Set(this.dataService.bstList.map((b) => b.fullname))].sort(),
+        true
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "hier2",
+        () => "Verantw.OE-Hierarchie",
+        () => "ap.verantwOe.hierarchy",
+        () => null,
+        () => null,
+        "",
+        false,
+        0,
+        ColumnType.STRING,
+        [RelOp.inlistlike, RelOp.notinlistlike],
+        () => [...new Set(this.dataService.bstList.map((b) => b.fullname))].sort(),
         true
       )
     );

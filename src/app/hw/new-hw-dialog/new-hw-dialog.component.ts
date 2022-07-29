@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } fro
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
-import { CurrencyCheck, StringToNumber } from "../../shared/helper";
+import { CurrencyCheck, StringCompare, StringToNumber } from "../../shared/helper";
 import { IpHelper } from "../../shared/ip-helper";
 import { HwKonfig } from "../../shared/model/hw-konfig";
 import { HwTyp } from "../../shared/model/hw-typ";
@@ -145,7 +145,7 @@ export class NewHwDialogComponent implements OnInit {
       .filter(
         (k) => !this.dataService.isFremdeKonfig(k) && (typfilter ? k.hwTypId === typfilter : true)
       )
-      .sort((a, b) => this.dataService.collator.compare(a.konfiguration, b.konfiguration));
+      .sort((a, b) => StringCompare(a.konfiguration, b.konfiguration));
     this.konfigList.unshift(null);
   }
 

@@ -269,7 +269,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // hat typ [dropdown], hat typ nicht [dropdown]
+        this,
         "aptyp",
         () => "Typ",
         () => "apTypBezeichnung",
@@ -286,7 +286,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // beginnt, endet, enthaelt, enthaelt nicht
+        this,
         "apname",
         () => "AP-Name",
         () => "apname",
@@ -303,7 +303,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // BST extra? / string beginnt, endet, enthaelt, enthaelt nicht / dropdown?
+        this,
         "betrst",
         () => (this.userSettings.showStandort ? "Standort" : "Verantw. OE"),
         () => (this.userSettings.showStandort ? "oe.fullname" : "verantwOe.fullname"),
@@ -354,10 +354,7 @@ export class ApService {
       new SbsdbColumn<ApService, Arbeitsplatz>(
         this,
         "hierstandort",
-        () =>
-          this.userSettings.showStandort
-            ? "Standort incl. unterstellte"
-            : "Verantw. OE incl. unterstellte",
+        () => (this.userSettings.showStandort ? "OE-Hierarchie" : "Verantw.OE-Hierarchie"),
         () => (this.userSettings.showStandort ? "oe.hierarchy" : "verantwOe.hierarchy"),
         () => null,
         () => null,
@@ -366,14 +363,7 @@ export class ApService {
         0,
         ColumnType.STRING,
         [RelOp.inlistlike, RelOp.notinlistlike],
-        () =>
-          [
-            ...new Set(
-              this.apDataSource.data.map((a) =>
-                this.userSettings.showStandort ? a.verantwOe.fullname : a.oe.fullname
-              )
-            ),
-          ].sort(),
+        () => [...new Set(this.dataService.bstList.map((b) => b.fullname))].sort(),
         true
       )
     );
@@ -381,10 +371,7 @@ export class ApService {
       new SbsdbColumn<ApService, Arbeitsplatz>(
         this,
         "hierverantwoe",
-        () =>
-          this.userSettings.showStandort
-            ? "Verantw. OE incl. unterstellte"
-            : "Standort incl. unterstellte",
+        () => (this.userSettings.showStandort ? "Verantw.OE-Hierarchie" : "OE-Hierarchie"),
         () => (this.userSettings.showStandort ? "verantwOe.hierarchy" : "oe.hierarchy"),
         () => null,
         () => null,
@@ -393,20 +380,13 @@ export class ApService {
         0,
         ColumnType.STRING,
         [RelOp.inlistlike, RelOp.notinlistlike],
-        () =>
-          [
-            ...new Set(
-              this.apDataSource.data.map((a) =>
-                this.userSettings.showStandort ? a.oe.fullname : a.verantwOe.fullname
-              )
-            ),
-          ].sort(),
+        () => [...new Set(this.dataService.bstList.map((b) => b.fullname))].sort(),
         true
       )
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // enthaelt, enthaelt nicht
+        this,
         "bezeichnung",
         () => "Bezeichnung",
         () => "bezeichnung",
@@ -423,8 +403,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
-        // dropdown VLAN? -> eigene Spalte
+        this,
         "ip",
         () => "IP/MAC",
         () => ["ipStr", "macsearch"],
@@ -441,8 +420,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
-        // dropdown VLAN? -> eigene Spalte
+        this,
         "ipfilt",
         () => "IP",
         () => "ipStr",
@@ -459,8 +437,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
-        // dropdown VLAN? -> eigene Spalte
+        this,
         "mac",
         () => "MAC",
         () => "macsearch",
@@ -477,8 +454,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // IP/MAC enthaelt, enthaelt nicht, IP beginnt mit, IP endet mit, IP enthaelt, dto. MAC
-        // dropdown VLAN? -> eigene Spalte
+        this,
         "vlan",
         () => "VLAN",
         () => "vlanStr",
@@ -495,8 +471,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // enthaelt, enthaelt nicht/ Hersteller|Typenbezeichnung|SerNr enthaelt, enthaelt nicht, start,end
-        // (hersteller + bezeichnung) -> eigene Spalte
+        this,
         "hardware",
         () => "Hardware",
         () =>
@@ -552,7 +527,7 @@ export class ApService {
 
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // bemerkung -> enthaelt
+        this,
         "bemerkung",
         () => "Bemerkung",
         () => "bemerkung",
@@ -569,7 +544,7 @@ export class ApService {
     );
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(
-        this, // bemerkung -> enthaelt
+        this,
         "konfiguration",
         () => "Konfiguration",
         () => "hw$hwKonfig.konfiguration",

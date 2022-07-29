@@ -8,6 +8,7 @@ import { Vlan } from "../../model/vlan";
 import { HwInputVlan } from "./hw-input-vlan";
 import { HwVlanChange } from "./hw-vlan-change";
 import { VlansInput } from "./vlans-input";
+import { StringCompare } from "../../helper";
 
 @Component({
   selector: "sbsdb-edit-vlan",
@@ -71,7 +72,7 @@ export class EditVlanComponent implements OnInit {
     // vlan select list
     this.vlanList = this.dataService.vlanList
       .map((v) => v)
-      .sort((a, b) => this.dataService.collator.compare(a.bezeichnung, b.bezeichnung));
+      .sort((a, b) => StringCompare(a.bezeichnung, b.bezeichnung));
     this.vlanList.unshift(null);
 
     // Das Anhaengen einer neuen MAC aendert u.U. den Status der form auf invalid

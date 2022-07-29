@@ -86,7 +86,7 @@ export function OutputToCsv(
                   content = col.fieldName.reduce(
                     (prev, curr) =>
                       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                      (prev += (prev ? " / " : "") + GetFieldContent(row, curr) ?? ""),
+                      (prev += (prev ? " / " : "") + (GetFieldContent(row, curr) ?? "")),
                     ""
                   );
                 } else {
@@ -205,7 +205,7 @@ export function GetFieldContent(record: unknown, fieldname: string): unknown {
     fieldname
       .split(".")
       // eslint-disable-next-line no-prototype-builtins
-      .reduce((prev, curr) => (prev.hasOwnProperty(curr) ? prev[curr] : undefined), record)
+      .reduce((prev, curr) => (prev && prev.hasOwnProperty(curr) ? prev[curr] : undefined), record)
   );
 }
 
@@ -234,4 +234,20 @@ export function PrepDateForDB(date: Date): Date {
   const rc = new Date(date);
   rc.setMinutes(-1 * rc.getTimezoneOffset());
   return rc;
+}
+
+/**
+ * case-insensitive alpha sort
+ *
+ * deutlich schneller als String.localeCompare()
+ *
+ * @param a
+ * @param b
+ * @constructor
+ */
+export function StringCompare(a: string, b: string): number {
+  return new Intl.Collator("de", {
+    numeric: true,
+    sensitivity: "base",
+  }).compare(a, b);
 }

@@ -46,7 +46,7 @@
 
       <div class="abstand">
         <label class="radio-label">OE hat Arbeitsplätze</label>
-        <mat-radio-group [formControl]="apControl">
+        <mat-radio-group [formControl]="apControl" color="primary">
           <mat-radio-button class="radio-label" [value]="true">ja</mat-radio-button>
           <mat-radio-button [value]="false">nein</mat-radio-button>
         </mat-radio-group>
@@ -75,8 +75,9 @@
           required="true"
         >
           <option *ngFor="let k of dataService.adresseList" [ngValue]="k.id">
-            {{ k.plz }} {{ k.ort }}, {{ k.strasse }} {{ k.hausnr }}
+            {{ k.plz && k.ort ? k.plz + " " + k.ort + ", " + k.strasse + " " + k.hausnr : "---" }}
           </option>
+          <!--            {{ k.plz }} {{ k.ort }}, {{ k.strasse }} {{ k.hausnr }}-->
         </select>
         <mat-error *ngIf="adrControl.invalid">{{ getErrorMessage(adrControl) }}</mat-error>
       </mat-form-field>
@@ -86,7 +87,7 @@
         <select matNativeControl [formControl]="parentControl" [errorStateMatcher]="matcher">
           <option [ngValue]="null">---</option>
           <option *ngFor="let k of dataService.bstList" [ngValue]="k.bstId">
-            {{ k.fullname }}
+            {{ k.fullname ? k.fullname : "---" }}
           </option>
         </select>
         <mat-error *ngIf="parentControl.invalid">{{ getErrorMessage(parentControl) }}</mat-error>

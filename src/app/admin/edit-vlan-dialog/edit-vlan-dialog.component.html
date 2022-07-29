@@ -1,1 +1,40 @@
-<p>edit-vlan-dialog works!</p>
+<sbsdb-dialog-title
+  dialogTitle="{{ data.id ? 'Vlan bearbeiten' : 'Neues Vlan' }}"
+></sbsdb-dialog-title>
+
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit(formGroup.value)"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <mat-dialog-content>
+    <div class="flex-col">
+      <mat-form-field>
+        <mat-label>Vlan</mat-label>
+        <input
+          matInput
+          [formControl]="bezeichControl"
+          [errorStateMatcher]="matcher"
+          required="true"
+        />
+        <mat-error *ngIf="bezeichControl.invalid">{{ getErrorMessage(bezeichControl) }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="abstand">
+        <mat-label>IP</mat-label>
+        <input matInput [formControl]="ipControl" [errorStateMatcher]="matcher" required="true" />
+        <!--        <mat-hint align="start">1 = Fremde HW</mat-hint>-->
+        <mat-error *ngIf="ipControl.invalid">{{ getErrorMessage(ipControl) }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="abstand">
+        <mat-label>Netmask</mat-label>
+        <input matInput [formControl]="nmControl" [errorStateMatcher]="matcher" required="true" />
+        <mat-hint align="start">{{ nmHint() }}</mat-hint>
+        <mat-error *ngIf="nmControl.invalid">{{ getErrorMessage(nmControl) }}</mat-error>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

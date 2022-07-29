@@ -4,6 +4,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { lastValueFrom, Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { ConfigService } from "./config/config.service";
+import { StringCompare } from "./helper";
 import { IpHelper } from "./ip-helper";
 import { AddHwTransport } from "./model/add-hw-transport";
 import { Adresse } from "./model/adresse";
@@ -111,14 +112,6 @@ export class DataService {
   public readonly changeHwtypUrl: string;
   public readonly changeVlanUrl: string;
   public readonly importTcLogUrl: string;
-
-  // case-insensitive alpha sort
-  // deutlich schneller als String.localeCompare()
-  //  -> result = this.collator.compare(a, b)
-  public collator = new Intl.Collator("de", {
-    numeric: true,
-    sensitivity: "base",
-  });
 
   private aplistfetched = false;
   private aplistready = false;
@@ -478,8 +471,26 @@ export class DataService {
     notification.vlanChange.subscribe((data) => {
       console.debug("dataService start update vlan");
       console.dir(data);
+      const old = this.vlanList.findIndex((vl) => vl.id === data.vlan.id);
+      if (old >= 0) {
+        if (data.del) {
+          // del
+          this.vlanList.splice(old, 1);
+        } else {
+          //chg
+          this.vlanList[old].bezeichnung = data.vlan.bezeichnung;
+          this.vlanList[old].ip = data.vlan.ip;
+          this.vlanList[old].netmask = data.vlan.netmask;
+        }
+      } else {
+        // new
+        this.vlanList.push(data.vlan);
+      }
+      // this.apListChanged.emit();
+      this.vlanListChanged.emit();
+      this.vlanDeps();
 
-      // TODO
+      this.checkNotification();
     });
   }
 
@@ -691,9 +702,7 @@ export class DataService {
   public dropdownHwTypList(): HwTyp[] {
     const hwt = this.hwtypList
       .filter((ht) => !this.isFremderHwTyp(ht))
-      .sort((a, b) =>
-        this.collator.compare(a.apkategorie + a.bezeichnung, b.apkategorie + b.bezeichnung)
-      );
+      .sort((a, b) => StringCompare(a.apkategorie + a.bezeichnung, b.apkategorie + b.bezeichnung));
     // "leere" Auswahl an den Anfang
     hwt.unshift(null);
     return hwt;
@@ -782,7 +791,13 @@ export class DataService {
   }
 
   public vlanDeps(): void {
-    // noop
+    this.vlanList.forEach((vl) => {
+      vl.inUse = null;
+      const idx = this.hwList.findIndex((hw) => hw.vlans.findIndex((v) => v.vlanId === vl.id) >= 0);
+      if (idx >= 0) {
+        vl.inUse = 1;
+      }
+    });
   }
 
   private checkNotification(): void {
@@ -792,8 +807,6 @@ export class DataService {
     }
   }
 
-  // OE-Hierarchie aufbauen
-  // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
   private prepBstList() {
     this.nullBetrst = new Betrst();
     this.nullBetrst.bstId = 0;
@@ -809,6 +822,8 @@ export class DataService {
     });
   }
 
+  // OE-Hierarchie aufbauen
+  // -> bst.children enthaelt die direkt untergeordneten OEs (=> Rekursion fuers Auslesen)
   private prepBst(bst: Betrst) {
     bst.adresse = this.adresseList.find((ad) => ad.id === bst.adresseId);
     // idx 0 -> BST "Reserve" => 0 als parent == kein parent
@@ -833,7 +848,7 @@ export class DataService {
     if (bst.parentId) {
       let p = bst.parent;
       while (p) {
-        bst.hierarchy = p.fullname + "/" + bst.hierarchy;
+        bst.hierarchy = (p.fullname ? p.fullname + "|" : "") + bst.hierarchy;
         p = p.parent;
       }
     }
@@ -1193,7 +1208,7 @@ export class DataService {
   private sortAP(ap: Arbeitsplatz) {
     ap.tags.sort((a, b) => {
       if (a.flag === b.flag) {
-        return this.collator.compare(a.bezeichnung, b.bezeichnung);
+        return StringCompare(a.bezeichnung, b.bezeichnung);
       } else {
         return a.flag & DataService.BOOL_TAG_FLAG ? -1 : 1;
       }
@@ -1207,7 +1222,7 @@ export class DataService {
       } else if (b.pri) {
         return 1;
       } else {
-        return this.collator.compare(
+        return StringCompare(
           a.hwKonfig.hwTypBezeichnung + a.hwKonfig.hersteller + a.hwKonfig.bezeichnung + a.sernr,
           b.hwKonfig.hwTypBezeichnung + b.hwKonfig.hersteller + b.hwKonfig.bezeichnung + b.sernr
         );
@@ -1223,6 +1238,7 @@ export class DataService {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong.
       console.error(`Backend returned code ${error.status}, ` + `body was: `, error.error);
+      console.dir(error);
     }
     // Return an observable with a user-facing error message.
     return throwError(() => new Error("Something bad happened; please try again later."));

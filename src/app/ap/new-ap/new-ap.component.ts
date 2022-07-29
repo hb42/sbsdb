@@ -5,6 +5,7 @@ import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { ApTyp } from "../../shared/model/ap-typ";
 import { NewApData } from "./new-ap-data";
+import { StringCompare } from "../../shared/helper";
 
 @Component({
   selector: "sbsdb-new-ap",
@@ -26,7 +27,7 @@ export class NewApComponent implements OnInit {
   ) {
     this.formGroup = this.formBuilder.group({});
     this.aptypList = this.dataService.aptypList.sort((a, b) =>
-      this.dataService.collator.compare(a.bezeichnung, b.bezeichnung)
+      StringCompare(a.bezeichnung, b.bezeichnung)
     );
   }
 

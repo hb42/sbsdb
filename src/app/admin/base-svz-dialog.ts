@@ -45,6 +45,15 @@ export abstract class BaseSvzDialog<T> {
     if (control.hasError("pattern")) {
       return "Bitte eine Zahl eingeben.";
     }
+    if (control.hasError("invalidip")) {
+      return "Bitte eine gültige IP-Adresse eingeben.";
+    }
+    if (control.hasError("invalidipnm")) {
+      return "IP-Adresse passt nicht zur Netmask.";
+    }
+    if (control.hasError("invalidnm")) {
+      return "Bitte eine gültige Netmask eingeben.";
+    }
     return null;
   }
 
