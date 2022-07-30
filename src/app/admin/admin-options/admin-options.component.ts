@@ -4,7 +4,6 @@ import {
   ADM_APKAT_PATH,
   ADM_APTYP_PATH,
   ADM_EXTPROG_PATH,
-  ADM_FILTER_PATH,
   ADM_HWTYP_PATH,
   ADM_OE_PATH,
   ADM_OPTIONS_PATH,
@@ -28,11 +27,12 @@ export class AdminOptionsComponent {
       title: "Allgemeine Programmparameter",
       text: "Globale Konfiguration",
     },
-    {
-      route: "/" + ADM_PATH + "/" + ADM_FILTER_PATH,
-      title: "Selbstdefinierte Filter allen Benutzern bereitstellen",
-      text: "Globale Arbeitsplatzfilter",
-    },
+    // FIXME das muss ueberarbeitet werden! -> #31
+    // {
+    //   route: "/" + ADM_PATH + "/" + ADM_FILTER_PATH,
+    //   title: "Selbstdefinierte Filter allen Benutzern bereitstellen",
+    //   text: "Globale Arbeitsplatzfilter",
+    // },
     {
       route: "/" + ADM_PATH + "/" + ADM_APKAT_PATH,
       title: "Arbeitsplatz-Kategorien bearbeiten",

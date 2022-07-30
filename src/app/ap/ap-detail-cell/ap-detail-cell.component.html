@@ -37,7 +37,8 @@
       Verantwortliche OE
     </div>
     <div class="detail-cell-margin">
-      {{ ("000" + element.verantwOe.bstNr).slice(-3) }} - {{ element.verantwOe.betriebsstelle }}
+      <!--      {{ ("000" + element.verantwOe.bstNr).slice(-3) }} - {{ element.verantwOe.betriebsstelle }}-->
+      {{ element.verantwOe.hierarchy.replace("|", pathseparator) }}
       <span *ngIf="apService.userSettings.debug" class="debug">
         #{{ element.verantwOe.bstId }}</span
       >
