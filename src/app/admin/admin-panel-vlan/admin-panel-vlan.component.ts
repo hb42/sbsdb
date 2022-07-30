@@ -6,7 +6,7 @@ import { Vlan } from "../../shared/model/vlan";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
-import { BaseSvzPanel } from "../base-svz-panel";
+import { BaseSvzPanelComponent } from "../base-svz-panel.component";
 import { EditVlanDialogComponent } from "../edit-vlan-dialog/edit-vlan-dialog.component";
 
 @Component({
@@ -14,7 +14,7 @@ import { EditVlanDialogComponent } from "../edit-vlan-dialog/edit-vlan-dialog.co
   templateUrl: "./admin-panel-vlan.component.html",
   styleUrls: ["./admin-panel-vlan.component.scss"],
 })
-export class AdminPanelVlanComponent extends BaseSvzPanel<AdminPanelVlanComponent, Vlan> {
+export class AdminPanelVlanComponent extends BaseSvzPanelComponent<AdminPanelVlanComponent, Vlan> {
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

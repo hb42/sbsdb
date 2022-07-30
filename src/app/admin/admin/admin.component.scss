@@ -1,5 +1,5 @@
 // Dimensionen fuer Baum und Liste
-$optionsWidth: 350px;
+$optionsWidth: 280px;
 $optionsMinWidth: 100px;
 
 $listWidth: 100%;
@@ -14,4 +14,18 @@ $listMinWidth: 100px;
 .listPanel {
   width: $listWidth;
   min-width: $listMinWidth;
+}
+
+.infoPanel {
+  border: solid 1px;
+  border-color: var(--md-details-border-color);
+  border-radius: 4px;
+  margin: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+  font-size: 0.9em;
+}
+
+.distinction {
+  border-bottom: solid 3px red;
 }

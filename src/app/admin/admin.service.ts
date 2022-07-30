@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from "@angular/core";
+import { EventEmitter, Injectable, TemplateRef } from "@angular/core";
 import { Observable } from "rxjs";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
@@ -24,6 +24,14 @@ export class AdminService {
   public exportEvent: EventEmitter<void> = new EventEmitter<void>();
   public debugEvent: EventEmitter<void> = new EventEmitter<void>();
   public newRecordLabel = "Neuen Datensatz anlegen.";
+
+  public get infoPanel(): TemplateRef<never> {
+    return this.infopanel;
+  }
+  public set infoPanel(tpl: TemplateRef<never>) {
+    setTimeout(() => (this.infopanel = tpl), 0);
+  }
+  private infopanel: TemplateRef<never>;
 
   constructor(public configService: ConfigService, public dataService: DataService) {
     console.debug("c'tor AdminService");

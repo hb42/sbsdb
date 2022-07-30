@@ -5,7 +5,7 @@ import { TagTyp } from "../../shared/model/tagTyp";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
-import { BaseSvzPanel } from "../base-svz-panel";
+import { BaseSvzPanelComponent } from "../base-svz-panel.component";
 import { EditTagtypDialogComponent } from "../edit-tagtyp-dialog/edit-tagtyp-dialog.component";
 
 @Component({
@@ -13,7 +13,10 @@ import { EditTagtypDialogComponent } from "../edit-tagtyp-dialog/edit-tagtyp-dia
   templateUrl: "./admin-panel-tagtyp.component.html",
   styleUrls: ["./admin-panel-tagtyp.component.scss"],
 })
-export class AdminPanelTagtypComponent extends BaseSvzPanel<AdminPanelTagtypComponent, TagTyp> {
+export class AdminPanelTagtypComponent extends BaseSvzPanelComponent<
+  AdminPanelTagtypComponent,
+  TagTyp
+> {
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

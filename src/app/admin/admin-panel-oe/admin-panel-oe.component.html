@@ -10,3 +10,20 @@
   sortColumn="oenr"
   multiline="true"
 ></sbsdb-std-table>
+
+<ng-template #infoTpl>
+  <p>Organisationseinheiten</p>
+  <p>
+    SBSDB-interne OE-Struktur. Folgt dem Organigramm, mit Anpassungen, die die Verwaltung der
+    Arbeitsplätze und der Hardware erleichtern.
+  </p>
+  <p><strong>OE-Nr.</strong> - 3-stellig, analog der alten BST-Nr..</p>
+  <p>
+    <strong>AP</strong> - das Feld legt fest, ob der OE Arbeitsplätze zugewiesen werden können (kann
+    nicht nachträglich geändert werden).
+  </p>
+  <p>
+    <strong>Übergeordndete OE</strong> - hiermit wird die OE-Hierarchie festgelegt (Tiefe ist nicht
+    begrenzt).
+  </p>
+</ng-template>

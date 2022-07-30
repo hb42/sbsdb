@@ -5,7 +5,7 @@ import { Adresse } from "../../shared/model/adresse";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
-import { BaseSvzPanel } from "../base-svz-panel";
+import { BaseSvzPanelComponent } from "../base-svz-panel.component";
 import { EditAdresseDialogComponent } from "../edit-adresse-dialog/edit-adresse-dialog.component";
 
 @Component({
@@ -13,7 +13,10 @@ import { EditAdresseDialogComponent } from "../edit-adresse-dialog/edit-adresse-
   templateUrl: "./admin-panel-adresse.component.html",
   styleUrls: ["./admin-panel-adresse.component.scss"],
 })
-export class AdminPanelAdresseComponent extends BaseSvzPanel<AdminPanelAdresseComponent, Adresse> {
+export class AdminPanelAdresseComponent extends BaseSvzPanelComponent<
+  AdminPanelAdresseComponent,
+  Adresse
+> {
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

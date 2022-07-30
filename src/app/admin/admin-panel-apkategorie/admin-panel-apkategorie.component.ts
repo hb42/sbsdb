@@ -6,7 +6,7 @@ import { ApTyp } from "../../shared/model/ap-typ";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
-import { BaseSvzPanel } from "../base-svz-panel";
+import { BaseSvzPanelComponent } from "../base-svz-panel.component";
 import { EditApkategorieDialogComponent } from "../edit-apkategorie-dialog/edit-apkategorie-dialog.component";
 
 @Component({
@@ -14,7 +14,7 @@ import { EditApkategorieDialogComponent } from "../edit-apkategorie-dialog/edit-
   templateUrl: "./admin-panel-apkategorie.component.html",
   styleUrls: ["./admin-panel-apkategorie.component.scss"],
 })
-export class AdminPanelApkategorieComponent extends BaseSvzPanel<
+export class AdminPanelApkategorieComponent extends BaseSvzPanelComponent<
   AdminPanelApkategorieComponent,
   ApKategorie
 > {

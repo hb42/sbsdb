@@ -1,4 +1,11 @@
-import { EventEmitter, Injectable, OnDestroy } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  TemplateRef,
+  ViewChild,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { lastValueFrom, Subscription } from "rxjs";
@@ -7,8 +14,22 @@ import { SbsdbColumn } from "../shared/table/sbsdb-column";
 import { YesNoDialogComponent } from "../shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminService } from "./admin.service";
 
-@Injectable()
-export abstract class BaseSvzPanel<C, R> implements OnDestroy {
+// @Injectable()
+@Component({
+  selector: "sbsdb-base-svz-panel",
+  template: "",
+})
+export abstract class BaseSvzPanelComponent<C, R> implements AfterViewInit, OnDestroy {
+  /**
+   * Components, die diese Klasse erben koennen eine ngTemplate mit dem Namen "infoTpl"
+   * deklarieren. Die Template wird hier an adminService weitergegeben und unterhalb
+   * der Component angezeigt.
+   *   <ng-template #infoTpl> ... </ng-template>
+   *
+   * @private
+   */
+  @ViewChild("infoTpl") private infoTpl: TemplateRef<never>;
+
   public dataSource: MatTableDataSource<R> = new MatTableDataSource<R>();
   public columns: SbsdbColumn<C, R>[] = [];
   public csvEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -60,12 +81,9 @@ export abstract class BaseSvzPanel<C, R> implements OnDestroy {
     });
   }
 
-  // TODO evtl. wird changeDebug() beim Sart noch gebraucht -> beobachten
-  // public ngAfterViewInit(): void {
-  //   // ID-Spalte gemaess config.DEBUG ein- oder ausblenden
-  //   console.debug("BaseSvzPanel: ngAfterViewInit");
-  //   setTimeout(() => this.changeDebug(), 0);
-  // }
+  ngAfterViewInit(): void {
+    this.adminService.infoPanel = this.infoTpl;
+  }
 
   public ngOnDestroy(): void {
     console.debug("onDestroy AdminPanelAptypComponent");
@@ -76,6 +94,7 @@ export abstract class BaseSvzPanel<C, R> implements OnDestroy {
     if (this.notificationHandler) {
       this.notificationHandler.unsubscribe();
     }
+    this.adminService.infoPanel = null;
   }
 
   /**

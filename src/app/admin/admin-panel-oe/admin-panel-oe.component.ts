@@ -6,7 +6,7 @@ import { Betrst } from "../../shared/model/betrst";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
-import { BaseSvzPanel } from "../base-svz-panel";
+import { BaseSvzPanelComponent } from "../base-svz-panel.component";
 import { EditOeDialogComponent } from "../edit-oe-dialog/edit-oe-dialog.component";
 
 @Component({
@@ -14,7 +14,7 @@ import { EditOeDialogComponent } from "../edit-oe-dialog/edit-oe-dialog.componen
   templateUrl: "./admin-panel-oe.component.html",
   styleUrls: ["./admin-panel-oe.component.scss"],
 })
-export class AdminPanelOeComponent extends BaseSvzPanel<AdminPanelOeComponent, Betrst> {
+export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeComponent, Betrst> {
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

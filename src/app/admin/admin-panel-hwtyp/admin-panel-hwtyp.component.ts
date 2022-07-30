@@ -5,7 +5,7 @@ import { HwTyp } from "../../shared/model/hw-typ";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
-import { BaseSvzPanel } from "../base-svz-panel";
+import { BaseSvzPanelComponent } from "../base-svz-panel.component";
 import { EditHwtypDialogComponent } from "../edit-hwtyp-dialog/edit-hwtyp-dialog.component";
 
 @Component({
@@ -13,7 +13,10 @@ import { EditHwtypDialogComponent } from "../edit-hwtyp-dialog/edit-hwtyp-dialog
   templateUrl: "./admin-panel-hwtyp.component.html",
   styleUrls: ["./admin-panel-hwtyp.component.scss"],
 })
-export class AdminPanelHwtypComponent extends BaseSvzPanel<AdminPanelHwtypComponent, HwTyp> {
+export class AdminPanelHwtypComponent extends BaseSvzPanelComponent<
+  AdminPanelHwtypComponent,
+  HwTyp
+> {
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

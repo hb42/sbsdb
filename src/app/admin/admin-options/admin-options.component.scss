@@ -7,3 +7,6 @@
   width: 100%;
   margin-bottom: 6px;
 }
+.mat-stroked-button:not(.mat-button-disabled) {
+  background-color: rgba(0, 0, 100, 0.02);
+}

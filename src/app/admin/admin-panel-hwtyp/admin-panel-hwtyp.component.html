@@ -9,3 +9,20 @@
   [delEvent]="delEvent"
   sortColumn="apkategorie"
 ></sbsdb-std-table>
+
+<ng-template #infoTpl>
+  <p>Hardware-Typen</p>
+  <p>
+    Fasst gleichartige Hardware zusammen und steuert, über AP-Kategorie, bei welchen Arbeitsplätzen
+    die Hardware eingetragen werden kann.
+  </p>
+  <p>
+    <strong>Flag = 1</strong> markiert "Fremde Hardware", also Hardware, die nicht in unserem
+    Bestand ist (z.B. FI-Server oder Bosch-Videosysteme). Das Anlegen und Löschen dieser Hardware
+    geschieht automatisch beim Anlegen/Löschen des jeweiligen Arbeitsplatzes.
+  </p>
+  <p>
+    Flag und AP-Kategorie können nicht nachträglich geändert werden, da hier Abhängigkeiten zu den
+    zugeordneten Arbeitsplätzen bestehen.
+  </p>
+</ng-template>

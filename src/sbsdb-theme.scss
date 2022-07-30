@@ -107,43 +107,42 @@ $sbsdb-app-theme: mat.define-light-theme($sbsdb-app-primary, $sbsdb-app-accent, 
   $foreground: map-get($theme, foreground);
 
   .md-text-color {
-    color: mat.get-color-from-palette($foreground, text);
+    color: mat.get-color-from-palette($foreground, text) !important;
   }
   .md-primary-color {
-    color: mat.get-color-from-palette($primary);
+    color: mat.get-color-from-palette($primary) !important;
   }
   .md-primary-highlight-color2 {
-    color: mat.get-color-from-palette($primary, A400);
+    color: mat.get-color-from-palette($primary, A400) !important;
   }
   .md-primary-highlight-color {
-    color: mat.get-color-from-palette($primary, A200);
+    color: mat.get-color-from-palette($primary, A200) !important;
   }
   .md-primary-shadow {
-    background-color: mat.get-color-from-palette($primary, A400, 0.2);
+    background-color: mat.get-color-from-palette($primary, A400, 0.2) !important;
   }
   .md-primary-shadow-hover:hover {
-    background-color: mat.get-color-from-palette($primary, A400, 0.2);
+    background-color: mat.get-color-from-palette($primary, A400, 0.2) !important;
   }
   .md-accent-color {
-    color: mat.get-color-from-palette($accent);
+    color: mat.get-color-from-palette($accent) !important;
   }
   .md-accent-background-color {
-    background-color: mat.get-color-from-palette($accent, A200);
+    background-color: mat.get-color-from-palette($accent, A200) !important;
   }
   .md-accent-hover {
-    background-color: mat.get-color-from-palette($accent, A200, 0.08);
+    background-color: mat.get-color-from-palette($accent, A200, 0.08) !important;
   }
   .md-background-color {
-    background-color: mat.get-color-from-palette($background, background);
+    background-color: mat.get-color-from-palette($background, background) !important;
   }
   .md-background-color-hover {
-    background-color: mat.get-color-from-palette($background, hover);
+    background-color: mat.get-color-from-palette($background, hover) !important;
   }
   .mat-toolbar.head-spk {
     background: linear-gradient(
       to bottom,
-      mat.get-color-from-palette($primary, 200) 0%,
-      // A200
+      mat.get-color-from-palette($primary, 200) 0%, // A200
       mat.get-color-from-palette($primary, 700) 100% // A700
     );
   }

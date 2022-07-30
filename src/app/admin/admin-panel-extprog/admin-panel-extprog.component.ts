@@ -4,7 +4,7 @@ import { DataService } from "../../shared/data.service";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
-import { BaseSvzPanel } from "../base-svz-panel";
+import { BaseSvzPanelComponent } from "../base-svz-panel.component";
 import { EditExtprogDialogComponent } from "../edit-extprog-dialog/edit-extprog-dialog.component";
 import { EditExtprogTransport } from "../edit-extprog-dialog/edit-extprog-transport";
 import { ExtProgList } from "./ext-prog-list";
@@ -14,7 +14,7 @@ import { ExtProgList } from "./ext-prog-list";
   templateUrl: "./admin-panel-extprog.component.html",
   styleUrls: ["./admin-panel-extprog.component.scss"],
 })
-export class AdminPanelExtprogComponent extends BaseSvzPanel<
+export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
   AdminPanelExtprogComponent,
   ExtProgList
 > {

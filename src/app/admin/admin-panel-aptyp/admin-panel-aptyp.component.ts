@@ -5,7 +5,7 @@ import { ApTyp } from "../../shared/model/ap-typ";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
-import { BaseSvzPanel } from "../base-svz-panel";
+import { BaseSvzPanelComponent } from "../base-svz-panel.component";
 import { EditAptypDialogComponent } from "../edit-aptyp-dialog/edit-aptyp-dialog.component";
 
 @Component({
@@ -13,7 +13,13 @@ import { EditAptypDialogComponent } from "../edit-aptyp-dialog/edit-aptyp-dialog
   templateUrl: "./admin-panel-aptyp.component.html",
   styleUrls: ["./admin-panel-aptyp.component.scss"],
 })
-export class AdminPanelAptypComponent extends BaseSvzPanel<AdminPanelAptypComponent, ApTyp> {
+export class AdminPanelAptypComponent extends BaseSvzPanelComponent<
+  AdminPanelAptypComponent,
+  ApTyp
+> {
+  // @ViewChild("infoTpl")
+  // private infoTpl: TemplateRef<never>;
+
   constructor(
     public dataService: DataService,
     public adminService: AdminService,
@@ -27,6 +33,10 @@ export class AdminPanelAptypComponent extends BaseSvzPanel<AdminPanelAptypCompon
     });
     this.dataService.apkatList.sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung));
   }
+
+  // ngAfterViewInit(): void {
+  //   this.adminService.infoPanel = this.infoTpl;
+  // }
 
   protected handleChangeOrNew(aptyp: ApTyp) {
     if (!aptyp) {

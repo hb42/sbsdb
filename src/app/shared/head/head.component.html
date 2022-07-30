@@ -18,6 +18,7 @@
   </mat-menu>
 
   <span class="spacer"></span>
+  <!-- Hauptmenue als Dropdown-Button -->
   <button mat-raised-button [mat-menu-trigger-for]="navmenu" *ngIf="userSettings.showNavMenu">
     <mat-icon class="dd-icon">{{ btnTitleIcon() }}</mat-icon>
     {{ btnTitle() }}
@@ -37,7 +38,7 @@
       </button>
     </div>
   </mat-menu>
-
+  <!-- Hauptmenue als einzelne Buttons -->
   <div *ngIf="!userSettings.showNavMenu" class="btn-menu">
     <div *ngFor="let link of navLinks">
       <button
@@ -48,6 +49,7 @@
         [disabled]="rla.isActive"
         [routerLink]="link.path"
         class="menu-btn"
+        [class.md-accent-color]="rla.isActive"
       >
         <mat-icon class="menu-icon">{{ link.icon }}</mat-icon>
         <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>

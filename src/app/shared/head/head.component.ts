@@ -40,7 +40,9 @@ import { StatusService } from "../status.service";
   styleUrls: ["./head.component.scss"],
 })
 export class HeadComponent implements AfterViewInit, OnDestroy {
-  @HostBinding("attr.class") public cssClass = "flex-panel";
+  // ueber die class distinction koennen die einzelnen Seiten etwas
+  // Unterscheidung einbinden
+  @HostBinding("attr.class") public cssClass = "flex-panel distinction";
 
   @ViewChild("mainMenuTrigger") menuTrigger: MatMenuTrigger;
 

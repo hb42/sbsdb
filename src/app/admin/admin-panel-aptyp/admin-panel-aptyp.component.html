@@ -9,3 +9,21 @@
   [delEvent]="delEvent"
   sortColumn="apkategorie"
 ></sbsdb-std-table>
+
+<ng-template #infoTpl>
+  <p>Arbeitsplatz-Typen</p>
+  <p>
+    Dient der Zusammenfassung gleichartiger Arbeitsplätze und steuert, über AP-Kategorie, welche
+    Hardware eingetragen werden kann.
+  </p>
+  <p>
+    <strong>Flag = 1</strong> markiert einen AP-Typ für Arbeitsplätze, deren Hardware nicht in
+    unserem Bestand ist (z.B. FI-Server oder Bosch-Videosysteme), die aber in unserem Netz betrieben
+    werden. Hier wird intern für jeden Arbeitsplatz eine "Fremde HW" angelegt, um die
+    Netzwerkadressen zu speichern (wird beim Löschen des AP wieder entfernt).
+  </p>
+  <p>
+    Flag und AP-Kategorie können nicht nachträglich geändert werden, da hier Abhängigkeiten, z.B.
+    zur zugeordneten Hardware bestehen.
+  </p>
+</ng-template>

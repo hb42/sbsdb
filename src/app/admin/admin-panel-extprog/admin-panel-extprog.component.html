@@ -9,3 +9,23 @@
   [delEvent]="delEvent"
   multiline="true"
 ></sbsdb-std-table>
+
+<ng-template #infoTpl>
+  <p>Externe Programme</p>
+  <p>
+    Hier werden die externen Programme den Arbeitsplatz-Typen zugeordnet. In der
+    FAT-Client-Anwendung können diese Programme dann für den entsprechenden AP-Typ ausgeführt werden
+  </p>
+  <p>
+    <strong>Schlüssel</strong> - Name, der dem Powershell-Script, das die Programme startet,
+    übergeben wird.
+  </p>
+  <p>
+    <strong>Parameter</strong> - Zusätzliche Parameter, die bei Bedarf an das Powershell-Script
+    übergeben werden.
+  </p>
+  <p>
+    <strong>Flag = 1</strong> Dieses Programm wird allen Benutzern angezeigt. Programme mit Flag=0
+    werden nur Admins angezeigt.
+  </p>
+</ng-template>
