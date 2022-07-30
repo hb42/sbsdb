@@ -20,8 +20,8 @@
 ##
 ## FAT-Client      Basis: Electron (19.x) / Typescript, Powershell
 ##                 Der lokale Teil ist fuer den Start der Scripte zustaendig, mit denen
-##                 auf Rechner im Netz zugegriffen wird. Die Web-Anwendung wird vom
-##                 Server gestartet.
+##                 auf Rechner im Netz zugegriffen wird. Die Web-Anwendung wird, analog
+##                 Browser, vom Server gestartet.
 ##
 ## Repos
 ## https://github.com/hb42/sbsdb
