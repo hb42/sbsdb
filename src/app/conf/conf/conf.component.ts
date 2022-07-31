@@ -64,20 +64,29 @@ export class ConfComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    /*  verschiedene parameter
-    https://stackoverflow.com/questions/49738911/angular-5-routing-to-same-component-but-different-param-not-working
-     */
-    // TODO ActivatedRoute ist nur in der jeweiligen component sinnvoll
-    //      d.h. je comp. in der das gebraucht wird .params.subscribe und das Handling an den Service delegieren
-    //      (evtl. NavigationService ??)
     this.route.paramMap.subscribe((params) => {
-      // check params
       let encFilter: string = null;
       if (params) {
         if (params.has("filt")) {
+          // .../conf;filt=xxx
+          // Base64-codierter Filter, nutzt Anwendung intern
           encFilter = params.get("filt");
           this.config.getUser().latestConfFilter = encFilter;
           this.confService.confFilterService.filterFromNavigation(encFilter);
+        } else if (params.has("id")) {
+          // .../conf;id=xxx
+          // Konfig ueber Datenbank-Index aufrufen
+          this.confService.confFilterService.navigationFromExtParam(
+            ["id"],
+            Number.parseInt(params.get("id"), 10)
+          );
+        } else if (params.has("find")) {
+          // .../conf;find=xxx
+          // Konfig ueber Kategorie, Typ, Hersteller, Bezeichnung suchen (like)
+          this.confService.confFilterService.navigationFromExtParam(
+            ["konfiguration"],
+            params.get("find")
+          );
         }
       } else {
         if (this.config.getUser().latestConfFilter) {

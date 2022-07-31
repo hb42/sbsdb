@@ -53,52 +53,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     this.apService.editFilterService.setFilterService(this.apService.filterService);
   }
 
-  public testopen(event: any /*, trigger: any*/) {
-    console.debug("menuOpened()");
-    console.dir(event);
-    // console.dir(trigger);
-  }
-  public testclose(event: any /*, trigger: any*/) {
-    console.debug("menuClosed()");
-    console.dir(event);
-    // console.dir(trigger);
-  }
   public ngOnInit(): void {
-    // const par = this.route.snapshot.params["tree"];
-    // console.debug("onInit ApComponent par=" + par);
-
-    /*  verschiedene parameter
-    https://stackoverflow.com/questions/49738911/angular-5-routing-to-same-component-but-different-param-not-working
-     */
-    // TODO ActivatedRoute ist nur in der jeweiligen component sinnvoll
-    //      d.h. je comp. in der das gebraucht wird .params.subscribe und das Handling an den Service delegieren
-    //      (evtl. NaviagatonService ??)
-    this.route.paramMap.subscribe((params) => {
-      // check params
-      let encFilter: string = null;
-      if (params) {
-        if (params.has("filt")) {
-          encFilter = params.get("filt");
-          this.config.getUser().latestApFilter = encFilter;
-          this.apService.filterService.filterFromNavigation(encFilter);
-        } else if (params.has("apid")) {
-          // FIXME das hier hat den Nachteil, dass so zwei Eintraege in der History eingetragen werden:
-          //       (1) /ap;apid=xx und vom Filter (2) /ap;filt=xxx
-          //       besser direkt ueber apService aufrufen
-          // FIXME funktioniert nicht wenn die Anwendung hiermit gestartet wird. Dann wird in filterFor
-          //       auf noch nicht initialisierte Columns zugegriffen. Da waere eine Verzoegerung noetig
-          //       bis filterService.dataReady. Sieht momentan nach Henne-Ei-Problem aus ...
-          //       => wenn mal Zeit ist
-          // this.apService.filterService.filterFor("apid", Number.parseInt(params.get("apid"), 10));
-        }
-      } else {
-        if (this.config.getUser().latestApFilter) {
-          encFilter = this.config.getUser().latestApFilter;
-          this.apService.filterService.nav2filter(encFilter);
-        }
-      }
-    });
-
     // Keyboard handling
     let listener: KeyboardListener = { trigger: new EventEmitter<void>(), key: KEY_FIRST_FILTER };
     this.keyboardService.register(listener);
@@ -113,22 +68,53 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
         this.keyboardEvents.push(listener);
       }
     });
+
+    // ActivatedRoute ist nur in der jeweiligen component sinnvoll
+    this.route.paramMap.subscribe((params) => {
+      // check params
+      let encFilter: string = null;
+      if (params) {
+        if (params.has("filt")) {
+          // .../ap;filt=xxx
+          // Base64-codierter Filter, nutzt Anwendung intern
+          encFilter = params.get("filt");
+          this.config.getUser().latestApFilter = encFilter;
+          this.apService.filterService.filterFromNavigation(encFilter);
+        } else if (params.has("id")) {
+          // .../ap;id=xxx
+          // AP ueber Datenbank-Index aufrufen
+          this.apService.filterService.navigationFromExtParam(
+            ["id"],
+            Number.parseInt(params.get("id"), 10)
+          );
+        } else if (params.has("name")) {
+          // .../ap;name=xxx
+          // AP ueber AP-Namen suchen (like)
+          this.apService.filterService.navigationFromExtParam(["apname"], params.get("name"));
+        } else if (params.has("find")) {
+          // .../ap;find=xxx
+          // in den Felder AP-Name, OE, verantw.OE, Bezeichnung (like)
+          this.apService.filterService.navigationFromExtParam(
+            ["apname", "betrst", "betrstExt", "bezeichnung"],
+            params.get("find")
+          );
+        }
+      } else {
+        if (this.config.getUser().latestApFilter) {
+          encFilter = this.config.getUser().latestApFilter;
+          this.apService.filterService.nav2filter(encFilter);
+        }
+      }
+    });
   }
 
   public ngAfterViewInit(): void {
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
-
     setTimeout(() => {
       // Benutzereinstellungen setzen
       this.apService.setViewParams(this.sort, this.paginator);
       this.focusFirstFilter();
-
-      //   const at = this.pagElement.nativeElement.getElementsByClassName("mat-paginator-container");
-      //   const before = this.pagElement.nativeElement.getElementsByClassName(
-      //     "mat-paginator-page-size"
-      //   );
-      //   at[0].insertBefore(this.pagInsert.elementRef.nativeElement, before[0]);
     }, 0);
   }
 
@@ -154,24 +140,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       this.lastFilter.focus();
     }
   }
-
-  // public sortHeading(column: string): string {
-  //   const col = GetColumn(column, this.apService.columns);
-  //   if (col) {
-  //     return col.displayName;
-  //   } else {
-  //     return "";
-  //   }
-  // }
-  //
-  // public sortAccel(column: string): string {
-  //   const col = GetColumn(column, this.apService.columns);
-  //   if (col) {
-  //     return col.accelerator;
-  //   } else {
-  //     return "";
-  //   }
-  // }
 
   public getColumn(name: string): SbsdbColumn<unknown, unknown> {
     return GetColumn(name, this.apService.columns);

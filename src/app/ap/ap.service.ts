@@ -84,7 +84,7 @@ export class ApService {
     }, 0);
 
     this.navigationService.navToAp.subscribe((dat) => {
-      this.filterService.filterFor(dat.col, dat.search);
+      this.filterService.filterFor([dat.col], dat.search);
     });
 
     this.newApEvent.subscribe(() => this.editService.newAp());
@@ -172,13 +172,13 @@ export class ApService {
     }
   }
   public gotoHw(hw: Hardware): void {
-    this.navigationService.navToHw.emit({ col: "sernr", search: hw.sernr });
+    this.navigationService.navToHw.emit({ col: "id", search: hw.id });
   }
 
   public gotoKonf(hw: Hardware): void {
     this.navigationService.navToKonf.emit({
-      col: "konfiguration",
-      search: hw.hwKonfig.konfiguration,
+      col: "id",
+      search: hw.hwKonfig.id,
     });
   }
 
@@ -565,6 +565,23 @@ export class ApService {
           ].sort();
         },
         false
+      )
+    );
+    this.columns.push(
+      new SbsdbColumn<ApService, Arbeitsplatz>(
+        this,
+        "id",
+        () => "ID",
+        () => "apId",
+        () => "apId",
+        (a: Arbeitsplatz) => a.apId.toString(10),
+        "",
+        false,
+        0,
+        ColumnType.NUMBER,
+        [RelOp.equal],
+        null,
+        true
       )
     );
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);

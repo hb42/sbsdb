@@ -66,20 +66,33 @@ export class HwComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    /*  verschiedene parameter
-    https://stackoverflow.com/questions/49738911/angular-5-routing-to-same-component-but-different-param-not-working
-     */
-    // TODO ActivatedRoute ist nur in der jeweiligen component sinnvoll
-    //      d.h. je comp. in der das gebraucht wird .params.subscribe und das Handling an den Service delegieren
-    //      (evtl. NavigationService ??)
     this.route.paramMap.subscribe((params) => {
-      // check params
       let encFilter: string = null;
       if (params) {
         if (params.has("filt")) {
+          // .../hw;filt=xxx
+          // Base64-codierter Filter, nutzt Anwendung intern
           encFilter = params.get("filt");
           this.config.getUser().latestHwFilter = encFilter;
           this.hwService.hwFilterService.filterFromNavigation(encFilter);
+        } else if (params.has("id")) {
+          // .../hw;id=xxx
+          // HW ueber Datenbank-Index aufrufen
+          this.hwService.hwFilterService.navigationFromExtParam(
+            ["id"],
+            Number.parseInt(params.get("id"), 10)
+          );
+        } else if (params.has("sernr")) {
+          // .../hw;sernr=xxx
+          // HW ueber Serien-Nr. suchen (like)
+          this.hwService.hwFilterService.navigationFromExtParam(["sernr"], params.get("sernr"));
+        } else if (params.has("find")) {
+          // .../hw;find=xxx
+          // HW ueber Hersteller, Bezeichnung, Serien-Nr. suchen (like)
+          this.hwService.hwFilterService.navigationFromExtParam(
+            ["konfiguration", "sernr"],
+            params.get("find")
+          );
         }
       } else {
         if (this.config.getUser().latestHwFilter) {

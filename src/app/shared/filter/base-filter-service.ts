@@ -258,37 +258,56 @@ export abstract class BaseFilterService {
     this.setColumnFilters();
   }
 
-  public filterFor(colName: string, search: string | number): void {
-    const col = GetColumn(colName, this.columns);
-    if (col) {
-      let op = RelOp.like;
-      if (col.operators.findIndex((o) => o === RelOp.inlist) >= 0) {
-        op = RelOp.inlist;
-      } else if (col.operators.findIndex((o) => o === RelOp.equal) >= 0) {
-        op = RelOp.equal;
-      }
+  public navigationFromExtParam(cols: string[], param: string | number) {
+    // Vor dataReady sind noch nicht alle noetigen Element initialisiert,
+    // deshalb auf dataReady warten und erst dann filtern.
+    if (this.dataService.isDataReady()) {
+      this.filterFor(cols, param, false);
+    } else {
+      this.dataService.dataReady.subscribe(() => {
+        this.filterFor(cols, param, false);
+      });
+    }
+  }
 
-      if (col.typeKey === ColumnType.STRING || col.typeKey === ColumnType.IP) {
-        search = search ?? "";
-      } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
-        search = search ?? 0;
-      } else if (col.typeKey === ColumnType.ARRAY) {
-        search = search ?? "";
-        op = RelOp.inlist;
-      }
+  public filterFor(colName: string[], search: string | number, nav: boolean = true): void {
+    const cols = colName.map((c) => GetColumn(c, this.columns));
+    if (cols) {
       this.filterExpression.reset();
       this.stdFilter = false;
-      const expr: Expression = new Expression(
-        new Field(col.fieldName, col.displayName, col.typeKey),
-        new RelationalOperator(op),
-        search.toString()
-      );
-      this.filterExpression.addElement(new LogicalAnd(), expr);
-      this.triggerFilter();
+      cols.forEach((col) => {
+        let op = RelOp.like;
+        if (col.operators.findIndex((o) => o === RelOp.like) >= 0) {
+          op = RelOp.like;
+        } else if (col.operators.findIndex((o) => o === RelOp.equal) >= 0) {
+          op = RelOp.equal;
+        } else if (col.operators.findIndex((o) => o === RelOp.inlist) >= 0) {
+          op = RelOp.inlist;
+        }
+
+        if (col.typeKey === ColumnType.STRING || col.typeKey === ColumnType.IP) {
+          search = search ?? "";
+        } else if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
+          search = search ?? 0;
+        } else if (col.typeKey === ColumnType.ARRAY) {
+          search = search ?? "";
+          op = RelOp.inlist;
+        }
+        const expr: Expression = new Expression(
+          new Field(col.fieldName, col.displayName, col.typeKey),
+          new RelationalOperator(op),
+          search.toString()
+        );
+        this.filterExpression.addElement(new LogicalOr(), expr);
+      });
     } else {
       this.filterExpression.reset();
       this.stdFilter = true;
+    }
+    if (nav) {
       this.triggerFilter();
+    } else {
+      this.triggerColumnFilter();
     }
   }
 

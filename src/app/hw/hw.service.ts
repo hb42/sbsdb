@@ -21,6 +21,7 @@ import { DataService } from "../shared/data.service";
 import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
 import { GetColumn } from "../shared/helper";
+import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { Hardware } from "../shared/model/hardware";
 import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
@@ -69,7 +70,7 @@ export class HwService {
     }, 0);
 
     this.navigationService.navToHw.subscribe((dat) => {
-      this.hwFilterService.filterFor(dat.col, dat.search);
+      this.hwFilterService.filterFor([dat.col], dat.search);
     });
 
     this.newHwEvent.subscribe(() => this.editService.newHw(null));
@@ -107,13 +108,13 @@ export class HwService {
   }
 
   public gotoAp(hw: Hardware): void {
-    this.navigationService.navToAp.emit({ col: "apname", search: hw.ap.apname });
+    this.navigationService.navToAp.emit({ col: "id", search: hw.ap.apId });
   }
 
   public gotoKonf(hw: Hardware): void {
     this.navigationService.navToKonf.emit({
-      col: "konfiguration",
-      search: hw.hwKonfig.konfiguration,
+      col: "id",
+      search: hw.hwKonfig.id,
     });
   }
 
@@ -551,6 +552,24 @@ export class HwService {
         true
       )
     );
+    this.columns.push(
+      new SbsdbColumn<HwService, Hardware>(
+        this,
+        "id",
+        () => "ID",
+        () => "id",
+        () => "id",
+        (h: Hardware) => h.id.toString(10),
+        "",
+        false,
+        0,
+        ColumnType.NUMBER,
+        [RelOp.equal],
+        null,
+        true
+      )
+    );
+
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 

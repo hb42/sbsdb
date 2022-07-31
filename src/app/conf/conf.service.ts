@@ -52,7 +52,7 @@ export class ConfService {
     }, 0);
 
     this.navigationService.navToKonf.subscribe((dat) => {
-      this.confFilterService.filterFor(dat.col, dat.search);
+      this.confFilterService.filterFor([dat.col], dat.search);
     });
 
     this.newConfEvent.subscribe(() => this.editService.newConf());
@@ -416,6 +416,24 @@ export class ConfService {
         true
       )
     );
+    this.columns.push(
+      new SbsdbColumn<ConfService, HwKonfig>(
+        this,
+        "id",
+        () => "ID",
+        () => "id",
+        () => "id",
+        (c: HwKonfig) => c.id.toString(10),
+        "",
+        false,
+        0,
+        ColumnType.NUMBER,
+        [RelOp.equal],
+        null,
+        true
+      )
+    );
+
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
   }
 
