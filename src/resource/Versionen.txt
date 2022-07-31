@@ -1,5 +1,5 @@
 ﻿
-5.0.0-beta.1   xx.07.2022
+5.0.0-beta.1   31.07.2022
            Start der neuen Anwendung.
            Die wichtigsten Dinge funktionieren. Weitere fehlende Funktionalitaeten
            (.z.B. Aussonderungsliste) folgen nach der Freigabe.
