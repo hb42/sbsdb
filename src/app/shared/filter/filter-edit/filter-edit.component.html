@@ -28,6 +28,7 @@
         [errorStateMatcher]="matcher"
         (change)="onOpSelectionChange()"
       >
+        <option [ngValue]="null"></option>
         <option *ngFor="let oper of selectedColumn()?.operators" [ngValue]="oper">
           {{ oper.toString() }}
         </option>

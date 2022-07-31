@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, HostListener, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { FormFieldErrorStateMatcher } from "../../form-field-error-state-matcher";
@@ -45,7 +45,8 @@ export class FilterEditComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: FilterEditData,
     public matDialogRef: MatDialogRef<FilterEditComponent>,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    private cd: ChangeDetectorRef
   ) {
     console.debug("c'tor ApFilterEditComponent");
     this.formGroup = this.formBuilder.group({});
@@ -127,14 +128,14 @@ export class FilterEditComponent implements OnInit {
   }
 
   public onFieldSelectionChange(): void {
+    console.debug("fieldselectionchange");
     const col = this.fieldCtrl.value as SbsdbColumn<unknown, unknown>;
     if (this.data.f) {
       if (this.data.f.displayName !== col.displayName) {
         this.opCtrl.setValue(null);
-        this.opCtrl.markAsTouched();
         this.valCtrl.setValue(null);
         this.valCtrl.enable();
-        this.valCtrl.markAsTouched();
+        this.cd.detectChanges();
       }
       this.data.f.displayName = col.displayName;
       this.data.f.fieldName = col.fieldName;
@@ -145,6 +146,7 @@ export class FilterEditComponent implements OnInit {
   }
 
   public onOpSelectionChange(): void {
+    console.debug("opselectionchange");
     if (this.noValueRequired()) {
       this.valCtrl.disable();
       this.valCtrl.setValue(null);
