@@ -48,7 +48,19 @@ export class DataService {
 
   // leere OE fuer das Feld parent in der bstList
   // wenn parent == null, dann koennen mit diesem Object Zugriffsfehler vermiden werden
-  public nullBetrst: Betrst;
+  public nullBetrst: Betrst = {
+    bstId: 0,
+    bstNr: 0,
+    betriebsstelle: "",
+    tel: "",
+    oeff: "",
+    ap: false,
+    fullname: "",
+    adresseId: 0,
+    adresse: null,
+    hierarchy: "",
+    children: [],
+  };
 
   // Signale fuer das Laden der benoetigten Daten:
   //   apListFetched signalisiert, dass die AP-Liste vollstaendig geladen ist (und
@@ -413,8 +425,9 @@ export class DataService {
           this.bstList[old].ap = data.oe.ap;
           this.bstList[old].adresseId = data.oe.adresseId;
           this.bstList[old].parentId = data.oe.parentId ? data.oe.parentId : null;
-          this.prepBst(this.bstList[old]);
-          this.prepBstHierarchy(this.bstList[old]);
+          this.prepBstList();
+          // this.prepBst(this.bstList[old]);
+          // this.prepBstHierarchy(this.bstList[old]);
           // update AP-List ??
         }
       } else {
@@ -816,12 +829,7 @@ export class DataService {
   }
 
   private prepBstList() {
-    this.nullBetrst = new Betrst();
-    this.nullBetrst.bstId = 0;
-    this.nullBetrst.bstNr = 0;
-    this.nullBetrst.betriebsstelle = "";
-    this.nullBetrst.fullname = "";
-
+    this.bstList.forEach((bst) => (bst.children = []));
     this.bstList.forEach((bst) => {
       this.prepBst(bst);
     });

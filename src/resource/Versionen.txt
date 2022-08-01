@@ -1,4 +1,4 @@
-﻿5.0.0-beta.8   01.08.2022
+﻿5.0.0-beta.11  01.08.2022
            Bereinigung in der Datenstruktur. Anzeige OE-Hierarchie beim OE-Bearbeiten.
            SERVER 1.0.0-beta.3
 
