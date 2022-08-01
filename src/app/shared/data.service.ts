@@ -408,7 +408,6 @@ export class DataService {
           this.bstList[old].bstId = data.oe.bstId;
           this.bstList[old].bstNr = data.oe.bstNr;
           this.bstList[old].betriebsstelle = data.oe.betriebsstelle;
-          this.bstList[old].fax = data.oe.fax;
           this.bstList[old].tel = data.oe.tel;
           this.bstList[old].oeff = data.oe.oeff;
           this.bstList[old].ap = data.oe.ap;
@@ -798,6 +797,15 @@ export class DataService {
         vl.inUse = 1;
       }
     });
+  }
+
+  /**
+   * Anzeigeform des Hierarchie-Strings einer OE
+   *
+   * @param h
+   */
+  public hierachyDisplay(h: string): string {
+    return h.replace(/\|/g, " " + String.fromCharCode(187) + " ");
   }
 
   private checkNotification(): void {

@@ -19,8 +19,6 @@ import { ApService } from "../ap.service";
 export class ApDetailCellComponent {
   @Input() public element: Arbeitsplatz;
 
-  public readonly pathseparator = " " + String.fromCharCode(187) + " ";
-
   constructor(public apService: ApService) {
     // noop
   }

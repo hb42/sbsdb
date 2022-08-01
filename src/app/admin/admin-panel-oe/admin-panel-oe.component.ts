@@ -43,7 +43,6 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
         bstId: 0,
         betriebsstelle: "",
         bstNr: 0,
-        fax: "",
         tel: "",
         oeff: "",
         ap: false,
@@ -83,7 +82,6 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
     trans.bstNr = oe.bstNr;
     trans.betriebsstelle = oe.betriebsstelle;
     trans.tel = oe.tel;
-    trans.fax = oe.fax;
     trans.oeff = oe.oeff;
     trans.ap = oe.ap;
     trans.parentId = oe.parentId;
@@ -113,24 +111,6 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
     this.columns.push(
       new SbsdbColumn<AdminPanelOeComponent, Betrst>(
         this,
-        "oe",
-        () => "OE",
-        () => "betriebsstelle",
-        () => "betriebsstelle",
-        (b: Betrst) => b.betriebsstelle,
-        "",
-        true,
-        1,
-        ColumnType.STRING,
-        null,
-        null,
-        true,
-        "S"
-      )
-    );
-    this.columns.push(
-      new SbsdbColumn<AdminPanelOeComponent, Betrst>(
-        this,
         "oenr",
         () => "OE-Nr.",
         () => "bstNr",
@@ -138,7 +118,7 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
         (b: Betrst) => `000${b.bstNr}`.slice(-3),
         "",
         true,
-        2,
+        1,
         ColumnType.NUMBER,
         null,
         null,
@@ -149,14 +129,14 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
     this.columns.push(
       new SbsdbColumn<AdminPanelOeComponent, Betrst>(
         this,
-        "fax",
-        () => "Fax-Nr.",
-        () => "fax",
-        () => "fax",
-        (b: Betrst) => b.fax,
+        "oe",
+        () => "OE",
+        () => "betriebsstelle",
+        () => "betriebsstelle",
+        (b: Betrst) => b.betriebsstelle,
         "",
         true,
-        3,
+        2,
         ColumnType.STRING,
         null,
         null,
@@ -164,24 +144,24 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
         "S"
       )
     );
-    this.columns.push(
-      new SbsdbColumn<AdminPanelOeComponent, Betrst>(
-        this,
-        "tel",
-        () => "Tel-Nr.",
-        () => "tel",
-        () => "tel",
-        (b: Betrst) => b.tel,
-        "",
-        true,
-        4,
-        ColumnType.STRING,
-        null,
-        null,
-        true,
-        "S"
-      )
-    );
+    // this.columns.push(
+    //   new SbsdbColumn<AdminPanelOeComponent, Betrst>(
+    //     this,
+    //     "tel",
+    //     () => "Tel-Nr.",
+    //     () => "tel",
+    //     () => "tel",
+    //     (b: Betrst) => b.tel,
+    //     "",
+    //     true,
+    //     4,
+    //     ColumnType.STRING,
+    //     null,
+    //     null,
+    //     true,
+    //     "S"
+    //   )
+    // );
     this.columns.push(
       new SbsdbColumn<AdminPanelOeComponent, Betrst>(
         this,
@@ -252,6 +232,7 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
         () => "Übergeordnete OE",
         () => "parent.fullname",
         () => "parent.fullname",
+        // (b: Betrst) => this.dataService.hierachyDisplay(b.hierarchy),
         (b: Betrst) => (b.parent.fullname ? b.parent.fullname : "---"),
         "",
         true,

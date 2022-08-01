@@ -13,21 +13,14 @@ import { BaseSvzDialog } from "../base-svz-dialog";
 export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnInit {
   public betrstControl: FormControl;
   public bstControl: FormControl;
-  public faxControl: FormControl;
-  public telControl: FormControl;
+  // public telControl: FormControl;
   public oeffControl: FormControl;
   public apControl: FormControl;
   public parentControl: FormControl;
   public adrControl: FormControl;
 
-  // public betriebsstelle: string;
-  // public bstNr: number;
-  // public fax: string;
-  // public tel: string;
-  // public oeff: string;
-  // public ap: boolean;
-  // public parentId?: number;
-  // public adresseId: number;
+  public hierarchie: string;
+  public readonly pathseparator = " " + String.fromCharCode(187) + " ";
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Betrst,
@@ -35,6 +28,7 @@ export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnIn
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
+    this.hierarchie = data.hierarchy;
   }
 
   public ngOnInit(): void {
@@ -42,8 +36,7 @@ export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnIn
     this.bstControl = this.addFormControl(`000${this.data.bstNr}`.slice(-3), "bst", [
       Validators.pattern(this.intPattern),
     ]);
-    this.faxControl = this.addFormControl(this.data.fax, "fax");
-    this.telControl = this.addFormControl(this.data.tel, "tel");
+    // this.telControl = this.addFormControl(this.data.tel, "tel");
     this.oeffControl = this.addFormControl(this.data.oeff, "oeff");
     this.apControl = this.addFormControl(
       { value: this.data.ap, disabled: !!this.data.bstId },
@@ -58,8 +51,7 @@ export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnIn
     console.dir(value);
     this.data.betriebsstelle = this.betrstControl.value as string;
     this.data.bstNr = Number.parseInt(this.bstControl.value as string, 10);
-    this.data.fax = this.faxControl.value as string;
-    this.data.tel = this.telControl.value as string;
+    // this.data.tel = this.telControl.value as string;
     this.data.oeff = this.oeffControl.value as string;
     this.data.ap = this.apControl.value as boolean;
     this.data.parentId = this.parentControl.value as number;
@@ -68,5 +60,21 @@ export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnIn
 
   public onKeyChange() {
     this.bstControl.setValue(`000${this.bstControl.value as string}`.slice(-3));
+  }
+
+  public onParentChange() {
+    const id = this.parentControl.value as number;
+    if (id !== this.data.parentId) {
+      const nr = this.bstControl.valid ? (this.bstControl.value as number) : this.data.bstNr;
+      const betrst = this.betrstControl.valid
+        ? (this.betrstControl.value as string)
+        : this.data.betriebsstelle;
+      this.hierarchie = `000${nr}`.slice(-3) + " " + betrst;
+      let p = this.dataService.bstList.find((b) => b.bstId === id);
+      while (p) {
+        this.hierarchie = (p.fullname ? p.fullname + "|" : "") + this.hierarchie;
+        p = p.parent;
+      }
+    }
   }
 }

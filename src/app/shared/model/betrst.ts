@@ -4,8 +4,7 @@ export class Betrst {
   public bstId: number;
   public betriebsstelle: string;
   public bstNr: number;
-  public fax: string;
-  public tel: string;
+  public tel: string; // wird im Moment nicht genutzt. Bleibt drin, falls doch noch gewuencht.
   public oeff: string;
   public ap: boolean;
   public parentId?: number;

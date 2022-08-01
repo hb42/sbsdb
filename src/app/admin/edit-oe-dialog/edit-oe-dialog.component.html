@@ -9,17 +9,6 @@
 >
   <mat-dialog-content>
     <div class="flex-col">
-      <mat-form-field>
-        <mat-label>OE</mat-label>
-        <input
-          matInput
-          [formControl]="betrstControl"
-          [errorStateMatcher]="matcher"
-          required="true"
-        />
-        <mat-error *ngIf="betrstControl.invalid">{{ getErrorMessage(betrstControl) }}</mat-error>
-      </mat-form-field>
-
       <mat-form-field class="abstand">
         <mat-label>OE-Nr.</mat-label>
         <input
@@ -32,17 +21,22 @@
         <mat-error *ngIf="bstControl.invalid">{{ getErrorMessage(bstControl) }}</mat-error>
       </mat-form-field>
 
-      <mat-form-field class="abstand">
-        <mat-label>Fax-Nr.</mat-label>
-        <input matInput [formControl]="faxControl" [errorStateMatcher]="matcher" />
-        <mat-error *ngIf="faxControl.invalid">{{ getErrorMessage(faxControl) }}</mat-error>
+      <mat-form-field>
+        <mat-label>OE</mat-label>
+        <input
+          matInput
+          [formControl]="betrstControl"
+          [errorStateMatcher]="matcher"
+          required="true"
+        />
+        <mat-error *ngIf="betrstControl.invalid">{{ getErrorMessage(betrstControl) }}</mat-error>
       </mat-form-field>
 
-      <mat-form-field class="abstand">
-        <mat-label>Telefon-Nr.</mat-label>
-        <input matInput [formControl]="telControl" [errorStateMatcher]="matcher" />
-        <mat-error *ngIf="telControl.invalid">{{ getErrorMessage(telControl) }}</mat-error>
-      </mat-form-field>
+      <!--      <mat-form-field class="abstand">-->
+      <!--        <mat-label>Telefon-Nr.</mat-label>-->
+      <!--        <input matInput [formControl]="telControl" [errorStateMatcher]="matcher" />-->
+      <!--        <mat-error *ngIf="telControl.invalid">{{ getErrorMessage(telControl) }}</mat-error>-->
+      <!--      </mat-form-field>-->
 
       <div class="abstand">
         <label class="radio-label">OE hat Arbeitsplätze</label>
@@ -77,14 +71,18 @@
           <option *ngFor="let k of dataService.adresseList" [ngValue]="k.id">
             {{ k.plz && k.ort ? k.plz + " " + k.ort + ", " + k.strasse + " " + k.hausnr : "---" }}
           </option>
-          <!--            {{ k.plz }} {{ k.ort }}, {{ k.strasse }} {{ k.hausnr }}-->
         </select>
         <mat-error *ngIf="adrControl.invalid">{{ getErrorMessage(adrControl) }}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="abstand">
         <mat-label>Übergeordnete OE</mat-label>
-        <select matNativeControl [formControl]="parentControl" [errorStateMatcher]="matcher">
+        <select
+          matNativeControl
+          [formControl]="parentControl"
+          [errorStateMatcher]="matcher"
+          (change)="onParentChange()"
+        >
           <option [ngValue]="null">---</option>
           <option *ngFor="let k of dataService.bstList" [ngValue]="k.bstId">
             {{ k.fullname ? k.fullname : "---" }}
@@ -92,6 +90,11 @@
         </select>
         <mat-error *ngIf="parentControl.invalid">{{ getErrorMessage(parentControl) }}</mat-error>
       </mat-form-field>
+
+      <div class="abstand">
+        <div class="hier-label">OE-Hierarchie</div>
+        <div>{{ dataService.hierachyDisplay(hierarchie) }}</div>
+      </div>
     </div>
   </mat-dialog-content>
 
