@@ -1,4 +1,7 @@
-﻿5.0.0-beta.11  01.08.2022
+﻿5.0.0-beta.16  03.08.2022
+           Bugfixes bei der Anzeige der HW zum AP nach Aenderung der HW.
+
+5.0.0-beta.11  01.08.2022
            Bereinigung in der Datenstruktur. Anzeige OE-Hierarchie beim OE-Bearbeiten.
            SERVER 1.0.0-beta.3
 
@@ -10,7 +13,7 @@
                                  in der Web-Anwendung.
            LOCAL  1.0.0 - FAT-Client-Anwendung funktioniert
 
-#######################################################################################
+###########################################################################################
 ## Feb. 2019
 ## v5.x:  Relaunch als JavaScript-Anwendung mit REST-API-Backend (.NET Core/IIS)
 ##
@@ -18,7 +21,7 @@
 ## Server          Basis: .NET Core (6.x) auf IIS + Oracle-DB / C#
 ##                 Erledigt die Datenbankzugriffe via REST-API und haelt die Web-Anwendung.
 ##
-## Web-Anwendung   Basis: Angular (14.x) + Angula-Material / Typescript, HTML, CSS
+## Web-Anwendung   Basis: Angular (14.x) + Angular-Material / Typescript, HTML, CSS
 ##                 Enthaelt die komplette Anwendungslogik.
 ##
 ## FAT-Client      Basis: Electron (19.x) / Typescript, Powershell
@@ -30,7 +33,7 @@
 ## https://github.com/hb42/sbsdb
 ## https://github.com/hb42/sbsdb-server
 ## https://github.com/hb42/sbsdb-local
-#######################################################################################
+###########################################################################################
 
 
 4.7.8  27.07.17 (Build 4925)

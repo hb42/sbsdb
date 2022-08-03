@@ -956,38 +956,33 @@ export class DataService {
    * HW-Daten werden in prepareHw() eingetragen
    */
   private prepareAp(ap: Arbeitsplatz): void {
-    ap.hwStr = ap.hwStr || ""; // keine undef Felder!
-    ap.sonstHwStr = ap.sonstHwStr || ""; // keine undef Felder!
-    ap.hw = ap.hw || [];
-
-    ap.ipStr = ap.ipStr || ""; // aus priHW
-    ap.macStr = ap.macStr || ""; // aus priHW
-    ap.vlanStr = ap.vlanStr || ""; // aus priHW
-    ap.macsearch = ap.macsearch || ""; // alle MACs
+    // HW wird via prepareHw() jeweils fuer die gesamte HW-Liste des AP eingetragen
+    // demzufolge muessen die folgenden Felder geloescht werden
+    ap.hw = [];
+    ap.hwStr = "";
+    ap.sonstHwStr = "";
+    ap.ipStr = "";
+    ap.macStr = "";
+    ap.vlanStr = "";
+    ap.macsearch = "";
 
     const oe = this.bstList.find((bst) => ap.oeId === bst.bstId);
     if (oe) {
       ap.oe = oe;
     } else {
-      // TODO leere OE anhaengen
+      ap.oe = this.nullBetrst;
     }
     if (ap.verantwOeId) {
       const voe = this.bstList.find((bst) => ap.verantwOeId === bst.bstId); // TODO ext OE
       if (voe) {
         ap.verantwOe = voe;
       } else {
-        // TODO leere OE anhaengen
+        ap.verantwOe = this.nullBetrst;
       }
     } else {
       ap.verantwOe = ap.oe;
     }
 
-    // ap.oesearch = `00${ap.oe.bstNr}`.slice(-3) + " " + ap.oe.betriebsstelle; // .toLowerCase();
-    // ap.oesort = ap.oe.betriebsstelle; // .toLowerCase();
-    // ap.voesearch = `00${ap.verantwOe.bstNr}`.slice(-3) + " " + ap.verantwOe.betriebsstelle;
-    // ap.voesort = ap.verantwOe.betriebsstelle; // .toLowerCase();
-
-    // ap.subTypes = [];
     ap.tags.forEach((tag) => {
       tag.text = tag.flag & DataService.BOOL_TAG_FLAG ? "1" : tag.text;
       ap[this.tagFieldName(tag.bezeichnung)] = tag.text;
@@ -1091,6 +1086,7 @@ export class DataService {
     ap.apTypBezeichnung = neu.apTypBezeichnung;
     ap.apTypFlag = neu.apTypFlag;
     ap.bemerkung = neu.bemerkung;
+
     this.prepareAp(ap);
     this.changeApHw(data.hw);
     return ap;
