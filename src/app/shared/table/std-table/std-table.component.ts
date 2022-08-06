@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSort, MatSortHeader } from "@angular/material/sort";
+import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../../config/config.service";
@@ -38,6 +38,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   @Input() public sortColumn: string;
   @Input() public refreshTableEvent: EventEmitter<boolean>;
   @Input() public multiline = false;
+  @Input() public pagename: string;
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
 
@@ -84,6 +85,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
+    console.debug("### StdTable pagename=" + this.pagename);
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
 
@@ -104,6 +106,7 @@ export class StdTableComponent implements OnInit, AfterViewInit {
     }
 
     setTimeout(() => {
+      // TODO set filter, sort from userSettings
       this.dataSource.sort = this.sort;
       this.dataSource.sortingDataAccessor = (row: unknown, id: string) => {
         const col = GetColumn(id, this.columns);
@@ -141,10 +144,17 @@ export class StdTableComponent implements OnInit, AfterViewInit {
             .subscribe(() => {
               this.buildStdFilterExpression();
               this.triggerFilter();
+              // TODO save filter
             });
         }
       });
     }, 0);
+  }
+
+  public onSort(event: Sort): void {
+    // TODO save sort
+    // this.userSettings.apSortColumn = event.active;
+    // this.userSettings.apSortDirection = event.direction;
   }
 
   public getColumn(name: string): SbsdbColumn<unknown, unknown> {

@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ADM_VLAN_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { IpHelper } from "../../shared/ip-helper";
 import { Vlan } from "../../shared/model/vlan";
@@ -15,6 +16,8 @@ import { EditVlanDialogComponent } from "../edit-vlan-dialog/edit-vlan-dialog.co
   styleUrls: ["./admin-panel-vlan.component.scss"],
 })
 export class AdminPanelVlanComponent extends BaseSvzPanelComponent<AdminPanelVlanComponent, Vlan> {
+  public pagename = ADM_VLAN_PATH;
+
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ADM_APTYP_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { ApTyp } from "../../shared/model/ap-typ";
 import { ColumnType } from "../../shared/table/column-type.enum";
@@ -17,8 +18,7 @@ export class AdminPanelAptypComponent extends BaseSvzPanelComponent<
   AdminPanelAptypComponent,
   ApTyp
 > {
-  // @ViewChild("infoTpl")
-  // private infoTpl: TemplateRef<never>;
+  public pagename = ADM_APTYP_PATH;
 
   constructor(
     public dataService: DataService,

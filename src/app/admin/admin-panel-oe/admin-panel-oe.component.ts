@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ADM_OE_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { StringCompare } from "../../shared/helper";
 import { Betrst } from "../../shared/model/betrst";
@@ -15,6 +16,8 @@ import { EditOeDialogComponent } from "../edit-oe-dialog/edit-oe-dialog.componen
   styleUrls: ["./admin-panel-oe.component.scss"],
 })
 export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeComponent, Betrst> {
+  public pagename = ADM_OE_PATH;
+
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

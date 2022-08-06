@@ -60,6 +60,7 @@ export class UserSession {
     this.settings.confSortDirection = this.settings.confSortDirection ?? "";
     this.settings.confPageSize = this.settings.confPageSize ?? 100;
     this.settings.showEmptyConfig = !!this.settings.showEmptyConfig;
+    this.settings.adminpath = this.settings.adminpath ?? "";
   }
 
   // Benutzerrechte sind R/O
@@ -314,6 +315,17 @@ export class UserSession {
 
   public set confStdFilter(ex: boolean) {
     this.settings.confFilter.stdFilter = ex;
+    this.change();
+  }
+
+  // Admin-Page
+
+  public get adminPath(): string {
+    return this.settings.adminpath;
+  }
+
+  public set adminPath(page: string) {
+    this.settings.adminpath = page;
     this.change();
   }
 

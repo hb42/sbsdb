@@ -4,6 +4,7 @@
     [dataSource]="dataSource"
     matSort
     multiTemplateDataRows
+    (matSortChange)="onSort($event)"
     [class.wrap-cell]="userSettings.cellLineBreak"
   >
     <!--  (matSortChange)="apService.onSort($event)" wuerde nur gebraucht, wenn der sort in den User-Settings abgelegt wird -->

@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ADM_ADR_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { Adresse } from "../../shared/model/adresse";
 import { ColumnType } from "../../shared/table/column-type.enum";
@@ -17,6 +18,8 @@ export class AdminPanelAdresseComponent extends BaseSvzPanelComponent<
   AdminPanelAdresseComponent,
   Adresse
 > {
+  public pagename = ADM_ADR_PATH;
+
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

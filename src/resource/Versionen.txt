@@ -1,4 +1,11 @@
-﻿5.0.0-beta.16  03.08.2022
+﻿5.0.0-beta.xx   xx.08.2022
+           - Unterseite der AdminPage, sowie Filter und Sort in den Benutzereinstellungen
+             speichern (#33).
+           - AP-Typ aendern fuer gleiche AP-Kategorie und unter Beruecksichtigung der
+             fremden HW (#27).
+           SERVER 1.0.0-beta.8 - AP-Typ aendern
+
+5.0.0-beta.16  03.08.2022
            Bugfixes bei der Anzeige der HW zum AP nach Aenderung der HW.
 
 5.0.0-beta.11  01.08.2022
@@ -8,7 +15,7 @@
 5.0.0-beta.1   31.07.2022
            Start der neuen Anwendung.
            Die wichtigsten Dinge funktionieren. Weitere fehlende Funktionalitaeten
-           (.z.B. Aussonderungsliste) folgen nach der Freigabe.
+           (z.B. Aussonderungsliste) folgen nach der Freigabe.
            SERVER 1.0.0-beta.1 - Nur noch Feinschliff noetig und Ausbau, gemaess Fortschritt
                                  in der Web-Anwendung.
            LOCAL  1.0.0 - FAT-Client-Anwendung funktioniert

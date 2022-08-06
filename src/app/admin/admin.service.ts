@@ -1,8 +1,10 @@
 import { EventEmitter, Injectable, TemplateRef } from "@angular/core";
 import { Observable } from "rxjs";
+import { ADM_PATH } from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
+import { NavigationService } from "../shared/navigation.service";
 import { EditAdresseTransport } from "./edit-adresse-dialog/edit-adresse-transport";
 import { EditApkategorieTransport } from "./edit-apkategorie-dialog/edit-apkategorie-transport";
 import { EditAptypTransport } from "./edit-aptyp-dialog/edit-aptyp-transport";
@@ -24,6 +26,7 @@ export class AdminService {
   public exportEvent: EventEmitter<void> = new EventEmitter<void>();
   public debugEvent: EventEmitter<void> = new EventEmitter<void>();
   public newRecordLabel = "Neuen Datensatz anlegen.";
+  public currentChild = "";
 
   public get infoPanel(): TemplateRef<never> {
     return this.infopanel;
@@ -33,7 +36,11 @@ export class AdminService {
   }
   private infopanel: TemplateRef<never>;
 
-  constructor(public configService: ConfigService, public dataService: DataService) {
+  constructor(
+    public configService: ConfigService,
+    public dataService: DataService,
+    private navigationService: NavigationService
+  ) {
     console.debug("c'tor AdminService");
     this.userSettings = configService.getUser();
 
@@ -48,6 +55,16 @@ export class AdminService {
   public changeDebugState(): void {
     this.userSettings.debug = !this.userSettings.debug;
     this.debugEvent.emit();
+  }
+
+  public openChildPage(child: string) {
+    const path = ["/" + ADM_PATH];
+    if (child) {
+      this.userSettings.adminPath = child;
+      this.currentChild = child;
+      path.push(child);
+    }
+    this.navigationService.navigateByCmd(path);
   }
 
   public getTcLogs(): Observable<unknown> {

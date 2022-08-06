@@ -2,123 +2,14 @@
   <div *ngFor="let m of menu">
     <button
       mat-stroked-button
-      [routerLink]="m.route"
       class="adm-btn"
-      [color]="navigationService.currentPath === m.route ? '' : 'primary'"
-      [disabled]="navigationService.currentPath === m.route"
-      [class.md-accent-color]="navigationService.currentPath === m.route"
+      [color]="adminService.currentChild === m.route ? '' : 'primary'"
+      [disabled]="adminService.currentChild === m.route"
+      [class.md-accent-color]="adminService.currentChild === m.route"
       [title]="m.title"
+      (click)="adminService.openChildPage(m.route)"
     >
       {{ m.text }}
     </button>
   </div>
-  <!--  
-  <button
-    mat-stroked-button
-    [routerLink]="admApFilterPath"
-    class="adm-btn"
-    [color]="navigationService.currentPath === admApFilterPath ? '' : 'primary'"
-    [disabled]="navigationService.currentPath === admApFilterPath"
-    [class.md-accent-color]="navigationService.currentPath === admAdressePath"
-    title="Selbstdefinierte Filter allen Benutzern bereitstellen"
-  >
-    Globale Arbeitsplatzfilter
-  </button>
-  <button
-    mat-stroked-button
-    [routerLink]="admApkategoriePath"
-    class="adm-btn"
-    [color]="navigationService.currentPath === admApkategoriePath ? '' : 'primary'"
-    [disabled]="navigationService.currentPath === admApkategoriePath"
-    [class.md-accent-color]="navigationService.currentPath === admAdressePath"
-    title="Arbeitsplatz-Kategorien bearbeiten"
-  >
-    AP-Kategorien
-  </button>
-  <button
-    mat-stroked-button
-    [routerLink]="admAptypPath"
-    class="adm-btn"
-    [color]="navigationService.currentPath === admAptypPath ? '' : 'primary'"
-    [disabled]="navigationService.currentPath === admAptypPath"
-    [class.md-accent-color]="navigationService.currentPath === admAdressePath"
-    title="Arbeitsplatz-Typen bearbeiten"
-  >
-    AP-Typen
-  </button>
-  <button
-    mat-stroked-button
-    [routerLink]="admExtprogPath"
-    class="adm-btn"
-    [color]="navigationService.currentPath === admExtprogPath ? '' : 'primary'"
-    [disabled]="navigationService.currentPath === admExtprogPath"
-    [class.md-accent-color]="navigationService.currentPath === admAdressePath"
-    title="Externe Programmaufrufe zu AP-Typen zuordnen"
-  >
-    Externe Programme
-  </button>
-  <button
-    mat-stroked-button
-    [routerLink]="admAdressePath"
-    class="adm-btn"
-    [color]="navigationService.currentPath === admAdressePath ? '' : 'primary'"
-    [disabled]="navigationService.currentPath === admAdressePath"
-    [class.md-accent-color]="navigationService.currentPath === admAdressePath"
-    title="Adressen für OEs bearbeiten"
-  >
-    Hausanschriften
-  </button>
-  <button
-    mat-stroked-button
-    [routerLink]="admHwtypPath"
-    class="adm-btn"
-    [color]="navigationService.currentPath === admHwtypPath ? '' : 'primary'"
-    [disabled]="navigationService.currentPath === admHwtypPath"
-    [class.md-accent-color]="navigationService.currentPath === admAdressePath"
-    title="Hardware-Typen bearbeiten"
-  >
-    HW-Typen
-  </button>
-  <button
-    mat-stroked-button
-    [routerLink]="admOePath"
-    class="adm-btn"
-    [skipLocationChange]="navigationService.currentPath === admOePath"
-    [color]="navigationService.currentPath === admOePath ? '' : 'primary'"
-    title="Organisationseinheiten bearbeiten"
-  >
-    OE
-  </button>
-  <button
-    mat-stroked-button
-    [routerLink]="admTagtypPath"
-    class="adm-btn"
-    [skipLocationChange]="navigationService.currentPath === admTagtypPath"
-    [color]="navigationService.currentPath === admTagtypPath ? '' : 'primary'"
-    title="Sonstige Informations-Typen bearbeiten"
-  >
-    TAG-Typen
-  </button>
-  <button
-    mat-stroked-button
-    [routerLink]="admVlanPath"
-    class="adm-btn"
-    [skipLocationChange]="navigationService.currentPath === admVlanPath"
-    [color]="navigationService.currentPath === admVlanPath ? '' : 'primary'"
-    title="Netzwerke bearbeiten"
-  >
-    VLAN
-  </button>
-
-  <button
-    mat-stroked-button
-    [routerLink]="admTcLogsPath"
-    class="adm-btn"
-    [skipLocationChange]="navigationService.currentPath === admTcLogsPath"
-    [color]="navigationService.currentPath === admTcLogsPath ? '' : 'primary'"
-    title="Protokoll des letzten Thin-Client-IP-Imports"
-  >
-    Thin-Client-Log
-  </button>
-  -->
 </mat-action-list>

@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ADM_TAGTYP_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { TagTyp } from "../../shared/model/tagTyp";
 import { ColumnType } from "../../shared/table/column-type.enum";
@@ -17,6 +18,8 @@ export class AdminPanelTagtypComponent extends BaseSvzPanelComponent<
   AdminPanelTagtypComponent,
   TagTyp
 > {
+  public pagename = ADM_TAGTYP_PATH;
+
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

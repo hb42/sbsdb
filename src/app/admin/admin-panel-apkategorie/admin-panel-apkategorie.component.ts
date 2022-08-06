@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ADM_APKAT_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { ApKategorie } from "../../shared/model/ap-kategorie";
 import { ApTyp } from "../../shared/model/ap-typ";
@@ -18,6 +19,8 @@ export class AdminPanelApkategorieComponent extends BaseSvzPanelComponent<
   AdminPanelApkategorieComponent,
   ApKategorie
 > {
+  public pagename = ADM_APKAT_PATH;
+
   constructor(
     public dataService: DataService,
     public adminService: AdminService,

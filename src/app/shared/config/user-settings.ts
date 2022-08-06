@@ -33,4 +33,6 @@ export interface UserSettings {
   confSortDirection?: string;
   confPageSize?: number;
   showEmptyConfig?: boolean;
+  // Admin-PAge
+  adminpath?: string;
 }

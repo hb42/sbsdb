@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ADM_EXTPROG_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
@@ -18,6 +19,7 @@ export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
   AdminPanelExtprogComponent,
   ExtProgList
 > {
+  public pagename = ADM_EXTPROG_PATH;
   private extProgList: ExtProgList[];
 
   constructor(
