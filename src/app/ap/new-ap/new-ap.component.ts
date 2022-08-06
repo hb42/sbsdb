@@ -3,9 +3,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
+import { StringCompare } from "../../shared/helper";
 import { ApTyp } from "../../shared/model/ap-typ";
 import { NewApData } from "./new-ap-data";
-import { StringCompare } from "../../shared/helper";
 
 @Component({
   selector: "sbsdb-new-ap",
@@ -18,6 +18,7 @@ export class NewApComponent implements OnInit {
 
   public typCtrl: FormControl;
   public aptypList: ApTyp[];
+  public title = "Neuer Arbeitsplatz";
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: NewApData,
@@ -29,6 +30,13 @@ export class NewApComponent implements OnInit {
     this.aptypList = this.dataService.aptypList.sort((a, b) =>
       StringCompare(a.bezeichnung, b.bezeichnung)
     );
+    if (this.data.typ) {
+      // vorhanden Typ aendern
+      this.title = "Arbeitsplatz-Typ ändern";
+      this.aptypList = this.aptypList.filter(
+        (t) => t.apKategorieId === this.data.typ.apKategorieId
+      );
+    }
   }
 
   ngOnInit(): void {

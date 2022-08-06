@@ -1,23 +1,24 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { EditAdresseTransport } from "../admin/edit-adresse-dialog/edit-adresse-transport";
 import { EditApkategorieTransport } from "../admin/edit-apkategorie-dialog/edit-apkategorie-transport";
 import { EditAptypTransport } from "../admin/edit-aptyp-dialog/edit-aptyp-transport";
 import { EditHwtypTransport } from "../admin/edit-hwtyp-dialog/edit-hwtyp-transport";
+import { EditOeTransport } from "../admin/edit-oe-dialog/edit-oe-transport";
 import { EditTagtypTransport } from "../admin/edit-tagtyp-dialog/edit-tagtyp-transport";
+import { EditVlanTransport } from "../admin/edit-vlan-dialog/edit-vlan-transport";
 import { ConfigService } from "./config/config.service";
 import { AddHwTransport } from "./model/add-hw-transport";
 import { ApTransport } from "./model/ap-transport";
 import { HwKonfig } from "./model/hw-konfig";
 import { HwTransport } from "./model/hw-transport";
-import { EditAdresseTransport } from "../admin/edit-adresse-dialog/edit-adresse-transport";
-import { EditOeTransport } from "../admin/edit-oe-dialog/edit-oe-transport";
-import { EditVlanTransport } from "../admin/edit-vlan-dialog/edit-vlan-transport";
 
 @Injectable({
   providedIn: "root",
 })
 export class NotificationService {
   public apChange: EventEmitter<ApTransport> = new EventEmitter<ApTransport>();
+  public apChangeAptyp: EventEmitter<ApTransport> = new EventEmitter<ApTransport>();
   public hwChange: EventEmitter<HwTransport> = new EventEmitter<HwTransport>();
   public addHw: EventEmitter<AddHwTransport> = new EventEmitter<AddHwTransport>();
   public konfigChange: EventEmitter<HwKonfig> = new EventEmitter<HwKonfig>();
@@ -57,6 +58,12 @@ export class NotificationService {
         console.debug("## Event apchange");
         console.dir(data);
         this.apChange.emit(data);
+      });
+
+      this.hubConnection.on("apchangeaptyp", (data: ApTransport) => {
+        console.debug("## Event apchangeaptyp");
+        console.dir(data);
+        this.apChangeAptyp.emit(data);
       });
 
       this.hubConnection.on("hwchange", (data: HwTransport) => {

@@ -403,13 +403,17 @@
       <mat-icon>add_to_queue</mat-icon>
       Neuer Arbeitsplatz
     </button>
+    <button
+      mat-menu-item
+      *ngIf="apService.userSettings.isAdmin"
+      (click)="apService.editService.changeAptyp(ap)"
+    >
+      <mat-icon>devices_other</mat-icon>
+      AP-Typ ändern
+    </button>
     <button mat-menu-item *ngIf="apService.userSettings.isAdmin" (click)="apService.deleteAp(ap)">
       <mat-icon>delete_forever</mat-icon>
       AP löschen
     </button>
-    <!--    <button mat-menu-item (click)="apService.hwEdit(ap)">Hardware bearbeiten</button>-->
-    <!--    <button mat-menu-item (click)="apService.tagsEdit(ap)">Sonstige Infos bearbeiten</button>-->
-    <!--    <button mat-menu-item>Test2</button>-->
-    <!--    <button mat-menu-item *ngIf="ap.apTypBezeichnung.indexOf('Thin') !== -1">Test3 TC</button>-->
   </ng-template>
 </mat-menu>

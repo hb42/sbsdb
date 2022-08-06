@@ -168,6 +168,7 @@ export class DataService {
     this.changeAdresseUrl = this.configService.webservice + "/betrst/chgadresse";
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
+    this.changeAptypUrl = this.configService.webservice + "/ap/changeaptyp";
     this.changeHwUrl = this.configService.webservice + "/hw/changehw";
     this.addHwUrl = this.configService.webservice + "/hw/addhw";
     this.changeKonfigUrl = this.configService.webservice + "/hwkonfig/changekonfig";
@@ -218,6 +219,15 @@ export class DataService {
 
     notification.apChange.subscribe((data) => {
       console.debug("dataService start update ap");
+      this.updateAp(data);
+      this.updateHwKonfigListCount();
+      this.apListChanged.emit();
+
+      this.checkNotification();
+    });
+
+    notification.apChangeAptyp.subscribe((data) => {
+      console.debug("dataService start update aptyp");
       this.updateAp(data);
       this.updateHwKonfigListCount();
       this.apListChanged.emit();
