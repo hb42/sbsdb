@@ -5,7 +5,7 @@ import { debounceTime } from "rxjs/operators";
 import { ConfigService } from "../config/config.service";
 import { UserSession } from "../config/user.session";
 import { DataService } from "../data.service";
-import { GetColumn, OutputToCsv, StringCompare } from "../helper";
+import { GetColumn, OutputToCsv, ParseBracket, StringCompare, StringifyBracket } from "../helper";
 import { BaseTableRow } from "../model/base-table-row";
 import { NavigationService } from "../navigation.service";
 import { ColumnType } from "../table/column-type.enum";
@@ -25,7 +25,6 @@ import { RelOp } from "./rel-op.enum";
 import { RelationalOperator } from "./relational-operator";
 import { TransportElement } from "./transport-element";
 import { TransportElements } from "./transport-elements";
-import { TransportExpression } from "./transport-expression";
 import { TransportFilter } from "./transport-filter";
 import { TransportFilters } from "./transport-filters";
 
@@ -226,7 +225,7 @@ export abstract class BaseFilterService {
    * der sodann Base64-codiert wird.
    */
   public encodeFilter(): string {
-    const te: TransportElement[] = this.convBracket(this.filterExpression);
+    const te: TransportElement[] = StringifyBracket(this.filterExpression);
     const trans: TransportElements = { stdFilter: this.stdFilter, filter: te };
     const fStr = JSON.stringify(trans);
     return Base64.encodeURI(fStr);
@@ -253,7 +252,7 @@ export abstract class BaseFilterService {
       std = true;
     }
     this.filterExpression.reset();
-    this.makeElements(this.filterExpression, filter);
+    ParseBracket(this.filterExpression, filter);
     this.stdFilter = std;
     this.setColumnFilters();
   }
@@ -412,9 +411,9 @@ export abstract class BaseFilterService {
         let key: number;
         if (typeof result === "string") {
           key = this.nextKey++;
-          this.setUserFilter(key, result, this.convBracket(this.filterExpression));
+          this.setUserFilter(key, result, StringifyBracket(this.filterExpression));
         } else {
-          result.filter = this.convBracket(this.filterExpression);
+          result.filter = StringifyBracket(this.filterExpression);
           key = result.key;
         }
         // dropdown in apfilterComp auf den neuen/alten  Wert setzen
@@ -659,7 +658,7 @@ export abstract class BaseFilterService {
     }
     if (tf) {
       this.filterExpression.reset();
-      this.makeElements(this.filterExpression, tf.filter);
+      ParseBracket(this.filterExpression, tf.filter);
       if (BaseFilterService.STDFILTER !== key) {
         this.setUserFilter(BaseFilterService.STDFILTER, "", tf.filter);
         this.saveFilters();
@@ -804,37 +803,6 @@ export abstract class BaseFilterService {
       this.globalFilters.splice(idx, 1);
     }
   }
-  /**
-   * filterExpression aus den Benutzereinstellungen wiederherstellen
-   *
-   * @param b - uebergeordnete Klammer oder null
-   * @param t - Array der TransportElemente
-   */
-  private makeElements(b: Bracket, t: TransportElement[]) {
-    let op: LogicalOperator = null;
-    const and = new LogicalAnd();
-    const or = new LogicalOr();
-    t.forEach((tr) => {
-      if (tr.op === 0) {
-        op = or;
-      } else if (tr.op === 1) {
-        op = and;
-      }
-      if (Array.isArray(tr.elem)) {
-        const br = new Bracket();
-        br.up = b;
-        b.addElement(op, br);
-        this.makeElements(br, tr.elem);
-      } else {
-        const ex = new Expression(
-          new Field(tr.elem.fName, tr.elem.dName, tr.elem.type),
-          new RelationalOperator(tr.elem.op),
-          tr.elem.comp
-        );
-        b.addElement(op, ex);
-      }
-    });
-  }
 
   /**
    * Benutzereinstellungen speichern
@@ -850,34 +818,6 @@ export abstract class BaseFilterService {
   private saveGlobalFilters() {
     void this.configService.saveConfig(ConfigService.AP_FILTERS, this.getGlobalFiltersName());
   }
-
-  /**
-   * filterExpression fuer die Benutzereinstellungen umwandeln
-   *
-   * @param b - startende Klammer
-   */
-  public convBracket(b: Bracket): TransportElement[] {
-    return b.elements.map(
-      (el) =>
-        new TransportElement(
-          el.operator ? (el.operator.toString() === "UND" ? 1 : 0) : -1,
-          el.term.isBracket()
-            ? this.convBracket(el.term as Bracket) // recurse
-            : this.convExpression(el.term as Expression)
-        )
-    );
-  }
-
-  private convExpression = (exp: Expression): TransportExpression | null =>
-    exp
-      ? new TransportExpression(
-          exp.field.fieldName,
-          exp.field.displayName,
-          exp.field.type,
-          exp.operator.op,
-          exp.compare
-        )
-      : null;
 
   abstract getLatestUserFilter(): string;
   abstract getUserFilterList(): TransportFilters;

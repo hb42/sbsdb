@@ -61,6 +61,7 @@ export class UserSession {
     this.settings.confPageSize = this.settings.confPageSize ?? 100;
     this.settings.showEmptyConfig = !!this.settings.showEmptyConfig;
     this.settings.adminpath = this.settings.adminpath ?? "";
+    this.settings.admintables = this.settings.admintables ?? "";
   }
 
   // Benutzerrechte sind R/O
@@ -326,6 +327,15 @@ export class UserSession {
 
   public set adminPath(page: string) {
     this.settings.adminpath = page;
+    this.change();
+  }
+
+  public get adminTables(): string {
+    return this.settings.admintables;
+  }
+
+  public set adminTables(tables: string) {
+    this.settings.admintables = tables;
     this.change();
   }
 

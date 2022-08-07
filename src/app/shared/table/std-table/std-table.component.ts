@@ -16,10 +16,13 @@ import { UserSession } from "../../config/user.session";
 import { DataService } from "../../data.service";
 import { BaseFilterService } from "../../filter/base-filter-service";
 import { Bracket } from "../../filter/bracket";
+import { Expression } from "../../filter/expression";
 import { LogicalAnd } from "../../filter/logical-and";
-import { GetColumn, OutputToCsv } from "../../helper";
+import { RelOp } from "../../filter/rel-op.enum";
+import { GetColumn, OutputToCsv, ParseBracket, StringifyBracket } from "../../helper";
 import { BaseTableRow } from "../../model/base-table-row";
 import { SbsdbColumn } from "../sbsdb-column";
+import { StdTableSettings } from "./std-table-settings";
 
 @Component({
   selector: "sbsdb-std-table",
@@ -47,17 +50,21 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   public userSettings: UserSession;
   public filterExpression = new Bracket();
   private filterChanged = 1;
+  private tableSettingsMap: Map<string, StdTableSettings>;
+  private tableSettings: StdTableSettings;
 
   constructor(
     private configService: ConfigService,
     private dataService: DataService,
     protected dialog: MatDialog
   ) {
-    console.debug("c'tor StdTableComponent");
+    console.debug("c'tor StdTableComponent ");
     this.userSettings = configService.getUser();
   }
 
   public ngOnInit() {
+    this.getSettings();
+
     const menuCol = "menu";
     this.textColumns = this.columns
       .filter((c) => c.show && c.columnName !== menuCol)
@@ -106,7 +113,6 @@ export class StdTableComponent implements OnInit, AfterViewInit {
     }
 
     setTimeout(() => {
-      // TODO set filter, sort from userSettings
       this.dataSource.sort = this.sort;
       this.dataSource.sortingDataAccessor = (row: unknown, id: string) => {
         const col = GetColumn(id, this.columns);
@@ -116,11 +122,18 @@ export class StdTableComponent implements OnInit, AfterViewInit {
           return "";
         }
       };
+      if (this.tableSettings.sortColumn) {
+        this.sortColumn = this.tableSettings.sortColumn;
+      }
       if (this.sortColumn) {
         this.dataSource.sort.active = this.sortColumn;
         this.dataSource.sort.direction = "";
         const sortheader = this.dataSource.sort.sortables.get(this.sortColumn) as MatSortHeader;
         this.dataSource.sort.sort(sortheader);
+      }
+      if (this.tableSettings.filter) {
+        ParseBracket(this.filterExpression, this.tableSettings.filter);
+        this.setColumnFilters();
       }
       this.dataSource.filterPredicate = (row: unknown): boolean => {
         const valid = this.filterExpression.validate(
@@ -144,7 +157,8 @@ export class StdTableComponent implements OnInit, AfterViewInit {
             .subscribe(() => {
               this.buildStdFilterExpression();
               this.triggerFilter();
-              // TODO save filter
+              this.tableSettings.filter = StringifyBracket(this.filterExpression);
+              this.saveSettings();
             });
         }
       });
@@ -152,9 +166,9 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   }
 
   public onSort(event: Sort): void {
-    // TODO save sort
-    // this.userSettings.apSortColumn = event.active;
-    // this.userSettings.apSortDirection = event.direction;
+    this.tableSettings.sortColumn = event.active;
+    this.tableSettings.sortDirection = event.direction;
+    this.saveSettings();
   }
 
   public getColumn(name: string): SbsdbColumn<unknown, unknown> {
@@ -178,12 +192,6 @@ export class StdTableComponent implements OnInit, AfterViewInit {
 
   public isExpanded(row: BaseTableRow): boolean {
     return this.multiline || row.expanded;
-  }
-
-  public testclick(row: unknown): void {
-    // TODO das hier muss in die aufrufende component
-    console.debug("### test click");
-    console.dir(row);
   }
 
   private async csvOutput(): Promise<void> {
@@ -217,5 +225,74 @@ export class StdTableComponent implements OnInit, AfterViewInit {
       idCol.show = this.userSettings.debug;
       this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
     }
+  }
+
+  private setColumnFilters() {
+    if (this.columns) {
+      const cols: Array<{
+        col: SbsdbColumn<unknown, unknown>;
+        val: string | null;
+      }> = this.columns
+        .filter((c) => {
+          return !!c.filterControl;
+        })
+        .map((cc) => {
+          return { col: cc, val: null };
+        });
+      this.filterExpression.elements.forEach((el) => {
+        if (!el.term.isBracket()) {
+          const exp = el.term as Expression;
+          const feld = exp.field.fieldName; // string | string[] !!
+          cols.forEach((c) => {
+            // string[]-Vergleich
+            if (!Array.isArray(feld)) {
+              // Feldnamen als Array sollten hier nicht vorkommen
+              // string-Vergleich fuer Feld-Namen
+              if (c.col.fieldName === feld) {
+                const not = exp.operator.op === RelOp.notlike ? "!" : "";
+                c.val = not + (exp.compare as string);
+              }
+            }
+          });
+        }
+      });
+      cols.forEach((c) => {
+        if (c.col.filterControl.value != c.val) {
+          c.col.filterControl.setValue(c.val, { emitEvent: false });
+        }
+      });
+    }
+  }
+
+  // Map kann nicht per JSON.stringify() konvertiert werden,
+  // deshalb muss ein Zwischenschritt eingebaut werden.
+  // Schreiben:
+  //   vorher in Array umwandeln:       out: Array<string, any> = [...Map];
+  //   und dann das Array konvertieren: result: string = JSON.stringify(out);
+  // Lesen:
+  //   zu Array einlesen:  in: Array<string, any> = JSON.parse(input);
+  //   Array zu Map:       map: Map<string, any> = new Map(in);
+  private getSettings() {
+    try {
+      this.tableSettingsMap = new Map(
+        JSON.parse(this.userSettings.adminTables) as Array<[string, StdTableSettings]>
+      );
+      this.tableSettings = this.tableSettingsMap.get(this.pagename);
+    } catch {
+      this.tableSettingsMap = new Map<string, StdTableSettings>();
+      this.tableSettings = null;
+    }
+    if (!this.tableSettings) {
+      this.tableSettings = {
+        filter: [],
+        sortColumn: "",
+        sortDirection: "",
+      };
+      this.tableSettingsMap.set(this.pagename, this.tableSettings);
+    }
+  }
+
+  private saveSettings() {
+    this.userSettings.adminTables = JSON.stringify([...this.tableSettingsMap]);
   }
 }

@@ -3,6 +3,15 @@ import { MatTableDataSource } from "@angular/material/table";
 import { CsvDialogData } from "./csv-dialog/csv-dialog-data";
 import { CsvDialogComponent } from "./csv-dialog/csv-dialog.component";
 import { BaseFilterService } from "./filter/base-filter-service";
+import { Bracket } from "./filter/bracket";
+import { Expression } from "./filter/expression";
+import { Field } from "./filter/field";
+import { LogicalAnd } from "./filter/logical-and";
+import { LogicalOperator } from "./filter/logical-operator";
+import { LogicalOr } from "./filter/logical-or";
+import { RelationalOperator } from "./filter/relational-operator";
+import { TransportElement } from "./filter/transport-element";
+import { TransportExpression } from "./filter/transport-expression";
 import { ColumnType } from "./table/column-type.enum";
 import { SbsdbColumn } from "./table/sbsdb-column";
 
@@ -250,4 +259,64 @@ export function StringCompare(a: string, b: string): number {
     numeric: true,
     sensitivity: "base",
   }).compare(a, b);
+}
+
+const convExpression = (exp: Expression): TransportExpression | null =>
+  exp
+    ? new TransportExpression(
+        exp.field.fieldName,
+        exp.field.displayName,
+        exp.field.type,
+        exp.operator.op,
+        exp.compare
+      )
+    : null;
+
+/**
+ * Bracket-Objekt in eine JSON-konforme Darstellung umwandeln
+ *
+ * @param b - startende Klammer
+ */
+export function StringifyBracket(b: Bracket): TransportElement[] {
+  return b.elements.map(
+    (el) =>
+      new TransportElement(
+        el.operator ? (el.operator.toString() === "UND" ? 1 : 0) : -1,
+        el.term.isBracket()
+          ? StringifyBracket(el.term as Bracket) // recurse
+          : convExpression(el.term as Expression)
+      )
+  );
+}
+
+/**
+ * Bracket-Objekt aus der JSON-kompatiblen Darstellung wiederherstellen
+ *
+ * @param b - uebergeordnete Klammer
+ * @param t - Array der TransportElemente
+ */
+export function ParseBracket(b: Bracket, t: TransportElement[]) {
+  let op: LogicalOperator = null;
+  const and = new LogicalAnd();
+  const or = new LogicalOr();
+  t.forEach((tr) => {
+    if (tr.op === 0) {
+      op = or;
+    } else if (tr.op === 1) {
+      op = and;
+    }
+    if (Array.isArray(tr.elem)) {
+      const br = new Bracket();
+      br.up = b;
+      b.addElement(op, br);
+      ParseBracket(br, tr.elem);
+    } else {
+      const ex = new Expression(
+        new Field(tr.elem.fName, tr.elem.dName, tr.elem.type),
+        new RelationalOperator(tr.elem.op),
+        tr.elem.comp
+      );
+      b.addElement(op, ex);
+    }
+  });
 }

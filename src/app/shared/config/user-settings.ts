@@ -33,6 +33,7 @@ export interface UserSettings {
   confSortDirection?: string;
   confPageSize?: number;
   showEmptyConfig?: boolean;
-  // Admin-PAge
+  // Admin-Page
   adminpath?: string;
+  admintables?: string; //Map<string, StdTableSettings>;
 }
