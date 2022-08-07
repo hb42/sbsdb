@@ -65,7 +65,7 @@ export class SbsdbColumn<C, E> {
     return SbsdbColumn.callback(this.fieldname, this.context) as string | string[];
   }
 
-  public get sortFieldName(): string | null {
+  public get sortFieldName(): string | string[] | null {
     return SbsdbColumn.callback(this.sortfieldname, this.context) as string;
   }
 
@@ -118,7 +118,7 @@ export class SbsdbColumn<C, E> {
     private colname: string,
     private displayname: () => string,
     private fieldname: () => string | string[],
-    private sortfieldname: () => string,
+    private sortfieldname: () => string | string[] | null,
     private displaytext: (elem: E) => string | null,
     private accel: string, //
     private showcolumn: boolean,
@@ -138,7 +138,18 @@ export class SbsdbColumn<C, E> {
    * @param obj - Datensatz
    */
   public sortString(obj: unknown): string | number {
-    const field: unknown = GetFieldContent(obj, this.sortFieldName);
+    let field: unknown;
+    const fields: string[] = [];
+    if (Array.isArray(this.sortFieldName)) {
+      if (this.typekey !== ColumnType.STRING) {
+        // mehrere Felder funktionieren nur mit String-Sort
+        return 0;
+      }
+      this.sortFieldName.forEach((f) => fields.push(GetFieldContent(obj, f) as string));
+      field = fields.join("");
+    } else {
+      field = GetFieldContent(obj, this.sortFieldName);
+    }
     let s: string;
     let v: Netzwerk[];
     let d: Date;

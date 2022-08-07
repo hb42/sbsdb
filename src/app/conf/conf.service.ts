@@ -35,6 +35,7 @@ export class ConfService {
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
   private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
+  private defaultsort = "typ";
 
   constructor(
     public dataService: DataService,
@@ -67,15 +68,16 @@ export class ConfService {
     this.confDataSource.paginator = paginator;
     this.setDataToTable.emit();
     this.confDataSource.paginator.pageSize = this.userSettings.confPageSize;
-    if (this.userSettings.hwSortColumn && this.userSettings.confSortDirection) {
-      this.confDataSource.sort.active = this.userSettings.confSortColumn;
-      this.confDataSource.sort.direction =
-        this.userSettings.confSortDirection === "asc" ? "" : "asc";
-      const sortheader = this.confDataSource.sort.sortables.get(
-        this.userSettings.confSortColumn
-      ) as MatSortHeader;
-      this.confDataSource.sort.sort(sortheader);
-    }
+    const sortcolumn = this.userSettings.confSortColumn ?? this.defaultsort;
+    const sortdir = this.userSettings.confSortDirection
+      ? this.userSettings.confSortDirection === "asc"
+        ? ""
+        : "asc"
+      : "";
+    this.confDataSource.sort.active = sortcolumn;
+    this.confDataSource.sort.direction = sortdir;
+    const sortheader = this.confDataSource.sort.sortables.get(sortcolumn) as MatSortHeader;
+    this.confDataSource.sort.sort(sortheader);
   }
 
   public onSort(event: Sort): void {

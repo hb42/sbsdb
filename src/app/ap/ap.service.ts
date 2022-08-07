@@ -61,6 +61,7 @@ export class ApService {
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
   private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
   private apDataReady = false;
+  private readonly defaultsort = "apname";
 
   constructor(
     public filterService: ApFilterService,
@@ -108,17 +109,16 @@ export class ApService {
     this.setDataToTable.emit();
 
     this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
-    if (this.userSettings.apSortColumn && this.userSettings.apSortDirection) {
-      this.apDataSource.sort.active = this.userSettings.apSortColumn;
-      this.apDataSource.sort.direction = this.userSettings.apSortDirection === "asc" ? "" : "asc";
-      const sortheader = this.apDataSource.sort.sortables.get(
-        this.userSettings.apSortColumn
-      ) as MatSortHeader;
-      this.apDataSource.sort.sort(sortheader);
-      // FIXME Hack -> ApComponent#handleSort
-      // eslint-disable-next-line no-underscore-dangle
-      // sortheader._handleClick();
-    }
+    const sortcolumn = this.userSettings.apSortColumn ?? this.defaultsort;
+    const sortdir = this.userSettings.apSortDirection
+      ? this.userSettings.apSortDirection === "asc"
+        ? ""
+        : "asc"
+      : "";
+    this.apDataSource.sort.active = sortcolumn;
+    this.apDataSource.sort.direction = sortdir;
+    const sortheader = this.apDataSource.sort.sortables.get(sortcolumn) as MatSortHeader;
+    this.apDataSource.sort.sort(sortheader);
   }
 
   public onSort(event: Sort): void {
@@ -407,12 +407,12 @@ export class ApService {
         "ip",
         () => "IP/MAC",
         () => ["ipStr", "macsearch"],
-        () => "vlan",
+        () => ["ipStr", "macStr"],
         (a: Arbeitsplatz) => (a.ipStr ? a.ipStr + (a.macStr ? " –– " + a.macStr : "") : a.macStr),
         KEY_SORT_KAT_IP,
         true,
         5,
-        ColumnType.IP,
+        ColumnType.STRING,
         [RelOp.like, RelOp.notlike],
         null,
         false

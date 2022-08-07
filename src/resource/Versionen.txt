@@ -1,4 +1,5 @@
-﻿5.0.0-beta.xx   xx.08.2022
+﻿5.0.0-beta.45   07.08.2022
+           - Default Sort fuer alle Tabellen.
            - Unterseite der AdminPage, sowie Filter und Sort in den Benutzereinstellungen
              speichern (#33).
            - AP-Typ aendern fuer gleiche AP-Kategorie und unter Beruecksichtigung der

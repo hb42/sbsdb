@@ -51,6 +51,7 @@ export class HwService {
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
   private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
+  private defaultsort = "konfiguration";
 
   constructor(
     public dataService: DataService,
@@ -97,14 +98,16 @@ export class HwService {
     this.hwDataSource.paginator = paginator;
     this.setDataToTable.emit();
     this.hwDataSource.paginator.pageSize = this.userSettings.hwPageSize;
-    if (this.userSettings.hwSortColumn && this.userSettings.hwSortDirection) {
-      this.hwDataSource.sort.active = this.userSettings.hwSortColumn;
-      this.hwDataSource.sort.direction = this.userSettings.hwSortDirection === "asc" ? "" : "asc";
-      const sortheader = this.hwDataSource.sort.sortables.get(
-        this.userSettings.hwSortColumn
-      ) as MatSortHeader;
-      this.hwDataSource.sort.sort(sortheader);
-    }
+    const sortcolumn = this.userSettings.hwSortColumn ?? this.defaultsort;
+    const sortdir = this.userSettings.hwSortDirection
+      ? this.userSettings.hwSortDirection === "asc"
+        ? ""
+        : "asc"
+      : "";
+    this.hwDataSource.sort.active = sortcolumn;
+    this.hwDataSource.sort.direction = sortdir;
+    const sortheader = this.hwDataSource.sort.sortables.get(sortcolumn) as MatSortHeader;
+    this.hwDataSource.sort.sort(sortheader);
   }
 
   public gotoAp(hw: Hardware): void {
@@ -245,7 +248,7 @@ export class HwService {
         "konfiguration",
         () => "Konfiguration",
         () => "hwKonfig.konfiguration",
-        () => "konfiguration",
+        () => "hwKonfig.konfiguration",
         (h: Hardware) => h.hwKonfig.konfiguration,
         KEY_SORT_OE_KONF,
         true,
