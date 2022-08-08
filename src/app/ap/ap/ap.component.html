@@ -5,6 +5,45 @@
     [newElement]="apService.newApEvent"
     [mainMenu]="tableMenu"
   >
+    <!-- Suchen-Feld -->
+    <mat-form-field
+      floatLabel="never"
+      *ngIf="apService.filterService.stdFilter"
+      title="Suche in AP-Name, Sandort, Bezeichnung"
+      class="search-field"
+    >
+      <input
+        autofocus="true"
+        matInput
+        [formControl]="apService.filterService.apFilterControl"
+        [tabIndex]="1"
+        (keydown.enter)="apService.filterService.triggerApfilter($event)"
+      />
+      <button
+        mat-button
+        *ngIf="
+          apService.filterService.apFilterControl.value || apService.filterService.apFilterDirty
+        "
+        matSuffix
+        mat-icon-button
+        (click)="apService.filterService.restApfilter($event)"
+        title="Suche löschen"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      <button
+        mat-button
+        *ngIf="
+          apService.filterService.apFilterDirty && apService.filterService.apFilterControl.value
+        "
+        matSuffix
+        mat-icon-button
+        (click)="apService.filterService.triggerApfilter($event)"
+        title="Suche starten"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
   </sbsdb-head>
 
   <sbsdb-filter
@@ -345,7 +384,6 @@
         apService.userSettings.debug ? "check_box" : "check_box_outline_blank"
       }}</mat-icon>
     </button>
-    <!--    <button-->
     <!--      mat-menu-item-->
     <!--      class="menue-entry"-->
     <!--      (click)="apService.statusService.info('alles wird gut')"-->

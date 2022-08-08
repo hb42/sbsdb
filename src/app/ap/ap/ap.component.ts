@@ -80,6 +80,8 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
           encFilter = params.get("filt");
           this.config.getUser().latestApFilter = encFilter;
           this.apService.filterService.filterFromNavigation(encFilter);
+        } else if (params.has("apfilter")) {
+          this.apService.filterService.filterApfilter(params.get("apfilter"));
         } else if (params.has("id")) {
           // .../ap;id=xxx
           // AP ueber Datenbank-Index aufrufen

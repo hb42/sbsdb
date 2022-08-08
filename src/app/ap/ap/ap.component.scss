@@ -87,3 +87,18 @@
 .distinction {
   border-bottom: solid 3px salmon;
 }
+
+.search-field {
+  background-color: rgba(255,255,255,0.2);
+  height: 40px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 8px;
+  font-size: .7em;
+}
+.search-field.mat-form-field-flex {
+  bottom: 5px;
+}
+.search-field.mat-form-field-underline {
+  bottom: 26px;
+}

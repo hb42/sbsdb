@@ -59,7 +59,7 @@ export abstract class BaseFilterService {
   protected dataTable: MatTableDataSource<unknown>;
 
   // Filtereingaben bremsen
-  private readonly keyDebounce = 500;
+  protected readonly keyDebounce = 500;
 
   protected constructor(
     protected configService: ConfigService,
@@ -158,12 +158,15 @@ export abstract class BaseFilterService {
   }
 
   /**
-   * Filter loeschen (triggert valueChange)
+   * Filter loeschen
+   *
+   * emitevent == true  -> triggert valueChange (default)
+   * emitevent == false -> no valueChange
    */
-  public resetStdFilters(): void {
+  public resetStdFilters(emitevent = true): void {
     this.columns.forEach((c) => {
       if (c.filterControl && c.filterControl.value) {
-        c.filterControl.reset();
+        c.filterControl.reset(null, { emitEvent: emitevent });
       }
     });
   }
