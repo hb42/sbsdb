@@ -10,11 +10,12 @@
       floatLabel="never"
       *ngIf="apService.filterService.stdFilter"
       title="Suche in AP-Name, Sandort, Bezeichnung"
-      class="search-field"
+      class="search-field md-accent-color"
     >
       <input
         autofocus="true"
         matInput
+        placeholder="Suchen"
         [formControl]="apService.filterService.apFilterControl"
         [tabIndex]="1"
         (keydown.enter)="apService.filterService.triggerApfilter($event)"

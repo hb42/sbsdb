@@ -164,6 +164,9 @@ $sbsdb-app-theme: mat.define-light-theme($sbsdb-app-primary, $sbsdb-app-accent, 
     --md-light-gray-background-color: #f9f9f9; // hellgrauer Hintergrund
     --md-row-active-background-color: #efefef; // grauer Hintergrund f. :hover-Effekt
     --md-row-hover-background-color: #f4f4f4; // grauer Hintergrund f. :active-Effekt
+
+    --md-primary-color: mat.get-color-from-palette($primary);
+    --md-accent-color: mat.get-color-from-palette($accent);
   }
 }
 

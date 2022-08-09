@@ -332,3 +332,14 @@ table:not(.wrap-cell) .mat-cell > div {
   font-family: "Roboto Mono", monospace !important;
   font-size: 13px !important;
 }
+
+/* TODO Das muss eigentlich in ap.component.scss
+        Warum es von da aus nicht greift waere mal noch zu eruieren
+ */
+.search-field .mat-form-field-wrapper {
+  bottom: 4px;
+}
+
+.search-field .mat-form-field-underline {
+  bottom: 22px;
+}

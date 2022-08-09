@@ -87,18 +87,14 @@
 .distinction {
   border-bottom: solid 3px salmon;
 }
-
+/* TODO ein paar Styles nach styles.scss ausgelagert
+        wenn mal Zeit ist: testen, was da nicht funktioniert
+ */
 .search-field {
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba(255,255,255,0.8);
   height: 40px;
   padding-left: 10px;
   padding-right: 10px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: .7em;
-}
-.search-field.mat-form-field-flex {
-  bottom: 5px;
-}
-.search-field.mat-form-field-underline {
-  bottom: 26px;
 }
