@@ -109,7 +109,9 @@ export class ApService {
     this.setDataToTable.emit();
 
     this.apDataSource.paginator.pageSize = this.userSettings.apPageSize;
-    const sortcolumn = this.userSettings.apSortColumn ?? this.defaultsort;
+    const sortcolumn = this.userSettings.apSortColumn
+      ? this.userSettings.apSortColumn
+      : this.defaultsort;
     const sortdir = this.userSettings.apSortDirection
       ? this.userSettings.apSortDirection === "asc"
         ? ""

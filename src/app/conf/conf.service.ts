@@ -68,7 +68,9 @@ export class ConfService {
     this.confDataSource.paginator = paginator;
     this.setDataToTable.emit();
     this.confDataSource.paginator.pageSize = this.userSettings.confPageSize;
-    const sortcolumn = this.userSettings.confSortColumn ?? this.defaultsort;
+    const sortcolumn = this.userSettings.confSortColumn
+      ? this.userSettings.confSortColumn
+      : this.defaultsort;
     const sortdir = this.userSettings.confSortDirection
       ? this.userSettings.confSortDirection === "asc"
         ? ""

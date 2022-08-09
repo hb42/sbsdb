@@ -98,7 +98,9 @@ export class HwService {
     this.hwDataSource.paginator = paginator;
     this.setDataToTable.emit();
     this.hwDataSource.paginator.pageSize = this.userSettings.hwPageSize;
-    const sortcolumn = this.userSettings.hwSortColumn ?? this.defaultsort;
+    const sortcolumn = this.userSettings.hwSortColumn
+      ? this.userSettings.hwSortColumn
+      : this.defaultsort;
     const sortdir = this.userSettings.hwSortDirection
       ? this.userSettings.hwSortDirection === "asc"
         ? ""
