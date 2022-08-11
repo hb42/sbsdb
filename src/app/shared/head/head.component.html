@@ -19,7 +19,12 @@
 
   <span class="spacer"></span>
   <!-- Hauptmenue als Dropdown-Button -->
-  <button mat-raised-button [mat-menu-trigger-for]="navmenu" *ngIf="userSettings.showNavMenu">
+  <button
+    mat-raised-button
+    [mat-menu-trigger-for]="navmenu"
+    *ngIf="userSettings.showNavMenu"
+    class="md-accent-color"
+  >
     <mat-icon class="dd-icon">{{ btnTitleIcon() }}</mat-icon>
     {{ btnTitle() }}
     <mat-icon>arrow_drop_down</mat-icon>
