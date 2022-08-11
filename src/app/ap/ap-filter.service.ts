@@ -39,7 +39,13 @@ export class ApFilterService extends BaseFilterService {
   }
 
   public getLatestUserFilter(): string {
-    return this.userSettings.latestApFilter;
+    const filter = this.userSettings.latestApFilter;
+    if (this.isEncodedFilter(filter)) {
+      return filter;
+    } else {
+      this.filterApfilter(filter);
+      return null;
+    }
   }
   public getUserFilterList(): TransportFilters {
     return this.userSettings.apFilter;
@@ -71,9 +77,12 @@ export class ApFilterService extends BaseFilterService {
    * @param filt
    */
   public filterApfilter(filt: string): void {
-    this.resetStdFilters(false);
-    this.filterFor(["apname", "betrst", "bezeichnung"], filt, false);
-    this.stdFilter = true;
+    if (this.columns) {
+      super.resetStdFilters(false);
+      this.apFilterControl.setValue(filt, { emitEvent: false });
+      this.filterFor(["apname", "betrst", "bezeichnung"], filt, false);
+      this.stdFilter = true;
+    }
   }
 
   public triggerApfilter(event: Event) {
@@ -82,11 +91,35 @@ export class ApFilterService extends BaseFilterService {
     this.apFilterDirty = false;
     this.nav2Apfilter(this.apFilterControl.value);
   }
-  public restApfilter(event: Event) {
+  public resetApfilter(event: Event) {
     event.preventDefault();
     event.stopPropagation();
-    this.apFilterControl.reset();
-    this.stdFilter = false;
     this.resetFilters();
+  }
+
+  public resetStdFilters(emitevent: boolean = true) {
+    if (this.apFilterControl.value) {
+      this.apFilterControl.reset();
+      this.filterExpression.reset();
+      this.triggerFilter();
+    } else {
+      super.resetStdFilters(emitevent);
+    }
+  }
+
+  // public resetFilters() {
+  //   super.resetFilters();
+  // }
+  //
+  // public toggleExtendedFilter() {
+  //   if (this.apFilterControl.value) {
+  //     this.apFilterControl.reset();
+  //   }
+  //   super.toggleExtendedFilter();
+  // }
+
+  protected buildStdFilterExpression() {
+    this.apFilterControl.reset();
+    super.buildStdFilterExpression();
   }
 }

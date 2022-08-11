@@ -54,9 +54,9 @@ export abstract class BaseFilterService {
   private globNextKey = BaseFilterService.STDFILTER + 1;
 
   // wird in initService() von apService geliefert
-  private columns: SbsdbColumn<unknown, unknown>[];
-  private filterChanged = 1;
+  protected columns: SbsdbColumn<unknown, unknown>[];
   protected dataTable: MatTableDataSource<unknown>;
+  private filterChanged = 1;
 
   // Filtereingaben bremsen
   protected readonly keyDebounce = 500;
@@ -134,8 +134,11 @@ export abstract class BaseFilterService {
      * Filter aus den Benutzereinstellungen erstellen
      */
     // letzten gespeicherten Filter setzen (kommt ggf. nochmal via URL)
-    this.decodeFilter(this.getLatestUserFilter());
-    // this.decodeFilter(this.userSettings.latestApFilter);
+    const userfilter = this.getLatestUserFilter();
+    // null -> der Filter wurde in getLatestUserFilter() gesetzt
+    if (userfilter !== null) {
+      this.decodeFilter(userfilter);
+    }
 
     // const maxkey: number = this.userSettings.apFilter.filters.reduce(
     const maxkey: number = this.getUserFilterList().filters.reduce(
@@ -258,6 +261,20 @@ export abstract class BaseFilterService {
     ParseBracket(this.filterExpression, filter);
     this.stdFilter = std;
     this.setColumnFilters();
+  }
+
+  /**
+   * Test ob der String ein Base64-codierter JSON-String ist
+   *
+   * @param enc
+   */
+  public isEncodedFilter(enc: string): boolean {
+    try {
+      JSON.parse(Base64.decode(enc));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   public navigationFromExtParam(cols: string[], param: string | number) {
@@ -632,7 +649,7 @@ export abstract class BaseFilterService {
   /**
    * Filter-Ausdruck fuer std filter
    */
-  private buildStdFilterExpression() {
+  protected buildStdFilterExpression() {
     this.filterExpression.reset();
     const and = new LogicalAnd();
     this.columns.forEach((col) => {

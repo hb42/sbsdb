@@ -343,3 +343,7 @@ table:not(.wrap-cell) .mat-cell > div {
 .search-field .mat-form-field-underline {
   bottom: 22px;
 }
+
+.search-field .mat-form-field-empty.mat-form-field-label {
+  color: rgba(255, 110,64, 0.4); // accent color f. placeholder
+}

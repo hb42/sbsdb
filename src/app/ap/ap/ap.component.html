@@ -27,7 +27,7 @@
         "
         matSuffix
         mat-icon-button
-        (click)="apService.filterService.restApfilter($event)"
+        (click)="apService.filterService.resetApfilter($event)"
         title="Suche löschen"
       >
         <mat-icon>close</mat-icon>
@@ -327,10 +327,10 @@
       title="Standort oder verantwortliche OE anzeigen"
     >
       <mat-icon>home</mat-icon>
-      Standort anzeigen
+      Verantwortliche OE anzeigen
       <span class="fill"></span>
       <mat-icon class="menue-checkbox">{{
-        apService.userSettings.showStandort ? "check_box" : "check_box_outline_blank"
+        apService.userSettings.showStandort ? "check_box_outline_blank" : "check_box"
       }}</mat-icon>
     </button>
     <button

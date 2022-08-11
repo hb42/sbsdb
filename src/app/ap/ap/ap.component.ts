@@ -81,7 +81,11 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
           this.config.getUser().latestApFilter = encFilter;
           this.apService.filterService.filterFromNavigation(encFilter);
         } else if (params.has("apfilter")) {
-          this.apService.filterService.filterApfilter(params.get("apfilter"));
+          // .../ap;apfilter=xxx
+          // Suche aus globalem Suchfeld
+          encFilter = params.get("apfilter");
+          this.config.getUser().latestApFilter = encFilter;
+          this.apService.filterService.filterApfilter(encFilter);
         } else if (params.has("id")) {
           // .../ap;id=xxx
           // AP ueber Datenbank-Index aufrufen
@@ -104,7 +108,12 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         if (this.config.getUser().latestApFilter) {
           encFilter = this.config.getUser().latestApFilter;
-          this.apService.filterService.nav2filter(encFilter);
+          if (this.apService.filterService.isEncodedFilter(encFilter)) {
+            this.apService.filterService.nav2filter(encFilter);
+          } else {
+            // AP-Filter
+            this.apService.filterService.nav2Apfilter(encFilter);
+          }
         }
       }
     });
