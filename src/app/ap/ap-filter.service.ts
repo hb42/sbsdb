@@ -97,6 +97,8 @@ export class ApFilterService extends BaseFilterService {
     this.resetFilters();
   }
 
+  // Overrides w/ APFilter
+
   public resetStdFilters(emitevent: boolean = true) {
     if (this.apFilterControl.value) {
       this.apFilterControl.reset();
@@ -107,19 +109,18 @@ export class ApFilterService extends BaseFilterService {
     }
   }
 
-  // public resetFilters() {
-  //   super.resetFilters();
-  // }
-  //
-  // public toggleExtendedFilter() {
-  //   if (this.apFilterControl.value) {
-  //     this.apFilterControl.reset();
-  //   }
-  //   super.toggleExtendedFilter();
-  // }
-
   protected buildStdFilterExpression() {
     this.apFilterControl.reset();
     super.buildStdFilterExpression();
+  }
+
+  public filterFromNavigation(params: string): void {
+    this.apFilterControl.reset();
+    super.filterFromNavigation(params);
+  }
+
+  public navigationFromExtParam(cols: string[], param: string | number) {
+    this.apFilterControl.reset();
+    super.navigationFromExtParam(cols, param);
   }
 }

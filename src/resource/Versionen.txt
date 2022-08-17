@@ -1,4 +1,8 @@
-﻿5.0.0-beta.45   07.08.2022
+﻿5.0.0-beta.90   17.08.2022
+           - Zusaetzliches Suchfeld im Header der AP-Seite, sucht in AP-Name, Standort oder
+             verantw. OE und Bezeichnung (#34).
+
+5.0.0-beta.45   07.08.2022
            - Default Sort fuer alle Tabellen.
            - Unterseite der AdminPage, sowie Filter und Sort in den Benutzereinstellungen
              speichern (#33).
