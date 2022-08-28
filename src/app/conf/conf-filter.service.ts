@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { environment } from "../../environments/environment";
 import { CONF_PATH } from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
@@ -22,7 +23,7 @@ export class ConfFilterService extends BaseFilterService {
     public dialog: MatDialog
   ) {
     super(configService, dataService, navigationService, dialog);
-    console.debug("c'tor ConfFilterService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
   }
 

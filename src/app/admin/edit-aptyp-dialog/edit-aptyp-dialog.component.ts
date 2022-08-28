@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { ApTyp } from "../../shared/model/ap-typ";
 import { BaseSvzDialog } from "../base-svz-dialog";
@@ -21,7 +22,7 @@ export class EditAptypDialogComponent extends BaseSvzDialog<ApTyp> implements On
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
-    console.debug("c'tor EditAptypDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   public ngOnInit(): void {

@@ -2,6 +2,7 @@ import { formatNumber } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { MatDatepicker } from "@angular/material/datepicker";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { CurrencyCheck, StringToNumber } from "../../shared/helper";
@@ -31,7 +32,7 @@ export class EditHwHwComponent implements OnInit {
   public bemCtrl: FormControl;
 
   constructor(private dataService: DataService, private formBuilder: FormBuilder) {
-    console.debug("c'tor EditHwHwCompomnenmt");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.hwReady = new EventEmitter<HwChange>();
     this.hwFormGroup = this.formBuilder.group({});
   }

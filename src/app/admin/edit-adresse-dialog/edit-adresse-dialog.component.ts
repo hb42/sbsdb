@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { Adresse } from "../../shared/model/adresse";
 import { BaseSvzDialog } from "../base-svz-dialog";
@@ -22,7 +23,7 @@ export class EditAdresseDialogComponent extends BaseSvzDialog<Adresse> implement
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
-    console.debug("c'tor EditAdresseDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   ngOnInit(): void {

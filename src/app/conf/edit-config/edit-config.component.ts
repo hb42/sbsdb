@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { HwTyp } from "../../shared/model/hw-typ";
@@ -30,7 +31,7 @@ export class EditConfigComponent implements OnInit {
   public hwtyplist: HwTyp[];
 
   constructor(private dataService: DataService, private formBuilder: FormBuilder) {
-    console.debug("c'tor EditConfigComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.konfigReady = new EventEmitter<EditConfigData>();
     this.konfigFormGroup = this.formBuilder.group({});
   }

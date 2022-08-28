@@ -1,5 +1,6 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { ShowHistoryData } from "./show-history-data";
 
 @Component({
@@ -9,6 +10,6 @@ import { ShowHistoryData } from "./show-history-data";
 })
 export class ShowHistoryDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: ShowHistoryData) {
-    console.debug("c'tor ShowHistoryDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 }

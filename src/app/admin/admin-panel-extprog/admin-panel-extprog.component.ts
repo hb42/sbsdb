@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { ADM_EXTPROG_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { ColumnType } from "../../shared/table/column-type.enum";
@@ -27,8 +28,8 @@ export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
     public adminService: AdminService,
     protected dialog: MatDialog
   ) {
-    console.debug("c'tor AdminPanelExtprogComponent");
     super(dataService, adminService, dialog);
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
 
     this.notificationHandler = this.dataService.extprogListChanged.subscribe(() =>
       this.buildList()

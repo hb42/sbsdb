@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { HwChange } from "../edit-ap-hw/hw-change";
 import { ApChange } from "../edit-ap/ap-change";
 import { TagChange } from "../edit-tags/tag-change";
@@ -20,7 +21,7 @@ export class ApEditDialogComponent {
     public matDialogRef: MatDialogRef<ApEditDialogComponent>,
     public formBuilder: FormBuilder
   ) {
-    console.debug("c'tor ApEditDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.formGroup = this.formBuilder.group({});
   }
 

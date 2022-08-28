@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { HwTyp } from "../../shared/model/hw-typ";
 import { BaseSvzDialog } from "../base-svz-dialog";
@@ -21,7 +22,7 @@ export class EditHwtypDialogComponent extends BaseSvzDialog<HwTyp> implements On
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
-    console.debug("c'tor EditHwtypDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   ngOnInit(): void {

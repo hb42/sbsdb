@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { Hardware } from "../../shared/model/hardware";
 import { HwService } from "../hw.service";
@@ -28,7 +29,7 @@ export class EditHwApComponent implements OnInit {
     private formBuilder: FormBuilder,
     public hwService: HwService
   ) {
-    console.debug("c'tor EditHwApCompomnenmt");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.apReady = new EventEmitter<boolean>();
     this.formGroup = this.formBuilder.group({});
   }

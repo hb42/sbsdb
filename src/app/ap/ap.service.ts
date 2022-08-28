@@ -3,6 +3,7 @@ import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { firstValueFrom } from "rxjs";
+import { environment } from "../../environments/environment";
 import {
   KEY_SORT_AP,
   KEY_SORT_BEZ,
@@ -73,7 +74,7 @@ export class ApService {
     private navigationService: NavigationService,
     public statusService: StatusService
   ) {
-    console.debug("c'tor ArbeitsplatzService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
     this.buildColumns();
     setTimeout(() => {
@@ -674,7 +675,6 @@ export class ApService {
           fetched++;
           if (fetched === count) {
             this.dataService.prepareApList();
-            console.debug("fetch page READY");
             this.dataService.apListFetched.emit();
           }
         },

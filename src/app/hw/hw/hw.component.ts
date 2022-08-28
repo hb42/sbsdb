@@ -13,6 +13,7 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { ActivatedRoute } from "@angular/router";
+import { environment } from "../../../environments/environment";
 import { KEY_FIRST_FILTER } from "../../const";
 import { ConfigService } from "../../shared/config/config.service";
 import { GetColumn } from "../../shared/helper";
@@ -46,7 +47,7 @@ export class HwComponent implements AfterViewInit, OnInit, OnDestroy {
     private cdRef: ChangeDetectorRef,
     private keyboardService: KeyboardService
   ) {
-    console.debug("c'tor HwComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.hwService.editFilterService.setFilterService(this.hwService.hwFilterService);
   }
 

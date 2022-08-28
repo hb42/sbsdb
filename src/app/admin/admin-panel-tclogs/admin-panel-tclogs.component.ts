@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { environment } from "../../../environments/environment";
 import { AdminService } from "../admin.service";
 
 @Component({
@@ -8,7 +9,7 @@ import { AdminService } from "../admin.service";
 })
 export class AdminPanelTclogsComponent implements OnInit {
   constructor(public adminService: AdminService) {
-    console.debug("c'tor AdminPanelTclogsComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   public log = "";

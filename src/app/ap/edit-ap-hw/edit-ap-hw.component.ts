@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
@@ -33,7 +34,7 @@ export class EditApHwComponent implements OnInit {
     private cdRef: ChangeDetectorRef,
     private apService: ApService
   ) {
-    console.debug("c'tor EditApHwCompomnenmt");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.hwReady = new EventEmitter<HwChange>();
     this.hwFormGroup = this.formBuilder.group({});
     this.periFormGroup = this.formBuilder.group({});

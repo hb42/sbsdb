@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { ADM_APKAT_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { ApKategorie } from "../../shared/model/ap-kategorie";
@@ -26,8 +27,8 @@ export class AdminPanelApkategorieComponent extends BaseSvzPanelComponent<
     public adminService: AdminService,
     protected dialog: MatDialog
   ) {
-    console.debug("c'tor AdminPanelApkategorieComponent");
     super(dataService, adminService, dialog);
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
 
     this.notificationHandler = this.dataService.apkategorieListChanged.subscribe(() => {
       this.changeDebug();

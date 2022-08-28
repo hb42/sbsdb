@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable, TemplateRef } from "@angular/core";
 import { Observable } from "rxjs";
+import { environment } from "../../environments/environment";
 import { ADM_PATH } from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
@@ -40,7 +41,7 @@ export class AdminService {
     public dataService: DataService,
     private navigationService: NavigationService
   ) {
-    console.debug("c'tor AdminService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
 
     this.loading = !this.dataService.isDataReady();

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { environment } from "../../../environments/environment";
 import { HwVlanChange } from "../../shared/edit/edit-vlan/hw-vlan-change";
 import { VlansInput } from "../../shared/edit/edit-vlan/vlans-input";
 import { Hardware } from "../../shared/model/hardware";
@@ -20,7 +21,7 @@ export class EditHwMacComponent implements OnInit {
   public hwchange: EventEmitter<Hardware> = new EventEmitter<Hardware>();
 
   constructor() {
-    console.debug("c'tor EditHwMacCompomnenmt");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.macReady = new EventEmitter<HwVlanChange[]>();
   }
 

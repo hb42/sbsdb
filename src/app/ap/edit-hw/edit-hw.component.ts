@@ -1,6 +1,7 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { HwVlanChange } from "../../shared/edit/edit-vlan/hw-vlan-change";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
@@ -35,7 +36,7 @@ export class EditHwComponent implements OnInit {
   public hwchange: EventEmitter<Hardware> = new EventEmitter<Hardware>();
 
   constructor(public dataService: DataService, private formBuilder: FormBuilder) {
-    console.debug("c'tor EditHwComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.delete = new EventEmitter<HwInput>();
     this.editHwReady = new EventEmitter<void>();
     this.hwFormGroup = this.formBuilder.group({});

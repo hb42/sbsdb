@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { StringCompare } from "../../shared/helper";
@@ -26,7 +27,7 @@ export class NewApComponent implements OnInit {
     public formBuilder: FormBuilder,
     private dataService: DataService
   ) {
-    console.debug("c'tor NewApComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.formGroup = this.formBuilder.group({});
     this.aptypList = this.dataService.aptypList.sort((a, b) =>
       StringCompare(a.bezeichnung, b.bezeichnung)

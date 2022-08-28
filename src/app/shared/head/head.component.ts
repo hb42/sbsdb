@@ -145,7 +145,6 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    console.debug("HeadComponent: unregister keyboard events");
     this.keyboardEvents.forEach((ke) => {
       this.keyboardService.unregister(ke.key);
       ke.trigger.unsubscribe();

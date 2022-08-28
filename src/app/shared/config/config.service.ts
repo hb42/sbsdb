@@ -46,7 +46,7 @@ export class ConfigService {
     private location: Location,
     private versionService: VersionService
   ) {
-    console.debug("c'tor ConfigService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     // Adresse der Web-API
     this.websvc = location.prepareExternalUrl(environment.webservice);
 

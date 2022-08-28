@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { Tag } from "app/shared/model/tag";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { StringCompare } from "../../shared/helper";
@@ -31,7 +32,7 @@ export class EditTagsComponent implements OnInit {
   private changes: TagChange[] = [];
 
   constructor(private dataService: DataService, private formBuilder: FormBuilder) {
-    console.debug("c'tor EditTagsCompomnenmt");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.tagReady = new EventEmitter<TagChange[]>();
     this.tagFormGroup = this.formBuilder.group({});
   }

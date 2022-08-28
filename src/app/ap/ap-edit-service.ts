@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { environment } from "../../environments/environment";
 import { DataService } from "../shared/data.service";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { IpHelper } from "../shared/ip-helper";
@@ -21,7 +22,7 @@ import { NewApComponent } from "./new-ap/new-ap.component";
 export class ApEditService extends BaseEditService {
   constructor(public dialog: MatDialog, public dataService: DataService) {
     super(dialog, dataService);
-    console.debug("c'tor ApEditService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   public newAp(): void {

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { HwVlanChange } from "../../shared/edit/edit-vlan/hw-vlan-change";
 import { HwChange } from "../edit-hw-hw/hw-change";
 import { HwEditDialogData } from "./hw-edit-dialog-data";
@@ -20,7 +21,7 @@ export class HwEditDialogComponent {
     public matDialogRef: MatDialogRef<HwEditDialogComponent>,
     public formBuilder: FormBuilder
   ) {
-    console.debug("c'tor HwEditDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.formGroup = this.formBuilder.group({});
   }
 

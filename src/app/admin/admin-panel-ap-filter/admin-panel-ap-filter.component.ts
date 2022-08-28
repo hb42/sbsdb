@@ -1,4 +1,5 @@
 import { Component, HostBinding } from "@angular/core";
+import { environment } from "../../../environments/environment";
 import { ApFilterService } from "../../ap/ap-filter.service";
 
 @Component({
@@ -9,6 +10,6 @@ import { ApFilterService } from "../../ap/ap-filter.service";
 export class AdminPanelApFilterComponent {
   @HostBinding("attr.class") public cssClass = "flex-content";
   constructor(public apFilter: ApFilterService) {
-    console.debug("c'tor AdminPanelApFilterComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 }

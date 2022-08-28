@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { ApKategorie } from "../../shared/model/ap-kategorie";
 import { BaseSvzDialog } from "../base-svz-dialog";
@@ -20,7 +21,7 @@ export class EditApkategorieDialogComponent extends BaseSvzDialog<ApKategorie> i
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
-    console.debug("c'tor EditApkategorieDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
   ngOnInit(): void {
     this.bezeichControl = this.addFormControl(this.data.bezeichnung, "bezeich", [this.required]);

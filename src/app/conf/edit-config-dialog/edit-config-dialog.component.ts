@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { EditConfigData } from "./edit-config-data";
 
 @Component({
@@ -17,7 +18,7 @@ export class EditConfigDialogComponent {
     public matDialogRef: MatDialogRef<EditConfigDialogComponent>,
     public formBuilder: FormBuilder
   ) {
-    console.debug("c'tor EditConfigDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.formGroup = this.formBuilder.group({});
   }
 

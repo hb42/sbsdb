@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
+import { environment } from "../../../environments/environment";
 import { ConfigService } from "../../shared/config/config.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 
@@ -20,7 +21,7 @@ export class AdminPanelConfigInputComponent implements OnInit {
   public matcher = new FormFieldErrorStateMatcher();
 
   constructor(public configService: ConfigService) {
-    console.debug("c'tor AdminPanelConfigInputComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   ngOnInit(): void {

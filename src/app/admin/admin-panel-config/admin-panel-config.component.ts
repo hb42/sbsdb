@@ -1,5 +1,6 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
+import { environment } from "../../../environments/environment";
 import { ConfigService } from "../../shared/config/config.service";
 import { DataService } from "../../shared/data.service";
 import { BaseFilterService } from "../../shared/filter/base-filter-service";
@@ -45,7 +46,7 @@ export class AdminPanelConfigComponent implements OnInit {
   };
 
   constructor(public configService: ConfigService) {
-    console.debug("c'tor AdminPanelConfigComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   public ngOnInit(): void {

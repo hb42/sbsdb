@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { ADM_TAGTYP_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { TagTyp } from "../../shared/model/tagTyp";
@@ -26,7 +27,7 @@ export class AdminPanelTagtypComponent extends BaseSvzPanelComponent<
     protected dialog: MatDialog
   ) {
     super(dataService, adminService, dialog);
-    console.debug("c'tor AdminPanelAptypComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
 
     this.notificationHandler = this.dataService.tagtypListChanged.subscribe(() => {
       this.changeDebug();

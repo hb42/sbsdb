@@ -12,6 +12,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
+import { environment } from "../../../environments/environment";
 import { KEY_FIRST_FILTER } from "../../const";
 import { ConfigService } from "../../shared/config/config.service";
 import { GetColumn } from "../../shared/helper";
@@ -46,7 +47,7 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private keyboardService: KeyboardService
   ) {
-    console.debug("c'tor ApComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.apService.editFilterService.setFilterService(this.apService.filterService);
   }
 

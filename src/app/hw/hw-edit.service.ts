@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { lastValueFrom } from "rxjs";
+import { environment } from "../../environments/environment";
 import { DataService } from "../shared/data.service";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { PrepDateForDB } from "../shared/helper";
@@ -25,7 +26,7 @@ export class HwEditService extends BaseEditService {
 
   constructor(public dialog: MatDialog, public dataService: DataService) {
     super(dialog, dataService);
-    console.debug("c'tor HwEditService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   public hwEdit(hw: Hardware): void {

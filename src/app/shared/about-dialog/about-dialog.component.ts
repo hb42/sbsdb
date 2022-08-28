@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { environment } from "../../../environments/environment";
 import { VersionService } from "../version.service";
 
 @Component({
@@ -8,6 +9,6 @@ import { VersionService } from "../version.service";
 })
 export class AboutDialogComponent {
   constructor(public version: VersionService) {
-    console.debug("c'tor AboutDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 }

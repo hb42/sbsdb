@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: "sbsdb-dialog-actions",
@@ -11,7 +12,7 @@ export class DialogActionsComponent {
   @Input() formGroup: FormGroup;
 
   constructor() {
-    console.debug("c'tor DialogActionsComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   public isInvalid(): boolean {

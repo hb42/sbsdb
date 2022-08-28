@@ -2,6 +2,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { environment } from "../../environments/environment";
 import { KEY_SORT_BEZ, KEY_SORT_HERST, KEY_SORT_KAT_IP, KEY_SORT_TYP } from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
@@ -45,7 +46,7 @@ export class ConfService {
     public editService: ConfEditService,
     private configService: ConfigService
   ) {
-    console.debug("c'tor ConfService ");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
     this.buildColumns();
     setTimeout(() => {

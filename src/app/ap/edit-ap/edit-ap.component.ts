@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { StringCompare } from "../../shared/helper";
@@ -29,7 +30,7 @@ export class EditApComponent implements OnInit {
   public oeListNull: Betrst[];
 
   constructor(public dataService: DataService, private formBuilder: FormBuilder) {
-    console.debug("c'tor EditTagsCompomnenmt");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.apReady = new EventEmitter<ApChange>();
     this.apFormGroup = this.formBuilder.group({});
   }

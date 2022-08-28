@@ -2,6 +2,7 @@ import { formatNumber } from "@angular/common";
 import { Component, EventEmitter, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { CurrencyCheck, StringCompare, StringToNumber } from "../../shared/helper";
@@ -41,7 +42,7 @@ export class NewHwDialogComponent implements OnInit {
     public formBuilder: FormBuilder,
     public dataService: DataService
   ) {
-    console.debug("c'tor NewHwDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.formGroup = this.formBuilder.group({});
   }
 

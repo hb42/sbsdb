@@ -1,4 +1,5 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
+import { environment } from "../../../environments/environment";
 import { AdminService } from "../admin.service";
 
 @Component({
@@ -10,7 +11,7 @@ export class AdminComponent implements OnInit {
   @HostBinding("attr.class") public cssClass = "flex-panel flex-content-fix";
 
   constructor(public adminService: AdminService) {
-    console.debug("c'tor AdminComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   ngOnInit(): void {

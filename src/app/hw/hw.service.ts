@@ -5,6 +5,7 @@ import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { lastValueFrom } from "rxjs";
+import { environment } from "../../environments/environment";
 import { ConfService } from "../conf/conf.service";
 import {
   KEY_SORT_ADAT,
@@ -61,7 +62,7 @@ export class HwService {
     public dialog: MatDialog,
     private configService: ConfigService
   ) {
-    console.debug("c'tor HwService ");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
     this.buildColumns();
     setTimeout(() => {
@@ -676,7 +677,6 @@ export class HwService {
         complete: () => {
           fetched++;
           if (fetched === count) {
-            console.debug("fetch HW READY");
             this.dataService.hwListReady.emit();
           }
         },

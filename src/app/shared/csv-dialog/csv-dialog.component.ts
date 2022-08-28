@@ -1,6 +1,7 @@
 import { Component, HostListener, Inject } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { CsvDialogData } from "./csv-dialog-data";
 
 @Component({
@@ -15,7 +16,7 @@ export class CsvDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: CsvDialogData,
     public matDialogRef: MatDialogRef<CsvDialogComponent>
   ) {
-    console.debug("c'tor CsvDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   @HostListener("document:keydown.esc", ["$event"])

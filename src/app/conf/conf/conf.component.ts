@@ -12,6 +12,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { ActivatedRoute } from "@angular/router";
+import { environment } from "../../../environments/environment";
 import { KEY_FIRST_FILTER } from "../../const";
 import { ConfigService } from "../../shared/config/config.service";
 import { GetColumn } from "../../shared/helper";
@@ -44,7 +45,7 @@ export class ConfComponent implements OnInit, AfterViewInit, OnDestroy {
     private cdRef: ChangeDetectorRef,
     private keyboardService: KeyboardService
   ) {
-    console.debug("c'tor ConfComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.confService.editFilterService.setFilterService(this.confService.confFilterService);
   }
 

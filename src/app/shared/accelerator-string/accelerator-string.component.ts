@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: "sbsdb-accelerator-string",
@@ -15,7 +16,7 @@ export class AcceleratorStringComponent implements OnInit {
   public post = "";
 
   constructor() {
-    console.debug("c'tor AcceleratorStringComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   public ngOnInit(): void {

@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { HwAussondData } from "./hw-aussond-data";
 
@@ -19,7 +20,7 @@ export class HwAussondDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: HwAussondData,
     public formBuilder: FormBuilder
   ) {
-    console.debug("c'tor HwAussondDialogComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.formGroup = this.formBuilder.group({});
   }
 
