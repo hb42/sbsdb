@@ -10,6 +10,7 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { MatMenu, MatMenuTrigger } from "@angular/material/menu";
 import { Router } from "@angular/router";
+import { environment } from "../../../environments/environment";
 import {
   ADM_PATH,
   AP_PATH,
@@ -50,11 +51,10 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
   @Input() public newTitle: string;
   @Input() public newElement: EventEmitter<void>;
   @Input() public mainMenu: MatMenu;
-  @Input() public csv: EventEmitter<void>; // alt. zu filterService: kein Filter, nur CSV-Output
+  @Input() public csv: EventEmitter<void>;
   @Input() public disableButtons: boolean; // f. StdTable/Adminpanel
 
   public userSettings: UserSession;
-  public showMenu = false;
 
   public navLinks = [
     {
@@ -97,6 +97,7 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
     public statusService: StatusService,
     private keyboardService: KeyboardService
   ) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
   }
 
@@ -137,10 +138,7 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
       this.keyboardEvents.push(listener);
       listener.trigger.subscribe(() => {
         if (!this.navigationService.isPage(n.path)) {
-          console.debug("navigate");
           this.navigationService.navigateByUrl(n.path);
-        } else {
-          console.debug("on page");
         }
       });
     });
@@ -196,21 +194,16 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  public test(rla: unknown, link: unknown): void {
-    console.debug("### Test main button");
-    console.dir(rla);
-    console.dir(link);
-  }
-
   public about(): void {
     this.dialog.open(AboutDialogComponent);
   }
 
-  public backBtn(): void {
-    history.back();
-  }
-
-  public forwardBtn(): void {
-    history.forward();
-  }
+  // TODO Navigations-Buttons einbauen?
+  // public backBtn(): void {
+  //   history.back();
+  // }
+  //
+  // public forwardBtn(): void {
+  //   history.forward();
+  // }
 }

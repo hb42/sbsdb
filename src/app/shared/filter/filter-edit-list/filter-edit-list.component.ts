@@ -3,6 +3,7 @@ import { FormControl } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
+import { environment } from "../../../../environments/environment";
 import { TransportFilter } from "../transport-filter";
 import { FilterEditListData } from "./filter-edit-list-data";
 
@@ -16,7 +17,7 @@ export class FilterEditListComponent implements OnInit {
   public filteredOptions: Observable<TransportFilter[]>;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FilterEditListData) {
-    console.debug("c'tor ApFilterEditListComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   ngOnInit(): void {

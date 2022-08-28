@@ -21,6 +21,7 @@ export class EditHwtypDialogComponent extends BaseSvzDialog<HwTyp> implements On
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
+    console.debug("c'tor EditHwtypDialogComponent");
   }
 
   ngOnInit(): void {
@@ -39,9 +40,7 @@ export class EditHwtypDialogComponent extends BaseSvzDialog<HwTyp> implements On
     );
   }
 
-  onSubmit(value: unknown): void {
-    console.log("you submitted value: ");
-    console.dir(value);
+  onSubmit(): void {
     this.data.bezeichnung = this.bezeichControl.value as string;
     this.data.flag = Number.parseInt(this.flagControl.value as string, 10);
     this.data.apKategorieId = this.katControl.value as number;

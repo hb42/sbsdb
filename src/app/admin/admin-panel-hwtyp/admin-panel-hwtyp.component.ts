@@ -51,8 +51,6 @@ export class AdminPanelHwtypComponent extends BaseSvzPanelComponent<
     }
     const dialogRef = this.dialog.open(EditHwtypDialogComponent, { data: hwtyp });
     dialogRef.afterClosed().subscribe((result: HwTyp) => {
-      console.debug("dlg closed");
-      console.dir(result);
       if (result) {
         this.adminService.saveHwtyp({ hwtyp: result, del: false });
       }
@@ -65,7 +63,6 @@ export class AdminPanelHwtypComponent extends BaseSvzPanelComponent<
       `Soll der Hardware-Typ "${hwtyp.bezeichnung}" gelöscht werden?`
     ).then((result) => {
       if (result) {
-        console.debug("del HW-Typ");
         this.adminService.saveHwtyp({ hwtyp: hwtyp, del: true });
       }
     });

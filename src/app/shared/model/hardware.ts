@@ -13,16 +13,11 @@ export class Hardware implements BaseTableRow {
   public bemerkung: string;
   public sernr: string;
   public pri: boolean;
-  // public hwtyp: string;
-  // public hwtypFlag: number;
   public hwKonfigId: number;
   public hwKonfig: HwKonfig;
   public apId: number;
   public ap: Arbeitsplatz;
 
-  // public konfiguration: string;
-  // public hwTypBezeichnung: string;
-  // public apKatBezeichnung: string;
   public hwStr = ""; // konfig [serNr]
   public vlans: Netzwerk[];
   public ipStr = "";

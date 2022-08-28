@@ -22,6 +22,7 @@ export class EditAdresseDialogComponent extends BaseSvzDialog<Adresse> implement
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
+    console.debug("c'tor EditAdresseDialogComponent");
   }
 
   ngOnInit(): void {
@@ -31,9 +32,7 @@ export class EditAdresseDialogComponent extends BaseSvzDialog<Adresse> implement
     this.hausnrControl = this.addFormControl(this.data.hausnr, "hausnr");
   }
 
-  onSubmit(value: unknown): void {
-    console.log("you submitted value: ");
-    console.dir(value);
+  onSubmit(): void {
     this.data.plz = this.plzControl.value as string;
     this.data.ort = this.ortControl.value as string;
     this.data.strasse = this.strasseControl.value as string;

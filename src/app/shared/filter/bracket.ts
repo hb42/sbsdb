@@ -1,3 +1,4 @@
+import { environment } from "../../../environments/environment";
 import { Element } from "./element";
 import { LogicalOperator } from "./logical-operator";
 import { Term } from "./term";
@@ -17,7 +18,7 @@ export class Bracket implements Term {
   private brRight = this.up ? ")" : "}";
 
   constructor() {
-    // nop
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   public toString(): string {

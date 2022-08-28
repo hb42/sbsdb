@@ -51,7 +51,6 @@ export class HwComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    console.debug("afterViewInit HwComponent");
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     setTimeout(() => {

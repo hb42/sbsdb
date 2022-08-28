@@ -1,10 +1,8 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { DataService } from "../../shared/data.service";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 import { HwVlanChange } from "../../shared/edit/edit-vlan/hw-vlan-change";
 import { VlansInput } from "../../shared/edit/edit-vlan/vlans-input";
 import { Hardware } from "../../shared/model/hardware";
-import { HwService } from "../hw.service";
 
 @Component({
   selector: "sbsdb-edit-hw-mac",
@@ -21,15 +19,9 @@ export class EditHwMacComponent implements OnInit {
   public vlaninp: VlansInput;
   public hwchange: EventEmitter<Hardware> = new EventEmitter<Hardware>();
 
-  constructor(
-    private dataService: DataService,
-    private formBuilder: FormBuilder,
-    private cdRef: ChangeDetectorRef,
-    private hwService: HwService
-  ) {
+  constructor() {
     console.debug("c'tor EditHwMacCompomnenmt");
     this.macReady = new EventEmitter<HwVlanChange[]>();
-    // this.hwFormGroup = this.formBuilder.group({});
   }
 
   ngOnInit(): void {

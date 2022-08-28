@@ -13,14 +13,12 @@ import { BaseSvzDialog } from "../base-svz-dialog";
 export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnInit {
   public betrstControl: FormControl;
   public bstControl: FormControl;
-  // public telControl: FormControl;
   public oeffControl: FormControl;
   public apControl: FormControl;
   public parentControl: FormControl;
   public adrControl: FormControl;
 
   public hierarchie: string;
-  public readonly pathseparator = " " + String.fromCharCode(187) + " ";
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Betrst,
@@ -28,6 +26,7 @@ export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnIn
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
+    console.debug("c'tor EditOeDialogComponent");
     this.hierarchie = data.hierarchy;
   }
 
@@ -36,7 +35,6 @@ export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnIn
     this.bstControl = this.addFormControl(`000${this.data.bstNr}`.slice(-3), "bst", [
       Validators.pattern(this.intPattern),
     ]);
-    // this.telControl = this.addFormControl(this.data.tel, "tel");
     this.oeffControl = this.addFormControl(this.data.oeff, "oeff");
     this.apControl = this.addFormControl(
       { value: this.data.ap, disabled: !!this.data.bstId },
@@ -46,9 +44,7 @@ export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnIn
     this.adrControl = this.addFormControl(this.data.adresseId, "adresse", [this.required]);
   }
 
-  onSubmit(value: unknown): void {
-    console.log("you submitted value: ");
-    console.dir(value);
+  onSubmit(): void {
     this.data.betriebsstelle = this.betrstControl.value as string;
     this.data.bstNr = Number.parseInt(this.bstControl.value as string, 10);
     // this.data.tel = this.telControl.value as string;

@@ -15,7 +15,7 @@ export class CsvDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: CsvDialogData,
     public matDialogRef: MatDialogRef<CsvDialogComponent>
   ) {
-    //noop
+    console.debug("c'tor CsvDialogComponent");
   }
 
   @HostListener("document:keydown.esc", ["$event"])

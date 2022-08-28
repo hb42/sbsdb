@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { environment } from "../../environments/environment";
 import { ElectronRc } from "./electron-rc";
 import { Arbeitsplatz } from "./model/arbeitsplatz";
 import { ExtProg } from "./model/ext-prog";
@@ -8,7 +9,7 @@ import { ExtProg } from "./model/ext-prog";
 //
 interface LocalApi {
   test(msg: string): void;
-  version(): string[]; // 0: electron runtime, 1: local app
+  version(): string[]; // #0: electron runtime, #1: local app
   exec(job: string, param: string, ap: Arbeitsplatz): Promise<ElectronRc>;
 }
 
@@ -44,17 +45,17 @@ export class ElectronService {
     } else {
       this.electron = null;
     }
-    console.debug("c'tor ElectronService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     if (this.isElectron) {
       console.log("Running on electron runtime " + this.electronRuntimeVersion);
-      this.electron.test("calling sbsdb-local");
     }
   }
 
   public async exec(job: ExtProg, ap: Arbeitsplatz): Promise<ElectronRc | null> {
     if (this.isElectron) {
       const result = await this.electron.exec(job.program, job.param, ap);
-      console.debug("electron.exec ended rc=" + result.rc.toString() + ", msg=" + result.info);
+      if (!environment.production)
+        console.debug("electron.exec ended rc=" + result.rc.toString() + ", msg=" + result.info);
       if (result.rc > 0) {
         return result;
       } else {

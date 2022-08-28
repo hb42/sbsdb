@@ -50,8 +50,6 @@ export class AdminPanelAptypComponent extends BaseSvzPanelComponent<
     }
     const dialogRef = this.dialog.open(EditAptypDialogComponent, { data: aptyp });
     dialogRef.afterClosed().subscribe((result: ApTyp) => {
-      console.debug("dlg closed");
-      console.dir(result);
       if (result) {
         this.adminService.saveAptyp({ aptyp: result, del: false });
       }
@@ -64,7 +62,6 @@ export class AdminPanelAptypComponent extends BaseSvzPanelComponent<
       `Soll der Arbeitsplatz-Typ "${aptyp.bezeichnung}" gelöscht werden?`
     ).then((result) => {
       if (result) {
-        console.debug("del AP-Typ");
         this.adminService.saveAptyp({ aptyp: aptyp, del: true });
       }
     });

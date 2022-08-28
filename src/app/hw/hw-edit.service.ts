@@ -40,18 +40,6 @@ export class HwEditService extends BaseEditService {
       hwChange: null,
     } as HwEditDialogData);
   }
-  public hwapEdit(hw: Hardware): void {
-    this.edit({
-      hw: hw,
-      editAp: true,
-      editHw: false,
-      editMac: false,
-      macs: [],
-      removeAp: false,
-      delHw: false,
-      hwChange: null,
-    } as HwEditDialogData);
-  }
   public hwhwEdit(hw: Hardware): void {
     this.edit({
       hw: hw,
@@ -78,7 +66,6 @@ export class HwEditService extends BaseEditService {
   }
 
   public newHw(hwkonfig: HwKonfig): void {
-    console.debug("new HW clicked");
     const dialogRef = this.dialog.open(NewHwDialogComponent, {
       disableClose: true,
       data: hwkonfig,
@@ -86,8 +73,6 @@ export class HwEditService extends BaseEditService {
 
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: NewHwData) => {
-      console.debug("dialog closed");
-      console.dir(result);
       if (result) {
         result.anschDat = PrepDateForDB(result.anschDat);
         const post: NewHwTransport = {
@@ -146,8 +131,6 @@ export class HwEditService extends BaseEditService {
 
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: HwEditDialogData) => {
-      console.debug("dialog closed");
-      console.dir(result);
       if (result) {
         this.saveDlg(result);
       }
@@ -176,8 +159,6 @@ export class HwEditService extends BaseEditService {
   }
 
   private save(post: EditHwTransport): void {
-    console.debug("save changes");
-    console.dir(post);
     this.dataService.post(this.dataService.changeHwUrl, post);
   }
 }

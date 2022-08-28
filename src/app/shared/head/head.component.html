@@ -61,7 +61,6 @@
       </button>
     </div>
   </div>
-  <!--    <span class="spacer2"></span>-->
 
   <span class="buttons-right"></span>
 
@@ -110,7 +109,6 @@
     (click)="csvBtnClick()"
     [disabled]="disableButtons"
   >
-    <!--    <mat-icon>ios_share</mat-icon>-->
     <mat-icon>download</mat-icon>
   </button>
   <span class="menu-spacer" *ngIf="filterService">|</span>
@@ -121,7 +119,6 @@
     [title]="newTitle + ' (Alt+N)'"
     (click)="newBtnClick()"
   >
-    <!--      <mat-icon>add_circle_outline</mat-icon>-->
     <mat-icon>add_to_queue</mat-icon>
   </button>
   <span class="spacer"></span>
@@ -134,7 +131,4 @@
   >
     <mat-icon>menu</mat-icon>
   </button>
-
-  <!-- hier kann die jeweilige Seite ihre Menues einhaengen -->
-  <!--  <ng-content></ng-content>-->
 </mat-toolbar>

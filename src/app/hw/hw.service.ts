@@ -21,7 +21,6 @@ import { DataService } from "../shared/data.service";
 import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
 import { GetColumn } from "../shared/helper";
-import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { Hardware } from "../shared/model/hardware";
 import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
@@ -42,11 +41,10 @@ export class HwService {
   public columns: SbsdbColumn<HwService, Hardware>[] = [];
   public displayedColumns: string[] = [];
 
-  public stdFilter = true; // TODO evtl. in FilterService auslagern
+  public stdFilter = true;
 
   public newHwEvent: EventEmitter<void> = new EventEmitter<void>();
 
-  private filterChanged = 1;
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
@@ -128,17 +126,8 @@ export class HwService {
     this.hwFilterService.triggerColumnFilter();
   }
 
-  public editConfig(conf: HwKonfig): void {
-    console.debug("** edit config clicked");
-    // TODO evtl. aus HW page zu Konfig page wechseln und edit konfig starten???
-    //      (edit button in HW detail/konfig pane)
-  }
-
   public hwEdit(hw: Hardware): void {
     this.editService.hwEdit(hw);
-  }
-  public hwapEdit(hw: Hardware): void {
-    this.editService.hwapEdit(hw);
   }
   public hwhwEdit(hw: Hardware): void {
     this.editService.hwhwEdit(hw);
@@ -576,17 +565,6 @@ export class HwService {
     );
 
     this.displayedColumns = this.columns.filter((c) => c.show).map((col) => col.columnName);
-  }
-
-  /**
-   * Filter ausloesen
-   *
-   * DataTable reagiert auf Aenderungen an DataSource.filter, hier wird nur ein Wert
-   * hochgezaehlt, der eigentliche Filter kommt per URl. Das Filtern passiert in
-   * DataSource.filterPredicate().
-   */
-  private triggerFilter() {
-    this.hwDataSource.filter = `${this.filterChanged++}`;
   }
 
   private init(): void {

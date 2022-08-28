@@ -14,7 +14,6 @@ import { SbsdbColumn } from "../shared/table/sbsdb-column";
 import { YesNoDialogComponent } from "../shared/yes-no-dialog/yes-no-dialog.component";
 import { AdminService } from "./admin.service";
 
-// @Injectable()
 @Component({
   selector: "sbsdb-base-svz-panel",
   template: "",
@@ -58,7 +57,6 @@ export abstract class BaseSvzPanelComponent<C, R> implements AfterViewInit, OnDe
     this.buildColumns();
 
     this.exportHandler = this.adminService.exportEvent.subscribe(() => {
-      console.debug("output to csv called - TAG-Typ");
       this.csvEvent.emit();
     });
 
@@ -86,7 +84,6 @@ export abstract class BaseSvzPanelComponent<C, R> implements AfterViewInit, OnDe
   }
 
   public ngOnDestroy(): void {
-    console.debug("onDestroy AdminPanelAptypComponent");
     this.adminService.disableMainMenuButtons = true;
     this.newRecordHandler.unsubscribe();
     this.exportHandler.unsubscribe();

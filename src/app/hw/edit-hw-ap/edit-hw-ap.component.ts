@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { ThemePalette } from "@angular/material/core";
 import { DataService } from "../../shared/data.service";
 import { Hardware } from "../../shared/model/hardware";
 import { HwService } from "../hw.service";
@@ -15,6 +16,9 @@ export class EditHwApComponent implements OnInit {
   @Input() public onDelAp: EventEmitter<void>;
   @Input() public onSubmit: EventEmitter<void>; // fuer den submit der form
   @Output() public apReady: EventEmitter<boolean>; // liefert die zu aenderenden Daten
+  // Fehlermeldungen im HTML vermeiden
+  public accentcolor: ThemePalette = "accent";
+  public defaultcolor: ThemePalette = undefined;
 
   public apStr: string;
   public removeAp = false;
@@ -22,7 +26,6 @@ export class EditHwApComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private formBuilder: FormBuilder,
-    private cdRef: ChangeDetectorRef,
     public hwService: HwService
   ) {
     console.debug("c'tor EditHwApCompomnenmt");

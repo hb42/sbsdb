@@ -9,10 +9,6 @@ export class Betrst {
   public ap: boolean;
   public parentId?: number;
   public adresseId: number;
-  // public plz: string;
-  // public ort: string;
-  // public strasse: string;
-  // public hausnr: string;
 
   public adresse: Adresse;
   public fullname: string; // incl. BST-Nr.

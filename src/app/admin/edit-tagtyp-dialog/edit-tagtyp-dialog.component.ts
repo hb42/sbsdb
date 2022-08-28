@@ -22,12 +22,12 @@ export class EditTagtypDialogComponent extends BaseSvzDialog<TagTyp> implements 
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
+    console.debug("c'tor EditTagtypDialogComponent");
   }
 
   public ngOnInit(): void {
     this.bezeichControl = this.addFormControl(this.data.bezeichnung, "bezeich", [this.required]);
     this.paramControl = this.addFormControl(this.data.param, "param");
-    // TODO Aendern erlauben? -> Testen, wie das Programm damit klarkommt
     this.flagControl = this.addFormControl(this.data.flag, "flag", [
       Validators.pattern(this.intPattern),
     ]);
@@ -41,9 +41,7 @@ export class EditTagtypDialogComponent extends BaseSvzDialog<TagTyp> implements 
     );
   }
 
-  onSubmit(value: unknown): void {
-    console.log("you submitted value: ");
-    console.dir(value);
+  onSubmit(): void {
     this.data.bezeichnung = this.bezeichControl.value as string;
     this.data.param = this.paramControl.value as string;
     this.data.flag = Number.parseInt(this.flagControl.value as string, 10);

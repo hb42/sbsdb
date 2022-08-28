@@ -47,8 +47,6 @@ export class AdminPanelTagtypComponent extends BaseSvzPanelComponent<
     }
     const dialogRef = this.dialog.open(EditTagtypDialogComponent, { data: tagtyp });
     dialogRef.afterClosed().subscribe((result: TagTyp) => {
-      console.debug("dlg closed");
-      console.dir(result);
       if (result) {
         this.adminService.saveTagtyp({ tagtyp: result, del: false });
       }
@@ -61,7 +59,6 @@ export class AdminPanelTagtypComponent extends BaseSvzPanelComponent<
       `Soll der TAG-Typ "${tagtyp.bezeichnung}" gelöscht werden?`
     ).then((result) => {
       if (result) {
-        console.debug("del TAG-Typ");
         this.adminService.saveTagtyp({ tagtyp: tagtyp, del: true });
       }
     });

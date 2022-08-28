@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { environment } from "../../environments/environment";
 import { StatusComponent } from "./status/status.component";
 
 @Injectable({
@@ -18,7 +19,9 @@ export class StatusService {
   }
   private loadingindicator = false;
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 
   /**
    * Fuer hat-geklappt-Nachricht: msg 5 Sekunden anzeigen

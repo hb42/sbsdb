@@ -27,7 +27,7 @@ export class ConfService {
   public columns: SbsdbColumn<ConfService, HwKonfig>[] = [];
   public displayedColumns: string[] = [];
 
-  public stdFilter = true; // TODO evtl. in FilterService auslagern
+  public stdFilter = true;
 
   public newConfEvent: EventEmitter<void> = new EventEmitter<void>();
 

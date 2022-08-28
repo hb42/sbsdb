@@ -41,6 +41,7 @@ export class NewHwDialogComponent implements OnInit {
     public formBuilder: FormBuilder,
     public dataService: DataService
   ) {
+    console.debug("c'tor NewHwDialogComponent");
     this.formGroup = this.formBuilder.group({});
   }
 
@@ -101,7 +102,6 @@ export class NewHwDialogComponent implements OnInit {
       return "Ungültige MAC-Adresse.";
     }
     if (control.errors) {
-      console.dir(control.errors);
       return "undefinded error";
     }
     return null;
@@ -125,11 +125,8 @@ export class NewHwDialogComponent implements OnInit {
     return null;
   };
 
-  public onSubmit(form: unknown): void {
+  public onSubmit(): void {
     this.prepareData();
-    // this.onSubmitEvent.emit();
-    console.log("NewHwDialog onSubmit");
-    console.dir(form);
   }
 
   public setKonfigList(): void {

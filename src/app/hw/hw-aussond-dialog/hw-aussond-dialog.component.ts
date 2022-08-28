@@ -19,6 +19,7 @@ export class HwAussondDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: HwAussondData,
     public formBuilder: FormBuilder
   ) {
+    console.debug("c'tor HwAussondDialogComponent");
     this.formGroup = this.formBuilder.group({});
   }
 

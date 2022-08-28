@@ -1,17 +1,9 @@
-<!--Rahmen fuer HW-Edit
-    title: konfig-typ - konfig-herteller - konfig-bezeichnung
-
-    include
-    edit-ap -> ap anzeigen/entfernen (zuordnen ???)
-    edit-hw -> HW bearbeiten
-    edit-mac -> MAC bearbeiten, IP nur anzeigen oder auch bearbeiten ???
--->
 <sbsdb-dialog-title
   dialogTitle="{{ data.hw.hwKonfig.hwTypBezeichnung }}: {{ data.hw.hwKonfig.konfiguration }}"
 ></sbsdb-dialog-title>
 <form
   [formGroup]="formGroup"
-  (ngSubmit)="onSubmit(formGroup.value)"
+  (ngSubmit)="onSubmit()"
   [class.error]="!formGroup.valid && formGroup.touched"
 >
   <div class="panel"><!-- hw data --></div>

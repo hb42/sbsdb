@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input } from "@angular/core";
+import { environment } from "../../../../environments/environment";
 import { SbsdbColumn } from "../sbsdb-column";
 
 /**
@@ -25,14 +26,14 @@ export class HeaderCellComponent implements AfterViewInit {
    */
   @Input() public showFilter: boolean;
   /**
-   * Groesse des Input: XS, S, M
+   * Groesse des Input: XXS, XS, S, M. L
    */
-  @Input() public size: string; // "XS", "s", "M"
+  @Input() public size: string;
 
   public classSbsdbColumnRef = SbsdbColumn;
 
   constructor(private elementRef: ElementRef) {
-    console.debug("c'tor HeadCellComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
   ngAfterViewInit(): void {

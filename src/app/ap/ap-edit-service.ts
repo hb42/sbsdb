@@ -27,9 +27,7 @@ export class ApEditService extends BaseEditService {
   public newAp(): void {
     const dialogRef = this.dialog.open(NewApComponent, { data: { typ: null } });
     dialogRef.afterClosed().subscribe((result: NewApData) => {
-      console.debug("dlg closed");
       if (result && result.typ) {
-        console.debug("with result");
         const ap: Arbeitsplatz = {
           apKatBezeichnung: result.typ.apkategorie,
           apKatFlag: 0,
@@ -117,8 +115,6 @@ export class ApEditService extends BaseEditService {
   }
 
   public hwEdit(ap: Arbeitsplatz): void {
-    console.debug("open edit aphw");
-    console.dir(ap);
     this.edit({ ap: ap, editHw: true } as ApEditDialogData);
   }
 
@@ -200,8 +196,6 @@ export class ApEditService extends BaseEditService {
 
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {
-      console.debug("dialog closed");
-      console.dir(result);
       if (result) {
         this.saveDlg(result);
       }
@@ -220,8 +214,6 @@ export class ApEditService extends BaseEditService {
   }
 
   private save(post: EditApTransport): void {
-    console.debug("save changes");
-    console.dir(post);
     this.dataService.post(this.dataService.changeApUrl, post);
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { environment } from "../../environments/environment";
 import { ApService } from "../ap/ap.service";
 import { ConfService } from "../conf/conf.service";
 import { HwService } from "../hw/hw.service";
@@ -15,5 +16,7 @@ import { HwService } from "../hw/hw.service";
   providedIn: "root",
 })
 export class InitService {
-  constructor(private ap: ApService, private hw: HwService, private conf: ConfService) {}
+  constructor(private ap: ApService, private hw: HwService, private conf: ConfService) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 }

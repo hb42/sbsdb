@@ -34,7 +34,7 @@ export class ApFilterService extends BaseFilterService {
       });
   }
 
-  public tableFilter(row: unknown): boolean {
+  public tableFilter(): boolean {
     return true;
   }
 

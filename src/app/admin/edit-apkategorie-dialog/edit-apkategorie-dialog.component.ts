@@ -20,6 +20,7 @@ export class EditApkategorieDialogComponent extends BaseSvzDialog<ApKategorie> i
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
+    console.debug("c'tor EditApkategorieDialogComponent");
   }
   ngOnInit(): void {
     this.bezeichControl = this.addFormControl(this.data.bezeichnung, "bezeich", [this.required]);
@@ -31,9 +32,7 @@ export class EditApkategorieDialogComponent extends BaseSvzDialog<ApKategorie> i
     );
   }
 
-  public onSubmit(value: unknown): void {
-    console.log("you submitted value: ");
-    console.dir(value);
+  public onSubmit(): void {
     this.data.bezeichnung = this.bezeichControl.value as string;
     this.data.flag = Number.parseInt(this.flagControl.value as string, 10);
   }

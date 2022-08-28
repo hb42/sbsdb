@@ -1,12 +1,13 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors } from "@angular/forms";
+import { ThemePalette } from "@angular/material/core";
 import { DataService } from "../../shared/data.service";
 import { HwVlanChange } from "../../shared/edit/edit-vlan/hw-vlan-change";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
+import { StringCompare } from "../../shared/helper";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { Hardware } from "../../shared/model/hardware";
 import { HwInput } from "./hw-input";
-import { StringCompare } from "../../shared/helper";
 
 @Component({
   selector: "sbsdb-edit-hw",
@@ -24,6 +25,9 @@ export class EditHwComponent implements OnInit {
   @Input() public onSubmit: EventEmitter<void>;
   @Output() public delete: EventEmitter<HwInput>; // diesen Eintrag entfernen
   @Output() public editHwReady: EventEmitter<void>;
+  // Fehlermeldungen im HTML vermeiden
+  public accentcolor: ThemePalette = "accent";
+  public defaultcolor: ThemePalette = undefined;
 
   public matcher = new FormFieldErrorStateMatcher();
   public hwFormGroup: FormGroup;
@@ -97,9 +101,6 @@ export class EditHwComponent implements OnInit {
   }
 
   public hwSelectionChange(hw: Hardware): void {
-    console.debug("##### hwselectionchange");
-    console.dir(hw);
-    console.dir(this.hw.hwCtrl.value);
     this.hw.vlans.hw = hw;
     this.hwchange.emit(hw);
   }
@@ -124,7 +125,6 @@ export class EditHwComponent implements OnInit {
   }
 
   public vlanReady(vlans: HwVlanChange[]): void {
-    console.debug("**** edit-hw submit");
     this.hw.vlans.out = vlans;
     this.editHwReady.emit();
   }

@@ -22,6 +22,7 @@ export class EditVlanDialogComponent extends BaseSvzDialog<Vlan> implements OnIn
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
+    console.debug("c'tor EditVlanDialogComponent");
   }
 
   public ngOnInit(): void {
@@ -38,9 +39,7 @@ export class EditVlanDialogComponent extends BaseSvzDialog<Vlan> implements OnIn
     this.ipControl.markAsTouched();
   }
 
-  onSubmit(value: unknown): void {
-    console.log("you submitted value: ");
-    console.dir(value);
+  onSubmit(): void {
     this.data.bezeichnung = this.bezeichControl.value as string;
     this.data.ip = Number.parseInt(this.ipControl.value as string, 10);
     this.data.netmask = this.nmControl.value as number;

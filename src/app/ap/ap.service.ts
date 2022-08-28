@@ -23,7 +23,6 @@ import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { ExtProg } from "../shared/model/ext-prog";
 import { Hardware } from "../shared/model/hardware";
 import { Tag } from "../shared/model/tag";
-import { TagTyp } from "../shared/model/tagTyp";
 import { NavigationService } from "../shared/navigation.service";
 import { StatusService } from "../shared/status.service";
 import { ColumnType } from "../shared/table/column-type.enum";
@@ -77,9 +76,6 @@ export class ApService {
     console.debug("c'tor ArbeitsplatzService");
     this.userSettings = configService.getUser();
     this.buildColumns();
-    // const initialSelection = [];
-    // const allowMultiSelect = true;
-    // this.selection = new SelectionModel<Arbeitsplatz>(allowMultiSelect, initialSelection);
     setTimeout(() => {
       this.initTable();
     }, 0);
@@ -90,18 +86,6 @@ export class ApService {
 
     this.newApEvent.subscribe(() => this.editService.newAp());
   }
-
-  // public getColumnIndex(name: string): number {
-  //   return this.columns.findIndex((c) => c.columnName === name);
-  // }
-  // public getColumn(name: string): SbsdbColumn<ApService, Arbeitsplatz> {
-  //   const idx = this.getColumnIndex(name);
-  //   if (idx >= 0 && idx < this.columns.length) {
-  //     return this.columns[idx];
-  //   } else {
-  //     return null;
-  //   }
-  // }
 
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
     this.apDataSource.sort = sort;
@@ -236,20 +220,6 @@ export class ApService {
       });
     }
   }
-
-  // public filterByAptyp(ap: Arbeitsplatz, event: Event): void {
-  //   const col = GetColumn("aptyp", this.columns);
-  //   col.filterControl.setValue(ap.apTypBezeichnung);
-  //   col.filterControl.markAsDirty();
-  //   event.stopPropagation();
-  // }
-  //
-  // public filterByBetrst(ap: Arbeitsplatz, event: Event): void {
-  //   const col = GetColumn("betrst", this.columns);
-  //   col.filterControl.setValue(ap[col.sortFieldName]);
-  //   col.filterControl.markAsDirty();
-  //   event.stopPropagation();
-  // }
 
   private buildColumns() {
     this.columns.push(
@@ -597,8 +567,6 @@ export class ApService {
     this.setDataToTable.subscribe(() => {
       if (this.apDataSource.paginator) {
         this.apDataSource.data = this.dataService.apList;
-        // this.filterService.initService(this.columns, this.apDataSource);
-        // this.filterService.dataReady = true;
         this.filterService.triggerColumnFilter();
       }
     });
@@ -628,8 +596,6 @@ export class ApService {
 
     // Server liefert Aenderungen an APs
     this.dataService.apListChanged.subscribe(() => this.filterService.triggerColumnFilter());
-    // TODO filterChange ueberall entfernen
-    // this.filterChange.subscribe(() => this.filterService.triggerColumnFilter());
   }
 
   private onDataReady() {
@@ -698,7 +664,6 @@ export class ApService {
       this.dataService.get(`${this.dataService.pageApsUrl}${page}/${pageSize}`).subscribe({
         next: (aps: Arbeitsplatz[]) => {
           console.debug("fetch AP page #", page, " size=", aps.length);
-          //      aps.forEach((ap) => this.dataService.prepareAP(ap));
           this.dataService.apList = [...this.dataService.apList, ...aps];
         },
         error: (err) => {
@@ -711,18 +676,10 @@ export class ApService {
             this.dataService.prepareApList();
             console.debug("fetch page READY");
             this.dataService.apListFetched.emit();
-            // ready.emit();
-            // this.onDataReady();
           }
         },
       });
     }
-  }
-
-  public async getTagTypes(): Promise<TagTyp[]> {
-    const rc = await firstValueFrom(this.dataService.get(this.dataService.allTagTypesUrl));
-    console.debug("got tagtypes");
-    return rc as TagTyp[];
   }
 
   public vlanDebugStr(hw: Hardware): string {

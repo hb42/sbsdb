@@ -1,4 +1,5 @@
 import { FormControl } from "@angular/forms";
+import { environment } from "../../../environments/environment";
 import { ColumnFilter } from "../config/column-filter";
 import { Expression } from "../filter/expression";
 import { Field } from "../filter/field";
@@ -18,14 +19,11 @@ export class SbsdbColumn<C, E> {
    * Filter-String
    *
    * Fuehrendes ! negiert den Filter (-> enthaelt nicht).
-   * Filtertext wird als lowerCase geliefert.
    *
    * @param text - Filtertext
    */
   private static checkSearchString(text: string): ColumnFilter {
-    // FIXME ohne toLowerCase??
     let str = text ?? "";
-    // let str = text ? text.toLowerCase() : "";
     let incl = true;
     if (str.startsWith("!")) {
       str = str.slice(1);
@@ -129,6 +127,7 @@ export class SbsdbColumn<C, E> {
     private outputtocsv: boolean,
     private _size?: string // param size f. sbsdb-header-cell
   ) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.show = showcolumn;
   }
 

@@ -16,11 +16,6 @@
     <span *ngFor="let el of getElements()">
       <span *ngIf="el.term.isBracket()">
         <sbsdb-filter-bracket [element]="el"></sbsdb-filter-bracket>
-        <!--        {{el.operator ? el.operator.toString() + " " : ""}}( -->
-        <!--        <span *ngFor="let el2 of getBracketElements(el.term)">-->
-        <!--          <sbsdb-ap-filter-element [element]="el2" [title]="el2.count"></sbsdb-ap-filter-element>-->
-        <!--        </span>-->
-        <!--        )-->
       </span>
       <span *ngIf="!el.term.isBracket()">
         <sbsdb-filter-element [element]="el"></sbsdb-filter-element>
@@ -58,16 +53,9 @@
 
 <mat-menu #bmenu="matMenu">
   <ng-template matMenuContent let-el="el">
-    <!--    <button mat-menu-item [matMenuTriggerFor]="insMenu" [matMenuTriggerData]="{ el: el }">-->
-    <!--      Danach einfügen-->
-    <!--    </button>-->
     <button mat-menu-item (click)="editFilter.filterService.remove(el)">Klammer löschen</button>
-    <div mat-menu-item [disabled]="'true'">Danach einfügen:</div>
-    <!--  </ng-template>-->
-    <!--</mat-menu>-->
+    <div mat-menu-item disabled="true">Danach einfügen:</div>
 
-    <!--<mat-menu #insMenu="matMenu">-->
-    <!--  <ng-template matMenuContent let-el="el">-->
     <button mat-menu-item (click)="editFilter.filterService.insert(el, 'and_brack')">UND ()</button>
     <button mat-menu-item (click)="editFilter.filterService.insert(el, 'or_brack')">ODER ()</button>
     <button mat-menu-item (click)="editFilter.filterService.insert(el, 'and_exp')">

@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { EventEmitter, Injectable } from "@angular/core";
 import { lastValueFrom, Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { environment } from "../../environments/environment";
 import { ConfigService } from "./config/config.service";
 import { StringCompare } from "./helper";
 import { IpHelper } from "./ip-helper";
@@ -141,7 +142,7 @@ export class DataService {
     private notification: NotificationService,
     private statusService: StatusService
   ) {
-    console.debug("c'tor DataService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
 
     this.oeTreeUrl = this.configService.webservice + "/tree/oe";
     this.allApsUrl = this.configService.webservice + "/ap/all";
@@ -182,7 +183,7 @@ export class DataService {
 
     const readyEventCheck = () => {
       if (this.isDataReady()) {
-        console.debug("## all data ready");
+        if (!environment.production) console.debug(">>> all data ready");
         this.apTypDeps();
         this.tagTypDeps();
         this.dataReady.emit();
@@ -218,59 +219,44 @@ export class DataService {
     notification.initialize();
 
     notification.apChange.subscribe((data) => {
-      console.debug("dataService start update ap");
       this.updateAp(data);
       this.updateHwKonfigListCount();
       this.apListChanged.emit();
-
       this.checkNotification();
     });
 
     notification.apChangeAptyp.subscribe((data) => {
-      console.debug("dataService start update aptyp");
       this.updateAp(data);
       this.updateHwKonfigListCount();
       this.apListChanged.emit();
-
       this.checkNotification();
     });
 
     notification.hwChange.subscribe((data) => {
-      console.debug("dataService start update hw");
       this.updateHw(data);
       this.updateHwKonfigListCount();
       this.apListChanged.emit();
-
       this.checkNotification();
     });
 
     notification.addHw.subscribe((data) => {
-      console.debug("dataService start adding hw");
       this.addHw(data);
       this.updateHwKonfigListCount();
       this.hwListChanged.emit();
-
       this.checkNotification();
     });
 
     notification.konfigChange.subscribe((data) => {
-      console.debug("dataService start update hwKonfig");
       this.updateKonfig(data);
-
       this.checkNotification();
     });
 
     notification.extprogChange.subscribe(() => {
-      console.debug("dataService start update extprog");
       this.fetchExtProgList();
-
       this.checkNotification();
     });
 
     notification.adresseChange.subscribe((data) => {
-      console.debug("dataService start update adresse");
-      console.dir(data);
-
       const old = this.adresseList.findIndex((ad) => ad.id === data.adresse.id);
       if (old >= 0) {
         if (data.del) {
@@ -289,14 +275,10 @@ export class DataService {
       }
       this.adresseListChanged.emit();
       this.adresseDeps();
-
       this.checkNotification();
     });
 
     notification.apkategorieChange.subscribe((data) => {
-      console.debug("dataService start update apkategorie");
-      console.dir(data);
-
       const old = this.apkatList.findIndex((at) => at.id === data.apkategorie.id);
       if (old >= 0) {
         if (data.del) {
@@ -343,14 +325,10 @@ export class DataService {
       this.hwKonfigListChanged.emit();
       this.apkategorieListChanged.emit();
       this.apKategorieDeps();
-
       this.checkNotification();
     });
 
     notification.aptypChange.subscribe((data) => {
-      console.debug("dataService start update aptyp");
-      console.dir(data);
-
       const old = this.aptypList.findIndex((at) => at.id === data.aptyp.id);
       if (old >= 0) {
         if (data.del) {
@@ -377,14 +355,10 @@ export class DataService {
       this.apListChanged.emit();
       this.aptypListChanged.emit();
       this.apTypDeps();
-
       this.checkNotification();
     });
 
     notification.hwtypChange.subscribe((data) => {
-      console.debug("dataService start update hwtyp");
-      console.dir(data);
-
       const old = this.hwtypList.findIndex((at) => at.id === data.hwtyp.id);
       if (old >= 0) {
         if (data.del) {
@@ -412,14 +386,10 @@ export class DataService {
       this.hwKonfigListChanged.emit();
       this.hwtypListChanged.emit();
       this.hwtypDeps();
-
       this.checkNotification();
     });
 
     notification.oeChange.subscribe((data) => {
-      console.debug("dataService start update oe");
-      console.dir(data);
-
       const old = this.bstList.findIndex((b) => b.bstId === data.oe.bstId);
       if (old >= 0) {
         if (data.del) {
@@ -436,9 +406,6 @@ export class DataService {
           this.bstList[old].adresseId = data.oe.adresseId;
           this.bstList[old].parentId = data.oe.parentId ? data.oe.parentId : null;
           this.prepBstList();
-          // this.prepBst(this.bstList[old]);
-          // this.prepBstHierarchy(this.bstList[old]);
-          // update AP-List ??
         }
       } else {
         // new
@@ -447,15 +414,12 @@ export class DataService {
         this.bstList.push(data.oe);
       }
       this.oeListChanged.emit();
-      // this.aptypListChanged.emit();
       this.oeDeps();
 
       this.checkNotification();
     });
 
     notification.tagtypChange.subscribe((data) => {
-      console.debug("dataService start update tagtyp");
-      console.dir(data);
       const old = this.tagTypList.findIndex((tt) => tt.id === data.tagtyp.id);
       if (old >= 0) {
         if (data.del) {
@@ -486,13 +450,10 @@ export class DataService {
       this.apListChanged.emit();
       this.tagtypListChanged.emit();
       this.tagTypDeps();
-
       this.checkNotification();
     });
 
     notification.vlanChange.subscribe((data) => {
-      console.debug("dataService start update vlan");
-      console.dir(data);
       const old = this.vlanList.findIndex((vl) => vl.id === data.vlan.id);
       if (old >= 0) {
         if (data.del) {
@@ -508,10 +469,8 @@ export class DataService {
         // new
         this.vlanList.push(data.vlan);
       }
-      // this.apListChanged.emit();
       this.vlanListChanged.emit();
       this.vlanDeps();
-
       this.checkNotification();
     });
   }
@@ -525,8 +484,7 @@ export class DataService {
       .post(url, data)
       .pipe(catchError(this.handleError))
       .subscribe({
-        next: (a: never) => {
-          console.debug("post succeeded");
+        next: () => {
           this.statusService.info("Änderungen erfolgreich gespeichert.");
         },
         error: (err: Error) => {
@@ -545,10 +503,6 @@ export class DataService {
     return this.aplistfetched;
   }
 
-  // public isApListReady(): boolean {
-  //   return this.aplistready;
-  // }
-
   public isBstListReady(): boolean {
     return this.bstlistready;
   }
@@ -562,11 +516,8 @@ export class DataService {
   }
 
   public async fetchBstList(): Promise<void> {
-    const adre = (await lastValueFrom(this.get(this.allAdresseUrl))) as Adresse[];
-    this.adresseList = adre;
-    const bst = (await lastValueFrom(this.get(this.allBstUrl))) as Betrst[];
-    console.debug("fetch Betrst size=", bst.length);
-    this.bstList = bst;
+    this.adresseList = (await lastValueFrom(this.get(this.allAdresseUrl))) as Adresse[];
+    this.bstList = (await lastValueFrom(this.get(this.allBstUrl))) as Betrst[];
     this.prepBstList();
     this.bstListReady.emit();
   }
@@ -668,7 +619,7 @@ export class DataService {
   public tagFieldName(tag: string): string {
     // alles ausser Buchstaben (a-z) und Ziffern aus der TAG-Bezeichnung entfernen
     // fuer die Verwendung als Feldname im Arbeitsplatz.Object
-    const name = tag.replace(/[^\w^\d]/g, "");
+    const name = tag.replace(/\W/g, "");
     return `${DataService.TAG_DISPLAY_NAME}${name}`;
   }
 
@@ -833,7 +784,7 @@ export class DataService {
 
   private checkNotification(): void {
     if (!this.notification.isOpen()) {
-      console.debug("reopening Notification");
+      if (!environment.production) console.debug("reopening Notification");
       this.notification.initialize();
     }
   }
@@ -983,7 +934,7 @@ export class DataService {
       ap.oe = this.nullBetrst;
     }
     if (ap.verantwOeId) {
-      const voe = this.bstList.find((bst) => ap.verantwOeId === bst.bstId); // TODO ext OE
+      const voe = this.bstList.find((bst) => ap.verantwOeId === bst.bstId);
       if (voe) {
         ap.verantwOe = voe;
       } else {
@@ -1015,7 +966,6 @@ export class DataService {
     hw.ap = null;
     hw.apStr = "";
     hw.anschDat = new Date(hw.anschDat);
-    // TODO ext MAC?
     if (hw.vlans && hw.vlans[0]) {
       hw.vlans.forEach((v) => {
         const dhcp = v.ip === 0 ? " (DHCP)" : "";
@@ -1033,14 +983,14 @@ export class DataService {
       const ap = this.apList.find((a) => a.apId === hw.apId);
       if (ap) {
         hw.ap = ap;
-        hw.apStr = ap.apname + " | " + ap.oe.betriebsstelle + " | " + ap.bezeichnung; // TODO ext OE
+        hw.apStr = ap.apname + " | " + ap.oe.betriebsstelle + " | " + ap.bezeichnung;
         ap.hw.push(hw);
         if (hw.pri) {
           // if ((hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0) {
           //   ap.hwTypStr = hw.hwKonfig.konfiguration;
           // }
           ap.macsearch = macsearch;
-          ap.hwStr = hw.hwKonfig.konfiguration + " [" + hw.sernr + "]"; // TODO ext KONFIG
+          ap.hwStr = hw.hwKonfig.konfiguration + " [" + hw.sernr + "]";
           ap.ipStr += ap.ipStr ? " / " + hw.ipStr : hw.ipStr;
           ap.macStr += ap.macStr ? " / " + hw.macStr : hw.macStr;
           ap.vlanStr += ap.vlanStr ? " / " + hw.vlanStr : hw.vlanStr;
@@ -1049,7 +999,7 @@ export class DataService {
           ap.sonstHwStr +=
             (ap.sonstHwStr ? " / " : "") +
             " " +
-            hw.hwKonfig.konfiguration + // TODO ext KONFIG
+            hw.hwKonfig.konfiguration +
             (hw.sernr && !this.isFremdeHardware(hw) ? " [" + hw.sernr + "]" : "");
         }
       }
@@ -1072,7 +1022,6 @@ export class DataService {
     const neu = data.ap;
     let ap = this.apList.find((a) => a.apId === neu.apId);
     if (!ap) {
-      console.debug("updateAp() new ap");
       ap = this.newAp(neu.apId);
     } else {
       const keys = Object.keys(ap);
@@ -1255,7 +1204,7 @@ export class DataService {
   private handleError = (error: HttpErrorResponse): Observable<never> => {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error("An error occurred:", error.error);
+      console.error("An network error occurred:", error.error);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong.
@@ -1263,6 +1212,9 @@ export class DataService {
       console.dir(error);
     }
     // Return an observable with a user-facing error message.
-    return throwError(() => new Error("Something bad happened; please try again later."));
+    return throwError(
+      () =>
+        new Error("Something bad happened communicating with the backend; please try again later.")
+    );
   };
 }

@@ -29,10 +29,6 @@ export class AdminPanelVlanComponent extends BaseSvzPanelComponent<AdminPanelVla
     this.notificationHandler = this.dataService.vlanListChanged.subscribe(() => {
       this.changeDebug();
     });
-    // this.dataService.adresseList.sort((a, b) =>
-    //                                     StringCompare(a.ort + a.strasse, b.ort + b.strasse)
-    // );
-    // this.dataService.bstList.sort((a, b) => StringCompare(a.fullname, b.fullname));
   }
 
   protected getTableData(): Vlan[] {
@@ -51,8 +47,6 @@ export class AdminPanelVlanComponent extends BaseSvzPanelComponent<AdminPanelVla
     }
     const dialogRef = this.dialog.open(EditVlanDialogComponent, { data: vl });
     dialogRef.afterClosed().subscribe((result: Vlan) => {
-      console.debug("dlg closed");
-      console.dir(result);
       if (result) {
         this.adminService.saveVlan({ vlan: vl, del: false });
       }
@@ -63,7 +57,6 @@ export class AdminPanelVlanComponent extends BaseSvzPanelComponent<AdminPanelVla
     void this.askDelete("Vlan löschen", `Soll das Vlan "${vl.bezeichnung}" gelöscht werden?`).then(
       (result) => {
         if (result) {
-          console.debug("del Vlan");
           this.adminService.saveVlan({ vlan: vl, del: true });
         }
       }

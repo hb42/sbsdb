@@ -7,7 +7,9 @@ import { AdminService } from "../admin.service";
   styleUrls: ["./admin-panel-tclogs.component.scss"],
 })
 export class AdminPanelTclogsComponent implements OnInit {
-  constructor(public adminService: AdminService) {}
+  constructor(public adminService: AdminService) {
+    console.debug("c'tor AdminPanelTclogsComponent");
+  }
 
   public log = "";
 

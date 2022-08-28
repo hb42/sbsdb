@@ -4,7 +4,7 @@
 
 <form
   [formGroup]="formGroup"
-  (ngSubmit)="onSubmit(formGroup.value)"
+  (ngSubmit)="onSubmit()"
   [class.error]="!formGroup.valid && formGroup.touched"
 >
   <mat-dialog-content>
@@ -31,12 +31,6 @@
         />
         <mat-error *ngIf="betrstControl.invalid">{{ getErrorMessage(betrstControl) }}</mat-error>
       </mat-form-field>
-
-      <!--      <mat-form-field class="abstand">-->
-      <!--        <mat-label>Telefon-Nr.</mat-label>-->
-      <!--        <input matInput [formControl]="telControl" [errorStateMatcher]="matcher" />-->
-      <!--        <mat-error *ngIf="telControl.invalid">{{ getErrorMessage(telControl) }}</mat-error>-->
-      <!--      </mat-form-field>-->
 
       <div class="abstand">
         <label class="radio-label">OE hat Arbeitsplätze</label>

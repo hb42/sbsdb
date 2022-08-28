@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, HostListener, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { environment } from "../../../../environments/environment";
 import { FormFieldErrorStateMatcher } from "../../form-field-error-state-matcher";
 import { SbsdbColumn } from "../../table/sbsdb-column";
 import { Field } from "../field";
@@ -19,36 +20,13 @@ export class FilterEditComponent implements OnInit {
   public valCtrl: FormControl;
   public matcher = new FormFieldErrorStateMatcher();
 
-  // public get selectedField(): SbsdbColumn<unknown, unknown> {
-  //   return this.data.f
-  //     ? this.data.columns.find(
-  //         (col: SbsdbColumn<unknown, unknown>) => col.displayName === this.data.f.displayName
-  //       )
-  //     : null;
-  // }
-  // public set selectedField(col: SbsdbColumn<unknown, unknown>) {
-  //   if (this.data.f) {
-  //     if (this.data.f.displayName !== col.displayName) {
-  //       this.opCtrl.setValue(null);
-  //       this.opCtrl.markAsTouched();
-  //       this.valCtrl.setValue(null);
-  //       this.valCtrl.markAsTouched();
-  //     }
-  //     this.data.f.displayName = col.displayName;
-  //     this.data.f.fieldName = col.fieldName;
-  //     this.data.f.type = col.typeKey;
-  //   } else {
-  //     this.data.f = new Field(col.fieldName, col.displayName, col.typeKey);
-  //   }
-  // }
-
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: FilterEditData,
     public matDialogRef: MatDialogRef<FilterEditComponent>,
     public formBuilder: FormBuilder,
     private cd: ChangeDetectorRef
   ) {
-    console.debug("c'tor ApFilterEditComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.formGroup = this.formBuilder.group({});
   }
   @HostListener("document:keydown.esc", ["$event"])
@@ -128,7 +106,6 @@ export class FilterEditComponent implements OnInit {
   }
 
   public onFieldSelectionChange(): void {
-    console.debug("fieldselectionchange");
     const col = this.fieldCtrl.value as SbsdbColumn<unknown, unknown>;
     if (this.data.f) {
       if (this.data.f.displayName !== col.displayName) {
@@ -146,7 +123,6 @@ export class FilterEditComponent implements OnInit {
   }
 
   public onOpSelectionChange(): void {
-    console.debug("opselectionchange");
     if (this.noValueRequired()) {
       this.valCtrl.disable();
       this.valCtrl.setValue(null);

@@ -6,8 +6,8 @@ import { Component, Input, OnInit } from "@angular/core";
   styleUrls: ["./accelerator-string.component.scss"],
 })
 export class AcceleratorStringComponent implements OnInit {
-  // accel ist das Zeichen in text, das unterstrichen werden soll
   @Input() public text: string;
+  // accel ist das Zeichen in text, das unterstrichen werden soll
   @Input() public accel: string;
 
   public pre = "";
@@ -15,7 +15,7 @@ export class AcceleratorStringComponent implements OnInit {
   public post = "";
 
   constructor() {
-    // noop
+    console.debug("c'tor AcceleratorStringComponent");
   }
 
   public ngOnInit(): void {

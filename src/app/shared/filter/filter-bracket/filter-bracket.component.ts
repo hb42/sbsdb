@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Input, ViewChild } from "@angular/core";
 import { MatMenuTrigger } from "@angular/material/menu";
+import { environment } from "../../../../environments/environment";
 import { Bracket } from "../bracket";
 import { EditFilterService } from "../edit-filter.service";
 import { Element } from "../element";
@@ -17,7 +18,9 @@ export class FilterBracketComponent implements AfterViewInit {
   public highlight = false;
   private menuopen = false;
 
-  constructor(public editFilter: EditFilterService) {}
+  constructor(public editFilter: EditFilterService) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 
   public ngAfterViewInit(): void {
     setTimeout(() => {

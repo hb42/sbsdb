@@ -40,11 +40,6 @@ export class EditApHwComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    // submit wird nur durchgereicht, hier warten wir auf editHwReady fuer alle HW-Inputs
-    // this.onSubmit.subscribe(() => {
-    //   // resultHW = [] -> hwId, mac, vlanId, ip
-    //   this.submit();
-    // });
     this.data = { apid: this.ap.apId, priHw: this.priHw(), periph: this.periHw() };
     // an die uebergeordnete Form anhaengen
     this.formGroup.addControl("prihw", this.hwFormGroup);
@@ -60,7 +55,6 @@ export class EditApHwComponent implements OnInit {
   }
 
   public submit(): void {
-    console.debug("**** edit-ap-hw submit");
     const changes: HwChange = {
       apid: this.ap.apId,
       priVlans: [],
@@ -80,7 +74,7 @@ export class EditApHwComponent implements OnInit {
       newpriId ||
       (this.data.priHw.hw && this.apService.dataService.isFremdeHardware(this.data.priHw.hw))
     ) {
-      changes.priVlans = this.data.priHw.vlans.out; // this.submitVlans(this.data.priHw);
+      changes.priVlans = this.data.priHw.vlans.out;
     }
 
     const oldperi = this.ap.hw.filter((h) => !h.pri);
@@ -102,8 +96,6 @@ export class EditApHwComponent implements OnInit {
       }
     });
 
-    console.debug("-- hardware changes --");
-    console.dir(changes);
     this.hwReady.emit(changes);
   }
 
@@ -149,7 +141,6 @@ export class EditApHwComponent implements OnInit {
     const remove = this.data.periph.splice(idx, 1);
     if (remove && remove.length === 1) {
       this.periFormGroup.removeControl(remove[0].ctrlid);
-      // remove[0].hwCtrl = null;
     }
   }
 }

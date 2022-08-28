@@ -28,19 +28,8 @@
           (hw.hwCtrl.value && dataService.isFremdeHardware(hw.hwCtrl.value)))
       "
     >
-      <mat-icon [color]="hwdelbtn.disabled ? '' : 'accent'">delete_outline</mat-icon>
+      <mat-icon [color]="hwdelbtn.disabled ? defaultcolor : accentcolor">delete_outline</mat-icon>
     </button>
-
-    <!--    <button-->
-    <!--      class="abstand"-->
-    <!--      *ngIf="hwInput.hwCtrl.value && !isPeripherie(hwInput.hwCtrl.value)"-->
-    <!--      mat-icon-button-->
-    <!--      color="primary"-->
-    <!--      title="Neue MAC- bzw. IP-Adresse hinzufügen"-->
-    <!--    >-->
-    <!--      &lt;!&ndash;      Neue MAC/IP&ndash;&gt;-->
-    <!--      <mat-icon [color]="'primary'">add_link</mat-icon>-->
-    <!--    </button>-->
   </div>
 
   <sbsdb-edit-vlan
@@ -52,45 +41,4 @@
     [onSubmit]="onSubmit"
     (vlanReady)="vlanReady($event)"
   ></sbsdb-edit-vlan>
-  <!--  <div *ngFor="let v of hw.vlans" class="row-align">-->
-  <!--    <mat-icon class="vlan-icon">subdirectory_arrow_right</mat-icon>-->
-  <!--    <mat-form-field>-->
-  <!--      <mat-label>MAC-Adresse</mat-label>-->
-  <!--      <input matInput [formControl]="v.macCtrl" [errorStateMatcher]="matcher" />-->
-  <!--      <mat-error *ngIf="v.macCtrl.invalid">{{ getErrorMessage(v.macCtrl) }}</mat-error>-->
-  <!--    </mat-form-field>-->
-  <!--    <mat-form-field class="vlan-select abstand">-->
-  <!--      <mat-label>VLAN</mat-label>-->
-  <!--      <select-->
-  <!--        matNativeControl-->
-  <!--        [formControl]="v.vlanCtrl"-->
-  <!--        [errorStateMatcher]="matcher"-->
-  <!--        (change)="vlanSelectionChange(v)"-->
-  <!--      >-->
-  <!--        <option *ngFor="let vl of vlans" [ngValue]="vl">-->
-  <!--          {{ vl ? vl.bezeichnung : "<-&ndash;&gt;" }}-->
-  <!--        </option>-->
-  <!--      </select>-->
-  <!--      <mat-error *ngIf="v.vlanCtrl.invalid">{{ getErrorMessage(v.vlanCtrl) }}</mat-error>-->
-  <!--      <mat-hint align="start">{{ getNetworkInfo(v.vlanCtrl.value) }}</mat-hint>-->
-  <!--      <mat-hint align="end">{{ getIpInfo(v.vlanCtrl.value) }}</mat-hint>-->
-  <!--    </mat-form-field>-->
-  <!--    <mat-form-field class="ip-input abstand">-->
-  <!--      <mat-label>IP</mat-label>-->
-  <!--      <input matInput [formControl]="v.ipCtrl" [errorStateMatcher]="matcher" />-->
-  <!--      <mat-error *ngIf="v.ipCtrl.invalid">{{ getErrorMessage(v.ipCtrl) }}</mat-error>-->
-  <!--      <mat-hint>DHCP = 0</mat-hint>-->
-  <!--    </mat-form-field>-->
-  <!--    <div class="abstand">-->
-  <!--      <button-->
-  <!--        [disabled]="!v.vlanCtrl.value"-->
-  <!--        mat-icon-button-->
-  <!--        title="IP-Adresse löschen"-->
-  <!--        type="button"-->
-  <!--        (click)="delIp(v)"-->
-  <!--      >-->
-  <!--        <mat-icon [color]="v.vlanCtrl.value ? 'accent' : ''">delete_outline</mat-icon>-->
-  <!--      </button>-->
-  <!--    </div>-->
-  <!--  </div>-->
 </div>

@@ -20,30 +20,23 @@ export class HwEditDialogComponent {
     public matDialogRef: MatDialogRef<HwEditDialogComponent>,
     public formBuilder: FormBuilder
   ) {
+    console.debug("c'tor HwEditDialogComponent");
     this.formGroup = this.formBuilder.group({});
   }
 
-  public onSubmit(form: unknown): void {
+  public onSubmit(): void {
     this.onSubmitEvent.emit();
-    console.log("HwEditDialog onSubmit");
-    console.dir(form);
   }
 
   public macReady(evt: HwVlanChange[]): void {
-    console.debug("HwMacEditDialog macReady");
-    console.dir(evt);
     this.data.macs = evt;
   }
 
   public hwReady(evt: HwChange): void {
-    console.debug("HwHwEditDialog hwReady");
-    console.dir(evt);
     this.data.hwChange = evt;
   }
 
   public apReady(evt: boolean): void {
-    console.debug("HwApEditDialog apReady");
-    console.dir(evt);
     this.data.removeAp = evt;
   }
 }

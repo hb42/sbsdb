@@ -16,7 +16,6 @@ export class ConfEditService extends BaseEditService {
   }
 
   public newConf(): void {
-    console.debug("** new conf button");
     this.editConf(null);
   }
 
@@ -32,8 +31,6 @@ export class ConfEditService extends BaseEditService {
 
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: EditConfigData) => {
-      console.debug("dialog closed");
-      console.dir(result);
       if (result) {
         this.dataService.post(this.dataService.changeKonfigUrl, result.chg);
       }

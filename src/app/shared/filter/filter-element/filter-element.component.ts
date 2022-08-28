@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { environment } from "../../../../environments/environment";
 import { EditFilterService } from "../edit-filter.service";
 import { Element } from "../element";
 
@@ -13,7 +14,9 @@ export class FilterElementComponent {
   public highlight = false;
   private menuopen = false;
 
-  constructor(public editFilter: EditFilterService) {}
+  constructor(public editFilter: EditFilterService) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 
   public menuOpen(): void {
     this.menuopen = true;

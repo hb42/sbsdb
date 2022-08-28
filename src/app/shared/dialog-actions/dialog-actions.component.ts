@@ -11,7 +11,7 @@ export class DialogActionsComponent {
   @Input() formGroup: FormGroup;
 
   constructor() {
-    // noop
+    console.debug("c'tor DialogActionsComponent");
   }
 
   public isInvalid(): boolean {

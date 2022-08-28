@@ -1,20 +1,11 @@
 import { formatNumber } from "@angular/common";
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { MatDatepicker } from "@angular/material/datepicker";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
 import { CurrencyCheck, StringToNumber } from "../../shared/helper";
 import { Hardware } from "../../shared/model/hardware";
-import { HwService } from "../hw.service";
 import { HwChange } from "./hw-change";
 
 @Component({
@@ -39,12 +30,7 @@ export class EditHwHwComponent implements OnInit {
   public wfaCtrl: FormControl;
   public bemCtrl: FormControl;
 
-  constructor(
-    private dataService: DataService,
-    private formBuilder: FormBuilder,
-    private cdRef: ChangeDetectorRef,
-    private hwService: HwService
-  ) {
+  constructor(private dataService: DataService, private formBuilder: FormBuilder) {
     console.debug("c'tor EditHwHwCompomnenmt");
     this.hwReady = new EventEmitter<HwChange>();
     this.hwFormGroup = this.formBuilder.group({});

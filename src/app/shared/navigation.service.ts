@@ -2,17 +2,14 @@ import { Location } from "@angular/common";
 import { EventEmitter, Injectable } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router, UrlTree } from "@angular/router";
 import { filter } from "rxjs/operators";
+import { environment } from "../../environments/environment";
 import { ERROR_PATH } from "../const";
 import { ConfigService } from "./config/config.service";
-import { ElectronService } from "./electron.service";
 
 @Injectable({ providedIn: "root" })
 export class NavigationService {
   public lastError: Error = new Error("");
   public currentPath = "";
-
-  public apLoading = false;
-  public hwLoading = false;
 
   public navToAp: EventEmitter<{ col: string; search: string | number }> = new EventEmitter<{
     col: string;
@@ -31,10 +28,9 @@ export class NavigationService {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
-    private electronService: ElectronService,
     public configService: ConfigService
   ) {
-    console.debug("c'tor NavigationService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
 
     // aktuelle Navigation im Benutzerprofil speichern
     this.router.events
@@ -63,14 +59,13 @@ export class NavigationService {
    * (i.d.R. also AppComponent).
    */
   public gotoUserPath(): void {
-    console.debug("--- gotoUserPath");
     // mit welcher Adresse wird die Anwendung gestartet?
     // (location.path() liefert den Teil nach BASE_URL,
     //  -> "" wenn keine Adresse eingegeben wurde).
     const applicationCall = this.location.path();
 
     if (applicationCall !== "" && applicationCall !== "/") {
-      console.debug("Ignoring user path and going to " + applicationCall);
+      // Ignoring user path and going to applicationCall
       return;
     }
 

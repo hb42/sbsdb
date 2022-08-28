@@ -11,28 +11,9 @@
       </mat-autocomplete>
     </mat-form-field>
   </form>
-  <!--  <mat-form-field>-->
-  <!--    <mat-label>Namen auswählen</mat-label>-->
-  <!--    </>mat-select [(value)]="selected">-->
-  <!--      <mat-option *ngFor="let filt of data.list" [value]="filt">-->
-  <!--        {{ filt.name }}-->
-  <!--      </mat-option>-->
-  <!--    </mat-select>-->
-  <!--  </mat-form-field>-->
-
-  <!--  <mat-form-field class="abstand">-->
-  <!--    <mat-label>Vergleich</mat-label>-->
-  <!--    <input *ngIf="!compareAsList()" matInput [(ngModel)]="data.c"/>-->
-  <!--    <mat-select *ngIf="compareAsList()" [(value)]="data.c">-->
-  <!--      <mat-option *ngFor="let sel of selectedField?.selectList" [value]="sel">-->
-  <!--        {{ sel }}-->
-  <!--      </mat-option>-->
-  <!--    </mat-select>-->
-
-  <!--    </mat-form-field>-->
 </div>
-<div mat-dialog-actions align="end">
-  <button mat-flat-button color="primary" mat-dialog-close>Abbrechen</button>
+<div mat-dialog-actions class="buttons">
+  <button mat-flat-button color="primary" mat-dialog-close="">Abbrechen</button>
   <button mat-flat-button color="primary" [mat-dialog-close]="formcontrol.value" type="submit">
     OK
   </button>

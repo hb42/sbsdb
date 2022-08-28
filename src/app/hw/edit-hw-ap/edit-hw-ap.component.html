@@ -1,11 +1,8 @@
 <mat-card>
-  <!--  <mat-card-header class="input-title card-title">-->
-  <!--    <mat-card-subtitle>Hardware</mat-card-subtitle>-->
-  <!--  </mat-card-header>-->
   <div class="input-title card-title">Zugeordnet zu Arbeitsplatz</div>
   <mat-card-content class="fields">
     <div [formGroup]="formGroup" class="abstand-top">
-      <!--AP anzeigen/entfernen (zuordnen???)-->
+      <!--AP anzeigen/entfernen -->
       <div class="row-align">
         <div class="ap-text">{{ apStr }}</div>
         <div class="fill"></div>
@@ -19,7 +16,9 @@
           (click)="delAp()"
           [disabled]="hwService.dataService.isFremdeHardware(hw)"
         >
-          <mat-icon [color]="apdelbtn.disabled ? '' : 'accent'">delete_outline</mat-icon>
+          <mat-icon [color]="apdelbtn.disabled ? defaultcolor : accentcolor"
+            >delete_outline</mat-icon
+          >
         </button>
       </div>
     </div>

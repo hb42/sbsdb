@@ -1,14 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors } from "@angular/forms";
+import { environment } from "../../../../environments/environment";
 import { DataService } from "../../data.service";
 import { FormFieldErrorStateMatcher } from "../../form-field-error-state-matcher";
+import { StringCompare } from "../../helper";
 import { IpHelper } from "../../ip-helper";
 import { Hardware } from "../../model/hardware";
 import { Vlan } from "../../model/vlan";
 import { HwInputVlan } from "./hw-input-vlan";
 import { HwVlanChange } from "./hw-vlan-change";
 import { VlansInput } from "./vlans-input";
-import { StringCompare } from "../../helper";
 
 @Component({
   selector: "sbsdb-edit-vlan",
@@ -33,7 +34,7 @@ export class EditVlanComponent implements OnInit {
   private idCounter = -1;
 
   constructor(private dataService: DataService, private formBuilder: FormBuilder) {
-    console.debug("c'tor EditVlanComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.vlanReady = new EventEmitter<HwVlanChange[]>();
     this.macFormGroup = this.formBuilder.group({});
   }
@@ -44,7 +45,6 @@ export class EditVlanComponent implements OnInit {
     });
     // andere HW ausgewaehlt
     this.hwchange.subscribe((hw: Hardware) => {
-      console.debug("edit-vlan hwchange handler");
       this.vlanInp.hw = hw;
       // IP sichern
       const sav: { vlan: Vlan; ip: number }[] = [];
@@ -122,7 +122,6 @@ export class EditVlanComponent implements OnInit {
         const min = IpHelper.getHostIpMin(vlan.ip, vlan.netmask);
         const max = IpHelper.getHostIpMax(vlan.ip, vlan.netmask);
         const ipval = IpHelper.getIpPartial(control.value as string);
-        // console.debug(`${ipval} > ${min} && ${ipval} < ${max}`);
         if (ipval > min && ipval < max) {
           return null;
         } else {
@@ -148,7 +147,6 @@ export class EditVlanComponent implements OnInit {
       .filter((v) => control != v.vlanCtrl)
       .forEach((vl) => {
         if (vl.vlanCtrl) {
-          console.debug("### vlan set error");
           vl.vlanCtrl.setErrors(error);
         }
       });
@@ -269,7 +267,6 @@ export class EditVlanComponent implements OnInit {
   }
 
   private submitVlans(): void {
-    console.debug("edit vlan submit");
     const rc: HwVlanChange[] = [];
     const oldvlans = this.vlanInp.hw?.vlans ?? [];
     const del = oldvlans.filter(

@@ -1,6 +1,7 @@
 import { Location } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { environment } from "../../../environments/environment";
 import { ConfigService } from "../config/config.service";
 import { NavigationService } from "../navigation.service";
 
@@ -22,7 +23,7 @@ export class ErrorComponent implements OnInit {
     private location: Location,
     private navigationService: NavigationService
   ) {
-    console.debug("c'tor ErrorComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     // Bevor die App zurueckgesetzt wird, noch den Pfad, der fuer den User
     // gespeichert ist auf default setzen (sonst dreht sich ein 404 im Kreis).
     this.configService.getUser().path = "/";
@@ -34,8 +35,4 @@ export class ErrorComponent implements OnInit {
     this.message = this.navigationService.lastError.message;
     this.stack = this.navigationService.lastError.stack;
   }
-
-  // public restartApp(): void {
-  //   this.navigationService.resetApp();
-  // }
 }

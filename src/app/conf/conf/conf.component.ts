@@ -49,7 +49,6 @@ export class ConfComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    console.debug("afterViewInit ConfComponent");
     // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
     // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
     setTimeout(() => {
@@ -102,10 +101,10 @@ export class ConfComponent implements OnInit, AfterViewInit, OnDestroy {
     listener.trigger.subscribe(() => this.focusFirstFilter());
     this.keyboardEvents.push(listener);
 
-    this.confService.columns.forEach((c) => {
-      if (c.accelerator) {
-        listener = { trigger: new EventEmitter<void>(), key: c.accelerator };
-        listener.trigger.subscribe(() => this.sort.sort(this.sort.sortables.get(c.columnName)));
+    this.confService.columns.forEach((co) => {
+      if (co.accelerator) {
+        listener = { trigger: new EventEmitter<void>(), key: co.accelerator };
+        listener.trigger.subscribe(() => this.sort.sort(this.sort.sortables.get(co.columnName)));
         this.keyboardService.register(listener);
         this.keyboardEvents.push(listener);
       }

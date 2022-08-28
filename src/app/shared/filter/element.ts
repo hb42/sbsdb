@@ -1,3 +1,4 @@
+import { environment } from "../../../environments/environment";
 import { LogicalOperator } from "./logical-operator";
 import { Term } from "./term";
 
@@ -9,6 +10,6 @@ import { Term } from "./term";
  */
 export class Element {
   constructor(public operator: LogicalOperator | null, public term: Term) {
-    // nop
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 }

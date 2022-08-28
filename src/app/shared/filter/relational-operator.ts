@@ -63,7 +63,7 @@ export class RelationalOperator {
     return true;
   };
 
-  // Die folgenden Number-Vergleiche verwenden den "naiver" Ansatz, dass Fliesskommazahlen
+  // Die folgenden Number-Vergleiche verwenden den "naiven" Ansatz, dass Fliesskommazahlen
   // auf einfache Weise vergleichbar sind (was nicht der Fall ist!). Da hier nur Integer-
   // Werte oder normale Euro-Betraege verglichen werden, sollte das aber reichen.
   //
@@ -98,8 +98,6 @@ export class RelationalOperator {
   // LIKE vergleicht immer als regulaerer Ausdruck
   // Vergleichsstring ohne RegEx-Sonderzeichen gibt das gleiche Ergebnis wie String.includes()
   private static like = (fieldContent: string | number, compare: string, type: number): boolean => {
-    // compare = compare ? compare.toLocaleLowerCase() : "";
-    // return RelationalOperator.fieldToString(fieldContent, type).includes(compare);
     try {
       const regex = new RegExp(compare ? compare : "", "i");
       return regex.test(RelationalOperator.fieldToString(fieldContent, type));
@@ -114,8 +112,6 @@ export class RelationalOperator {
     compare: string,
     type: number
   ): boolean => {
-    // compare = compare ? compare.toLocaleLowerCase() : "";
-    // return !RelationalOperator.fieldToString(fieldContent, type).includes(compare);
     const regex = new RegExp(compare ? compare : "", "i");
     return !regex.test(RelationalOperator.fieldToString(fieldContent, type));
   };
@@ -129,8 +125,6 @@ export class RelationalOperator {
       let fc = fieldContent as string;
       fc = fc ?? "";
       compare = compare ?? "";
-      // fc = fc ? fc.toLocaleLowerCase() : "";
-      // compare = compare ? compare.toLocaleLowerCase() : "";
       return fc === compare;
     } else if (type === ColumnType.DATE) {
       compare = compare ? compare : "";
@@ -190,22 +184,10 @@ export class RelationalOperator {
   // verwendet LIKE -> RegEx
   private static startsWith = (fieldContent: string, compare: string, type: number): boolean => {
     return this.like(fieldContent, "^" + compare, type);
-    // if (type !== ColumnType.STRING && type !== ColumnType.IP) {
-    //   return false;
-    // }
-    // fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    // compare = compare ? compare.toLocaleLowerCase() : "";
-    // return fieldContent.startsWith(compare);
   };
   // verwendet LIKE -> RegEx
   private static endsWith = (fieldContent: string, compare: string, type: number): boolean => {
     return this.like(fieldContent, compare + "$", type);
-    // if (type !== ColumnType.STRING && type !== ColumnType.IP) {
-    //   return false;
-    // }
-    // fieldContent = fieldContent ? fieldContent.toLocaleLowerCase() : "";
-    // compare = compare ? compare.toLocaleLowerCase() : "";
-    // return fieldContent.endsWith(compare);
   };
   // alle
   private static exist = (fieldContent: string | number | null): boolean => {

@@ -1,5 +1,6 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from "@angular/material/snack-bar";
+import { environment } from "../../../environments/environment";
 import { StatusService } from "../status.service";
 
 /**
@@ -15,7 +16,9 @@ export class StatusComponent {
   constructor(
     @Inject(MAT_SNACK_BAR_DATA) public data: { msg: string; type: string },
     private snackBarRef: MatSnackBarRef<StatusComponent>
-  ) {}
+  ) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 
   public close(): void {
     this.snackBarRef.dismiss();

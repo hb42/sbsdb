@@ -50,8 +50,6 @@ export class AdminPanelAdresseComponent extends BaseSvzPanelComponent<
     }
     const dialogRef = this.dialog.open(EditAdresseDialogComponent, { data: adresse });
     dialogRef.afterClosed().subscribe((result: Adresse) => {
-      console.debug("dlg closed");
-      console.dir(result);
       if (result) {
         this.adminService.saveAdresse({ adresse: result, del: false });
       }
@@ -64,7 +62,6 @@ export class AdminPanelAdresseComponent extends BaseSvzPanelComponent<
       `Soll die Adresse "${adresse.ort}, ${adresse.strasse} ${adresse.hausnr}" gelöscht werden?`
     ).then((result) => {
       if (result) {
-        console.debug("del Adresse");
         this.adminService.saveAdresse({ adresse: adresse, del: true });
       }
     });

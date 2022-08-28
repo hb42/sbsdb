@@ -27,6 +27,7 @@ export class EditExtprogDialogComponent
     public dataService: DataService
   ) {
     super(data, formBuilder, dataService);
+    console.debug("c'tor EditExtprogDialogComponent");
   }
 
   public ngOnInit(): void {
@@ -43,7 +44,7 @@ export class EditExtprogDialogComponent
     this.aptypControl = this.addFormControl(aptypIn, "aptyp", [this.required]);
   }
 
-  public onSubmit(value: unknown): void {
+  public onSubmit(): void {
     const prg = this.keyControl.value as string;
     const bez = this.nameControl.value as string;
     const par = (this.paramControl.value as string) ?? "";

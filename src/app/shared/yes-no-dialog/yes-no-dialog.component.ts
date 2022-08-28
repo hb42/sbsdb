@@ -1,5 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
+import { YesNoDialogData } from "./yes-no-dialog-data";
 
 @Component({
   selector: "sbsdb-yes-no-dialog",
@@ -9,10 +11,9 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 export class YesNoDialogComponent {
   public title = "";
   public text = "";
-  constructor(@Inject(MAT_DIALOG_DATA) private data) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+  constructor(@Inject(MAT_DIALOG_DATA) private data: YesNoDialogData) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.title = data.title;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
     this.text = data.text;
   }
 }

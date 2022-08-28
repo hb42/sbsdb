@@ -59,8 +59,6 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
     }
     const dialogRef = this.dialog.open(EditOeDialogComponent, { data: oe });
     dialogRef.afterClosed().subscribe((result: Betrst) => {
-      console.debug("dlg closed");
-      console.dir(result);
       if (result) {
         this.save(result, false);
       }
@@ -71,7 +69,6 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
     void this.askDelete("OE löschen", `Soll die OE "${oe.fullname}" gelöscht werden?`).then(
       (result) => {
         if (result) {
-          console.debug("del OE");
           this.save(oe, true);
         }
       }
@@ -147,24 +144,6 @@ export class AdminPanelOeComponent extends BaseSvzPanelComponent<AdminPanelOeCom
         "S"
       )
     );
-    // this.columns.push(
-    //   new SbsdbColumn<AdminPanelOeComponent, Betrst>(
-    //     this,
-    //     "tel",
-    //     () => "Tel-Nr.",
-    //     () => "tel",
-    //     () => "tel",
-    //     (b: Betrst) => b.tel,
-    //     "",
-    //     true,
-    //     4,
-    //     ColumnType.STRING,
-    //     null,
-    //     null,
-    //     true,
-    //     "S"
-    //   )
-    // );
     this.columns.push(
       new SbsdbColumn<AdminPanelOeComponent, Betrst>(
         this,

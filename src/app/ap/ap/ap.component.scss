@@ -42,36 +42,6 @@
   white-space: nowrap;
 }
 
-/* AP-Typ */
-//.aptyp {
-//  flex-direction: column;
-//  align-items: flex-start;
-//}
-//.aptyp-tag {
-//  font-size: 12px;
-//  margin-top: 3px;
-//}
-//
-//.aptyp-btn {
-//  display: flex;
-//  flex-direction: row;
-//  align-items: baseline;
-//  height: 34px;
-//}
-//.aptyp-btn mat-icon {
-//  font-size: 30px;
-//}
-//
-//.aptyp-btn button {
-//  text-align: left;
-//}
-
-/* AP-Details */
-// muss hier definiert werden und nicht global
-//td.mat-cell {
-//  border: 0;
-//}
-
 /* Paginator */
 .paginator {
   height: 56px;
@@ -79,11 +49,6 @@
 }
 
 /* extended Filter */
-//.ext-filter-button-select {
-//  background-color: var(--md-light-gray-background-color);
-//  color: #fd3232;
-//}
-
 .distinction {
   border-bottom: solid 3px salmon;
 }

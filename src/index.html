@@ -7,36 +7,25 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <!--  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">-->
-    <!--  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">-->
   </head>
   <body>
     <div class="mat-app-background">
-      <sbsdb-root>Loading...</sbsdb-root>
+      <sbsdb-root>
+        <h1 style="color: rgba(0, 0, 0, 0.7); margin: 50px">Loading Application ...</h1>
+        <p id="notfallreload" style="display: none; margin: 50px">
+          <a onclick="window.location.reload()" href=".">Nochmal versuchen</a>
+        </p>
+        <script>
+          // Den "Nochmal"-Link mit 3 Sekunden Verzoegerung anzeigen.
+          // Falls es Probleme beim Laden gibt.
+          setTimeout(function () {
+            var nochmallnk = document.getElementById("notfallreload");
+            if (nochmallnk) {
+              nochmallnk.style.display = "block";
+            }
+          }, 3000);
+        </script>
+      </sbsdb-root>
     </div>
   </body>
 </html>
-
-<!--
-  Tastaturbelegung
-
-  Alt AAA - AP page
-  Alt B B - AP/Konf page sort bezeichnung
-  Alt DDD - Admin page
-  Alt EEE - Extd. Filter
-  Alt FFF - focus Filter
-  Alt  GG - HW/Konf sort kategorie
-  Alt HHH - HW page
-  Alt III - AP page sort IP/ HW + Konf page sort kategorie
-  Alt KKK - Konf page
-  Alt LLL - delete filters
-  Alt NNN - AP page new AP/ HW page new/ Konf page new Konf
-  Alt OO  - AP page sort standort/verantw.OE/ HW page sort konfig
-  Alt PP  - AP page sort apname/ HW page sort ap
-  Alt   R - Konf page sort hersteller
-  Alt  S  - HW page sort sernr
-  Alt TTT - AP page sort type/ HW page sort typ/ Konf page sort typ
-  Alt  U  - HW page sort anschdat
-  Alt WW  - AP page sort harware/ HW page sort aschwert
-  Alt XXX - output to CSV
--->

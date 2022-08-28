@@ -23,23 +23,14 @@ export class Arbeitsplatz implements BaseTableRow {
   public oe: Betrst;
   public verantwOe: Betrst;
   public hw: Hardware[] = [];
-  // public vlan: Netzwerk[];
 
   // interne Felder fuer die Darstellung/Suche
-  // public typTagsStr: string;
-  // public tagsStr: string;  // wird das gebraucht??
-  // public hwTypStr = ""; // pri HW ohne SerNr
   public hwStr = ""; //        mit SerNr
   public sonstHwStr = ""; // ges. HW fuer die Suche
   public ipStr = ""; // alle IPs
   public macStr = ""; //  dto.
   public vlanStr = ""; // dto.
   public macsearch = ""; // Suche in allen MACs
-  // public oesearch = "";
-  // public oesort = "";
-  // public voesearch = "";
-  // public voesort = "";
-  // public subTypes: string[] = [];
 
   // Darstellung
   public expanded?: boolean;

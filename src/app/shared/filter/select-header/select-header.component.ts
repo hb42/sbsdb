@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { environment } from "../../../../environments/environment";
 import { BaseFilterService } from "../base-filter-service";
 
 @Component({
@@ -8,4 +9,8 @@ import { BaseFilterService } from "../base-filter-service";
 })
 export class SelectHeaderComponent {
   @Input() public filterService: BaseFilterService;
+
+  constructor() {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 }

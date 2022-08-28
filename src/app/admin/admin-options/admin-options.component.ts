@@ -1,4 +1,6 @@
 import { Component, HostBinding } from "@angular/core";
+import { ThemePalette } from "@angular/material/core";
+import { environment } from "../../../environments/environment";
 import {
   ADM_ADR_PATH,
   ADM_APKAT_PATH,
@@ -20,6 +22,10 @@ import { AdminService } from "../admin.service";
 })
 export class AdminOptionsComponent {
   @HostBinding("attr.class") public cssClass = "flex-content";
+  // Fehlermeldungen im HTML vermeiden
+  public primarycolor: ThemePalette = "primary";
+  public defaultcolor: ThemePalette = undefined;
+
   public menu = [
     {
       route: ADM_OPTIONS_PATH,
@@ -75,5 +81,7 @@ export class AdminOptionsComponent {
     },
   ];
 
-  constructor(public adminService: AdminService) {}
+  constructor(public adminService: AdminService) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 }

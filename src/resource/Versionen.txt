@@ -1,4 +1,7 @@
-﻿5.0.0-beta.90   17.08.2022
+﻿5.0.0-beta.119  28.08.2022
+           - Code cleanup
+
+5.0.0-beta.90   17.08.2022
            - Zusaetzliches Suchfeld im Header der AP-Seite, sucht in AP-Name, Standort oder
              verantw. OE und Bezeichnung (#34).
 

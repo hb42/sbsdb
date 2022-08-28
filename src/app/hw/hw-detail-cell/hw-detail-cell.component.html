@@ -9,16 +9,7 @@
               <span *ngIf="hwService.userSettings.debug" class="debug">
                 #{{ element.hwKonfig.id }}
               </span>
-              <!--              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">-->
-              <div class="sub-table-head-button edit-button">
-                <!--                <button-->
-                <!--                  mat-icon-button-->
-                <!--                  color="primary"-->
-                <!--                  title="zur Konfiguration"-->
-                <!--                  (click)="hwService.gotoKonf(element); $event.stopPropagation()"-->
-                <!--                >-->
-                <!--                  <mat-icon>open_in_new</mat-icon>-->
-                <!--                </button>-->
+              <div *ngIf="hwService.userSettings.isAdmin" class="sub-table-head-button edit-button">
                 <button
                   mat-icon-button
                   color="primary"
@@ -27,15 +18,6 @@
                 >
                   <mat-icon>edit</mat-icon>
                 </button>
-                <!--                <button-->
-                <!--                  mat-icon-button-->
-                <!--                  color="primary"-->
-                <!--                  title="Konfiguration bearbeiten"-->
-                <!--                  [disabled]="hwService.hwFilterService.isFremdeHw(element)"-->
-                <!--                  (click)="hwService.editConfig(element.hwKonfig)"-->
-                <!--                >-->
-                <!--                  <mat-icon>edit</mat-icon>-->
-                <!--                </button>-->
               </div>
             </th>
           </tr>
@@ -191,10 +173,8 @@
         title="Gerät bearbeiten"
         (click)="hwService.hwEdit(element)"
       >
-        <!--        [disabled]="hwService.dataService.isFremdeHardware(element)"-->
         <mat-icon>edit</mat-icon>
       </button>
     </div>
   </div>
-  <!--  <div class="detail-cell-bemerk">{{ element.bemerkung }}</div>-->
 </div>

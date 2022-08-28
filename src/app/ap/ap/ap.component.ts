@@ -34,9 +34,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("firstfilter") public firstFilter: HeaderCellComponent; //ElementRef<HTMLInputElement>;
   @ViewChild("lastfilter") public lastFilter: HeaderCellComponent;
 
-  // @ViewChild("pagInsert", { read: TemplateRef }) pagInsert: TemplateRef<Element>;
-  // @ViewChild(MatPaginator, { read: ElementRef }) pagElement: ElementRef<Element>;
-
   public subscription: Subscription;
 
   private keyboardEvents: KeyboardListener[] = [];
@@ -60,10 +57,10 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
     listener.trigger.subscribe(() => this.focusFirstFilter());
     this.keyboardEvents.push(listener);
 
-    this.apService.columns.forEach((c) => {
-      if (c.accelerator) {
-        listener = { trigger: new EventEmitter<void>(), key: c.accelerator };
-        listener.trigger.subscribe(() => this.sort.sort(this.sort.sortables.get(c.columnName)));
+    this.apService.columns.forEach((col) => {
+      if (col.accelerator) {
+        listener = { trigger: new EventEmitter<void>(), key: col.accelerator };
+        listener.trigger.subscribe(() => this.sort.sort(this.sort.sortables.get(col.columnName)));
         this.keyboardService.register(listener);
         this.keyboardEvents.push(listener);
       }
@@ -131,7 +128,6 @@ export class ApComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public ngOnDestroy(): void {
     if (this.subscription) {
-      console.debug("ApComponent - subscription.unsubscribe");
       this.subscription.unsubscribe();
     }
     this.keyboardEvents.forEach((evt) => {

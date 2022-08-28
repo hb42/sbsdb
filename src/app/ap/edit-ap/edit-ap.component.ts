@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
+import { StringCompare } from "../../shared/helper";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { Betrst } from "../../shared/model/betrst";
 import { ApChange } from "./ap-change";
-import { StringCompare } from "../../shared/helper";
 
 @Component({
   selector: "sbsdb-edit-ap",
@@ -67,9 +67,6 @@ export class EditApComponent implements OnInit {
   }
 
   public getErrorMessage(control: FormControl): string {
-    // if (control.hasError("singleTags")) {
-    //   return "TAGs dürfen nur einmal vergeben werden!";
-    // }
     if (control.hasError("required")) {
       return "Das Feld darf nicht leer sein.";
     }
@@ -85,7 +82,6 @@ export class EditApComponent implements OnInit {
   }
 
   public submit(): void {
-    console.debug("edit ap submit");
     const apchange: ApChange = { apid: this.ap.apId, apTypId: this.ap.apTypId };
     const newname = this.nameCtrl.value as string;
     const newbezeichnung = this.bezCtrl.value as string;

@@ -26,6 +26,7 @@ export class NewApComponent implements OnInit {
     public formBuilder: FormBuilder,
     private dataService: DataService
   ) {
+    console.debug("c'tor NewApComponent");
     this.formGroup = this.formBuilder.group({});
     this.aptypList = this.dataService.aptypList.sort((a, b) =>
       StringCompare(a.bezeichnung, b.bezeichnung)
@@ -46,9 +47,7 @@ export class NewApComponent implements OnInit {
   }
 
   public submit(): void {
-    console.debug("onsubmit");
     this.data.typ = this.typCtrl.value as ApTyp;
-    console.dir(this.data);
   }
 
   public getErrorMessage(control: FormControl): string {

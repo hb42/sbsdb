@@ -41,7 +41,6 @@ export class HwFilterService extends BaseFilterService {
     }
     const hw = row as Hardware;
     return !this.dataService.isFremdeHardware(hw);
-    // return (hw.hwKonfig.hwTypFlag & DataService.FREMDE_HW_FLAG) === 0;
   }
 
   public getLatestUserFilter(): string {

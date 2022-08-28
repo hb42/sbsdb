@@ -7,15 +7,27 @@ import { MatPaginatorIntl } from "@angular/material/paginator";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AdminOptionsComponent } from "./admin/admin-options/admin-options.component";
+import { AdminPanelAdresseComponent } from "./admin/admin-panel-adresse/admin-panel-adresse.component";
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
+import { AdminPanelApkategorieComponent } from "./admin/admin-panel-apkategorie/admin-panel-apkategorie.component";
 import { AdminPanelAptypComponent } from "./admin/admin-panel-aptyp/admin-panel-aptyp.component";
 import { AdminPanelConfigInputComponent } from "./admin/admin-panel-config-input/admin-panel-config-input.component";
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminPanelExtprogComponent } from "./admin/admin-panel-extprog/admin-panel-extprog.component";
+import { AdminPanelHwtypComponent } from "./admin/admin-panel-hwtyp/admin-panel-hwtyp.component";
+import { AdminPanelOeComponent } from "./admin/admin-panel-oe/admin-panel-oe.component";
+import { AdminPanelTagtypComponent } from "./admin/admin-panel-tagtyp/admin-panel-tagtyp.component";
 import { AdminPanelTclogsComponent } from "./admin/admin-panel-tclogs/admin-panel-tclogs.component";
+import { AdminPanelVlanComponent } from "./admin/admin-panel-vlan/admin-panel-vlan.component";
 import { AdminComponent } from "./admin/admin/admin.component";
+import { EditAdresseDialogComponent } from "./admin/edit-adresse-dialog/edit-adresse-dialog.component";
+import { EditApkategorieDialogComponent } from "./admin/edit-apkategorie-dialog/edit-apkategorie-dialog.component";
 import { EditAptypDialogComponent } from "./admin/edit-aptyp-dialog/edit-aptyp-dialog.component";
 import { EditExtprogDialogComponent } from "./admin/edit-extprog-dialog/edit-extprog-dialog.component";
+import { EditHwtypDialogComponent } from "./admin/edit-hwtyp-dialog/edit-hwtyp-dialog.component";
+import { EditOeDialogComponent } from "./admin/edit-oe-dialog/edit-oe-dialog.component";
+import { EditTagtypDialogComponent } from "./admin/edit-tagtyp-dialog/edit-tagtyp-dialog.component";
+import { EditVlanDialogComponent } from "./admin/edit-vlan-dialog/edit-vlan-dialog.component";
 import { ApDetailCellComponent } from "./ap/ap-detail-cell/ap-detail-cell.component";
 import { ApEditDialogComponent } from "./ap/ap-edit-dialog/ap-edit-dialog.component";
 import { ApComponent } from "./ap/ap/ap.component";
@@ -37,8 +49,6 @@ import { EditHwMacComponent } from "./hw/edit-hw-mac/edit-hw-mac.component";
 import { HwAussondDialogComponent } from "./hw/hw-aussond-dialog/hw-aussond-dialog.component";
 import { HwDetailCellComponent } from "./hw/hw-detail-cell/hw-detail-cell.component";
 import { HwEditDialogComponent } from "./hw/hw-edit-dialog/hw-edit-dialog.component";
-import { HwListComponent } from "./hw/hw-list/hw-list.component";
-import { HwTreeComponent } from "./hw/hw-tree/hw-tree.component";
 import { HwComponent } from "./hw/hw/hw.component";
 import { NewHwDialogComponent } from "./hw/new-hw-dialog/new-hw-dialog.component";
 import { ShowHistoryDialogComponent } from "./hw/show-history-dialog/show-history-dialog.component";
@@ -49,7 +59,6 @@ import { CsvDialogComponent } from "./shared/csv-dialog/csv-dialog.component";
 import { DialogActionsComponent } from "./shared/dialog-actions/dialog-actions.component";
 import { DialogTitleComponent } from "./shared/dialog-title/dialog-title.component";
 import { DisableControlDirective } from "./shared/edit/disable-control.directive";
-import { EditDialogComponent } from "./shared/edit/edit-dialog/edit-dialog.component";
 import { EditVlanComponent } from "./shared/edit/edit-vlan/edit-vlan.component";
 import { ErrorComponent } from "./shared/error/error.component";
 import { ErrorService } from "./shared/error/error.service";
@@ -61,7 +70,6 @@ import { FilterElementComponent } from "./shared/filter/filter-element/filter-el
 import { FilterComponent } from "./shared/filter/filter/filter.component";
 import { SelectHeaderComponent } from "./shared/filter/select-header/select-header.component";
 import { SelectRowComponent } from "./shared/filter/select-row/select-row.component";
-import { FootComponent } from "./shared/foot/foot.component";
 import { HeadComponent } from "./shared/head/head.component";
 import { MatPaginatorIntlDe } from "./shared/mat.paginator.intl.de";
 import { StatusComponent } from "./shared/status/status.component";
@@ -71,26 +79,6 @@ import { StdTableComponent } from "./shared/table/std-table/std-table.component"
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
-import { AdminPanelTagtypComponent } from './admin/admin-panel-tagtyp/admin-panel-tagtyp.component';
-import { EditTagtypDialogComponent } from './admin/edit-tagtyp-dialog/edit-tagtyp-dialog.component';
-import { AdminPanelApkategorieComponent } from './admin/admin-panel-apkategorie/admin-panel-apkategorie.component';
-import { EditApkategorieDialogComponent } from './admin/edit-apkategorie-dialog/edit-apkategorie-dialog.component';
-import { AdminPanelHwtypComponent } from './admin/admin-panel-hwtyp/admin-panel-hwtyp.component';
-import { EditHwtypDialogComponent } from './admin/edit-hwtyp-dialog/edit-hwtyp-dialog.component';
-import { AdminPanelAdresseComponent } from './admin/admin-panel-adresse/admin-panel-adresse.component';
-import { EditAdresseDialogComponent } from './admin/edit-adresse-dialog/edit-adresse-dialog.component';
-import { AdminPanelOeComponent } from './admin/admin-panel-oe/admin-panel-oe.component';
-import { EditOeDialogComponent } from './admin/edit-oe-dialog/edit-oe-dialog.component';
-import { AdminPanelVlanComponent } from './admin/admin-panel-vlan/admin-panel-vlan.component';
-import { EditVlanDialogComponent } from './admin/edit-vlan-dialog/edit-vlan-dialog.component';
-
-// FIXME interceptor in lib-client muss auf optional umgebaut werden
-//       (oder farc auf IIS/.NET Core umstellen)
-// export function logonOptionsFactory(): LogonParameter {
-//   return {
-//     logon: "NO",
-//   };
-// }
 
 registerLocaleData(localeDe); // + provider, s.u.
 
@@ -106,9 +94,6 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
   declarations: [
     AppComponent,
     HeadComponent,
-    FootComponent,
-    HwListComponent,
-    HwTreeComponent,
     ApComponent,
     HwComponent,
     ErrorComponent,
@@ -133,7 +118,6 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     ExpandHeaderComponent,
     PaginatorStatusDirective,
     CsvDialogComponent,
-    EditDialogComponent,
     EditTagsComponent,
     ApEditDialogComponent,
     DisableControlDirective,
@@ -190,30 +174,23 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     // -- eigene
     // LibClientModule,
   ],
-  // f. mat-dialog (wird nur ohne Ivy gebraucht)
-  // entryComponents: [ApFilterEditComponent, ApFilterEditListComponent],
 
   providers: [
     { provide: LOCALE_ID, useValue: "de" }, // registerLocaleData() s.o.
+
     // -- eigene
-    // app startet erst, wenn das Promise aus initConf aufgeloest ist
-    // -> login, config holen, usw.
+    //    app startet erst, wenn das Promise aus initConf aufgeloest ist
+    //    -> login, config holen, usw.
     {
       provide: APP_INITIALIZER,
       useFactory: initConf,
-      deps: [ConfigService], // f. IE11-Prob. + Injector
+      deps: [ConfigService],
       multi: true,
     },
     // paginator uebersetzen
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlDe },
     // Error handler
     { provide: ErrorHandler, useClass: ErrorService },
-
-    // Konfig fuer Autologon TODO Altschuld, entfernen, sobald lib-client umgebaut
-    // {
-    //   provide: LOGON_OPTIONS,
-    //   useFactory: logonOptionsFactory,
-    // },
   ],
   bootstrap: [AppComponent],
 })

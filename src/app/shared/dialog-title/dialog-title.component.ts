@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: "sbsdb-dialog-title",
@@ -9,6 +10,6 @@ export class DialogTitleComponent {
   @Input() dialogTitle: string;
 
   constructor() {
-    // noop
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 }

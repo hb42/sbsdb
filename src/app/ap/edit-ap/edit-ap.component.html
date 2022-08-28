@@ -35,7 +35,6 @@
       <mat-form-field class="abstand textinp">
         <mat-label>Verantwortliche OE</mat-label>
         <select matNativeControl [formControl]="verantwCtrl" [errorStateMatcher]="matcher">
-          <!--                (change)="onStandortSelectionChange($event)"-->
           <option *ngFor="let o of oeListNull" [ngValue]="o">
             {{ o ? o.fullname : "- bitte auswählen -" }}
           </option>

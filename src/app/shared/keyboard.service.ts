@@ -1,6 +1,31 @@
 import { DOCUMENT } from "@angular/common";
 import { EventEmitter, Inject, Injectable } from "@angular/core";
+import { environment } from "../../environments/environment";
 import { KeyboardListener } from "./keyboard-listener";
+
+/*  Tastaturbelegung
+
+    Alt AAA - AP page
+    Alt B B - AP/Konf page sort bezeichnung
+    Alt DDD - Admin page
+    Alt EEE - Extd. Filter
+    Alt FFF - focus Filter
+    Alt  GG - HW/Konf sort kategorie
+    Alt HHH - HW page
+    Alt III - AP page sort IP/ HW + Konf page sort kategorie
+    Alt KKK - Konf page
+    Alt LLL - delete filters
+    Alt NNN - AP page new AP/ HW page new/ Konf page new Konf
+    Alt OO  - AP page sort standort/verantw.OE/ HW page sort konfig
+    Alt PP  - AP page sort apname/ HW page sort ap
+    Alt   R - Konf page sort hersteller
+    Alt  S  - HW page sort sernr
+    Alt TTT - AP page sort type/ HW page sort typ/ Konf page sort typ
+    Alt  U  - HW page sort anschdat
+    Alt WW  - AP page sort harware/ HW page sort aschwert
+    Alt XXX - output to CSV
+
+ */
 
 interface Listener {
   trigger: EventEmitter<void>;
@@ -72,8 +97,8 @@ export class KeyboardService {
   ];
 
   constructor(@Inject(DOCUMENT) doc: Document) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     doc.addEventListener("keydown", (event) => {
-      // console.debug("keydown " + event.key);
       if (
         event.altKey &&
         !event.ctrlKey &&
@@ -83,7 +108,6 @@ export class KeyboardService {
       ) {
         const data = this.listeners.find((c) => event.key === c.key || event.key === c.key2);
         if (data) {
-          // console.debug("KEYBOARD EVENT alt+" + data.key);
           data.trigger.emit();
           event.preventDefault();
           event.stopPropagation();
@@ -97,7 +121,6 @@ export class KeyboardService {
       ) {
         const data = this.ctrlListeners.find((c) => event.key === c.key || event.key === c.key2);
         if (data) {
-          // console.debug("KEYBOARD EVENT ctl+" + data.key);
           data.trigger.emit();
           event.preventDefault();
           event.stopPropagation();

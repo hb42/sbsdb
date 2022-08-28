@@ -9,6 +9,6 @@ import { ShowHistoryData } from "./show-history-data";
 })
 export class ShowHistoryDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: ShowHistoryData) {
-    // noop
+    console.debug("c'tor ShowHistoryDialogComponent");
   }
 }

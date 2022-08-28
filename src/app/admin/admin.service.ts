@@ -25,7 +25,6 @@ export class AdminService {
   public newRecordEvent: EventEmitter<void> = new EventEmitter<void>();
   public exportEvent: EventEmitter<void> = new EventEmitter<void>();
   public debugEvent: EventEmitter<void> = new EventEmitter<void>();
-  public newRecordLabel = "Neuen Datensatz anlegen.";
   public currentChild = "";
 
   public get infoPanel(): TemplateRef<never> {
@@ -72,52 +71,36 @@ export class AdminService {
   }
 
   public saveExtprog(data: EditExtprogTransport): void {
-    console.debug("save extprog data");
-    console.dir(data);
     if (data.outChg || data.outDel || data.outNew) {
       this.dataService.post(this.dataService.changeExtprogUrl, data);
     }
   }
 
   public saveApkategorie(data: EditApkategorieTransport): void {
-    console.debug("save apkategorie data");
-    console.dir(data);
     this.dataService.post(this.dataService.changeApKatUrl, data);
   }
 
   public saveAptyp(data: EditAptypTransport): void {
-    console.debug("save aptyp data");
-    console.dir(data);
     this.dataService.post(this.dataService.changeAptypUrl, data);
   }
 
   public saveTagtyp(data: EditTagtypTransport): void {
-    console.debug("save tagtyp data");
-    console.dir(data);
     this.dataService.post(this.dataService.changeTagtypUrl, data);
   }
 
   public saveOe(data: EditOeTransport): void {
-    console.debug("save oe data");
-    console.dir(data);
     this.dataService.post(this.dataService.changeOeUrl, data);
   }
 
   public saveAdresse(data: EditAdresseTransport): void {
-    console.debug("save adresse data");
-    console.dir(data);
     this.dataService.post(this.dataService.changeAdresseUrl, data);
   }
 
   public saveHwtyp(data: EditHwtypTransport): void {
-    console.debug("save hwtyp data");
-    console.dir(data);
     this.dataService.post(this.dataService.changeHwtypUrl, data);
   }
 
   public saveVlan(data: EditVlanTransport): void {
-    console.debug("save vlan data");
-    console.dir(data);
     this.dataService.post(this.dataService.changeVlanUrl, data);
   }
 }

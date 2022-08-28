@@ -20,30 +20,23 @@ export class ApEditDialogComponent {
     public matDialogRef: MatDialogRef<ApEditDialogComponent>,
     public formBuilder: FormBuilder
   ) {
+    console.debug("c'tor ApEditDialogComponent");
     this.formGroup = this.formBuilder.group({});
   }
 
-  public onSubmit(form: unknown): void {
+  public onSubmit(): void {
     this.onSubmitEvent.emit();
-    console.log("ApEditDialog onSubmit");
-    console.dir(form);
   }
 
   public tagReady(evt: TagChange[]): void {
-    console.debug("ApEditDialog tagReady");
-    console.dir(evt);
     this.data.tags = evt;
   }
 
   public hwReady(evt: HwChange): void {
-    console.debug("ApEditDialog hwReady");
-    console.dir(evt);
     this.data.hw = evt;
   }
 
   public apReady(evt: ApChange): void {
-    console.debug("ApEditDialog apReady");
-    console.dir(evt);
     this.data.apData = evt;
   }
 }

@@ -1,3 +1,4 @@
+import { environment } from "../../../environments/environment";
 import { GetFieldContent } from "../helper";
 import { ColumnType } from "../table/column-type.enum";
 import { Bracket } from "./bracket";
@@ -39,6 +40,7 @@ export class Expression implements Term {
     public operator: RelationalOperator,
     private comp: string | number | Date // public type: number
   ) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.compare = comp;
   }
 

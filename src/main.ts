@@ -12,14 +12,12 @@ if (environment.production) {
 }
 
 // Clientseitig keine Config-Files verwenden (package.json?)
-// Die einzige config, die hier gebraucht wird, ist der Pfad zur Web-API.
+// Die einzige config, die hier gebraucht wird, ist der Pfad zur Web-API
+// (wird in environment.ts geliefert).
 // Alles andere kann bei Bedarf der Webserver liefern
 
-// AppConfig.load(environment.configFile).then(() => {
-// angular
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
   .catch((err) => {
     console.error("Runtime-ERROR", err);
   });
-// });

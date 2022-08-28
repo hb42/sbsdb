@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { environment } from "../../../../environments/environment";
 import { EditFilterService } from "../edit-filter.service";
 import { Element } from "../element";
 
@@ -10,8 +11,7 @@ import { Element } from "../element";
 export class FilterComponent {
   @Input() data: Element;
 
-  // constructor(public apFilter: ApFilterService) {
   constructor(public editFilter: EditFilterService) {
-    console.debug("c'tor ApFilterComponent");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 }

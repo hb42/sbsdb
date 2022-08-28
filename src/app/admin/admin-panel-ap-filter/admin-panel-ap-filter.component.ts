@@ -8,5 +8,7 @@ import { ApFilterService } from "../../ap/ap-filter.service";
 })
 export class AdminPanelApFilterComponent {
   @HostBinding("attr.class") public cssClass = "flex-content";
-  constructor(public apFilter: ApFilterService) {}
+  constructor(public apFilter: ApFilterService) {
+    console.debug("c'tor AdminPanelApFilterComponent");
+  }
 }

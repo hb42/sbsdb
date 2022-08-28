@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable, VERSION } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import * as semver from "semver";
+import { environment } from "../../environments/environment";
 
 import { ElectronService } from "./electron.service";
 import { Version } from "./version";
@@ -51,7 +52,9 @@ export class VersionService {
     private http: HttpClient,
     private electronService: ElectronService,
     private location: Location
-  ) {}
+  ) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 
   public get ver(): Version {
     return this.version;
@@ -70,7 +73,6 @@ export class VersionService {
    */
   public async init(serverPackage: string): Promise<Version> {
     const webserver = this.location.prepareExternalUrl("");
-    // deepcode ignore Ssrf: url-string is checked
     return firstValueFrom(this.http.get(webserver + "package.json")).then(async (pj: JSON) => {
       const ver = ["Basis: Angular " + VERSION.full];
       if (this.electronService.isElectron) {

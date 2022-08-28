@@ -12,7 +12,7 @@
   }
 
   tr.table-row.table-row-clickable:hover,
-  tr.table-row.table-row-clickable.row-menu-open { /* TODO */
+  tr.table-row.table-row-clickable.row-menu-open {
     background-color: mat.get-color-from-palette($primary, 100);
   }
 

@@ -17,12 +17,11 @@ export class EditConfigDialogComponent {
     public matDialogRef: MatDialogRef<EditConfigDialogComponent>,
     public formBuilder: FormBuilder
   ) {
+    console.debug("c'tor EditConfigDialogComponent");
     this.formGroup = this.formBuilder.group({});
   }
 
-  public onSubmit(form: unknown): void {
+  public onSubmit(): void {
     this.onSubmitEvent.emit();
-    console.log("EditConfigDialog onSubmit");
-    console.dir(this.data);
   }
 }

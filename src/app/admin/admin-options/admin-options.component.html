@@ -3,7 +3,7 @@
     <button
       mat-stroked-button
       class="adm-btn"
-      [color]="adminService.currentChild === m.route ? '' : 'primary'"
+      [color]="adminService.currentChild === m.route ? defaultcolor : primarycolor"
       [disabled]="adminService.currentChild === m.route"
       [class.md-accent-color]="adminService.currentChild === m.route"
       [title]="m.title"

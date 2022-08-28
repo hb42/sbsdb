@@ -3,11 +3,11 @@ import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } fro
 import { Tag } from "app/shared/model/tag";
 import { DataService } from "../../shared/data.service";
 import { FormFieldErrorStateMatcher } from "../../shared/form-field-error-state-matcher";
+import { StringCompare } from "../../shared/helper";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
 import { TagTyp } from "../../shared/model/tagTyp";
 import { TagChange } from "./tag-change";
 import { TagInput } from "./tag-input";
-import { StringCompare } from "../../shared/helper";
 
 @Component({
   selector: "sbsdb-edit-tags",
@@ -65,20 +65,6 @@ export class EditTagsComponent implements OnInit {
       this.tagFormGroup.addControl(`txt_${rc.id}`, rc.textCtrl);
       return rc;
     });
-    // const empty: TagInput = {
-    //   apid: this.ap.apId,
-    //   tag: null,
-    //   id: this.count++,
-    //   // eslint-disable-next-line @typescript-eslint/unbound-method
-    //   tagCtrl: new FormControl(null, [Validators.required, this.checkTypes]),
-    //   // eslint-disable-next-line @typescript-eslint/unbound-method
-    //   textCtrl: new FormControl("", [Validators.required]),
-    // };
-    // // Formfelder fuer neue Werte nicht an FormGroup haengen. Die waeren immer invalid, wenn
-    // // diese beiden leer sind!
-    // this.newTag = empty.tagCtrl;
-    // this.newText = empty.textCtrl;
-    // this.tagInput.push(empty);
     // an die uebergeordnete Form anhaengen
     this.formGroup.addControl("tag", this.tagFormGroup);
   }
@@ -114,7 +100,7 @@ export class EditTagsComponent implements OnInit {
   /**
    * Validator fuer den Check gegen doppelte TAGs
    *
-   * als Lamba deklarieren, damit bleibt 'this' erhalten
+   * als Lambda deklarieren, damit bleibt 'this' erhalten
    */
   public checkTypes = (control: FormControl): ValidationErrors => {
     if (control.parent && control.value /*&& control.value.apKategorieId*/) {
@@ -189,12 +175,6 @@ export class EditTagsComponent implements OnInit {
     this.tagInput.push(newentry);
     this.newTag.reset();
     this.newText.reset();
-    // *ExpressionChangedAfterItHasBeenCheckedError*
-    // wird zwar nur im dev mode geworfen, bedeutet, aber, dass die change detection in diesem
-    // Moment nicht sauber funktioniert. Loesung sollte primaer sein, das abzustellen (hier z.B.
-    // mit .markAsTouched()). Falls das nicht klappt gibt's noch die Keule:
-    //   inject in c'tor:  private cdRef: ChangeDetectorRef
-    //   hier:             this.cdRef.detectChanges();
   }
 
   public addTag(): void {
@@ -221,7 +201,6 @@ export class EditTagsComponent implements OnInit {
    * apTagId == null -> NEW
    */
   public submit(): void {
-    console.debug("EditTagsComponent onSubmit");
     // Aenderungen zusammenstellen
     // tagId == null -> DEL
     // apTagId == null -> NEW
@@ -230,14 +209,11 @@ export class EditTagsComponent implements OnInit {
     this.tagInput.forEach((ti) => {
       const newTag: TagTyp = ti.tagCtrl.value as TagTyp;
       const newText: string = ti.textCtrl.value as string;
-      if (ti.tag /*.apTagId*/) {
+      if (ti.tag) {
         if (
           ti.tag.tagId !== newTag.id ||
           (!this.isBoolTag(ti.tag.flag) && ti.tag.text !== newText)
         ) {
-          console.debug(
-            `tag changed: ${ti.tag.tagId} !== ${newTag.id} || ${ti.tag.text} !== ${newText}`
-          );
           // Aenderung eines vorhandenen
           this.changes.push({
             apId: this.ap.apId,

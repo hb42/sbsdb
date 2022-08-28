@@ -49,8 +49,6 @@ export class AdminPanelApkategorieComponent extends BaseSvzPanelComponent<
     }
     const dialogRef = this.dialog.open(EditApkategorieDialogComponent, { data: apkategorie });
     dialogRef.afterClosed().subscribe((result: ApKategorie) => {
-      console.debug("dlg closed");
-      console.dir(result);
       if (result) {
         this.adminService.saveApkategorie({ apkategorie: result, del: false });
       }
@@ -63,7 +61,6 @@ export class AdminPanelApkategorieComponent extends BaseSvzPanelComponent<
       `Soll die AP-Kategorie "${apkategorie.bezeichnung}" gelöscht werden?`
     ).then((result) => {
       if (result) {
-        console.debug("del AP-Kategorie");
         this.adminService.saveApkategorie({ apkategorie: apkategorie, del: true });
       }
     });

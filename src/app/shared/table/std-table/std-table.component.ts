@@ -11,9 +11,9 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatSort, MatSortHeader, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { debounceTime } from "rxjs/operators";
+import { environment } from "../../../../environments/environment";
 import { ConfigService } from "../../config/config.service";
 import { UserSession } from "../../config/user.session";
-import { DataService } from "../../data.service";
 import { BaseFilterService } from "../../filter/base-filter-service";
 import { Bracket } from "../../filter/bracket";
 import { Expression } from "../../filter/expression";
@@ -53,12 +53,8 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   private tableSettingsMap: Map<string, StdTableSettings>;
   private tableSettings: StdTableSettings;
 
-  constructor(
-    private configService: ConfigService,
-    private dataService: DataService,
-    protected dialog: MatDialog
-  ) {
-    console.debug("c'tor StdTableComponent ");
+  constructor(private configService: ConfigService, protected dialog: MatDialog) {
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
   }
 
@@ -92,10 +88,6 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    console.debug("### StdTable pagename=" + this.pagename);
-    // 1. ViewChild-Elemente erst in afterViewInit sicher greifbar
-    // 2. in setTimeout verpacken sonst stoert das hier die Angular change detection
-
     if (this.csvEvent) {
       this.csvEvent.subscribe(() => void this.csvOutput());
     } else {
@@ -140,10 +132,6 @@ export class StdTableComponent implements OnInit, AfterViewInit {
           row as Record<string, string | Array<string> | number | Date>
         );
         row["selected"] = valid;
-        // if (!valid) {
-        //   row["selected"] = false;
-        //   // console.debug("## ausgefiltert ##");
-        // }
         return valid;
       };
       this.checkIdColumn();
@@ -183,11 +171,6 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   }
   public delRecord(row: unknown): void {
     this.delEvent.emit(row);
-  }
-
-  public expandRow(row: BaseTableRow, evt: Event): void {
-    row.expanded = !row.expanded;
-    evt.stopPropagation();
   }
 
   public isExpanded(row: BaseTableRow): boolean {

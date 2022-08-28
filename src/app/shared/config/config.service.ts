@@ -39,6 +39,7 @@ export class ConfigService {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   private timer: NodeJS.Timeout;
+  private readonly saveTimeoutMS = 3000;
 
   constructor(
     private http: HttpClient,
@@ -90,9 +91,6 @@ export class ConfigService {
    *    },
    */
   public init(): Promise<void | Version> {
-    // SSE init
-    // TODO SSE mit .NET Core? Falls ja, gibt's Verwendung dafuer?
-
     // Benutzerdaten holen
     // Jeder Benutzer wird authorisiert, was er dann sehen darf muss in der
     // Oberflaeche entschiweden werden.
@@ -100,26 +98,23 @@ export class ConfigService {
       firstValueFrom(this.http.get<User>(this.getUserConfUrl))
         .then((data) => {
           this.userSession = new UserSession(this.userDataChange, data);
-          console.debug(">>> user config done");
-          console.dir(data);
+          if (!environment.production) console.debug(">>> user config done");
           return "OK";
         })
         // Versionen
         .then(() => {
           console.debug(">>> getting app meta data");
           return this.versionService.init(this.getVersionUrl).then((ver) => {
-            console.debug(">>> meta data done");
+            if (!environment.production) console.debug(">>> meta data done");
             console.log(ver.displayname + " v" + ver.version + " " + ver.copyright);
-            console.dir(ver.versions);
+            if (!environment.production) console.dir(ver.versions);
             const server = this.versionService.serverVer;
             console.log(server.displayname + " v" + server.version + " " + server.copyright);
-            console.dir(server.versions);
+            if (!environment.production) console.dir(server.versions);
             this.version = ver;
           });
         })
     );
-    // what's new holen
-    // .then()
   }
 
   // --- config in der Server-DB ---
@@ -167,9 +162,11 @@ export class ConfigService {
     }
     this.timer = setTimeout(() => {
       this.http.post<User>(this.setUserConfUrl, user).subscribe(() => {
-        console.debug("user conf saved");
-        console.dir(user);
+        if (!environment.production) {
+          console.debug("user conf saved");
+          console.dir(user);
+        }
       });
-    }, 3000);
+    }, this.saveTimeoutMS);
   }
 }

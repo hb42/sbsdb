@@ -7,7 +7,7 @@
 ></sbsdb-dialog-title>
 <form
   [formGroup]="formGroup"
-  (ngSubmit)="onSubmit(formGroup.value)"
+  (ngSubmit)="onSubmit()"
   [class.error]="!formGroup.valid && formGroup.touched"
 >
   <div class="panel"><!-- config data --></div>

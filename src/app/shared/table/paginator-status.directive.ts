@@ -1,4 +1,5 @@
 import { AfterViewInit, Directive, ElementRef, Input } from "@angular/core";
+import { environment } from "../../../environments/environment";
 
 /**
  * sbsdbPaginatorStatus-Directive
@@ -19,7 +20,7 @@ export class PaginatorStatusDirective implements AfterViewInit {
   @Input() public sbsdbPaginatorStatus: Element;
 
   constructor(private paginator: ElementRef<Element>) {
-    //
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
   public ngAfterViewInit(): void {
     const at = this.paginator.nativeElement.getElementsByClassName("mat-paginator-container");

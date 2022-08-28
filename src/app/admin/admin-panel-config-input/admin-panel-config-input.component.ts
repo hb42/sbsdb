@@ -15,12 +15,13 @@ export class AdminPanelConfigInputComponent implements OnInit {
   @Input() note: string;
   @Input() configName: string;
   @Input() defaultValue: string;
-  // @Input() save: (FormControl) => Promise<boolean>;
   @Input() errorMsg: (FormControl) => string;
 
   public matcher = new FormFieldErrorStateMatcher();
 
-  constructor(public configService: ConfigService) {}
+  constructor(public configService: ConfigService) {
+    console.debug("c'tor AdminPanelConfigInputComponent");
+  }
 
   ngOnInit(): void {
     // der Startwert fuer das Eingabefeld kommt mit Verzoegerung
@@ -29,7 +30,6 @@ export class AdminPanelConfigInputComponent implements OnInit {
       .getConfig(this.configName)
       .then((val: string) => {
         initial = val ?? this.defaultValue;
-        console.debug("got config: " + initial);
       })
       .catch((err) => {
         initial = this.defaultValue;
@@ -59,11 +59,9 @@ export class AdminPanelConfigInputComponent implements OnInit {
   }
 
   public saveControl(): void {
-    console.debug("save", this.control.value);
     this.configService
       .saveConfig(this.configName, this.control.value)
-      .then((rc) => {
-        console.debug(this.configName, "saved rc=", rc);
+      .then(() => {
         this.control.markAsPristine();
       })
       .catch((err) => {

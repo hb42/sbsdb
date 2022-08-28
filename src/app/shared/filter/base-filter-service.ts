@@ -2,6 +2,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { Base64 } from "js-base64";
 import { debounceTime } from "rxjs/operators";
+import { environment } from "../../../environments/environment";
 import { ConfigService } from "../config/config.service";
 import { UserSession } from "../config/user.session";
 import { DataService } from "../data.service";
@@ -67,7 +68,7 @@ export abstract class BaseFilterService {
     protected navigationService: NavigationService,
     protected dialog: MatDialog
   ) {
-    console.debug("c'tor BaseFilterService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
   }
 
@@ -93,7 +94,6 @@ export abstract class BaseFilterService {
   ): void {
     this.columns = col;
     this.dataTable = dataTable;
-    // this.filterChange = evt;
 
     void this.readGlobalFilters();
 
@@ -106,7 +106,6 @@ export abstract class BaseFilterService {
       }
       if (!valid) {
         row["selected"] = false;
-        // console.debug("## ausgefiltert ##");
       }
       // nur ausgewählte anzeigen
       if (valid && this.showSelected) {
@@ -123,7 +122,6 @@ export abstract class BaseFilterService {
         c.filterControl.valueChanges // FormControl
           .pipe(debounceTime(this.keyDebounce))
           .subscribe(() => {
-            // this.stdFilterChange();
             this.buildStdFilterExpression();
             this.triggerFilter();
           });
@@ -140,13 +138,11 @@ export abstract class BaseFilterService {
       this.decodeFilter(userfilter);
     }
 
-    // const maxkey: number = this.userSettings.apFilter.filters.reduce(
     const maxkey: number = this.getUserFilterList().filters.reduce(
       (prev, curr) => (curr.key > prev ? curr.key : prev),
       0
     );
     this.nextKey = maxkey + 1;
-    // this.makeElements(this.filterExpression, this.userSettings.apFilter);
   }
 
   /**
@@ -179,9 +175,6 @@ export abstract class BaseFilterService {
    * ein event an ArbeitsplatzService gesendet.
    */
   public triggerFilter(): void {
-    // if (this.filterChange) {
-    //   this.filterChange.emit();
-    // }
     if (this.dataReady) {
       // Keine Navigation (und kein History-Eintrag) beim Start des
       // erweiterten Filters (und bei leerem extd Filter).
@@ -254,6 +247,8 @@ export abstract class BaseFilterService {
     } catch (e) {
       // Malformed URI || JSON Syntax || Base64 error
       // hier ist nichts zu retten, also params verwerfen
+      console.error("Ungültiger Filter: " + f);
+      console.dir(e);
       filter = [];
       std = true;
     }
@@ -341,7 +336,6 @@ export abstract class BaseFilterService {
     this.filterExpression.reset();
     this.resetStdFilters();
     this.setLatestUserStdFilter(this.stdFilter);
-    // this.userSettings.apStdFilter = this.stdFilter;
     // nur fuer Zurueckschalten auf std noetig
     if (this.stdFilter) {
       this.triggerFilter();
@@ -349,7 +343,6 @@ export abstract class BaseFilterService {
   }
 
   public extFilterList(): TransportFilter[] {
-    // const filters = this.userSettings.apFilter.filters.filter(
     const filters = this.getUserFilterList().filters.filter(
       (tf) => tf.key !== BaseFilterService.STDFILTER
     );
@@ -362,7 +355,6 @@ export abstract class BaseFilterService {
     return this.globalFilters;
   }
   public selectFilter(tf: TransportFilter): void {
-    console.debug("list select change");
     this.setFilterExpression(tf.key, tf.type);
   }
 
@@ -371,7 +363,6 @@ export abstract class BaseFilterService {
   }
 
   public deleteFilter(): void {
-    console.debug("delete filter");
     if (this.selectedFilter) {
       this.removeFilter(this.selectedFilter.key);
       this.selectedFilter = null;
@@ -390,7 +381,7 @@ export abstract class BaseFilterService {
     }
   }
 
-  // TODO -> admin
+  // TODO -> admin page
   public moveFilterToGlobal(key: number): void {
     const filter: TransportFilter = this.getUserFilter(key);
     if (filter) {
@@ -402,7 +393,7 @@ export abstract class BaseFilterService {
     }
   }
 
-  // TODO -> admin
+  // TODO -> admin page
   public moveFilterToUser(key: number): void {
     const filter: TransportFilter = this.getGlobalFilter(key);
     if (filter) {
@@ -449,7 +440,6 @@ export abstract class BaseFilterService {
    * @param el - Element
    */
   public edit(el: Element): void {
-    console.debug("EDIT " + el.term.toString());
     if (!el.term.isBracket()) {
       this.editExpression(null, null, null, el.term as Expression);
     }
@@ -462,7 +452,6 @@ export abstract class BaseFilterService {
    * @param what - was wird eingefuegt?
    */
   public insert(el: Element, what: string): void {
-    console.debug("INSERT " + what);
     let log: LogicalOperator = new LogicalOr();
     switch (what) {
       case "and_brack":
@@ -571,8 +560,7 @@ export abstract class BaseFilterService {
   }
   /** Whether the number of selected elements matches the total number of rows. */
   public isAllSelected(): boolean {
-    // TODO leerer Filter? / empty array -> true
-    if (this.dataReady) {
+    if (this.dataReady && this.dataTable.filteredData.length) {
       return this.dataTable.filteredData.every((row: BaseTableRow) => row.selected);
     } else {
       return false;
@@ -694,7 +682,6 @@ export abstract class BaseFilterService {
    */
   private setColumnFilters() {
     if (this.stdFilter && this.columns) {
-      // this.resetStdFilters();
       const cols: Array<{
         col: SbsdbColumn<unknown, unknown>;
         val: string | null;
@@ -751,7 +738,6 @@ export abstract class BaseFilterService {
    */
   private getUserFilter(key: number): TransportFilter {
     return this.getUserFilterList().filters.find((tf) => tf.key === key);
-    // return this.userSettings.apFilter.filters.find((tf) => tf.key === key);
   }
 
   /**
@@ -775,7 +761,6 @@ export abstract class BaseFilterService {
     if (tf) {
       tf.filter = filt;
     } else {
-      // this.userSettings.apFilter.filters.push(
       this.getUserFilterList().filters.push(
         new TransportFilter(key, name, filt, BaseFilterService.USERFILTER)
       );
@@ -804,11 +789,9 @@ export abstract class BaseFilterService {
    * @param key - Filtername
    */
   private removeFilter(key: number) {
-    // const idx = this.userSettings.apFilter.filters.findIndex((tf) => tf.key === key);
     const idx = this.getUserFilterList().filters.findIndex((tf) => tf.key === key);
     if (idx >= 0) {
       this.getUserFilterList().filters.splice(idx, 1);
-      // this.userSettings.apFilter.filters.splice(idx, 1);
     }
   }
 
@@ -829,7 +812,6 @@ export abstract class BaseFilterService {
    */
   private saveFilters() {
     this.setLatestUserStdFilter(this.stdFilter); // trigger save
-    // this.userSettings.apStdFilter = this.stdFilter; // trigger save
   }
 
   /**
