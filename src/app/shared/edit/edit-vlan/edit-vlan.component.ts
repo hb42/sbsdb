@@ -158,12 +158,6 @@ export class EditVlanComponent implements OnInit {
     if (vlan) {
       const nm = IpHelper.getNetmaskBits(vlan.netmask);
       const net = IpHelper.getIpString(vlan.ip);
-
-      // DEBUG
-      // console.debug(`TEST: ${net} = ${IpHelper.getIp(net)} = ${vlan.ip}`);
-      // console.debug(`${IpHelper.getIpPartial("193.1")}`);
-      // DEBUG
-
       return `${net}/${nm}`;
     } else {
       return "";

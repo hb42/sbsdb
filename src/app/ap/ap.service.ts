@@ -664,7 +664,7 @@ export class ApService {
     for (let page = 0; page < count; page++) {
       this.dataService.get(`${this.dataService.pageApsUrl}${page}/${pageSize}`).subscribe({
         next: (aps: Arbeitsplatz[]) => {
-          console.debug("fetch AP page #", page, " size=", aps.length);
+          if (!environment.production) console.debug("fetch AP page #", page, " size=", aps.length);
           this.dataService.apList = [...this.dataService.apList, ...aps];
         },
         error: (err) => {

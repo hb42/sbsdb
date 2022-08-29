@@ -1,5 +1,8 @@
-﻿5.0.0-beta.119  28.08.2022
+﻿5.0.0-beta.123  29.08.2022
            - Code cleanup
+           - Angular 14.2.0
+           - eslint auf Version 8.22.0 festgenagelt, da 8.23 nicht mit Webstorm funktioniert
+             (https://youtrack.jetbrains.com/issue/WEB-57089/ESLint823-TypeError-thislibOptionsparse-is-not-a-function)
 
 5.0.0-beta.90   17.08.2022
            - Zusaetzliches Suchfeld im Header der AP-Seite, sucht in AP-Name, Standort oder

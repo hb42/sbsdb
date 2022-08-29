@@ -103,7 +103,7 @@ export class ConfigService {
         })
         // Versionen
         .then(() => {
-          console.debug(">>> getting app meta data");
+          if (!environment.production) console.debug(">>> getting app meta data");
           return this.versionService.init(this.getVersionUrl).then((ver) => {
             if (!environment.production) console.debug(">>> meta data done");
             console.log(ver.displayname + " v" + ver.version + " " + ver.copyright);

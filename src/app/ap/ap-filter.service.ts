@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { debounceTime } from "rxjs/operators";
+import { environment } from "../../environments/environment";
 import { AP_PATH } from "../const";
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
@@ -24,7 +25,7 @@ export class ApFilterService extends BaseFilterService {
     public dialog: MatDialog
   ) {
     super(configService, dataService, navigationService, dialog);
-    console.debug("c'tor ApFilterService");
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.userSettings = configService.getUser();
 
     this.apFilterControl.valueChanges // FormControl

@@ -55,7 +55,7 @@ export class ElectronService {
     if (this.isElectron) {
       const result = await this.electron.exec(job.program, job.param, ap);
       if (!environment.production)
-        console.debug("electron.exec ended rc=" + result.rc.toString() + ", msg=" + result.info);
+        console.log("electron.exec ended rc=" + result.rc.toString() + ", msg=" + result.info);
       if (result.rc > 0) {
         return result;
       } else {

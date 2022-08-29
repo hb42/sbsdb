@@ -72,8 +72,7 @@ export class AdminPanelConfigComponent implements OnInit {
       this.blocksizeValidator,
     ]);
     // this.blocksize.statusChanges.pipe(debounceTime(200)).subscribe(() => {
-    //   // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    //   console.debug("--- Blocksize value changed: " + this.blocksize.value);
+    //   console.debug("--- Blocksize value changed: ", this.blocksize.value);
     // });
   }
 

@@ -646,7 +646,6 @@ export class HwService {
   private async fetchData(): Promise<void> {
     this.dataService.get(this.dataService.allHwKonfig).subscribe({
       next: (hwk: HwKonfig[]) => {
-        console.debug("fetch HwKonfig size=", hwk.length);
         this.dataService.hwKonfigList = hwk;
       },
       error: (err) => {
@@ -668,7 +667,7 @@ export class HwService {
     for (let page = 0; page < count; page++) {
       this.dataService.get(`${this.dataService.pageHwUrl}${page}/${pageSize}`).subscribe({
         next: (hw: Hardware[]) => {
-          console.debug("fetch HW page #", page, " size=", hw.length);
+          if (!environment.production) console.debug("fetch HW page #", page, " size=", hw.length);
           this.dataService.hwList = [...this.dataService.hwList, ...hw];
         },
         error: (err) => {
