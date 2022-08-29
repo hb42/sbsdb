@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { environment } from "../../../environments/environment";
 import { ADM_VLAN_PATH } from "../../const";
 import { DataService } from "../../shared/data.service";
 import { IpHelper } from "../../shared/ip-helper";
@@ -23,8 +24,8 @@ export class AdminPanelVlanComponent extends BaseSvzPanelComponent<AdminPanelVla
     public adminService: AdminService,
     protected dialog: MatDialog
   ) {
-    console.debug("c'tor AdminPanelVlanComponent");
     super(dataService, adminService, dialog);
+    if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
 
     this.notificationHandler = this.dataService.vlanListChanged.subscribe(() => {
       this.changeDebug();
