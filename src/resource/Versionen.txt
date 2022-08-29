@@ -1,4 +1,7 @@
-﻿5.0.0-rc.1      29.08.2022
+﻿5.0.0-rc.x      xx.xx.2022
+           - Suchfeld im Header der AP-Seite ausblendbar machen
+
+5.0.0-rc.1      29.08.2022
            - code cleanup
            - Angular 14.2.0
            - eslint auf Version 8.22.0 festgenagelt, da 8.23 nicht mit Webstorm funktioniert

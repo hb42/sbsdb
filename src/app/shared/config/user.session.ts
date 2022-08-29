@@ -47,6 +47,8 @@ export class UserSession {
     this.settings.apSortDirection = this.settings.apSortDirection ?? "";
     this.settings.apPageSize = this.settings.apPageSize ?? 100;
     this.settings.searchSonstHw = !!this.settings.searchSonstHw;
+    this.settings.showApsearch =
+      this.settings.showApsearch === undefined ? true : !!this.settings.showApsearch;
     this.settings.hwColumnFilters = this.settings.hwColumnFilters ?? [];
     this.settings.hwFilter = this.settings.hwFilter ?? { stdFilter: true, filters: [] };
     this.settings.latestHwFilter = this.settings.latestHwFilter ?? "";
@@ -182,6 +184,15 @@ export class UserSession {
 
   public set apStdFilter(ex: boolean) {
     this.settings.apFilter.stdFilter = ex;
+    this.change();
+  }
+
+  public get showApsearch(): boolean {
+    return this.settings.showApsearch;
+  }
+
+  public set showApsearch(sh: boolean) {
+    this.settings.showApsearch = sh;
     this.change();
   }
 

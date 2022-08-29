@@ -124,4 +124,13 @@ export class ApFilterService extends BaseFilterService {
     this.apFilterControl.reset();
     super.navigationFromExtParam(cols, param);
   }
+
+  public toggleShowApsearch() {
+    if (this.userSettings.showApsearch) {
+      this.resetStdFilters(false);
+      this.userSettings.showApsearch = false;
+    } else {
+      this.userSettings.showApsearch = true;
+    }
+  }
 }

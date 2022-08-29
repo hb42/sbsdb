@@ -17,6 +17,7 @@ export interface UserSettings {
   apSortDirection?: string;
   apPageSize?: number;
   searchSonstHw?: boolean;
+  showApsearch?: boolean;
   // HW-Page
   hwColumnFilters?: ColumnFilter[];
   hwExtFilter?: string;

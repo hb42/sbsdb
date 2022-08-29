@@ -8,7 +8,7 @@
     <!-- Suchen-Feld -->
     <mat-form-field
       floatLabel="never"
-      *ngIf="apService.filterService.stdFilter"
+      *ngIf="apService.filterService.stdFilter && apService.userSettings.showApsearch"
       title="Suche in AP-Name, Sandort, Bezeichnung"
       class="search-field md-accent-color"
     >
@@ -357,6 +357,19 @@
       <span class="fill"></span>
       <mat-icon class="menue-checkbox">{{
         apService.userSettings.showNavMenu ? "check_box" : "check_box_outline_blank"
+      }}</mat-icon>
+    </button>
+    <button
+      mat-menu-item
+      class="menue-entry"
+      (click)="apService.filterService.toggleShowApsearch()"
+      title="Zusätzliches Suchfeld im der Titelleiste."
+    >
+      <mat-icon>search</mat-icon>
+      Suchfeld in der Titelleiste
+      <span class="fill"></span>
+      <mat-icon class="menue-checkbox">{{
+        apService.userSettings.showApsearch ? "check_box" : "check_box_outline_blank"
       }}</mat-icon>
     </button>
     <button
