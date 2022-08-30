@@ -165,7 +165,7 @@ export class ApEditService extends BaseEditService {
             });
             yesno.afterClosed().subscribe((res: boolean) => {
               if (res) {
-                this.dataService.post(this.dataService.changeAptypUrl, post);
+                this.dataService.post(this.dataService.changeApAptypUrl, post);
               }
             });
           } else {
@@ -178,12 +178,12 @@ export class ApEditService extends BaseEditService {
             });
             yesno.afterClosed().subscribe((res: boolean) => {
               if (res) {
-                this.dataService.post(this.dataService.changeAptypUrl, post);
+                this.dataService.post(this.dataService.changeApAptypUrl, post);
               }
             });
           }
         } else {
-          this.dataService.post(this.dataService.changeAptypUrl, post);
+          this.dataService.post(this.dataService.changeApAptypUrl, post);
         }
       }
     });

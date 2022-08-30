@@ -125,6 +125,7 @@ export class DataService {
   public readonly changeHwtypUrl: string;
   public readonly changeVlanUrl: string;
   public readonly importTcLogUrl: string;
+  public readonly changeApAptypUrl: string;
 
   private aplistfetched = false;
   private aplistready = false;
@@ -169,7 +170,7 @@ export class DataService {
     this.changeAdresseUrl = this.configService.webservice + "/betrst/chgadresse";
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
-    this.changeAptypUrl = this.configService.webservice + "/ap/changeaptyp";
+    this.changeApAptypUrl = this.configService.webservice + "/ap/changeaptyp";
     this.changeHwUrl = this.configService.webservice + "/hw/changehw";
     this.addHwUrl = this.configService.webservice + "/hw/addhw";
     this.changeKonfigUrl = this.configService.webservice + "/hwkonfig/changekonfig";

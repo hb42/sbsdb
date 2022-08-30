@@ -1,5 +1,5 @@
-﻿5.0.0-rc.3      30.08.2022
-           - Bugfix
+﻿5.0.0-rc.4      30.08.2022
+           - Bugfixes
 
 5.0.0-rc.2      30.08.2022
            - Suchfeld im Header der AP-Seite ausblendbar machen
