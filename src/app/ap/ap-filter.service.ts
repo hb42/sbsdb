@@ -127,7 +127,7 @@ export class ApFilterService extends BaseFilterService {
 
   public toggleShowApsearch() {
     if (this.userSettings.showApsearch) {
-      this.resetStdFilters(false);
+      this.resetStdFilters();
       this.userSettings.showApsearch = false;
     } else {
       this.userSettings.showApsearch = true;
