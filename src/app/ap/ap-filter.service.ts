@@ -9,10 +9,12 @@ import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
 import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { TransportFilters } from "../shared/filter/transport-filters";
+import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
 import { NavigationService } from "../shared/navigation.service";
+import { ApService } from "./ap.service";
 
 @Injectable({ providedIn: "root" })
-export class ApFilterService extends BaseFilterService {
+export class ApFilterService extends BaseFilterService<ApService, Arbeitsplatz> {
   public userSettings: UserSession;
 
   public apFilterControl = new FormControl("");

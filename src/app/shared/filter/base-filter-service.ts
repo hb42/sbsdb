@@ -29,7 +29,7 @@ import { TransportElements } from "./transport-elements";
 import { TransportFilter } from "./transport-filter";
 import { TransportFilters } from "./transport-filters";
 
-export abstract class BaseFilterService {
+export abstract class BaseFilterService<S, R> {
   public static STDFILTER = -1;
   public static USERFILTER = 0;
   public static GLOBALFILTER = 1;
@@ -55,8 +55,8 @@ export abstract class BaseFilterService {
   private globNextKey = BaseFilterService.STDFILTER + 1;
 
   // wird in initService() von apService geliefert
-  protected columns: SbsdbColumn<unknown, unknown>[];
-  protected dataTable: MatTableDataSource<unknown>;
+  protected columns: SbsdbColumn<S, R>[];
+  protected dataTable: MatTableDataSource<R>;
   private filterChanged = 1;
 
   // Filtereingaben bremsen
@@ -80,7 +80,7 @@ export abstract class BaseFilterService {
    *
    * @param row
    */
-  public abstract tableFilter(row: unknown): boolean;
+  public abstract tableFilter(row: R): boolean;
 
   /**
    * Startparameter setzen (-> Ap/HwService)
@@ -88,28 +88,25 @@ export abstract class BaseFilterService {
    * @param col - Array der Tabellen-Spalten
    * @param dataTable - MatTableDataSource
    */
-  public initService(
-    col: SbsdbColumn<unknown, unknown>[],
-    dataTable: MatTableDataSource<unknown>
-  ): void {
+  public initService(col: SbsdbColumn<S, R>[], dataTable: MatTableDataSource<R>): void {
     this.columns = col;
     this.dataTable = dataTable;
 
     void this.readGlobalFilters();
 
-    this.dataTable.filterPredicate = (row: unknown): boolean => {
-      let valid = this.tableFilter(row);
+    this.dataTable.filterPredicate = (row: BaseTableRow): boolean => {
+      let valid = this.tableFilter(row as R);
       if (valid) {
         valid = this.filterExpression.validate(
           row as Record<string, string | Array<string> | number | Date>
         );
       }
       if (!valid) {
-        row["selected"] = false;
+        row.selected = false;
       }
       // nur ausgewählte anzeigen
       if (valid && this.showSelected) {
-        valid = row["selected"] as boolean;
+        valid = row.selected;
       }
       return valid;
     };
@@ -683,7 +680,7 @@ export abstract class BaseFilterService {
   private setColumnFilters() {
     if (this.stdFilter && this.columns) {
       const cols: Array<{
-        col: SbsdbColumn<unknown, unknown>;
+        col: SbsdbColumn<S, R>;
         val: string | null;
       }> = this.columns
         .filter((c) => {

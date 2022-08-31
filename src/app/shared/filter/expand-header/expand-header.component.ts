@@ -8,7 +8,7 @@ import { BaseFilterService } from "../base-filter-service";
   styleUrls: ["./expand-header.component.scss"],
 })
 export class ExpandHeaderComponent {
-  @Input() public filterService: BaseFilterService;
+  @Input() public filterService: BaseFilterService<unknown, unknown>;
 
   constructor() {
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);

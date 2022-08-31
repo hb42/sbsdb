@@ -9,11 +9,12 @@ import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { TransportFilters } from "../shared/filter/transport-filters";
 import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
+import { ConfService } from "./conf.service";
 
 @Injectable({
   providedIn: "root",
 })
-export class ConfFilterService extends BaseFilterService {
+export class ConfFilterService extends BaseFilterService<ConfService, HwKonfig> {
   public userSettings: UserSession;
 
   constructor(

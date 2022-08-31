@@ -8,6 +8,6 @@ import { BaseFilterService } from "../base-filter-service";
   styleUrls: ["./select-row.component.scss"],
 })
 export class SelectRowComponent {
-  @Input() public filterService: BaseFilterService;
+  @Input() public filterService: BaseFilterService<unknown, BaseTableRow>;
   @Input() public row: BaseTableRow;
 }

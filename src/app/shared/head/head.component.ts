@@ -47,7 +47,7 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild("mainMenuTrigger") menuTrigger: MatMenuTrigger;
 
-  @Input() public filterService: BaseFilterService;
+  @Input() public filterService: BaseFilterService<unknown, unknown>;
   @Input() public newTitle: string;
   @Input() public newElement: EventEmitter<void>;
   @Input() public mainMenu: MatMenu;

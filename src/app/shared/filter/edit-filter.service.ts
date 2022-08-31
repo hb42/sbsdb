@@ -6,13 +6,13 @@ import { BaseFilterService } from "./base-filter-service";
   providedIn: "root",
 })
 export class EditFilterService {
-  public filterService: BaseFilterService;
+  public filterService: BaseFilterService<unknown, unknown>;
 
   constructor() {
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
   }
 
-  public setFilterService(svc: BaseFilterService): void {
+  public setFilterService(svc: BaseFilterService<unknown, unknown>): void {
     this.filterService = svc;
   }
 }
