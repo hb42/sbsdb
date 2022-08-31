@@ -125,7 +125,9 @@ export class ConfService {
         () => null,
         () => null,
         "",
-        true,
+        // select-Spalte wird fuer die Konfigurationen derzeit nicht gebraucht
+        // bei Bedarf hier einschalten
+        false,
         0,
         -1,
         null,
