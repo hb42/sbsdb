@@ -79,6 +79,8 @@ import { StdTableComponent } from "./shared/table/std-table/std-table.component"
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
+import { ApEditMultiDialogComponent } from './ap/ap-edit-multi-dialog/ap-edit-multi-dialog.component';
+import { EditMultiComponent } from './ap/edit-multi/edit-multi.component';
 
 registerLocaleData(localeDe); // + provider, s.u.
 
@@ -159,6 +161,8 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditOeDialogComponent,
     AdminPanelVlanComponent,
     EditVlanDialogComponent,
+    ApEditMultiDialogComponent,
+    EditMultiComponent,
   ],
   imports: [
     BrowserModule,

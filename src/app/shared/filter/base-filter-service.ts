@@ -596,6 +596,10 @@ export abstract class BaseFilterService<S, R> {
     return `${flt} gefiltert aus ${all} (${sel} ausgewählt)`;
   }
 
+  public getSelected(): R[] {
+    return this.dataTable.filteredData.filter((r) => (r as BaseTableRow).selected);
+  }
+
   // --- expand/colpase all ---
 
   public expandAllRows(): void {

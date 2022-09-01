@@ -1,0 +1,33 @@
+<sbsdb-dialog-title
+  dialogTitle="{{ data.selectlist.length }} Arbeitsplätze bearbeiten"
+></sbsdb-dialog-title>
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <div class="panel">
+    Die nachfolgenden Felder werden in allen ausgewählten Arbeitsplätzen geändert.
+  </div>
+  <mat-dialog-content class="panel">
+    <sbsdb-edit-multi
+      class="abstand"
+      [formGroup]="formGroup"
+      [onSubmit]="onSubmitEvent"
+      [apkatid]="data.apkatid"
+      (dataReady)="multiReady($event)"
+    ></sbsdb-edit-multi>
+  </mat-dialog-content>
+  <mat-dialog-content class="panel">
+    <sbsdb-edit-tags
+      class="abstand"
+      *ngIf="data.apkatid"
+      [ap]="pseudoAp"
+      [formGroup]="formGroup"
+      [onSubmit]="onSubmitEvent"
+      (tagReady)="tagReady($event)"
+    ></sbsdb-edit-tags>
+  </mat-dialog-content>
+
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

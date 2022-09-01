@@ -425,5 +425,14 @@
       <mat-icon>delete_forever</mat-icon>
       AP löschen
     </button>
+    <mat-divider *ngIf="apService.userSettings.isAdmin && ap.selected"></mat-divider>
+    <button
+      mat-menu-item
+      *ngIf="apService.userSettings.isAdmin && ap.selected"
+      (click)="apService.editSelected()"
+    >
+      <mat-icon>fact_check</mat-icon>
+      Ausgewählte bearbeiten
+    </button>
   </ng-template>
 </mat-menu>

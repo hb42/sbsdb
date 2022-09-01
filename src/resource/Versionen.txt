@@ -1,4 +1,7 @@
-﻿5.0.0-rc.4  30.08.2022
+﻿5.0.0-rc.5  xx.xx.2022
+           - Select-Spalte fuer Konfigurationen entfernt, wird hier b.a.w. nicht gebraucht
+
+5.0.0-rc.4  30.08.2022
            - Bugfixes
 
 5.0.0-rc.2  30.08.2022

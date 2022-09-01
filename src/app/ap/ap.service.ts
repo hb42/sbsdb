@@ -222,6 +222,13 @@ export class ApService {
     }
   }
 
+  /**
+   * alle Ausgewaehlten bearbeiten
+   */
+  public editSelected() {
+    this.editService.editSelected(this.filterService.getSelected());
+  }
+
   private buildColumns() {
     this.columns.push(
       new SbsdbColumn<ApService, Arbeitsplatz>(

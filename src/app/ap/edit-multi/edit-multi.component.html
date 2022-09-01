@@ -1,0 +1,43 @@
+<mat-card>
+  <div class="input-title card-title">Arbeitsplatz</div>
+  <mat-card-content>
+    <!-- umgebende FORM muss die uebergeordnete component bereitstellen -->
+    <mat-form-field *ngIf="apkatid">
+      <mat-label>Arbeitsplatz-Typ</mat-label>
+      <select [formControl]="newaptypCtl" [errorStateMatcher]="matcher" matNativeControl>
+        <option *ngFor="let t of aptypList" [ngValue]="t">
+          {{ t ? t.bezeichnung : "- bitte auswählen -" }}
+        </option>
+      </select>
+      <mat-error *ngIf="newaptypCtl.invalid">{{ getErrorMessage(newaptypCtl) }}</mat-error>
+    </mat-form-field>
+    <div [formGroup]="multiFormGroup" class="tag-box">
+      <div class="oe-fields">
+        <mat-form-field class="abstand standort textinp">
+          <mat-label>Standort</mat-label>
+          <select
+            matNativeControl
+            [formControl]="newoeCtl"
+            [errorStateMatcher]="matcher"
+            (change)="onStandortSelectionChange()"
+          >
+            <option *ngFor="let o of oeListNull" [ngValue]="o">
+              {{ o ? o.fullname : "- bitte auswählen -" }}
+            </option>
+          </select>
+          <mat-error *ngIf="newoeCtl.invalid">{{ getErrorMessage(newoeCtl) }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="abstand textinp">
+          <mat-label>Verantwortliche OE</mat-label>
+          <select matNativeControl [formControl]="newvoeCtl" [errorStateMatcher]="matcher">
+            <option *ngFor="let o of oeListNull" [ngValue]="o">
+              {{ o ? o.fullname : "- bitte auswählen -" }}
+            </option>
+          </select>
+          <mat-error *ngIf="newvoeCtl.invalid">{{ getErrorMessage(newvoeCtl) }}</mat-error>
+          <mat-hint align="start">sofern abweichend von Standort</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

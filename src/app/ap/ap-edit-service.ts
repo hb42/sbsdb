@@ -13,6 +13,8 @@ import { YesNoDialogComponent } from "../shared/yes-no-dialog/yes-no-dialog.comp
 import { ApEditDialogData } from "./ap-edit-dialog/ap-edit-dialog-data";
 import { ApEditDialogComponent } from "./ap-edit-dialog/ap-edit-dialog.component";
 import { EditApTransport } from "./ap-edit-dialog/edit-ap-transport";
+import { ApEditMultiDialogComponent } from "./ap-edit-multi-dialog/ap-edit-multi-dialog.component";
+import { EditApMultiData } from "./ap-edit-multi-dialog/edit-ap-multi-data";
 import { NewApData } from "./new-ap/new-ap-data";
 import { NewApComponent } from "./new-ap/new-ap.component";
 
@@ -187,6 +189,38 @@ export class ApEditService extends BaseEditService {
         }
       }
     });
+  }
+
+  public editSelected(selectlist: Arbeitsplatz[]) {
+    console.debug("edit selected count=", selectlist.length);
+
+    // nur wenn alle Element die gleiche ApKategorie haben dürfen TAGs und APTyp geaendert werden
+    const katid = selectlist[0].apKatId;
+    const isOneKat = !selectlist.some((ap) => ap.apKatId !== katid);
+
+    const dialogRef = this.dialog.open(ApEditMultiDialogComponent, {
+      disableClose: true,
+      data: {
+        selectlist: selectlist,
+        apkatid: isOneKat ? katid : null,
+        change: { newApTypId: null, newOeId: null, newVOeId: null },
+        tags: [],
+      } as EditApMultiData,
+    });
+    // Dialog-Ergebnis
+    dialogRef.afterClosed().subscribe((result: EditApMultiData) => {
+      console.debug("ap edit multi dlg afterClose");
+      console.dir(result);
+      if (result) {
+        // TODO save
+      }
+    });
+
+    // TODO -> was aendern (Abhaenigkeiten!)? -> verzweigen zu edit-dlg
+    //        Aptyp -> gleiche ApKategorie
+    //        TAG -> ApKategorie (vorhandene überschreiben, Löschen?)
+    //        Änderung Vlan???
+    //        OE/ Verantw. OE
   }
 
   private edit(dat: ApEditDialogData) {
