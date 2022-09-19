@@ -220,6 +220,8 @@ export class DataService {
     notification.initialize();
 
     notification.apChange.subscribe((data) => {
+      // TODO change data to ApTransport[]
+      // data.forEach((d) => this.updateAp(d));
       this.updateAp(data);
       this.updateHwKonfigListCount();
       this.apListChanged.emit();

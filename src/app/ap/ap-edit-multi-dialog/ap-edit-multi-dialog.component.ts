@@ -2,7 +2,10 @@ import { Component, EventEmitter, Inject } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { environment } from "../../../environments/environment";
+import { DataService } from "../../shared/data.service";
+import { StringCompare } from "../../shared/helper";
 import { Arbeitsplatz } from "../../shared/model/arbeitsplatz";
+import { TagTyp } from "../../shared/model/tagTyp";
 import { MultiChange } from "../edit-multi/multi-change";
 import { TagChange } from "../edit-tags/tag-change";
 import { EditApMultiData } from "./edit-ap-multi-data";
@@ -17,11 +20,13 @@ export class ApEditMultiDialogComponent {
   public onSubmitEvent: EventEmitter<void> = new EventEmitter<void>();
 
   public pseudoAp: Arbeitsplatz;
+  public oldTags: TagTyp[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: EditApMultiData,
     public matDialogRef: MatDialogRef<ApEditMultiDialogComponent>,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    private dataService: DataService
   ) {
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.formGroup = this.formBuilder.group({});
@@ -49,6 +54,14 @@ export class ApEditMultiDialogComponent {
       verantwOeId: 0,
       vlanStr: "",
     };
+    let tags: number[] = [];
+    // TypIDs aller Tags der APs
+    this.data.selectlist.forEach((ap) => ap.tags.forEach((t) => tags.push(t.tagId)));
+    // auf eindeutige IDs reduzieren
+    tags = [...new Set(tags)];
+    // diese TagTypen aus der Liste holen
+    tags.forEach((t) => this.oldTags.push(this.dataService.tagTypList.find((l) => l.id === t)));
+    this.oldTags.sort((a, b) => StringCompare(a.bezeichnung, b.bezeichnung));
   }
 
   public onSubmit() {
@@ -57,6 +70,8 @@ export class ApEditMultiDialogComponent {
   }
 
   public tagReady(evt: TagChange[]): void {
+    console.debug("evt tagReady");
+    console.dir(evt);
     this.data.tags = evt;
   }
 

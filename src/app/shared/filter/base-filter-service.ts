@@ -575,6 +575,10 @@ export abstract class BaseFilterService<S, R> {
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   public masterToggle(): void {
     const toggle = !this.isAllSelected();
+    this.changeSelection(toggle);
+  }
+
+  public changeSelection(toggle: boolean): void {
     this.dataTable.filteredData.forEach((row: BaseTableRow) => (row.selected = toggle));
     this.triggerFilter();
   }

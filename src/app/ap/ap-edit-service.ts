@@ -15,6 +15,7 @@ import { ApEditDialogComponent } from "./ap-edit-dialog/ap-edit-dialog.component
 import { EditApTransport } from "./ap-edit-dialog/edit-ap-transport";
 import { ApEditMultiDialogComponent } from "./ap-edit-multi-dialog/ap-edit-multi-dialog.component";
 import { EditApMultiData } from "./ap-edit-multi-dialog/edit-ap-multi-data";
+import { TagChange } from "./edit-tags/tag-change";
 import { NewApData } from "./new-ap/new-ap-data";
 import { NewApComponent } from "./new-ap/new-ap.component";
 
@@ -211,8 +212,75 @@ export class ApEditService extends BaseEditService {
     dialogRef.afterClosed().subscribe((result: EditApMultiData) => {
       console.debug("ap edit multi dlg afterClose");
       console.dir(result);
-      if (result) {
-        // TODO save
+      if (
+        result &&
+        (result.tags || result.change.newOeId || result.change.newVOeId || result.change.newApTypId)
+      ) {
+        const resultList: EditApTransport[] = [];
+        selectlist.forEach((ap) => {
+          const res: EditApTransport = {
+            ap: { apid: ap.apId },
+            delAp: false,
+            hw: undefined,
+            id: ap.apId,
+            tags: [],
+          };
+          if (result.change.newOeId && ap.oeId !== result.change.newOeId) {
+            res.ap.standortId = result.change.newOeId;
+          }
+          if (result.change.newVOeId && ap.verantwOeId !== result.change.newVOeId) {
+            res.ap.verantwId = result.change.newVOeId;
+          }
+          if (result.change.newApTypId && ap.apTypId !== result.change.newApTypId) {
+            res.ap.apTypId = result.change.newApTypId;
+          }
+          if (result.tags) {
+            result.tags.forEach((t) => {
+              const tagchange: TagChange = {
+                apId: ap.apId,
+                apTagId: null,
+                tagId: t.tagId,
+                text: t.text,
+              };
+              const exist = ap.tags.find((ex) => ex.tagId === t.tagId);
+              if (exist) {
+                tagchange.apTagId = exist.apTagId;
+                // ueberschreiben oder loeschen
+                if (t.apTagId === -1) {
+                  // loeschen
+                  tagchange.tagId = null;
+                  res.tags.push(tagchange);
+                } else {
+                  // aendern
+                  const isdeleted = res.tags.find((r) => r.apTagId === exist.apTagId);
+                  if (isdeleted) {
+                    // es existiert schon ein Loeschauftrag fuer TagID
+                    // (Loeschauftraege stehen immer am Anfang von result.tags -> EditTagsComponent#deleteOld())
+                    // statt delete + new nur change
+                    isdeleted.tagId = exist.tagId;
+                    isdeleted.text = t.text;
+                  } else {
+                    res.tags.push(tagchange);
+                  }
+                }
+              } else {
+                // neuer Tag
+                if (t.apTagId !== -1) {
+                  res.tags.push(tagchange);
+                }
+              }
+            });
+          }
+          if (res.ap.standortId || res.ap.verantwId || res.ap.apTypId || res.tags.length) {
+            resultList.push(res);
+          }
+        });
+        if (resultList.length) {
+          // TODO save -> save(EditApTransport[])
+          // this.save(resultList);
+          console.debug("save multi result");
+          console.dir(resultList);
+        }
       }
     });
 

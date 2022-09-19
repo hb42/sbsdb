@@ -47,6 +47,7 @@ export class ApService {
   public displayedColumns: string[];
 
   public newApEvent: EventEmitter<void> = new EventEmitter<void>();
+  public changeSelectedEvent: EventEmitter<void> = new EventEmitter<void>();
 
   /* fuer select list: Liste ohne Duplikate fuer ein Feld (nicht bei allen sinnvoll -> aptyp, oe, voe, tags, hwtyp, vlan(?))
     new Set() -> nur eindeutige - ... -> zu Array
@@ -86,6 +87,7 @@ export class ApService {
     });
 
     this.newApEvent.subscribe(() => this.editService.newAp());
+    this.changeSelectedEvent.subscribe(() => this.editSelected());
   }
 
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {

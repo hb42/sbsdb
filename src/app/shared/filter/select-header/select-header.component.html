@@ -1,25 +1,59 @@
-<button class="btn-sel" mat-icon-button (click)="filterService.toggleSelection()">
-  <mat-icon
-    inline
-    title="Nur Ausgewählte anzeigen"
-    *ngIf="!filterService.showSelected"
-    color="primary"
-    >playlist_add_check
-  </mat-icon>
-  <mat-icon
-    inline
-    title="Auch nicht Ausgewählte anzeigen"
-    *ngIf="filterService.showSelected"
-    color="primary"
-    >unpublished
-  </mat-icon>
-</button>
 <mat-checkbox
-  class="btn-check"
+  class="select-btn"
   (change)="$event ? filterService.masterToggle() : null"
   [checked]="filterService.isAllSelected()"
   [indeterminate]="filterService.isSelected() && !filterService.isAllSelected()"
   color="primary"
-  title="alle auwählen"
 >
 </mat-checkbox>
+
+<button class="select-btn" mat-icon-button [matMenuTriggerFor]="selectMenu" color="primary">
+  <mat-icon inline title="Select-Menü">more_horiz</mat-icon>
+</button>
+
+<!-- Menue -->
+<mat-menu #selectMenu="matMenu">
+  <ng-template matMenuContent>
+    <button
+      mat-menu-item
+      [disabled]="!filterService.isSelected() && !filterService.showSelected"
+      (click)="filterService.toggleSelection()"
+    >
+      <div *ngIf="!filterService.showSelected">
+        <mat-icon>playlist_add_check</mat-icon>
+        Nur Ausgewählte anzeigen
+      </div>
+      <div *ngIf="filterService.showSelected">
+        <mat-icon>unpublished</mat-icon>
+        Auch nicht Ausgewählte anzeigen
+      </div>
+    </button>
+    <button
+      mat-menu-item
+      (click)="filterService.changeSelection(true)"
+      [disabled]="filterService.isAllSelected()"
+      title="Alle angezeigten Zeilen auswählen"
+    >
+      <mat-icon>check</mat-icon>
+      Alle auswählen
+    </button>
+    <button
+      mat-menu-item
+      (click)="filterService.changeSelection(false)"
+      [disabled]="!filterService.isSelected()"
+      title="Alle angezeigten Zeilen abwählen"
+    >
+      <mat-icon>check_box_outline_blank</mat-icon>
+      Alle abwählen
+    </button>
+    <mat-divider></mat-divider>
+    <button
+      mat-menu-item
+      [disabled]="!filterService.userSettings.isAdmin || !filterService.isSelected()"
+      (click)="editSelected()"
+    >
+      <mat-icon>fact_check</mat-icon>
+      Ausgewählte bearbeiten
+    </button>
+  </ng-template>
+</mat-menu>

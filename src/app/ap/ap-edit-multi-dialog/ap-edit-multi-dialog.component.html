@@ -6,9 +6,6 @@
   (ngSubmit)="onSubmit()"
   [class.error]="!formGroup.valid && formGroup.touched"
 >
-  <div class="panel">
-    Die nachfolgenden Felder werden in allen ausgewählten Arbeitsplätzen geändert.
-  </div>
   <mat-dialog-content class="panel">
     <sbsdb-edit-multi
       class="abstand"
@@ -24,6 +21,7 @@
       *ngIf="data.apkatid"
       [ap]="pseudoAp"
       [formGroup]="formGroup"
+      [existingTags]="oldTags"
       [onSubmit]="onSubmitEvent"
       (tagReady)="tagReady($event)"
     ></sbsdb-edit-tags>

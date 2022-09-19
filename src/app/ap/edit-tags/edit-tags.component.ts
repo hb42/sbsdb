@@ -18,6 +18,7 @@ import { TagInput } from "./tag-input";
 export class EditTagsComponent implements OnInit {
   @Input() public ap: Arbeitsplatz;
   @Input() public formGroup: FormGroup; // uebergeordnete formGroup
+  @Input() public existingTags: TagTyp[]; // nur fuer Multiedit
   @Input() public onSubmit: EventEmitter<void>; // fuer den submit der form
   @Output() public tagReady: EventEmitter<TagChange[]>; // liefert die zu aenderenden Daten
 
@@ -146,6 +147,28 @@ export class EditTagsComponent implements OnInit {
     tag.tagCtrl = null;
     tag.textCtrl = null;
     // }
+  }
+
+  /**
+   * Eintrag aus Liste der vorhandenen loeschen (Multiedit)
+   *
+   * @param tag
+   */
+  public deleteOld(tag: TagTyp): void {
+    if (tag) {
+      const idx = this.existingTags.findIndex((t) => t.id === tag.id);
+      if (idx >= 0) {
+        this.existingTags.splice(idx, 1);
+      }
+      // stellt sicher, dass diese Eintraege immer am Anfang der Liste stehen
+      // (Rest wir erst bei submit angehaengt)
+      this.changes.push({
+        apId: 0,
+        apTagId: -1,
+        tagId: tag.id,
+        text: "",
+      });
+    }
   }
 
   /**
