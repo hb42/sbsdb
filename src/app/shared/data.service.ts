@@ -112,6 +112,7 @@ export class DataService {
   public readonly allHwTypUrl: string;
   public readonly allAdresseUrl: string;
   public readonly changeApUrl: string;
+  public readonly changeApMultiUrl: string;
   public readonly changeHwUrl: string;
   public readonly changeKonfigUrl: string;
   public readonly addHwUrl: string;
@@ -170,6 +171,7 @@ export class DataService {
     this.changeAdresseUrl = this.configService.webservice + "/betrst/chgadresse";
 
     this.changeApUrl = this.configService.webservice + "/ap/changeap";
+    this.changeApMultiUrl = this.configService.webservice + "/ap/changeapmulti";
     this.changeApAptypUrl = this.configService.webservice + "/ap/changeaptyp";
     this.changeHwUrl = this.configService.webservice + "/hw/changehw";
     this.addHwUrl = this.configService.webservice + "/hw/addhw";
@@ -220,9 +222,15 @@ export class DataService {
     notification.initialize();
 
     notification.apChange.subscribe((data) => {
-      // TODO change data to ApTransport[]
       // data.forEach((d) => this.updateAp(d));
       this.updateAp(data);
+      this.updateHwKonfigListCount();
+      this.apListChanged.emit();
+      this.checkNotification();
+    });
+
+    notification.apChangeMulti.subscribe((data) => {
+      data.forEach((d) => this.updateAp(d));
       this.updateHwKonfigListCount();
       this.apListChanged.emit();
       this.checkNotification();

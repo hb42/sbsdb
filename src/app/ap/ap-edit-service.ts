@@ -212,83 +212,13 @@ export class ApEditService extends BaseEditService {
     dialogRef.afterClosed().subscribe((result: EditApMultiData) => {
       console.debug("ap edit multi dlg afterClose");
       console.dir(result);
-      if (
-        result &&
-        (result.tags || result.change.newOeId || result.change.newVOeId || result.change.newApTypId)
-      ) {
-        const resultList: EditApTransport[] = [];
-        selectlist.forEach((ap) => {
-          const res: EditApTransport = {
-            ap: { apid: ap.apId },
-            delAp: false,
-            hw: undefined,
-            id: ap.apId,
-            tags: [],
-          };
-          if (result.change.newOeId && ap.oeId !== result.change.newOeId) {
-            res.ap.standortId = result.change.newOeId;
-          }
-          if (result.change.newVOeId && ap.verantwOeId !== result.change.newVOeId) {
-            res.ap.verantwId = result.change.newVOeId;
-          }
-          if (result.change.newApTypId && ap.apTypId !== result.change.newApTypId) {
-            res.ap.apTypId = result.change.newApTypId;
-          }
-          if (result.tags) {
-            result.tags.forEach((t) => {
-              const tagchange: TagChange = {
-                apId: ap.apId,
-                apTagId: null,
-                tagId: t.tagId,
-                text: t.text,
-              };
-              const exist = ap.tags.find((ex) => ex.tagId === t.tagId);
-              if (exist) {
-                tagchange.apTagId = exist.apTagId;
-                // ueberschreiben oder loeschen
-                if (t.apTagId === -1) {
-                  // loeschen
-                  tagchange.tagId = null;
-                  res.tags.push(tagchange);
-                } else {
-                  // aendern
-                  const isdeleted = res.tags.find((r) => r.apTagId === exist.apTagId);
-                  if (isdeleted) {
-                    // es existiert schon ein Loeschauftrag fuer TagID
-                    // (Loeschauftraege stehen immer am Anfang von result.tags -> EditTagsComponent#deleteOld())
-                    // statt delete + new nur change
-                    isdeleted.tagId = exist.tagId;
-                    isdeleted.text = t.text;
-                  } else {
-                    res.tags.push(tagchange);
-                  }
-                }
-              } else {
-                // neuer Tag
-                if (t.apTagId !== -1) {
-                  res.tags.push(tagchange);
-                }
-              }
-            });
-          }
-          if (res.ap.standortId || res.ap.verantwId || res.ap.apTypId || res.tags.length) {
-            resultList.push(res);
-          }
-        });
-        if (resultList.length) {
-          // TODO save -> save(EditApTransport[])
-          // this.save(resultList);
-          console.debug("save multi result");
-          console.dir(resultList);
-        }
+      const resultList = this.prepareMultiResult(result);
+      if (resultList.length) {
+        console.debug("save multi result");
+        console.dir(resultList);
+        this.saveMulti(result, resultList);
       }
     });
-
-    // TODO -> was aendern (Abhaenigkeiten!)? -> verzweigen zu edit-dlg
-    //        Aptyp -> gleiche ApKategorie
-    //        TAG -> ApKategorie (vorhandene überschreiben, Löschen?)
-    //        Änderung Vlan???
-    //        OE/ Verantw. OE
   }
 
   private edit(dat: ApEditDialogData) {
@@ -296,7 +226,6 @@ export class ApEditService extends BaseEditService {
       disableClose: true,
       data: dat,
     });
-
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {
       if (result) {
@@ -318,5 +247,128 @@ export class ApEditService extends BaseEditService {
 
   private save(post: EditApTransport): void {
     this.dataService.post(this.dataService.changeApUrl, post);
+  }
+
+  private prepareMultiResult(result: EditApMultiData): EditApTransport[] {
+    const resultList: EditApTransport[] = [];
+    if (
+      result &&
+      (result.tags || result.change.newOeId || result.change.newVOeId || result.change.newApTypId)
+    ) {
+      result.selectlist.forEach((ap) => {
+        const res: EditApTransport = {
+          ap: { apid: ap.apId },
+          delAp: false,
+          hw: undefined,
+          id: ap.apId,
+          tags: [],
+        };
+        if (result.change.newOeId && ap.oeId !== result.change.newOeId) {
+          res.ap.standortId = result.change.newOeId;
+        }
+        if (result.change.newVOeId && ap.verantwOeId !== result.change.newVOeId) {
+          res.ap.verantwId = result.change.newVOeId;
+        }
+        if (result.change.newApTypId && ap.apTypId !== result.change.newApTypId) {
+          res.ap.apTypId = result.change.newApTypId;
+        }
+        if (result.tags) {
+          result.tags.forEach((t) => {
+            const tagchange: TagChange = {
+              apId: ap.apId,
+              apTagId: null,
+              tagId: t.tagId,
+              text: t.text,
+            };
+            const exist = ap.tags.find((ex) => ex.tagId === t.tagId);
+            if (exist) {
+              tagchange.apTagId = exist.apTagId;
+              // ueberschreiben oder loeschen
+              if (t.apTagId === -1) {
+                // loeschen
+                tagchange.tagId = null;
+                res.tags.push(tagchange);
+              } else {
+                // aendern
+                const isdeleted = res.tags.find((r) => r.apTagId === exist.apTagId);
+                if (isdeleted) {
+                  // es existiert schon ein Loeschauftrag fuer TagID
+                  // (Loeschauftraege stehen immer am Anfang von result.tags -> EditTagsComponent#deleteOld())
+                  // statt delete + new nur change
+                  isdeleted.tagId = exist.tagId;
+                  isdeleted.text = t.text;
+                } else {
+                  res.tags.push(tagchange);
+                }
+              }
+            } else {
+              // neuer Tag
+              if (t.apTagId !== -1) {
+                res.tags.push(tagchange);
+              }
+            }
+          });
+        }
+        if (res.ap.standortId || res.ap.verantwId || res.ap.apTypId || res.tags.length) {
+          resultList.push(res);
+        }
+      });
+    }
+    return resultList;
+  }
+
+  private saveMulti(result: EditApMultiData, resultlist: EditApTransport[]): void {
+    const plural = result.selectlist.length !== 1;
+    const count = result.selectlist.length.toString(10);
+    let msg = `Bei Klick auf "OK" werden die folgenden Änderungen für ${
+      plural ? "die " + count + " ausgewählten Arbeitsplätze" : "den ausgewählten Arbeitsplatz"
+    } vorgenommen:\n`;
+    if (result.change.newApTypId) {
+      const typ = this.dataService.aptypList.find(
+        (t) => t.id === result.change.newApTypId
+      ).bezeichnung;
+      msg += `\n  - der Arbeitsplatztyp wird zu "${typ}" geändert`;
+    }
+    if (result.change.newOeId) {
+      const bst = this.dataService.bstList.find(
+        (b) => b.bstId === result.change.newOeId
+      ).betriebsstelle;
+      msg += `\n  - der Standort ${
+        result.change.newOeId === result.change.newVOeId
+          ? "und die verantwortliche OE werden"
+          : "wird"
+      } zu "${bst}" geändert`;
+    }
+    if (result.change.newVOeId && result.change.newVOeId !== result.change.newOeId) {
+      const bst = this.dataService.bstList.find(
+        (b) => b.bstId === result.change.newVOeId
+      ).betriebsstelle;
+      msg += `\n  - die verantwortliche OE wird zu "${bst}" geändert`;
+    }
+    if (result.tags) {
+      result.tags.forEach((tag) => {
+        const tagname = this.dataService.tagTypList.find((t) => t.id === tag.tagId).bezeichnung;
+        if (tag.apTagId === -1) {
+          msg += `\n  - die sonstige Information "${tagname}" wird${
+            plural ? " bei allen Arbeitsplätzen" : ""
+          } entfernt`;
+        } else {
+          msg += `\n  - die sonstige Information "${tagname}" wird ${
+            tag.text ? 'mit dem Wert "' + tag.text + '"' : ""
+          } eingetragen`;
+        }
+      });
+    }
+    const yesno = this.dialog.open(YesNoDialogComponent, {
+      data: {
+        title: plural ? `${count} Arbeitsplätze ändern` : "Arbeitsplatz ändern",
+        text: msg,
+      },
+    });
+    yesno.afterClosed().subscribe((ok: boolean) => {
+      if (ok) {
+        this.dataService.post(this.dataService.changeApMultiUrl, resultlist);
+      }
+    });
   }
 }

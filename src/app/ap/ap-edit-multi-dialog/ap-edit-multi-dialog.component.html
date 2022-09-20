@@ -1,5 +1,7 @@
 <sbsdb-dialog-title
-  dialogTitle="{{ data.selectlist.length }} Arbeitsplätze bearbeiten"
+  dialogTitle="{{
+    data.selectlist.length !== 1 ? data.selectlist.length + ' Arbeitsplätze' : 'Arbeitsplatz'
+  }} bearbeiten"
 ></sbsdb-dialog-title>
 <form
   [formGroup]="formGroup"

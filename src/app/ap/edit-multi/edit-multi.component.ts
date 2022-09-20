@@ -79,7 +79,7 @@ export class EditMultiComponent implements OnInit {
     const oe = this.newoeCtl.value as Betrst;
     change.newOeId = oe ? oe.bstId : null;
     const voe = this.newvoeCtl.value as Betrst;
-    change.newVOeId = voe ? voe.bstId : null;
+    change.newVOeId = voe ? voe.bstId : oe ? oe.bstId : null;
 
     this.dataReady.emit(change);
   }

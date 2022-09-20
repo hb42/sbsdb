@@ -46,9 +46,9 @@
   .detail-cell-content {
     overflow: hidden;
     display: flex;
-    //padding: 10px 0;
     flex-direction: column;
     border: 0;
+    margin-bottom: 25px;
   }
 
   .detail-cell-expanded td.mat-cell,

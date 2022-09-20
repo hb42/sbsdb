@@ -17,19 +17,6 @@
   <mat-card-content>
     <!-- umgebende FORM muss die uebergeordnete component bereitstellen -->
     <div [formGroup]="tagFormGroup" class="tag-box">
-      <div *ngIf="existingTags">
-        <div class="input-title sub-title">Vorhandene:</div>
-        <div *ngFor="let old of existingTags">
-          <mat-form-field>
-            <input matInput [value]="old.bezeichnung" disabled readonly />
-          </mat-form-field>
-          <!--          <div>{{ old.bezeichnung }}</div>-->
-          <button mat-icon-button title="Eintrag löschen" (click)="deleteOld(old)" type="button">
-            <mat-icon color="accent">delete_outline</mat-icon>
-          </button>
-        </div>
-        <div class="input-title sub-title">Neue:</div>
-      </div>
       <div *ngFor="let tag of tagInput">
         <mat-form-field class="abstand">
           <select
@@ -57,6 +44,19 @@
           <mat-icon color="accent">delete_outline</mat-icon>
         </button>
       </div>
+      <!-- fuer multi edit -->
+      <div *ngIf="existingTags">
+        <div class="input-title sub-title">Vorhandene:</div>
+        <div *ngFor="let old of existingTags">
+          <mat-form-field>
+            <input matInput [value]="old.bezeichnung" disabled readonly />
+          </mat-form-field>
+          <button mat-icon-button title="Eintrag löschen" (click)="deleteOld(old)" type="button">
+            <mat-icon color="accent">delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
+
       <mat-error *ngIf="tagFormGroup.invalid">{{ getFormErrorMessage() }}</mat-error>
     </div>
   </mat-card-content>
