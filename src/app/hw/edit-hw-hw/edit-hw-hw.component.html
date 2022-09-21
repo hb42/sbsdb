@@ -5,7 +5,7 @@
     <!-- umgebende FORM muss die uebergeordnete component bereitstellen -->
     <!--    <div [formGroup]="hwFormGroup"></div>-->
 
-    <mat-form-field class="abstand-top abstand textinp">
+    <mat-form-field class="abstand-top abstand textinp" *ngIf="!multiedit">
       <mat-label>Serien-Nr.</mat-label>
       <input matInput [formControl]="serCtrl" [errorStateMatcher]="matcher" />
       <mat-error *ngIf="serCtrl.invalid">{{ getErrorMessage(serCtrl) }}</mat-error>
@@ -34,7 +34,7 @@
       <mat-datepicker #picker></mat-datepicker>
       <mat-error *ngIf="anschdCtrl.invalid">{{ getErrorMessage(anschdCtrl) }}</mat-error>
     </mat-form-field>
-    <mat-form-field class="abstand textinp">
+    <mat-form-field class="abstand textinp" *ngIf="!multiedit">
       <mat-label>SMBIOS-GUID</mat-label>
       <input matInput [formControl]="guidCtrl" [errorStateMatcher]="matcher" />
       <mat-error *ngIf="guidCtrl.invalid">{{ getErrorMessage(guidCtrl) }}</mat-error>
@@ -45,7 +45,7 @@
       <mat-error *ngIf="wfaCtrl.invalid">{{ getErrorMessage(wfaCtrl) }}</mat-error>
     </mat-form-field>
 
-    <mat-form-field class="abstand bemerkung">
+    <mat-form-field class="abstand bemerkung" *ngIf="!multiedit">
       <mat-label>Bemerkung</mat-label>
       <textarea
         matInput

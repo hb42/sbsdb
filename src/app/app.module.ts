@@ -81,6 +81,8 @@ import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
 import { ApEditMultiDialogComponent } from './ap/ap-edit-multi-dialog/ap-edit-multi-dialog.component';
 import { EditMultiComponent } from './ap/edit-multi/edit-multi.component';
+import { HwEditMultiDialogComponent } from './hw/hw-edit-multi-dialog/hw-edit-multi-dialog.component';
+import { EditHwMultiComponent } from './hw/edit-hw-multi/edit-hw-multi.component';
 
 registerLocaleData(localeDe); // + provider, s.u.
 
@@ -163,6 +165,8 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditVlanDialogComponent,
     ApEditMultiDialogComponent,
     EditMultiComponent,
+    HwEditMultiDialogComponent,
+    EditHwMultiComponent,
   ],
   imports: [
     BrowserModule,

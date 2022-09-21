@@ -31,6 +31,8 @@ export class EditHwHwComponent implements OnInit {
   public wfaCtrl: FormControl;
   public bemCtrl: FormControl;
 
+  public multiedit: boolean;
+
   constructor(private dataService: DataService, private formBuilder: FormBuilder) {
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.hwReady = new EventEmitter<HwChange>();
@@ -38,6 +40,8 @@ export class EditHwHwComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.multiedit = !this.hw.id;
+
     // form submit
     this.onSubmit.subscribe(() => {
       this.submit();

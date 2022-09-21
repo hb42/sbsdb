@@ -1,0 +1,31 @@
+<sbsdb-dialog-title
+  dialogTitle="{{
+    data.selectList.length !== 1 ? data.selectList.length + ' Geräte' : 'Gerät'
+  }} bearbeiten"
+></sbsdb-dialog-title>
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <mat-dialog-content class="panel">
+    <sbsdb-edit-hw-hw
+      class="abstand"
+      [hw]="pseudoHw"
+      [formGroup]="formGroup"
+      [onSubmit]="onSubmitEvent"
+      (hwReady)="hwReady($event)"
+    ></sbsdb-edit-hw-hw>
+  </mat-dialog-content>
+  <mat-dialog-content class="panel panel-dist">
+    <sbsdb-edit-hw-multi
+      class="abstand"
+      [formGroup]="formGroup"
+      [onSubmit]="onSubmitEvent"
+      [apremove]="data.removeAp"
+      (dataReady)="multiReady($event)"
+    ></sbsdb-edit-hw-multi>
+  </mat-dialog-content>
+
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

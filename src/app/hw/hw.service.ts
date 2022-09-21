@@ -45,6 +45,7 @@ export class HwService {
   public stdFilter = true;
 
   public newHwEvent: EventEmitter<void> = new EventEmitter<void>();
+  public changeSelectedEvent: EventEmitter<void> = new EventEmitter<void>();
 
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
@@ -74,6 +75,7 @@ export class HwService {
     });
 
     this.newHwEvent.subscribe(() => this.editService.newHw(null));
+    this.changeSelectedEvent.subscribe(() => this.editSelected());
   }
 
   public onSort(event: Sort): void {
@@ -143,6 +145,10 @@ export class HwService {
 
   public deleteHw(hw: Hardware): void {
     this.editService.deleteHw(hw);
+  }
+
+  public editSelected(): void {
+    this.editService.editSelected(this.hwFilterService.getSelected());
   }
 
   public test(hw: Hardware): void {

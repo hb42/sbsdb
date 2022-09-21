@@ -29,7 +29,10 @@
       <ng-container matColumnDef="select">
         <!-- HEAD -->
         <th mat-header-cell *matHeaderCellDef class="icon-column">
-          <sbsdb-select-header [filterService]="hwService.hwFilterService"></sbsdb-select-header>
+          <sbsdb-select-header
+            [filterService]="hwService.hwFilterService"
+            [changeSelected]="hwService.changeSelectedEvent"
+          ></sbsdb-select-header>
         </th>
         <!-- DATA -->
         <td mat-cell *matCellDef="let row">
@@ -352,6 +355,15 @@
       <button mat-menu-item *ngIf="hwService.userSettings.isAdmin" (click)="hwService.deleteHw(hw)">
         <mat-icon>delete_forever</mat-icon>
         Hardware aussondern
+      </button>
+      <mat-divider *ngIf="hwService.userSettings.isAdmin && hw.selected"></mat-divider>
+      <button
+        mat-menu-item
+        *ngIf="hwService.userSettings.isAdmin && hw.selected"
+        (click)="hwService.editSelected()"
+      >
+        <mat-icon>fact_check</mat-icon>
+        Ausgewählte bearbeiten
       </button>
     </ng-template>
   </mat-menu>

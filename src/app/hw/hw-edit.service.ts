@@ -1,3 +1,4 @@
+import { formatDate, formatNumber } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { lastValueFrom } from "rxjs";
@@ -8,11 +9,14 @@ import { PrepDateForDB } from "../shared/helper";
 import { Hardware } from "../shared/model/hardware";
 import { HwHistory } from "../shared/model/hw-history";
 import { HwKonfig } from "../shared/model/hw-konfig";
+import { YesNoDialogComponent } from "../shared/yes-no-dialog/yes-no-dialog.component";
 import { HwAussondData } from "./hw-aussond-dialog/hw-aussond-data";
 import { HwAussondDialogComponent } from "./hw-aussond-dialog/hw-aussond-dialog.component";
 import { EditHwTransport } from "./hw-edit-dialog/edit-hw-transport";
 import { HwEditDialogData } from "./hw-edit-dialog/hw-edit-dialog-data";
 import { HwEditDialogComponent } from "./hw-edit-dialog/hw-edit-dialog.component";
+import { EditHwMultiData } from "./hw-edit-multi-dialog/edit-hw-multi-data";
+import { HwEditMultiDialogComponent } from "./hw-edit-multi-dialog/hw-edit-multi-dialog.component";
 import { NewHwData } from "./new-hw-dialog/new-hw-data";
 import { NewHwDialogComponent } from "./new-hw-dialog/new-hw-dialog.component";
 import { NewHwTransport } from "./new-hw-dialog/new-hw-transport";
@@ -121,6 +125,68 @@ export class HwEditService extends BaseEditService {
     });
   }
 
+  public editSelected(selectlist: Hardware[]): void {
+    console.debug("edit selected count=", selectlist.length);
+    const dialogRef = this.dialog.open(HwEditMultiDialogComponent, {
+      disableClose: true,
+      data: {
+        selectList: selectlist,
+        change: null,
+        removeAp: false,
+      } as EditHwMultiData,
+    });
+    dialogRef.afterClosed().subscribe((result: EditHwMultiData) => {
+      console.debug("hw edit multi dlg afterClose");
+      console.dir(result);
+      const resultlist: EditHwTransport[] = [];
+      if (result) {
+        selectlist.forEach((hw) => {
+          if (
+            result.change.invNr ||
+            result.change.anschDat ||
+            result.change.anschWert ||
+            result.change.wartungFa ||
+            result.removeAp
+          ) {
+            const hwt: EditHwTransport = {
+              delHw: false,
+              removeAp: false,
+              id: hw.id,
+              sernr: hw.sernr,
+              invNr: hw.invNr,
+              anschDat: hw.anschDat,
+              anschWert: hw.anschWert,
+              wartungFa: hw.wartungFa,
+              bemerkung: hw.bemerkung,
+              hwKonfigId: hw.hwKonfigId,
+              smbiosgiud: hw.smbiosgiud,
+              vlans: [],
+            };
+            if (result.change.invNr) {
+              hwt.invNr = result.change.invNr;
+            }
+            if (result.change.anschDat) {
+              hwt.anschDat = result.change.anschDat;
+            }
+            if (result.change.anschWert) {
+              hwt.anschWert = result.change.anschWert;
+            }
+            if (result.change.wartungFa) {
+              hwt.wartungFa = result.change.wartungFa;
+            }
+            if (result.removeAp) {
+              hwt.removeAp = result.removeAp;
+            }
+            resultlist.push(hwt);
+          }
+        });
+        if (resultlist.length) {
+          this.saveMulti(result, resultlist);
+        }
+      }
+    });
+  }
+
   private edit(hwe: HwEditDialogData): void {
     if (this.dataService.isPeripherie(hwe.hw)) {
       hwe.editMac = false;
@@ -161,5 +227,48 @@ export class HwEditService extends BaseEditService {
 
   private save(post: EditHwTransport): void {
     this.dataService.post(this.dataService.changeHwUrl, post);
+  }
+
+  private saveMulti(result: EditHwMultiData, resultlist: EditHwTransport[]): void {
+    const plural = result.selectList.length !== 1;
+    const count = result.selectList.length.toString(10);
+    let msg = `Bei Klick auf "OK" werden die folgenden Änderungen für ${
+      plural ? "die " + count + " ausgewählten Geräte" : "das ausgewählte Gerät"
+    } vorgenommen:\n`;
+    if (result.removeAp) {
+      msg += `\n  - Zuordnung zum Arbeitsplatz wird gelöscht`;
+    }
+    if (result.change.invNr) {
+      msg += `\n  - der Inventar-Nr. wird zu "${result.change.invNr}" geändert`;
+    }
+    if (result.change.anschDat) {
+      msg += `\n  - das Anschaffungs-Datum wird zu "${formatDate(
+        result.change.anschDat,
+        "mediumDate",
+        "de"
+      )}" geändert`;
+    }
+    if (result.change.anschWert) {
+      msg += `\n  - der Anschaffungs-Wert wird zu "${formatNumber(
+        result.change.anschWert,
+        "de",
+        "1.2-2"
+      )}" geändert`;
+    }
+    if (result.change.wartungFa) {
+      msg += `\n  - die Wartungs-Firma wird zu "${result.change.wartungFa}" geändert`;
+    }
+
+    const yesno = this.dialog.open(YesNoDialogComponent, {
+      data: {
+        title: plural ? `${count} Geräte ändern` : "Gerät ändern",
+        text: msg,
+      },
+    });
+    yesno.afterClosed().subscribe((ok: boolean) => {
+      if (ok) {
+        this.dataService.post(this.dataService.changeHwMultiUrl, resultlist);
+      }
+    });
   }
 }
