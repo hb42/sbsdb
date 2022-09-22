@@ -1,6 +1,31 @@
 <h2 mat-dialog-title class="title-row">
-  <div class="fill">{{ dialogTitle }}</div>
-  <button mat-icon-button title="Schließen" mat-dialog-close="" tabindex="-1">
-    <mat-icon>close</mat-icon>
-  </button>
+  <div class="title-text">{{ dialogTitle }}</div>
+  <div class="title-buttons">
+    <button
+      mat-icon-button
+      title="Vorheriger Datensatz"
+      color="primary"
+      *ngIf="show"
+      [disabled]="!back"
+      (click)="navigateBack()"
+      tabindex="-1"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      title="Nächster Datensatz"
+      color="primary"
+      *ngIf="show"
+      [disabled]="!forward"
+      (click)="navigateForward()"
+      tabindex="-1"
+    >
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+    <div class="trenn"></div>
+    <button mat-icon-button title="Schließen" mat-dialog-close="" tabindex="-1">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 </h2>

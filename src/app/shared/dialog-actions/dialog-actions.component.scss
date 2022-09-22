@@ -1,5 +1,17 @@
 .dialog-bottom {
-  justify-content: flex-end;
   border-top: 1px solid rgba(0,0,0,0.2);
   margin-top: 20px;
+  justify-content: space-between;
+}
+
+.action-buttons {
+  margin-right: 10px;
+}
+
+.dialog-info {
+  margin-left: 10px;
+  color: rgba(0, 0, 0, 0.3);
+}
+.error-info {
+  color: rgba(255, 0, 0, 0.3);
 }

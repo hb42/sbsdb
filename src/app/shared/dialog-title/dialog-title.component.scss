@@ -4,4 +4,17 @@
   align-items: center;
   min-width: 400px;
   border-bottom: 1px solid rgba(0,0,0,0.2);
+  justify-content: space-between;
+}
+
+.title-text {
+  margin-left: 10px;
+}
+
+.title-buttons {
+  display: flex;
+}
+
+.trenn {
+  width: 25px;
 }

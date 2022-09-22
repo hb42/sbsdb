@@ -604,6 +604,25 @@ export abstract class BaseFilterService<S, R> {
     return this.dataTable.filteredData.filter((r) => (r as BaseTableRow).selected);
   }
 
+  public navigateBack(find: (r: R) => boolean): R {
+    const list = this.dataTable.sortData(this.dataTable.filteredData, this.dataTable.sort);
+    const idx = list.findIndex(find);
+    if (idx > 0) {
+      return list[idx - 1];
+    } else {
+      return null;
+    }
+  }
+  public navigateForward(find: (r: R) => boolean): R {
+    const list = this.dataTable.sortData(this.dataTable.filteredData, this.dataTable.sort);
+    const idx = list.findIndex(find);
+    if (idx > -1 && idx < this.dataTable.filteredData.length - 1) {
+      return list[idx + 1];
+    } else {
+      return null;
+    }
+  }
+
   // --- expand/colpase all ---
 
   public expandAllRows(): void {

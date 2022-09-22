@@ -1,12 +1,22 @@
 <div mat-dialog-actions class="dialog-bottom">
-  <button mat-flat-button color="primary" mat-dialog-close="">Abbrechen</button>
-  <button
-    mat-flat-button
-    color="primary"
-    [mat-dialog-close]="data"
-    [disabled]="isInvalid()"
-    type="submit"
-  >
-    Speichern
-  </button>
+  <div class="dialog-info">
+    <mat-icon
+      *ngIf="formGroup.dirty"
+      title="Dialog enthält nicht gespeicherte Daten"
+      [class.error-info]="formGroup.invalid"
+      >edit_note</mat-icon
+    >
+  </div>
+  <div class="action-buttons">
+    <button mat-flat-button color="primary" mat-dialog-close="">Abbrechen</button>
+    <button
+      mat-flat-button
+      color="primary"
+      [mat-dialog-close]="data"
+      [disabled]="isInvalid()"
+      type="submit"
+    >
+      Speichern
+    </button>
+  </div>
 </div>

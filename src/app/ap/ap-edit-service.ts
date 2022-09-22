@@ -1,7 +1,8 @@
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../../environments/environment";
 import { DataService } from "../shared/data.service";
+import { DialogTitleComponent } from "../shared/dialog-title/dialog-title.component";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { IpHelper } from "../shared/ip-helper";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
@@ -15,6 +16,7 @@ import { ApEditDialogComponent } from "./ap-edit-dialog/ap-edit-dialog.component
 import { EditApTransport } from "./ap-edit-dialog/edit-ap-transport";
 import { ApEditMultiDialogComponent } from "./ap-edit-multi-dialog/ap-edit-multi-dialog.component";
 import { EditApMultiData } from "./ap-edit-multi-dialog/edit-ap-multi-data";
+import { ApFilterService } from "./ap-filter.service";
 import { TagChange } from "./edit-tags/tag-change";
 import { NewApData } from "./new-ap/new-ap-data";
 import { NewApComponent } from "./new-ap/new-ap.component";
@@ -23,9 +25,17 @@ import { NewApComponent } from "./new-ap/new-ap.component";
   providedIn: "root",
 })
 export class ApEditService extends BaseEditService {
-  constructor(public dialog: MatDialog, public dataService: DataService) {
+  private apEditFromNavigation = new EventEmitter<Arbeitsplatz>();
+
+  constructor(
+    public dialog: MatDialog,
+    public dataService: DataService,
+    private filterService: ApFilterService
+  ) {
     super(dialog, dataService);
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+
+    this.apEditFromNavigation.subscribe((ap) => this.apEdit(ap));
   }
 
   public newAp(): void {
@@ -115,7 +125,22 @@ export class ApEditService extends BaseEditService {
   }
 
   public apEdit(ap: Arbeitsplatz): void {
-    this.edit({ ap: ap, editAp: true, editHw: true, editTags: true } as ApEditDialogData);
+    // TODO Navigation ausrechnen
+    let nav = DialogTitleComponent.NAV_DISABLED;
+    if (this.filterService.navigateBack((a) => a.apId === ap.apId)) {
+      nav += DialogTitleComponent.NAV_BACK;
+    }
+    if (this.filterService.navigateForward((a) => a.apId === ap.apId)) {
+      nav += DialogTitleComponent.NAV_FORWARD;
+    }
+    // const nav = DialogTitleComponent.NAV_FORWARD;
+    this.edit({
+      ap: ap,
+      editAp: true,
+      editHw: true,
+      editTags: true,
+      navigate: nav,
+    } as ApEditDialogData);
   }
 
   public hwEdit(ap: Arbeitsplatz): void {
@@ -222,14 +247,36 @@ export class ApEditService extends BaseEditService {
   }
 
   private edit(dat: ApEditDialogData) {
+    console.debug("start dialog");
     const dialogRef = this.dialog.open(ApEditDialogComponent, {
       disableClose: true,
       data: dat,
     });
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {
+      console.debug("ApEditDialog closed");
+      console.dir(result);
       if (result) {
-        this.saveDlg(result);
+        if (result.apData) {
+          this.saveDlg(result);
+        }
+        // TODO handle navigation
+        if (
+          result.navigate === DialogTitleComponent.NAV_BACK ||
+          result.navigate === DialogTitleComponent.NAV_FORWARD
+        ) {
+          console.debug(`do navigation ${result.navigate}`);
+          // emit event?
+          let to: Arbeitsplatz;
+          if (result.navigate === DialogTitleComponent.NAV_BACK) {
+            to = this.filterService.navigateBack((a) => a.apId === result.ap.apId);
+          } else {
+            to = this.filterService.navigateForward((a) => a.apId === result.ap.apId);
+          }
+          console.dir(to);
+          this.apEditFromNavigation.emit(to);
+          console.debug("end dialog");
+        }
       }
     });
   }

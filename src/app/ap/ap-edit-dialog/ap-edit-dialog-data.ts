@@ -13,4 +13,6 @@ export interface ApEditDialogData {
   tags: TagChange[];
   hw: HwChange;
   apData: ApChange;
+  // Navigation
+  navigate?: number;
 }

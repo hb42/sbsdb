@@ -16,6 +16,6 @@ export class DialogActionsComponent {
   }
 
   public isInvalid(): boolean {
-    return this.formGroup ? this.formGroup.invalid : false;
+    return this.formGroup ? this.formGroup.invalid || !this.formGroup.dirty : false;
   }
 }
