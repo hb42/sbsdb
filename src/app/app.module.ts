@@ -83,7 +83,6 @@ import { ApEditMultiDialogComponent } from './ap/ap-edit-multi-dialog/ap-edit-mu
 import { EditMultiComponent } from './ap/edit-multi/edit-multi.component';
 import { HwEditMultiDialogComponent } from './hw/hw-edit-multi-dialog/hw-edit-multi-dialog.component';
 import { EditHwMultiComponent } from './hw/edit-hw-multi/edit-hw-multi.component';
-import { AdminPanelAussondComponent } from './admin/admin-panel-aussond/admin-panel-aussond.component';
 
 registerLocaleData(localeDe); // + provider, s.u.
 
@@ -168,7 +167,6 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditMultiComponent,
     HwEditMultiDialogComponent,
     EditHwMultiComponent,
-    AdminPanelAussondComponent,
   ],
   imports: [
     BrowserModule,
