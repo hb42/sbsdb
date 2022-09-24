@@ -6,6 +6,7 @@ import { environment } from "../../../environments/environment";
 import { ConfigService } from "../config/config.service";
 import { UserSession } from "../config/user.session";
 import { DataService } from "../data.service";
+import { DialogTitleComponent } from "../dialog-title/dialog-title.component";
 import { GetColumn, OutputToCsv, ParseBracket, StringCompare, StringifyBracket } from "../helper";
 import { BaseTableRow } from "../model/base-table-row";
 import { NavigationService } from "../navigation.service";
@@ -604,6 +605,8 @@ export abstract class BaseFilterService<S, R> {
     return this.dataTable.filteredData.filter((r) => (r as BaseTableRow).selected);
   }
 
+  // --- forward/back in edit dialog ---
+
   public navigateBack(find: (r: R) => boolean): R {
     const list = this.dataTable.sortData(this.dataTable.filteredData, this.dataTable.sort);
     const idx = list.findIndex(find);
@@ -621,6 +624,30 @@ export abstract class BaseFilterService<S, R> {
     } else {
       return null;
     }
+  }
+
+  // welche Navigations-Icons sollen angezeigt werden?
+  public getNavigationIcons(find: (r: R) => boolean): number {
+    let nav = DialogTitleComponent.NAV_DISABLED;
+    if (this.navigateBack(find)) {
+      nav += DialogTitleComponent.NAV_BACK;
+    }
+    if (this.navigateForward(find)) {
+      nav += DialogTitleComponent.NAV_FORWARD;
+    }
+    return nav;
+  }
+
+  public navigateTo(dir: number, find: (r: R) => boolean): R {
+    let to: R = null;
+    if (dir === DialogTitleComponent.NAV_BACK || dir === DialogTitleComponent.NAV_FORWARD) {
+      if (dir === DialogTitleComponent.NAV_BACK) {
+        to = this.navigateBack(find);
+      } else {
+        to = this.navigateForward(find);
+      }
+    }
+    return to;
   }
 
   // --- expand/colpase all ---

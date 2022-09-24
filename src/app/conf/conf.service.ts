@@ -60,8 +60,8 @@ export class ConfService {
     this.newConfEvent.subscribe(() => this.editService.newConf());
   }
 
-  public confEdit(conf: HwKonfig): void {
-    this.editService.editConf(conf);
+  public confEdit(conf: HwKonfig, noNav = false): void {
+    this.editService.editConf(conf, noNav);
   }
 
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {

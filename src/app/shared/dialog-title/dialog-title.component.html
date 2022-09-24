@@ -6,7 +6,7 @@
       title="Vorheriger Datensatz"
       color="primary"
       *ngIf="show"
-      [disabled]="!back"
+      [disabled]="!back || formGroup.invalid"
       (click)="navigateBack()"
       tabindex="-1"
     >
@@ -17,7 +17,7 @@
       title="Nächster Datensatz"
       color="primary"
       *ngIf="show"
-      [disabled]="!forward"
+      [disabled]="!forward || formGroup.invalid"
       (click)="navigateForward()"
       tabindex="-1"
     >

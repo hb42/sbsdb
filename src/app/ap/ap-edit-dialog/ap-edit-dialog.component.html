@@ -1,8 +1,9 @@
 <sbsdb-dialog-title
   dialogTitle="Arbeitsplatz {{ data.ap.apname }} bearbeiten"
+  [formGroup]="formGroup"
   [showNav]="showNav"
-  (navBack)="navBack($event)"
-  (navForward)="navForward($event)"
+  (navBack)="navBack()"
+  (navForward)="navForward()"
 ></sbsdb-dialog-title>
 <form
   [formGroup]="formGroup"

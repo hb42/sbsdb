@@ -1,8 +1,7 @@
-import { EventEmitter, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../../environments/environment";
 import { DataService } from "../shared/data.service";
-import { DialogTitleComponent } from "../shared/dialog-title/dialog-title.component";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { IpHelper } from "../shared/ip-helper";
 import { Arbeitsplatz } from "../shared/model/arbeitsplatz";
@@ -24,9 +23,7 @@ import { NewApComponent } from "./new-ap/new-ap.component";
 @Injectable({
   providedIn: "root",
 })
-export class ApEditService extends BaseEditService {
-  private apEditFromNavigation = new EventEmitter<Arbeitsplatz>();
-
+export class ApEditService extends BaseEditService<Arbeitsplatz> {
   constructor(
     public dialog: MatDialog,
     public dataService: DataService,
@@ -34,8 +31,10 @@ export class ApEditService extends BaseEditService {
   ) {
     super(dialog, dataService);
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
 
-    this.apEditFromNavigation.subscribe((ap) => this.apEdit(ap));
+  protected setEditFromNavigation() {
+    this.editFromNavigation.subscribe((ap) => this.apEdit(ap));
   }
 
   public newAp(): void {
@@ -125,21 +124,12 @@ export class ApEditService extends BaseEditService {
   }
 
   public apEdit(ap: Arbeitsplatz): void {
-    // TODO Navigation ausrechnen
-    let nav = DialogTitleComponent.NAV_DISABLED;
-    if (this.filterService.navigateBack((a) => a.apId === ap.apId)) {
-      nav += DialogTitleComponent.NAV_BACK;
-    }
-    if (this.filterService.navigateForward((a) => a.apId === ap.apId)) {
-      nav += DialogTitleComponent.NAV_FORWARD;
-    }
-    // const nav = DialogTitleComponent.NAV_FORWARD;
     this.edit({
       ap: ap,
       editAp: true,
       editHw: true,
       editTags: true,
-      navigate: nav,
+      navigate: this.filterService.getNavigationIcons((a) => a.apId === ap.apId),
     } as ApEditDialogData);
   }
 
@@ -218,8 +208,6 @@ export class ApEditService extends BaseEditService {
   }
 
   public editSelected(selectlist: Arbeitsplatz[]) {
-    console.debug("edit selected count=", selectlist.length);
-
     // nur wenn alle Element die gleiche ApKategorie haben dürfen TAGs und APTyp geaendert werden
     const katid = selectlist[0].apKatId;
     const isOneKat = !selectlist.some((ap) => ap.apKatId !== katid);
@@ -235,47 +223,28 @@ export class ApEditService extends BaseEditService {
     });
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: EditApMultiData) => {
-      console.debug("ap edit multi dlg afterClose");
-      console.dir(result);
       const resultList = this.prepareMultiResult(result);
       if (resultList.length) {
-        console.debug("save multi result");
-        console.dir(resultList);
         this.saveMulti(result, resultList);
       }
     });
   }
 
   private edit(dat: ApEditDialogData) {
-    console.debug("start dialog");
     const dialogRef = this.dialog.open(ApEditDialogComponent, {
       disableClose: true,
       data: dat,
     });
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {
-      console.debug("ApEditDialog closed");
-      console.dir(result);
       if (result) {
-        if (result.apData) {
+        if (result.savedata) {
           this.saveDlg(result);
         }
-        // TODO handle navigation
-        if (
-          result.navigate === DialogTitleComponent.NAV_BACK ||
-          result.navigate === DialogTitleComponent.NAV_FORWARD
-        ) {
-          console.debug(`do navigation ${result.navigate}`);
-          // emit event?
-          let to: Arbeitsplatz;
-          if (result.navigate === DialogTitleComponent.NAV_BACK) {
-            to = this.filterService.navigateBack((a) => a.apId === result.ap.apId);
-          } else {
-            to = this.filterService.navigateForward((a) => a.apId === result.ap.apId);
-          }
-          console.dir(to);
-          this.apEditFromNavigation.emit(to);
-          console.debug("end dialog");
+        // handle navigation
+        const to = this.filterService.navigateTo(result.navigate, (a) => a.apId === result.ap.apId);
+        if (to) {
+          this.editFromNavigation.emit(to);
         }
       }
     });

@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Inject } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { FormBuilder } from "@angular/forms";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { environment } from "../../../environments/environment";
+import { BaseEditDialogComponent } from "../../shared/edit/base-edit-dialog-component";
 import { HwVlanChange } from "../../shared/edit/edit-vlan/hw-vlan-change";
 import { HwChange } from "../edit-hw-hw/hw-change";
 import { HwEditDialogData } from "./hw-edit-dialog-data";
@@ -11,22 +12,17 @@ import { HwEditDialogData } from "./hw-edit-dialog-data";
   templateUrl: "./hw-edit-dialog.component.html",
   styleUrls: ["./hw-edit-dialog.component.scss"],
 })
-export class HwEditDialogComponent {
-  public formGroup: FormGroup;
+export class HwEditDialogComponent extends BaseEditDialogComponent {
   public onDelAp: EventEmitter<void> = new EventEmitter<void>();
-  public onSubmitEvent: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: HwEditDialogData,
-    public matDialogRef: MatDialogRef<HwEditDialogComponent>,
-    public formBuilder: FormBuilder
+    public matDialogRef: MatDialogRef<BaseEditDialogComponent>,
+    public formBuilder: FormBuilder,
+    protected dialog: MatDialog
   ) {
+    super(data, matDialogRef, formBuilder, dialog);
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
-    this.formGroup = this.formBuilder.group({});
-  }
-
-  public onSubmit(): void {
-    this.onSubmitEvent.emit();
   }
 
   public macReady(evt: HwVlanChange[]): void {

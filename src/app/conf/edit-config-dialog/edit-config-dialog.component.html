@@ -1,9 +1,11 @@
-<!--Konfiguration bearbeiten -> neu/aend
--->
 <sbsdb-dialog-title
   dialogTitle="{{
     data.konfig ? data.konfig.hwTypBezeichnung + '-Konfiguration' : 'Neue Konfiguration'
   }} bearbeiten"
+  [formGroup]="formGroup"
+  [showNav]="showNav"
+  (navBack)="navBack()"
+  (navForward)="navForward()"
 ></sbsdb-dialog-title>
 <form
   [formGroup]="formGroup"

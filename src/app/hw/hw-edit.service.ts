@@ -17,6 +17,7 @@ import { HwEditDialogData } from "./hw-edit-dialog/hw-edit-dialog-data";
 import { HwEditDialogComponent } from "./hw-edit-dialog/hw-edit-dialog.component";
 import { EditHwMultiData } from "./hw-edit-multi-dialog/edit-hw-multi-data";
 import { HwEditMultiDialogComponent } from "./hw-edit-multi-dialog/hw-edit-multi-dialog.component";
+import { HwFilterService } from "./hw-filter.service";
 import { NewHwData } from "./new-hw-dialog/new-hw-data";
 import { NewHwDialogComponent } from "./new-hw-dialog/new-hw-dialog.component";
 import { NewHwTransport } from "./new-hw-dialog/new-hw-transport";
@@ -25,12 +26,20 @@ import { ShowHistoryDialogComponent } from "./show-history-dialog/show-history-d
 @Injectable({
   providedIn: "root",
 })
-export class HwEditService extends BaseEditService {
+export class HwEditService extends BaseEditService<Hardware> {
   private aussondGrund = "defekt";
 
-  constructor(public dialog: MatDialog, public dataService: DataService) {
+  constructor(
+    public dialog: MatDialog,
+    public dataService: DataService,
+    private filterService: HwFilterService
+  ) {
     super(dialog, dataService);
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
+  }
+
+  protected setEditFromNavigation() {
+    this.editFromNavigation.subscribe((hw) => this.hwEdit(hw));
   }
 
   public hwEdit(hw: Hardware): void {
@@ -43,6 +52,7 @@ export class HwEditService extends BaseEditService {
       removeAp: false,
       delHw: false,
       hwChange: null,
+      navigate: this.filterService.getNavigationIcons((h) => h.id === hw.id),
     } as HwEditDialogData);
   }
   public hwhwEdit(hw: Hardware): void {
@@ -199,7 +209,14 @@ export class HwEditService extends BaseEditService {
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: HwEditDialogData) => {
       if (result) {
-        this.saveDlg(result);
+        if (result.savedata) {
+          this.saveDlg(result);
+        }
+        // handle navigation
+        const to = this.filterService.navigateTo(result.navigate, (h) => h.id === result.hw.id);
+        if (to) {
+          this.editFromNavigation.emit(to);
+        }
       }
     });
   }

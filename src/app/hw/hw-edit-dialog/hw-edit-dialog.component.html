@@ -1,5 +1,9 @@
 <sbsdb-dialog-title
   dialogTitle="{{ data.hw.hwKonfig.hwTypBezeichnung }}: {{ data.hw.hwKonfig.konfiguration }}"
+  [formGroup]="formGroup"
+  [showNav]="showNav"
+  (navBack)="navBack()"
+  (navForward)="navForward()"
 ></sbsdb-dialog-title>
 <form
   [formGroup]="formGroup"

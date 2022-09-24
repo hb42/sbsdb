@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Inject } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { Component, Inject } from "@angular/core";
+import { FormBuilder } from "@angular/forms";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { environment } from "../../../environments/environment";
+import { BaseEditDialogComponent } from "../../shared/edit/base-edit-dialog-component";
 import { EditConfigData } from "./edit-config-data";
 
 @Component({
@@ -9,20 +10,14 @@ import { EditConfigData } from "./edit-config-data";
   templateUrl: "./edit-config-dialog.component.html",
   styleUrls: ["./edit-config-dialog.component.scss"],
 })
-export class EditConfigDialogComponent {
-  public formGroup: FormGroup;
-  public onSubmitEvent: EventEmitter<void> = new EventEmitter<void>();
-
+export class EditConfigDialogComponent extends BaseEditDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: EditConfigData,
-    public matDialogRef: MatDialogRef<EditConfigDialogComponent>,
-    public formBuilder: FormBuilder
+    public matDialogRef: MatDialogRef<BaseEditDialogComponent>,
+    public formBuilder: FormBuilder,
+    protected dialog: MatDialog
   ) {
+    super(data, matDialogRef, formBuilder, dialog);
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
-    this.formGroup = this.formBuilder.group({});
-  }
-
-  public onSubmit(): void {
-    this.onSubmitEvent.emit();
   }
 }
