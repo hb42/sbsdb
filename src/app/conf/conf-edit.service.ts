@@ -42,6 +42,7 @@ export class ConfEditService extends BaseEditService<HwKonfig> {
     const dialogRef = this.dialog.open(EditConfigDialogComponent, {
       disableClose: true,
       data: ecd,
+      id: "edit-dialog",
     });
 
     // Dialog-Ergebnis

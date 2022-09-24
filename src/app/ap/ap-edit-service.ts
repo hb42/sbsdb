@@ -234,6 +234,7 @@ export class ApEditService extends BaseEditService<Arbeitsplatz> {
     const dialogRef = this.dialog.open(ApEditDialogComponent, {
       disableClose: true,
       data: dat,
+      id: "edit-dialog",
     });
     // Dialog-Ergebnis
     dialogRef.afterClosed().subscribe((result: ApEditDialogData) => {

@@ -348,6 +348,6 @@ table:not(.wrap-cell) .mat-cell > div {
   color: rgba(255, 110,64, 0.4); // accent color f. placeholder
 }
 
-.mat-dialog-container {
+.mat-dialog-container#edit-dialog {
   background: #f8f8f8;
 }

@@ -204,6 +204,7 @@ export class HwEditService extends BaseEditService<Hardware> {
     const dialogRef = this.dialog.open(HwEditDialogComponent, {
       disableClose: true,
       data: hwe,
+      id: "edit-dialog",
     });
 
     // Dialog-Ergebnis
