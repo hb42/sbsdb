@@ -4,14 +4,11 @@ import { AdminPanelAdresseComponent } from "./admin/admin-panel-adresse/admin-pa
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
 import { AdminPanelApkategorieComponent } from "./admin/admin-panel-apkategorie/admin-panel-apkategorie.component";
 import { AdminPanelAptypComponent } from "./admin/admin-panel-aptyp/admin-panel-aptyp.component";
-import { AdminPanelAussondComponent } from "./admin/admin-panel-aussond/admin-panel-aussond.component";
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminPanelExtprogComponent } from "./admin/admin-panel-extprog/admin-panel-extprog.component";
 import { AdminPanelHwtypComponent } from "./admin/admin-panel-hwtyp/admin-panel-hwtyp.component";
-import { AdminPanelOeComponent } from "./admin/admin-panel-oe/admin-panel-oe.component";
 import { AdminPanelTagtypComponent } from "./admin/admin-panel-tagtyp/admin-panel-tagtyp.component";
 import { AdminPanelTclogsComponent } from "./admin/admin-panel-tclogs/admin-panel-tclogs.component";
-import { AdminPanelVlanComponent } from "./admin/admin-panel-vlan/admin-panel-vlan.component";
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ApComponent } from "./ap/ap/ap.component";
 import { ConfComponent } from "./conf/conf/conf.component";
@@ -19,7 +16,6 @@ import {
   ADM_ADR_PATH,
   ADM_APKAT_PATH,
   ADM_APTYP_PATH,
-  ADM_AUSSOND_PATH,
   ADM_EXTPROG_PATH,
   ADM_FILTER_PATH,
   ADM_HWTYP_PATH,
@@ -37,6 +33,8 @@ import {
 import { HwComponent } from "./hw/hw/hw.component";
 import { AdminGuard } from "./shared/admin.guard";
 import { ErrorComponent } from "./shared/error/error.component";
+import { AdminPanelOeComponent } from "./admin/admin-panel-oe/admin-panel-oe.component";
+import { AdminPanelVlanComponent } from "./admin/admin-panel-vlan/admin-panel-vlan.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/" + AP_PATH, pathMatch: "full" },
@@ -50,7 +48,6 @@ const routes: Routes = [
     children: [
       { path: ADM_FILTER_PATH, component: AdminPanelApFilterComponent, canActivate: [AdminGuard] },
       { path: ADM_OPTIONS_PATH, component: AdminPanelConfigComponent, canActivate: [AdminGuard] },
-      { path: ADM_AUSSOND_PATH, component: AdminPanelAussondComponent, canActivate: [AdminGuard] },
       { path: ADM_ADR_PATH, component: AdminPanelAdresseComponent, canActivate: [AdminGuard] },
       {
         path: ADM_APKAT_PATH,
