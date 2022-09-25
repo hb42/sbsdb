@@ -214,6 +214,7 @@ export class ApEditService extends BaseEditService<Arbeitsplatz> {
 
     const dialogRef = this.dialog.open(ApEditMultiDialogComponent, {
       disableClose: true,
+      id: "edit-dialog",
       data: {
         selectlist: selectlist,
         apkatid: isOneKat ? katid : null,

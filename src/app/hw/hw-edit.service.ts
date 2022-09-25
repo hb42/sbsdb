@@ -139,6 +139,7 @@ export class HwEditService extends BaseEditService<Hardware> {
     console.debug("edit selected count=", selectlist.length);
     const dialogRef = this.dialog.open(HwEditMultiDialogComponent, {
       disableClose: true,
+      id: "edit-dialog",
       data: {
         selectList: selectlist,
         change: null,
