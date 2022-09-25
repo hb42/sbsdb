@@ -22,7 +22,8 @@ export class AdminService {
   public userSettings: UserSession;
   public loading = false;
 
-  public disableMainMenuButtons = true;
+  public disableMainMenuNewButton = true;
+  public disableMainMenuCsvButton = true;
   public newRecordEvent: EventEmitter<void> = new EventEmitter<void>();
   public exportEvent: EventEmitter<void> = new EventEmitter<void>();
   public debugEvent: EventEmitter<void> = new EventEmitter<void>();

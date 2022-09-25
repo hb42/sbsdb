@@ -128,6 +128,9 @@ export class DataService {
   public readonly changeVlanUrl: string;
   public readonly importTcLogUrl: string;
   public readonly changeApAptypUrl: string;
+  public readonly aussListUrl: string;
+  public readonly aussDetailsUrl: string;
+  public readonly aussondUrl: string;
 
   private aplistfetched = false;
   private aplistready = false;
@@ -183,6 +186,10 @@ export class DataService {
 
     this.extProgUrl = this.configService.webservice + "/svz/extprog/all";
     this.changeExtprogUrl = this.configService.webservice + "/svz/extprog/change";
+
+    this.aussListUrl = this.configService.webservice + "/hw/ausslist";
+    this.aussDetailsUrl = this.configService.webservice + "/hw/aussdetails";
+    this.aussondUrl = this.configService.webservice + "/hw/aussond";
 
     this.importTcLogUrl = this.configService.webservice + "/external/gettclogs";
 

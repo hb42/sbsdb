@@ -1,1 +1,26 @@
-<p>admin-panel-aussond works!</p>
+<div *ngIf="!showDetail">
+  <h2>Aussonderungen</h2>
+  <pre>
+  Datum       |  Anzahl
+  01.01.1970       122     [csv] [show]
+  01.12.2021        85     [csv] [show]
+    offen           47     [csv] [show]
+  </pre>
+  <div (click)="showDetail = true">details</div>
+</div>
+<div *ngIf="showDetail">
+  <div style="display: flex; align-content: space-between">
+    <h2>
+      <div (click)="showDetail = false" style="margin-right: 10px">&lt;</div>
+      Aussonderungen vom 01.01.1970
+    </h2>
+    <div>[csv] [aussondern]</div>
+  </div>
+  <pre>
+
+
+    Hardware
+    Hardware
+    Hardware
+  </pre>
+</div>
