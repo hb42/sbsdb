@@ -1,26 +1,30 @@
+  /* mat-table head*/
+  .sort-header {
+    line-height: 3em;
+  }
 
-/* mat-table head*/
-.sort-header {
-  line-height: 3em;
-}
+  /* Filter-Felder */
+  .filter-xxs {
+    width: 50px;
+  }
 
-/* Filter-Felder */
-.filter-xxs {
-  width: 50px;
-}
+  .filter-xs {
+    width: 80px;
+  }
 
-.filter-xs {
-  width: 80px;
-}
+  .filter-s {
+    width: 100px;
+  }
 
-.filter-s {
-  width: 100px;
-}
+  .filter-m {
+    width: 160px;
+  }
 
-.filter-m {
-  width: 160px;
-}
+  .filter-l {
+    width: 240px;
+  }
 
-.filter-l {
-  width: 240px;
-}
+  input.mat-input-element,
+  select.mat-input-element {
+    color: #ff6340; // accent
+  }
