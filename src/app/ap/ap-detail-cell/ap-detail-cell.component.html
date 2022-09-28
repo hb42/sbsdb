@@ -1,4 +1,5 @@
-<div [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'" class="detail-cell-content">
+<!--<div [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'" class="detail-cell-content">  -->
+<div *ngIf="element.expanded" class="detail-cell-content">
   <div class="detail-cell-content-row">
     <div class="detail-cell-margin detail-cell-standort-text">Standort</div>
     <div class="detail-cell-margin">

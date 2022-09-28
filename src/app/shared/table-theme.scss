@@ -6,6 +6,12 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
+  /* Column-Header */
+  sbsdb-header-cell input.mat-input-element,
+  sbsdb-header-cell select.mat-input-element {
+    color: mat.get-color-from-palette($accent);
+  }
+
   /* Detail-Anzeige */
   tr.mat-row.detail-cell-row {
     height: 0;

@@ -1,4 +1,10 @@
-﻿5.0.0-rc.7  28.09.2022
+﻿5.0.0-rc.8  29.09.2022
+           - Spalte Kategorie fuer AP-Page
+           - statt Animation *ngIf fuer Detail-Cell
+           - Link auf index.html fuer den Fehlerfall beruecksichtigt Fehlerseite
+           - eslint-Konfig angepasst, damit index.html nicht mehr angemeckert wird
+
+5.0.0-rc.7  28.09.2022
            - Farbe der Inputs in den Listen-Filtern
            - Admin-Menue fuer nicht-Admin ausblenden
 
