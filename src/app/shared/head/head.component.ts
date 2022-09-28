@@ -62,24 +62,28 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
       label: "Arbeitsplätze",
       key: KEY_AP_PAGE,
       icon: "desktop_mac",
+      adminonly: false,
     },
     {
       path: "/" + HW_PATH,
       label: "Hardware",
       key: KEY_HW_PAGE,
       icon: "devices",
+      adminonly: false,
     },
     {
       path: "/" + CONF_PATH,
       label: "Konfigurationen",
       key: KEY_KONF_PAGE,
       icon: "important_devices",
+      adminonly: false,
     },
     {
       path: "/" + ADM_PATH,
       label: "Admin",
       key: KEY_ADM_PAGE,
       icon: "settings",
+      adminonly: true,
     },
   ];
 

@@ -1,4 +1,8 @@
-﻿5.0.0-rc.6  25.09.2022
+﻿5.0.0-rc.7  28.09.2022
+           - Farbe der Inputs in den Listen-Filtern
+           - Admin-Menue fuer nicht-Admin ausblenden
+
+5.0.0-rc.6  25.09.2022
            - Select-Spalte fuer Konfigurationen entfernt, wird hier b.a.w. nicht gebraucht
            - Multi-Edit fuer AP und HW: einige Felder koennen fuer mehrere Datensaetze
              gleichzeitig geaendert werden (#30).

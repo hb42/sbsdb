@@ -37,6 +37,7 @@
         #rla="routerLinkActive"
         [style.display]="rla.isActive ? 'none' : 'inline-block'"
         [routerLink]="link.path"
+        *ngIf="!link.adminonly || userSettings.isAdmin"
       >
         <mat-icon>{{ link.icon }}</mat-icon>
         <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
@@ -55,6 +56,7 @@
         [routerLink]="link.path"
         class="menu-btn"
         [class.md-accent-color]="rla.isActive"
+        *ngIf="!link.adminonly || userSettings.isAdmin"
       >
         <mat-icon class="menu-icon">{{ link.icon }}</mat-icon>
         <sbsdb-accelerator-string [text]="link.label" [accel]="link.key"></sbsdb-accelerator-string>
