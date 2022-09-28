@@ -13,17 +13,27 @@
       <sbsdb-root>
         <h1 style="color: rgba(0, 0, 0, 0.7); margin: 50px">Loading Application ...</h1>
         <p id="notfallreload" style="display: none; margin: 50px">
-          <a onclick="window.location.reload()" href=".">Nochmal versuchen</a>
+          <a onclick="restartApp()" href=".">Nochmal versuchen</a>
         </p>
-        <script>
+        <script type="javascript">
           // Den "Nochmal"-Link mit 3 Sekunden Verzoegerung anzeigen.
           // Falls es Probleme beim Laden gibt.
           setTimeout(function () {
-            var nochmallnk = document.getElementById("notfallreload");
+            const nochmallnk = document.getElementById("notfallreload");
             if (nochmallnk) {
               nochmallnk.style.display = "block";
             }
           }, 3000);
+
+          const restartApp = () => {
+            const err = "/error";
+            let url = window.location.href;
+            if (url.endsWith(err)) {
+              url = url.replace(err, "");
+            }
+            console.log("resetting app to " + url);
+            window.location.replace(url);
+          };
         </script>
       </sbsdb-root>
     </div>

@@ -28,6 +28,7 @@ export const KEY_SORT_BEZ = "b"; // AP/Konf page sort bezeichnung
 export const KEY_ADM_PAGE = "d"; // Admin page
 export const KEY_EXT_FILTER = "e"; // Extd. Filter
 export const KEY_FIRST_FILTER = "f"; // focus first Filter
+export const KEY_SORT_KAT = "g"; // AP page sort kategorie
 export const KEY_HW_PAGE = "h"; // HW page
 export const KEY_SORT_KAT_IP = "i"; // AP page sort IP/ HW + Konf page sort kategorie
 export const KEY_KONF_PAGE = "k"; // Konf page
