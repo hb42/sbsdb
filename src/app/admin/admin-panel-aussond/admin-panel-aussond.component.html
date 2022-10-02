@@ -1,26 +1,138 @@
-<div *ngIf="!showDetail">
-  <h2>Aussonderungen</h2>
-  <pre>
-  Datum       |  Anzahl
-  01.01.1970       122     [csv] [show]
-  01.12.2021        85     [csv] [show]
-    offen           47     [csv] [show]
-  </pre>
-  <div (click)="showDetail = true">details</div>
-</div>
-<div *ngIf="showDetail">
-  <div style="display: flex; align-content: space-between">
-    <h2>
-      <div (click)="showDetail = false" style="margin-right: 10px">&lt;</div>
-      Aussonderungen vom 01.01.1970
-    </h2>
-    <div>[csv] [aussondern]</div>
+<div *ngIf="!showDetail" class="flex-col">
+  <!--  <h2>Aussonderungs-Meldungen</h2>-->
+  <div class="flex-content">
+    <table mat-table [dataSource]="meldungen">
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Aussonderungs-Meldung</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.datum ? (element.datum | date: "mediumDate") : "offen" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="count">
+        <th mat-header-cell *matHeaderCellDef>Anzahl</th>
+        <td mat-cell *matCellDef="let element">{{ element.anzahl }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="menu">
+        <th mat-header-cell *matHeaderCellDef>
+          <button
+            mat-icon-button
+            title="Offene Aussonderungen an ReWe melden"
+            color="primary"
+            (click)="aussonderungsMeldung()"
+          >
+            <mat-icon>playlist_add_check_circle</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            class="button-dist"
+            mat-icon-button
+            title="Liste der Ausgesonderten als CSV ausgeben"
+            color="primary"
+            (click)="csvOutput(element.datum)"
+          >
+            <mat-icon>download</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            title="Liste der ausgesonderten Geräte"
+            color="primary"
+            (click)="loadDetails(element.datum)"
+          >
+            <mat-icon>list</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="meldColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: meldColumns"></tr>
+    </table>
+    <div>&nbsp;</div>
   </div>
-  <pre>
+</div>
 
+<div [class.hide-detail]="!showDetail" class="flex-col">
+  <div class="heading">
+    <div class="heading">
+      <button
+        mat-icon-button
+        title="Zurück zur Übersicht"
+        color="primary"
+        (click)="showDetail = false"
+      >
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2 class="heading-text">
+        {{
+          detailsDate
+            ? "Aussonderungs-Meldung vom " + (detailsDate | date: "mediumDate")
+            : "Offene Aussonderungen"
+        }}
+      </h2>
+    </div>
+    <div>
+      <button
+        class="button-dist"
+        mat-icon-button
+        title="Liste als CSV ausgeben"
+        color="primary"
+        (click)="csvOutput(detailsDate)"
+      >
+        <mat-icon>download</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="flex-content">
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      multiTemplateDataRows
+      (matSortChange)="onSort($event)"
+      matSort
+      [class.wrap-cell]="userSettings.cellLineBreak"
+    >
+      <!-- COLUMN begin -->
+      <ng-container *ngFor="let col of displayedColumns" [matColumnDef]="col">
+        <!-- HEAD -->
+        <th mat-header-cell *matHeaderCellDef>
+          <sbsdb-header-cell
+            [column]="getColumn(col)"
+            showFilter="true"
+            [size]="getColumn(col).size"
+          ></sbsdb-header-cell>
+        </th>
+        <!-- DATA -->
+        <td mat-cell *matCellDef="let row">
+          <div sbsdbTooltipOnEllipsis>{{ getColumn(col).displayText(row) }}</div>
+        </td>
+      </ng-container>
+      <!-- COLUMN end -->
+      <!-- footer template -->
+      <ng-container matColumnDef="footer">
+        <td mat-footer-cell *matFooterCellDef [colSpan]="displayedColumns.length" class="foot">
+          <div>
+            {{ dataSource.filteredData.length }} gefiltert aus
+            {{ dataSource.data.length }}
+          </div>
+          <div class="fill"></div>
+          <div style="font-size: 10px">
+            <!--  rechtsbuendiger Text -->
+          </div>
+        </td>
+      </ng-container>
 
-    Hardware
-    Hardware
-    Hardware
-  </pre>
+      <!-- Header row -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <!-- Details row -->
+      <tr
+        mat-row
+        *matRowDef="let element; columns: displayedColumns"
+        class="table-row table-row-clickable"
+      ></tr>
+      <!-- Footer row -->
+      <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true"></tr>
+    </table>
+  </div>
 </div>

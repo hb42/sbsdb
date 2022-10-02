@@ -1,14 +1,11 @@
 export interface Aussonderung {
-  serNr: string;
+  id: number;
+  invNr: string;
   anschDat: Date;
   anschWert: number;
-  invNr: string;
-  hwkonfigId: number;
-  mac: string;
-  smbiosguid: string;
-  wartungFa: string;
-  bemerk: string;
+  bezeichnung: string; // concat(hersteller, ' - ', bezeichnung)
+  serNr: string;
   aussDat: Date;
   aussGrund: string;
-  rewe: Date;
+  rewe?: Date;
 }
