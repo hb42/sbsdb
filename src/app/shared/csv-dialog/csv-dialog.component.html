@@ -1,16 +1,20 @@
 <sbsdb-dialog-title dialogTitle="Felder für die Ausgabe auswählen"></sbsdb-dialog-title>
 
-<div class="all-checkbox">
-  <mat-checkbox [(ngModel)]="data.all" labelPosition="before"> Alle Felder ausgeben </mat-checkbox>
-</div>
-<div mat-dialog-content>
-  <div>
-    <mat-selection-list [(ngModel)]="data.resultList" [disabled]="data.all">
-      <mat-list-option *ngFor="let field of data.fields" [value]="field">{{
-        field.displayName
-      }}</mat-list-option>
-    </mat-selection-list>
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="all-checkbox">
+    <mat-checkbox [formControl]="checkCtrl" labelPosition="before" (change)="checkClick()">
+      Alle Felder ausgeben
+    </mat-checkbox>
   </div>
-</div>
+  <div mat-dialog-content>
+    <div>
+      <mat-selection-list [formControl]="listCtrl">
+        <mat-list-option *ngFor="let field of data.fields" [value]="field">{{
+          field.displayName
+        }}</mat-list-option>
+      </mat-selection-list>
+    </div>
+  </div>
 
-<sbsdb-dialog-actions [data]="data"></sbsdb-dialog-actions>
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>
