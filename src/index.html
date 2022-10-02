@@ -15,24 +15,20 @@
         <p id="notfallreload" style="display: none; margin: 50px">
           <a onclick="restartApp()" href=".">Nochmal versuchen</a>
         </p>
-        <script type="javascript">
-          // Den "Nochmal"-Link mit 3 Sekunden Verzoegerung anzeigen.
-          // Falls es Probleme beim Laden gibt.
+        <script>
           setTimeout(function () {
             const nochmallnk = document.getElementById("notfallreload");
             if (nochmallnk) {
               nochmallnk.style.display = "block";
+            } else {
+              console.error("Could not find element with ID 'notfallreload'.");
             }
           }, 3000);
 
           const restartApp = () => {
-            const err = "/error";
-            let url = window.location.href;
-            if (url.endsWith(err)) {
-              url = url.replace(err, "");
-            }
-            console.log("resetting app to " + url);
-            window.location.replace(url);
+            const base_url = document.querySelector("head base")["href"];
+            console.log("INDEX.HTML: resetting app to " + base_url);
+            window.location.replace(base_url);
           };
         </script>
       </sbsdb-root>
