@@ -1,4 +1,9 @@
-﻿5.0.0-rc.8  29.09.2022
+﻿5.0.0       02.10.2022
+           - Bugfix bei der CSV-Ausgabe
+           - Offizielles Ende der Version 4
+           SERVER 1.0.0
+
+5.0.0-rc.8  29.09.2022
            - Spalte Kategorie fuer AP-Page
            - statt Animation *ngIf fuer Detail-Cell
            - Link auf index.html fuer den Fehlerfall beruecksichtigt Fehlerseite
