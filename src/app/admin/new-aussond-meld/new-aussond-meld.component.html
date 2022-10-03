@@ -1,0 +1,31 @@
+<sbsdb-dialog-title [dialogTitle]="title"></sbsdb-dialog-title>
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="submit()"
+  [class.error]="!formGroup.valid && formGroup.touched"
+>
+  <mat-dialog-content class="panel"> </mat-dialog-content>
+  <mat-form-field class="date-picker">
+    <mat-label>Melden bis Aussonderungs-Datum</mat-label>
+    <!-- date -->
+    <!--
+      FIXME
+      Der Fehler
+      "Type MatDatepicker is not assignable to type MatDatepickerPanel<MatDatepickerControl<Date>, Date | null, Date> "
+      wird von einem Bug in Webstorm verursacht:
+      https://youtrack.jetbrains.com/issue/WEB-56339/Angular-type-mismatch-errors-in-template-MatDatepicker-is-not-assignable-to-parameter-type-MatDatepickerMoment
+    -->
+    <input
+      matInput
+      [matDatepicker]="picker"
+      [min]="minDate"
+      [max]="maxDate"
+      [formControl]="dateCtrl"
+      [errorStateMatcher]="matcher"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error *ngIf="dateCtrl.invalid">{{ getErrorMessage(dateCtrl) }}</mat-error>
+  </mat-form-field>
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

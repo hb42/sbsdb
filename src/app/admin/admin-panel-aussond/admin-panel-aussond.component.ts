@@ -20,6 +20,8 @@ import { Aussonderung } from "../../shared/model/aussonderung";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
+import { NewAussondMeldData } from "../new-aussond-meld/new-aussond-meld-data";
+import { NewAussondMeldComponent } from "../new-aussond-meld/new-aussond-meld.component";
 
 @Component({
   selector: "sbsdb-admin-panel-aussond",
@@ -80,7 +82,26 @@ export class AdminPanelAussondComponent {
   }
 
   public aussonderungsMeldung() {
-    // TODO vorher Datum bis abfragen
+    // letzte Aussonderungs-Meldung
+    const min = this.meldungen.reduce(
+      (prev: Date, curr) =>
+        curr.datum && curr.datum.valueOf() > prev.valueOf() ? curr.datum : prev,
+      new Date(0)
+    );
+    min.setDate(min.getDate() + 1);
+    const dialogRef = this.dialog.open(NewAussondMeldComponent, {
+      data: { meldung: new Date(), minDate: min },
+    });
+    dialogRef.afterClosed().subscribe((result: NewAussondMeldData) => {
+      if (result) {
+        const aussDate = `/${result.meldung.toLocaleDateString()}`;
+        this.dataService.get(this.dataService.aussondUrl + aussDate).subscribe((rc) => {
+          console.debug("set aussond ");
+          console.dir(rc);
+          // TODO reload meldung-liste
+        });
+      }
+    });
     console.debug("Liste an ReWe melden");
   }
 
