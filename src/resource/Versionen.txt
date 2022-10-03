@@ -1,4 +1,7 @@
-﻿5.0.0       02.10.2022
+﻿5.0.1       03.10.2022
+           - kleine Aenderungen an index.html
+
+5.0.0       02.10.2022
            - Bugfix bei der CSV-Ausgabe
            - Offizielles Ende der Version 4
            SERVER 1.0.0
