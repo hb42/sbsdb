@@ -151,7 +151,7 @@ export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
             const txt = this.adminService.userSettings.debug
               ? `${curr.aptyp.bezeichnung} (#${curr.id})`
               : curr.aptyp.bezeichnung;
-            return prev + prev ? ", " + txt : txt;
+            return prev ? prev + ", " + txt : txt;
           }, ""),
         "",
         true,
