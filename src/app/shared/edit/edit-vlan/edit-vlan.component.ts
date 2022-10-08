@@ -46,20 +46,30 @@ export class EditVlanComponent implements OnInit {
     // andere HW ausgewaehlt
     this.hwchange.subscribe((hw: Hardware) => {
       this.vlanInp.hw = hw;
-      // IP sichern
-      const sav: { vlan: Vlan; ip: number }[] = [];
-      this.vlanInp.vlans.forEach((v) => {
-        sav.push({ vlan: v.vlanCtrl.value as Vlan, ip: v.ipCtrl.value as number });
-      });
-      // controls fuer neue HW
-      this.addVlanInputs();
-      // IP aus vorheriger HW eintragen
-      sav.forEach((s, idx) => {
-        if (idx < this.vlanInp.vlans.length) {
-          this.vlanInp.vlans[idx].vlanCtrl.setValue(s.vlan, { emitEvent: false });
-          this.vlanInp.vlans[idx].ipCtrl.setValue(s.ip, { emitEvent: false });
-        }
-      });
+      if (hw) {
+        // IP sichern
+        const sav: { vlan: Vlan; ip: number }[] = [];
+        this.vlanInp.vlans.forEach((v) => {
+          sav.push({ vlan: v.vlanCtrl.value as Vlan, ip: v.ipCtrl.value as number });
+        });
+        // controls fuer neue HW
+        this.addVlanInputs();
+        // IP aus vorheriger HW eintragen
+        sav.forEach((s, idx) => {
+          if (idx < this.vlanInp.vlans.length) {
+            this.vlanInp.vlans[idx].vlanCtrl.setValue(s.vlan, { emitEvent: false });
+            this.vlanInp.vlans[idx].ipCtrl.setValue(s.ip, { emitEvent: false });
+          }
+        });
+      } else {
+        this.vlanInp.vlans = [];
+        const rem = Object.keys(this.formGroup.controls).map((key) => key);
+        rem.forEach((k) => {
+          if (k.startsWith("mac")) {
+            this.formGroup.removeControl(k);
+          }
+        });
+      }
     });
     // AP entfernt, loesche IPs
     if (this.onDelAp) {
@@ -96,6 +106,7 @@ export class EditVlanComponent implements OnInit {
     if (control.hasError("invalidip")) {
       return "Ungültige IP-Adresse";
     }
+
     return null;
   }
 

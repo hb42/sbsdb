@@ -146,7 +146,7 @@ export class EditTagsComponent implements OnInit {
     this.tagFormGroup.removeControl(`txt_${tag.id}`);
     tag.tagCtrl = null;
     tag.textCtrl = null;
-    // }
+    this.tagFormGroup.markAsDirty();
   }
 
   /**
@@ -168,6 +168,7 @@ export class EditTagsComponent implements OnInit {
         tagId: tag.id,
         text: "",
       });
+      this.tagFormGroup.markAsDirty();
     }
   }
 

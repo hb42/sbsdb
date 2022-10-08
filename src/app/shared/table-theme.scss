@@ -102,9 +102,15 @@
     min-width: 140px;
   }
 
+  .detail-cell-bemerk-label {
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 4px 15px;
+  }
   .detail-cell-bemerk {
     white-space: pre-wrap;
-    margin-top: 15px;
+    margin-top: 5px;
     padding: 4px 15px;
     max-width: 600px;
   }

@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
 import { environment } from "../../../environments/environment";
-import { DataService } from "../../shared/data.service";
 import { Hardware } from "../../shared/model/hardware";
 import { HwService } from "../hw.service";
 
@@ -24,14 +23,9 @@ export class EditHwApComponent implements OnInit {
   public apStr: string;
   public removeAp = false;
 
-  constructor(
-    private dataService: DataService,
-    private formBuilder: FormBuilder,
-    public hwService: HwService
-  ) {
+  constructor(public hwService: HwService) {
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
     this.apReady = new EventEmitter<boolean>();
-    this.formGroup = this.formBuilder.group({});
   }
 
   public ngOnInit(): void {
@@ -46,8 +40,8 @@ export class EditHwApComponent implements OnInit {
     if (this.apStr) {
       this.apStr = null;
       this.removeAp = true;
+      this.formGroup.markAsDirty();
     }
-    this.onDelAp.emit(); // edit-vlan bebachrichtigen
   }
 
   public submit(): void {
