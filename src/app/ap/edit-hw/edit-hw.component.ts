@@ -119,7 +119,12 @@ export class EditHwComponent implements OnInit {
   public delHw(): void {
     if (this.pri) {
       this.hw.hwCtrl.setValue(null);
+      this.hw.hwCtrl.markAsTouched();
+      this.formGroup.markAsDirty();
     } else {
+      if (this.hw.hw) {
+        this.formGroup.markAsDirty();
+      }
       this.delete.emit(this.hw);
     }
     this.hwSelectionChange(null);
