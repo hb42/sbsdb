@@ -17,6 +17,7 @@ import { RelOp } from "../../shared/filter/rel-op.enum";
 import { GetColumn, OutputToCsv } from "../../shared/helper";
 import { AussondMeldung } from "../../shared/model/aussond-meldung";
 import { Aussonderung } from "../../shared/model/aussonderung";
+import { StatusService } from "../../shared/status.service";
 import { ColumnType } from "../../shared/table/column-type.enum";
 import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
@@ -32,21 +33,6 @@ export class AdminPanelAussondComponent {
   @HostBinding("attr.class") public cssClass = "flex-panel flex-content-fix";
 
   @ViewChild(MatSort, { static: true }) public sort: MatSort;
-
-  /* TODO
-       Liste der Aussonderungen neu bauen, 3 Spalten: Datum, Anzahl, Buttons CSV+Show
-       Liste der Ausgesonderten als StdTableComponent, Header mit Aussond-Button, CSV?
-        -> Spalte "menu" als noshow, noexport (s.a. BaseSvzPanelComponent)
-       CSV-Button im Header nur fuer Detailliste?
-       Alle Listen bei Bedarf vom Server holen (ggf. Uebersicht festhalten)
-
-       select inv_nr,ansch_dat,ansch_wert,concat(hersteller, ' - ', bezeichnung) as bezeichnung,ser_nr,auss_dat,auss_grund
-       from SBS_AUSSOND, SBS_KONFIG
-       where SBS_AUSSOND.konfig_index = SBS_KONFIG.konfig_index
-       order by auss_dat
-
-
-   */
 
   public showDetail = false;
   public detailsDate: Date = null;
@@ -66,6 +52,7 @@ export class AdminPanelAussondComponent {
     public adminService: AdminService,
     private dataService: DataService,
     private configService: ConfigService,
+    private statusService: StatusService,
     private dialog: MatDialog
   ) {
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
@@ -83,26 +70,30 @@ export class AdminPanelAussondComponent {
 
   public aussonderungsMeldung() {
     // letzte Aussonderungs-Meldung
-    const min = this.meldungen.reduce(
+    const last = this.meldungen.reduce(
       (prev: Date, curr) =>
         curr.datum && curr.datum.valueOf() > prev.valueOf() ? curr.datum : prev,
       new Date(0)
     );
+    const min = new Date(last);
     min.setDate(min.getDate() + 1);
     const dialogRef = this.dialog.open(NewAussondMeldComponent, {
       data: { meldung: new Date(), minDate: min },
     });
     dialogRef.afterClosed().subscribe((result: NewAussondMeldData) => {
       if (result) {
-        const aussDate = `/${result.meldung.toLocaleDateString()}`;
+        const aussDate = `/${result.meldung.toLocaleDateString("de-DE")}`;
         this.dataService.get(this.dataService.aussondUrl + aussDate).subscribe((rc) => {
-          console.debug("set aussond ");
-          console.dir(rc);
-          // TODO reload meldung-liste
+          if (rc > 0) {
+            this.statusService.info("Änderungen erfolgreich gespeichert.");
+            this.showDetail = false;
+            this.fechMeldungen();
+          } else {
+            this.statusService.warn("Keine Daten geändert.");
+          }
         });
       }
     });
-    console.debug("Liste an ReWe melden");
   }
 
   public getColumn(name: string): SbsdbColumn<unknown, unknown> {
@@ -110,23 +101,12 @@ export class AdminPanelAussondComponent {
   }
 
   public onSort(event: Sort): void {
-    // this.tableSettings.sortColumn = event.active;
-    // this.tableSettings.sortDirection = event.direction;
-    // this.saveSettings();
+    // noop
   }
 
   public buildColumns(): void {
     // StdTable haengt sonst eigene Spalte "menu" an, auch wenn sie hier nicht
     // gebraucht wird, also anhaengen und ausblenden
-
-    // invNr: string;
-    // anschDat: Date;
-    // anschWert: number;
-    // bezeichnung: string; // concat(hersteller, ' - ', bezeichnung)
-    // serNr: string;
-    // aussDat: Date;
-    // aussGrund: string;
-    // rewe?: Date;
 
     this.columns.push(
       new SbsdbColumn<AdminPanelAussondComponent, Aussonderung>(
@@ -290,7 +270,7 @@ export class AdminPanelAussondComponent {
 
   private fetchDetails(per: Date): Promise<unknown> {
     this.detailsDate = per;
-    const aussDate = per ? `/${per.toLocaleDateString()}` : "/null";
+    const aussDate = per ? `/${per.toLocaleDateString("de-DE")}` : "/null";
 
     return lastValueFrom(this.dataService.get(this.dataService.aussDetailsUrl + aussDate)).then(
       (au) => {
@@ -303,15 +283,6 @@ export class AdminPanelAussondComponent {
         this.dataSource.data = this.details;
       }
     );
-    // this.dataService.get(this.dataService.aussDetailsUrl + aussDate).subscribe((au) => {
-    //   this.details = au as Aussonderung[];
-    //   this.details.forEach((a) => {
-    //     // die JSON-Konvertierung liefert immer string statt Date
-    //     a.anschDat = new Date(a.anschDat);
-    //     a.rewe = a.rewe ? new Date(a.rewe) : null;
-    //   });
-    //   this.dataSource.data = this.details;
-    // });
   }
 
   private showDetails(): void {

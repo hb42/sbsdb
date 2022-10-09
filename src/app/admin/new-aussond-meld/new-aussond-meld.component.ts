@@ -15,7 +15,7 @@ export class NewAussondMeldComponent implements OnInit {
   public matcher = new FormFieldErrorStateMatcher();
 
   public dateCtrl: FormControl;
-  public title = "Neue Aussonderungs-Meldung";
+  public title = "Neue Aussonderungs-Meldung für Rechnungswesen";
   public minDate: Date;
   public maxDate: Date = new Date();
 
