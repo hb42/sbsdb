@@ -1,4 +1,4 @@
-﻿5.0.2       xx.10.2022
+﻿5.0.2       09.10.2022
            - Dialoge: Zeile loeschen ergibt kein dirty (#39)
            - ExtProg-Panel: multiline fkt. nicht (#38)
 
