@@ -17,6 +17,7 @@ export const ADM_OE_PATH = "oe";
 export const ADM_TAGTYP_PATH = "tagtyp";
 export const ADM_VLAN_PATH = "vlan";
 export const ADM_TCLOGS_PATH = "tclogs";
+export const ADM_AUSSOND_PATH = "aussond";
 export const ERROR_PATH = "error";
 
 /**

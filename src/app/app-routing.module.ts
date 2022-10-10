@@ -16,6 +16,7 @@ import {
   ADM_ADR_PATH,
   ADM_APKAT_PATH,
   ADM_APTYP_PATH,
+  ADM_AUSSOND_PATH,
   ADM_EXTPROG_PATH,
   ADM_FILTER_PATH,
   ADM_HWTYP_PATH,
@@ -35,6 +36,7 @@ import { AdminGuard } from "./shared/admin.guard";
 import { ErrorComponent } from "./shared/error/error.component";
 import { AdminPanelOeComponent } from "./admin/admin-panel-oe/admin-panel-oe.component";
 import { AdminPanelVlanComponent } from "./admin/admin-panel-vlan/admin-panel-vlan.component";
+import { AdminPanelAussondComponent } from "./admin/admin-panel-aussond/admin-panel-aussond.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/" + AP_PATH, pathMatch: "full" },
@@ -48,6 +50,7 @@ const routes: Routes = [
     children: [
       { path: ADM_FILTER_PATH, component: AdminPanelApFilterComponent, canActivate: [AdminGuard] },
       { path: ADM_OPTIONS_PATH, component: AdminPanelConfigComponent, canActivate: [AdminGuard] },
+      { path: ADM_AUSSOND_PATH, component: AdminPanelAussondComponent, canActivate: [AdminGuard] },
       { path: ADM_ADR_PATH, component: AdminPanelAdresseComponent, canActivate: [AdminGuard] },
       {
         path: ADM_APKAT_PATH,

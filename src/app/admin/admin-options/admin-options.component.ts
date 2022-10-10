@@ -5,6 +5,7 @@ import {
   ADM_ADR_PATH,
   ADM_APKAT_PATH,
   ADM_APTYP_PATH,
+  ADM_AUSSOND_PATH,
   ADM_EXTPROG_PATH,
   ADM_HWTYP_PATH,
   ADM_OE_PATH,
@@ -48,6 +49,7 @@ export class AdminOptionsComponent {
       title: "Arbeitsplatz-Typen bearbeiten",
       text: "AP-Typen",
     },
+    { route: ADM_AUSSOND_PATH, title: "Aussonderungen bearbeiten", text: "Aussonderungen" },
     {
       route: ADM_EXTPROG_PATH,
       title: "Externe Programmaufrufe zu AP-Typen zuordnen",
