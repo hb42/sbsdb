@@ -52,7 +52,10 @@ export abstract class BaseSvzPanelComponent<C, R> implements AfterViewInit, OnDe
     public adminService: AdminService,
     protected dialog: MatDialog
   ) {
-    setTimeout(() => (this.adminService.disableMainMenuButtons = false), 0);
+    setTimeout(() => {
+      this.adminService.disableMainMenuNewButton = false;
+      this.adminService.disableMainMenuCsvButton = false;
+    }, 0);
     this.dataSource.data = this.getTableData();
     this.buildColumns();
 
@@ -84,7 +87,8 @@ export abstract class BaseSvzPanelComponent<C, R> implements AfterViewInit, OnDe
   }
 
   public ngOnDestroy(): void {
-    this.adminService.disableMainMenuButtons = true;
+    this.adminService.disableMainMenuNewButton = true;
+    this.adminService.disableMainMenuCsvButton = true;
     this.newRecordHandler.unsubscribe();
     this.exportHandler.unsubscribe();
     this.debugHandler.unsubscribe();

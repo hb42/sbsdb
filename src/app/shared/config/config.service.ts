@@ -106,10 +106,10 @@ export class ConfigService {
           if (!environment.production) console.debug(">>> getting app meta data");
           return this.versionService.init(this.getVersionUrl).then((ver) => {
             if (!environment.production) console.debug(">>> meta data done");
-            console.log(ver.displayname + " v" + ver.version + " " + ver.copyright);
+            console.info(ver.displayname + " v" + ver.version + " " + ver.copyright);
             if (!environment.production) console.dir(ver.versions);
             const server = this.versionService.serverVer;
-            console.log(server.displayname + " v" + server.version + " " + server.copyright);
+            console.info(server.displayname + " v" + server.version + " " + server.copyright);
             if (!environment.production) console.dir(server.versions);
             this.version = ver;
           });
