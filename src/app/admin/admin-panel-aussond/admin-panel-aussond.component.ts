@@ -23,6 +23,7 @@ import { SbsdbColumn } from "../../shared/table/sbsdb-column";
 import { AdminService } from "../admin.service";
 import { NewAussondMeldData } from "../new-aussond-meld/new-aussond-meld-data";
 import { NewAussondMeldComponent } from "../new-aussond-meld/new-aussond-meld.component";
+import { AussondResult } from "./aussond-result";
 
 @Component({
   selector: "sbsdb-admin-panel-aussond",
@@ -84,8 +85,14 @@ export class AdminPanelAussondComponent {
       if (result) {
         const aussDate = `/${result.meldung.toLocaleDateString("de-DE")}`;
         this.dataService.get(this.dataService.aussondUrl + aussDate).subscribe((rc) => {
-          if (rc > 0) {
-            this.statusService.info("Änderungen erfolgreich gespeichert.");
+          const msg = rc as AussondResult;
+          console.info("Aussonderungs-Meldung an ReWe:");
+          console.log(`- Anzahl der Aussonderungen: ${msg.meldung}`);
+          console.log(`- Aussonderungen älter 11 Jahre gelöscht: ${msg.del}`);
+          if (msg.meldung >= 0) {
+            this.statusService.info(
+              `${msg.meldung} Änderungen erfolgreich gespeichert. ${msg.del} Datensätze gelöscht.`
+            );
             this.showDetail = false;
             this.fechMeldungen();
           } else {
