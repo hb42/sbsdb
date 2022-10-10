@@ -1,4 +1,8 @@
-﻿5.0.2       09.10.2022
+﻿5.1.0       10.10.2022
+           - Aussonderungs-Meldungen an ReWe (#26)
+           SERVER 1.1.0 - Aussonderungs-Meldungen
+
+5.0.2       09.10.2022
            - Dialoge: Zeile loeschen ergibt kein dirty (#39)
            - ExtProg-Panel: multiline fkt. nicht (#38)
 
