@@ -11,6 +11,7 @@ import { AdminPanelAdresseComponent } from "./admin/admin-panel-adresse/admin-pa
 import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
 import { AdminPanelApkategorieComponent } from "./admin/admin-panel-apkategorie/admin-panel-apkategorie.component";
 import { AdminPanelAptypComponent } from "./admin/admin-panel-aptyp/admin-panel-aptyp.component";
+import { AdminPanelAussondComponent } from "./admin/admin-panel-aussond/admin-panel-aussond.component";
 import { AdminPanelConfigInputComponent } from "./admin/admin-panel-config-input/admin-panel-config-input.component";
 import { AdminPanelConfigComponent } from "./admin/admin-panel-config/admin-panel-config.component";
 import { AdminPanelExtprogComponent } from "./admin/admin-panel-extprog/admin-panel-extprog.component";
@@ -28,12 +29,15 @@ import { EditHwtypDialogComponent } from "./admin/edit-hwtyp-dialog/edit-hwtyp-d
 import { EditOeDialogComponent } from "./admin/edit-oe-dialog/edit-oe-dialog.component";
 import { EditTagtypDialogComponent } from "./admin/edit-tagtyp-dialog/edit-tagtyp-dialog.component";
 import { EditVlanDialogComponent } from "./admin/edit-vlan-dialog/edit-vlan-dialog.component";
+import { NewAussondMeldComponent } from "./admin/new-aussond-meld/new-aussond-meld.component";
 import { ApDetailCellComponent } from "./ap/ap-detail-cell/ap-detail-cell.component";
 import { ApEditDialogComponent } from "./ap/ap-edit-dialog/ap-edit-dialog.component";
+import { ApEditMultiDialogComponent } from "./ap/ap-edit-multi-dialog/ap-edit-multi-dialog.component";
 import { ApComponent } from "./ap/ap/ap.component";
 import { EditApHwComponent } from "./ap/edit-ap-hw/edit-ap-hw.component";
 import { EditApComponent } from "./ap/edit-ap/edit-ap.component";
 import { EditHwComponent } from "./ap/edit-hw/edit-hw.component";
+import { EditMultiComponent } from "./ap/edit-multi/edit-multi.component";
 import { EditTagsComponent } from "./ap/edit-tags/edit-tags.component";
 import { NewApComponent } from "./ap/new-ap/new-ap.component";
 import { AppMaterialModule } from "./app-material.module";
@@ -46,9 +50,11 @@ import { EditConfigComponent } from "./conf/edit-config/edit-config.component";
 import { EditHwApComponent } from "./hw/edit-hw-ap/edit-hw-ap.component";
 import { EditHwHwComponent } from "./hw/edit-hw-hw/edit-hw-hw.component";
 import { EditHwMacComponent } from "./hw/edit-hw-mac/edit-hw-mac.component";
+import { EditHwMultiComponent } from "./hw/edit-hw-multi/edit-hw-multi.component";
 import { HwAussondDialogComponent } from "./hw/hw-aussond-dialog/hw-aussond-dialog.component";
 import { HwDetailCellComponent } from "./hw/hw-detail-cell/hw-detail-cell.component";
 import { HwEditDialogComponent } from "./hw/hw-edit-dialog/hw-edit-dialog.component";
+import { HwEditMultiDialogComponent } from "./hw/hw-edit-multi-dialog/hw-edit-multi-dialog.component";
 import { HwComponent } from "./hw/hw/hw.component";
 import { NewHwDialogComponent } from "./hw/new-hw-dialog/new-hw-dialog.component";
 import { ShowHistoryDialogComponent } from "./hw/show-history-dialog/show-history-dialog.component";
@@ -79,10 +85,6 @@ import { StdTableComponent } from "./shared/table/std-table/std-table.component"
 import { TooltipOnEllipsisDirective } from "./shared/tooltip-on-ellipsis.directive";
 import { Version } from "./shared/version";
 import { YesNoDialogComponent } from "./shared/yes-no-dialog/yes-no-dialog.component";
-import { ApEditMultiDialogComponent } from './ap/ap-edit-multi-dialog/ap-edit-multi-dialog.component';
-import { EditMultiComponent } from './ap/edit-multi/edit-multi.component';
-import { HwEditMultiDialogComponent } from './hw/hw-edit-multi-dialog/hw-edit-multi-dialog.component';
-import { EditHwMultiComponent } from './hw/edit-hw-multi/edit-hw-multi.component';
 
 registerLocaleData(localeDe); // + provider, s.u.
 
@@ -167,6 +169,8 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditMultiComponent,
     HwEditMultiDialogComponent,
     EditHwMultiComponent,
+    AdminPanelAussondComponent,
+    NewAussondMeldComponent,
   ],
   imports: [
     BrowserModule,

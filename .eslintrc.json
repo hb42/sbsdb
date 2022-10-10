@@ -62,7 +62,7 @@
         "no-restricted-syntax": [
           "error",
           {
-            "selector": "CallExpression[callee.object.name=\"console\"][callee.property.name=/^(info|time|timeEnd|trace)$/]",
+            "selector": "CallExpression[callee.object.name=\"console\"][callee.property.name=/^(time|timeEnd|trace)$/]",
             "message": "Unexpected property on console object was called"
           }
         ]
