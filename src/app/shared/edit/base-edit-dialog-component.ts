@@ -45,24 +45,34 @@ export abstract class BaseEditDialogComponent {
     this.data.navigate = DialogTitleComponent.NAV_FORWARD;
     this.navigate();
   }
+  public navAndSave(): void {
+    this.onSubmit();
+    this.data.navigate = DialogTitleComponent.NAV_FORWARD;
+    this.navigate(false);
+  }
 
-  private navigate() {
+  private navigate(ask = true) {
     if (this.formGroup.dirty) {
-      const yesno = this.dialog.open(YesNoDialogComponent, {
-        data: {
-          title: "Daten verändert",
-          text: "Sollen die geänderten Daten gespeichert werden?",
-        },
-      });
-      yesno.afterClosed().subscribe((ok: boolean) => {
-        if (ok) {
-          this.onSubmit();
-          this.matDialogRef.close(this.data);
-        } else {
-          this.data.savedata = false;
-          this.matDialogRef.close(this.data);
-        }
-      });
+      if (ask) {
+        const yesno = this.dialog.open(YesNoDialogComponent, {
+          data: {
+            title: "Daten verändert",
+            text: "Sollen die geänderten Daten gespeichert werden?",
+          },
+        });
+        yesno.afterClosed().subscribe((ok: boolean) => {
+          if (ok) {
+            this.onSubmit();
+            this.matDialogRef.close(this.data);
+          } else {
+            this.data.savedata = false;
+            this.matDialogRef.close(this.data);
+          }
+        });
+      } else {
+        this.onSubmit();
+        this.matDialogRef.close(this.data);
+      }
     } else {
       this.data.savedata = false;
       this.matDialogRef.close(this.data);
