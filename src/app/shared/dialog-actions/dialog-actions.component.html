@@ -18,5 +18,17 @@
     >
       Speichern
     </button>
+    <button
+      *ngIf="show && formGroup.dirty"
+      mat-flat-button
+      color="primary"
+      title="Speichern und zum nächsten Datensatz wechseln."
+      [mat-dialog-close]="data"
+      [disabled]="isInvalid()"
+      (click)="navigateForward()"
+    >
+      Speichern
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
   </div>
 </div>
