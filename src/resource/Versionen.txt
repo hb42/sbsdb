@@ -1,4 +1,7 @@
-﻿5.1.0       10.10.2022
+﻿5.1.1       11.10.2022
+           -  Speichern in dialog: button "Speichern und weiter (#41)
+
+5.1.0       10.10.2022
            - Aussonderungs-Meldungen an ReWe (#26)
            SERVER 1.1.0 - Aussonderungs-Meldungen
 
