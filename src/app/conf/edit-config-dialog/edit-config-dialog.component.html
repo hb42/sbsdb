@@ -21,5 +21,10 @@
     [onSubmit]="onSubmitEvent"
   ></sbsdb-edit-config>
 
-  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+  <sbsdb-dialog-actions
+    [data]="data"
+    [formGroup]="formGroup"
+    [showNav]="showNav"
+    (navForward)="navAndSave()"
+  ></sbsdb-dialog-actions>
 </form>
