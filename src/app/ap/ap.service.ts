@@ -64,6 +64,9 @@ export class ApService {
   private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
   private apDataReady = false;
   private readonly defaultsort = "apname";
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  private clickTimer: NodeJS.Timer;
 
   constructor(
     public filterService: ApFilterService,
@@ -122,10 +125,21 @@ export class ApService {
     }
   }
 
-  public expandApRow(ap: Arbeitsplatz, event: Event): void {
-    // this.expandedRow = this.expandedRow === ap ? null : ap;
-    ap.expanded = !ap.expanded;
-    event.stopPropagation();
+  public expandApRow(ap: Arbeitsplatz, event: MouseEvent): void {
+    // dblclick handling
+    // Browser feuert immer click + dblclick. Um click bei dblclick zu unterdruecken,
+    // wird click 250ms verzoegert. Damit muss dblclick natuerlich entsprechend
+    // schnell sein.
+    if (event.detail === 1) {
+      this.clickTimer = setTimeout(() => {
+        ap.expanded = !ap.expanded;
+      }, 250);
+    } else if (event.detail === 2) {
+      clearTimeout(this.clickTimer);
+      if (this.userSettings.isAdmin) {
+        this.apEdit(ap);
+      }
+    }
   }
 
   public test(): void {

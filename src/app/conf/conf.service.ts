@@ -37,6 +37,9 @@ export class ConfService {
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
   private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
   private defaultsort = "typ";
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  private clickTimer: NodeJS.Timer;
 
   constructor(
     public dataService: DataService,
@@ -94,9 +97,17 @@ export class ConfService {
     }
   }
 
-  public expandConfRow(conf: HwKonfig, event: Event): void {
-    conf.expanded = !conf.expanded;
-    event.stopPropagation();
+  public expandConfRow(conf: HwKonfig, event: MouseEvent): void {
+    if (event.detail === 1) {
+      this.clickTimer = setTimeout(() => {
+        conf.expanded = !conf.expanded;
+      }, 250);
+    } else if (event.detail === 2) {
+      clearTimeout(this.clickTimer);
+      if (this.userSettings.isAdmin) {
+        this.confEdit(conf);
+      }
+    }
   }
 
   public toggleEmpty(): void {

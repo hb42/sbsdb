@@ -52,6 +52,9 @@ export class HwService {
   //  verkuepft wurde, sonst wuerden alle Datensaetze gerendert)
   private setDataToTable: EventEmitter<void> = new EventEmitter<void>();
   private defaultsort = "konfiguration";
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  private clickTimer: NodeJS.Timer;
 
   constructor(
     public dataService: DataService,
@@ -89,9 +92,17 @@ export class HwService {
     }
   }
 
-  public expandHwRow(hw: Hardware, event: Event): void {
-    hw.expanded = !hw.expanded;
-    event.stopPropagation();
+  public expandHwRow(hw: Hardware, event: MouseEvent): void {
+    if (event.detail === 1) {
+      this.clickTimer = setTimeout(() => {
+        hw.expanded = !hw.expanded;
+      }, 250);
+    } else if (event.detail === 2) {
+      clearTimeout(this.clickTimer);
+      if (this.userSettings.isAdmin) {
+        this.hwEdit(hw);
+      }
+    }
   }
 
   public setViewParams(sort: MatSort, paginator: MatPaginator): void {
