@@ -1,4 +1,7 @@
-﻿5.1.2       12.10.2022
+﻿5.1.3       13.10.2022
+           - Globale Filter-Handling (#31)
+
+5.1.2       12.10.2022
            - AP/HW/Konfig: dblclick for edit (#40)
 
 5.1.1       11.10.2022
