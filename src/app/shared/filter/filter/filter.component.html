@@ -3,7 +3,13 @@
     <div mat-card-subtitle>
       <span class="panel-title"> Erweiterte Suche </span>
       <mat-form-field class="abstand">
-        <mat-label>Gespeicherte Filter</mat-label>
+        <mat-label>{{
+          editFilter.filterService.selectedFilter === null
+            ? "Gespeicherte Filter"
+            : editFilter.filterService.selectedFilter.type > 0
+            ? "Vordefinierter Filter"
+            : "Benutzerdefinierter Filter"
+        }}</mat-label>
         <select
           matNativeControl
           [(ngModel)]="editFilter.filterService.selectedFilter"
@@ -45,7 +51,7 @@
           editFilter.filterService.selectedFilter === null ||
           editFilter.filterService.selectedFilter.type > 0
         "
-        (click)="editFilter.filterService.deleteFilter()"
+        (click)="deleteFilter()"
       >
         <mat-icon>delete</mat-icon>
       </button>
@@ -60,7 +66,7 @@
             : 'Filter zu Benutzerdefinierten verschieben'
         "
         [disabled]="editFilter.filterService.selectedFilter === null"
-        (click)="editFilter.filterService.moveFilter()"
+        (click)="moveFilter()"
       >
         <mat-icon>swap_vert</mat-icon>
       </button>

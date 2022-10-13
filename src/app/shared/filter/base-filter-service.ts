@@ -868,7 +868,7 @@ export abstract class BaseFilterService<S, R> {
    * Globale Filter speichern
    */
   private saveGlobalFilters() {
-    void this.configService.saveConfig(ConfigService.AP_FILTERS, this.getGlobalFiltersName());
+    void this.configService.saveConfig(this.getGlobalFiltersName(), this.globalFilters);
   }
 
   abstract getLatestUserFilter(): string;
