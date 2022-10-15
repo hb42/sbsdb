@@ -8,7 +8,6 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AdminOptionsComponent } from "./admin/admin-options/admin-options.component";
 import { AdminPanelAdresseComponent } from "./admin/admin-panel-adresse/admin-panel-adresse.component";
-import { AdminPanelApFilterComponent } from "./admin/admin-panel-ap-filter/admin-panel-ap-filter.component";
 import { AdminPanelApkategorieComponent } from "./admin/admin-panel-apkategorie/admin-panel-apkategorie.component";
 import { AdminPanelAptypComponent } from "./admin/admin-panel-aptyp/admin-panel-aptyp.component";
 import { AdminPanelAussondComponent } from "./admin/admin-panel-aussond/admin-panel-aussond.component";
@@ -112,7 +111,6 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     FilterEditComponent,
     FilterEditListComponent,
     AdminOptionsComponent,
-    AdminPanelApFilterComponent,
     AdminPanelConfigComponent,
     AdminPanelConfigInputComponent,
     HeaderCellComponent,

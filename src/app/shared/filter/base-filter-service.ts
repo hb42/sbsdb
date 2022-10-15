@@ -378,7 +378,6 @@ export abstract class BaseFilterService<S, R> {
     }
   }
 
-  // TODO -> admin page
   public moveFilterToGlobal(key: number): void {
     const filter: TransportFilter = this.getUserFilter(key);
     if (filter) {
@@ -390,7 +389,6 @@ export abstract class BaseFilterService<S, R> {
     }
   }
 
-  // TODO -> admin page
   public moveFilterToUser(key: number): void {
     const filter: TransportFilter = this.getGlobalFilter(key);
     if (filter) {
@@ -707,7 +705,6 @@ export abstract class BaseFilterService<S, R> {
    * @param type - User/Global
    */
   private setFilterExpression(key: number, type: number) {
-    // TODO +type -> lookup global
     let tf: TransportFilter;
     if (type === BaseFilterService.USERFILTER) {
       tf = this.getUserFilter(key);

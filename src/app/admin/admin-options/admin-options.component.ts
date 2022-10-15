@@ -33,12 +33,6 @@ export class AdminOptionsComponent {
       title: "Allgemeine Programmparameter",
       text: "Globale Konfiguration",
     },
-    // FIXME das muss ueberarbeitet werden! -> #31
-    // {
-    //   route: ADM_FILTER_PATH,
-    //   title: "Selbstdefinierte Filter allen Benutzern bereitstellen",
-    //   text: "Globale Arbeitsplatzfilter",
-    // },
     {
       route: ADM_APKAT_PATH,
       title: "Arbeitsplatz-Kategorien bearbeiten",
