@@ -94,6 +94,7 @@ export class AdminPanelAussondComponent {
               `${msg.meldung} Änderungen erfolgreich gespeichert. ${msg.del} Datensätze gelöscht.`
             );
             this.showDetail = false;
+            this.dataService.fetchHwKonfigInAussondList();
             this.fechMeldungen();
           } else {
             this.statusService.warn("Keine Daten geändert.");

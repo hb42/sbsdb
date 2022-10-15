@@ -26,4 +26,5 @@ export class HwKonfig implements BaseTableRow {
   // Darstellung
   public expanded?: boolean;
   public selected?: boolean;
+  public inUse?: boolean;
 }

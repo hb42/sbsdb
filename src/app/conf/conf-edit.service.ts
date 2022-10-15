@@ -5,6 +5,7 @@ import { DataService } from "../shared/data.service";
 import { DialogTitleComponent } from "../shared/dialog-title/dialog-title.component";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { HwKonfig } from "../shared/model/hw-konfig";
+import { YesNoDialogComponent } from "../shared/yes-no-dialog/yes-no-dialog.component";
 import { ConfFilterService } from "./conf-filter.service";
 import { EditConfigData } from "./edit-config-dialog/edit-config-data";
 import { EditConfigDialogComponent } from "./edit-config-dialog/edit-config-dialog.component";
@@ -56,6 +57,20 @@ export class ConfEditService extends BaseEditService<HwKonfig> {
         if (to) {
           this.editFromNavigation.emit(to);
         }
+      }
+    });
+  }
+
+  public deleteConf(conf: HwKonfig): void {
+    const dialogRef = this.dialog.open(YesNoDialogComponent, {
+      data: {
+        title: "Konfiguration löschen",
+        text: `Soll die Konfiguration "${conf.hwTypBezeichnung}: ${conf.konfiguration}" gelöscht werden?`,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.dataService.post(this.dataService.delHwKonfigUrl, conf.id);
       }
     });
   }

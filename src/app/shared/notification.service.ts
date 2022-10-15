@@ -25,6 +25,7 @@ export class NotificationService {
   public hwChangeMulti: EventEmitter<HwTransport[]> = new EventEmitter<HwTransport[]>();
   public addHw: EventEmitter<AddHwTransport> = new EventEmitter<AddHwTransport>();
   public konfigChange: EventEmitter<HwKonfig> = new EventEmitter<HwKonfig>();
+  public konfigDel: EventEmitter<number> = new EventEmitter<number>();
   public extprogChange: EventEmitter<void> = new EventEmitter<void>();
   public apkategorieChange: EventEmitter<EditApkategorieTransport> =
     new EventEmitter<EditApkategorieTransport>();
@@ -80,6 +81,10 @@ export class NotificationService {
 
       this.hubConnection.on("konfigchange", (data: HwKonfig) => {
         this.konfigChange.emit(data);
+      });
+
+      this.hubConnection.on("konfigdel", (data: number) => {
+        this.konfigDel.emit(data);
       });
 
       this.hubConnection.on("extprogchange", () => {

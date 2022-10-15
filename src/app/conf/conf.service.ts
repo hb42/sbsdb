@@ -126,6 +126,10 @@ export class ConfService {
     });
   }
 
+  public delConf(conf: HwKonfig): void {
+    this.editService.deleteConf(conf);
+  }
+
   private buildColumns() {
     this.columns.push(
       new SbsdbColumn<ConfService, HwKonfig>(

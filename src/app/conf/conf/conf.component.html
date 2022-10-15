@@ -309,6 +309,15 @@
         <mat-icon>add_to_queue</mat-icon>
         Neue Konfiguration
       </button>
+      <button
+        mat-menu-item
+        *ngIf="confService.userSettings.isAdmin"
+        (click)="confService.delConf(hw)"
+        [disabled]="hw.inUse"
+      >
+        <mat-icon>delete_forever</mat-icon>
+        Konfiguration löschen
+      </button>
     </ng-template>
   </mat-menu>
 </div>

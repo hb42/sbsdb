@@ -46,6 +46,7 @@ export class DataService {
   public apkatList: ApKategorie[] = [];
   public hwtypList: HwTyp[] = [];
   public extProgList: ExtProg[] = [];
+  public hwKonfigInAussondList: number[] = [];
 
   // leere OE fuer das Feld parent in der bstList
   // wenn parent == null, dann koennen mit diesem Object Zugriffsfehler vermiden werden
@@ -116,6 +117,7 @@ export class DataService {
   public readonly changeHwUrl: string;
   public readonly changeHwMultiUrl: string;
   public readonly changeKonfigUrl: string;
+  public readonly delHwKonfigUrl: string;
   public readonly addHwUrl: string;
   public readonly hwHistoryUrl: string;
   public readonly extProgUrl: string;
@@ -131,6 +133,7 @@ export class DataService {
   public readonly aussListUrl: string;
   public readonly aussDetailsUrl: string;
   public readonly aussondUrl: string;
+  public readonly hwKonfigInAussondUrl: string;
 
   private aplistfetched = false;
   private aplistready = false;
@@ -181,6 +184,8 @@ export class DataService {
     this.changeHwMultiUrl = this.configService.webservice + "/hw/changehwmulti";
     this.addHwUrl = this.configService.webservice + "/hw/addhw";
     this.changeKonfigUrl = this.configService.webservice + "/hwkonfig/changekonfig";
+    this.delHwKonfigUrl = this.configService.webservice + "/hwkonfig/delkonfig";
+    this.hwKonfigInAussondUrl = this.configService.webservice + "/hwkonfig/hwkonfiginaussond";
 
     this.hwHistoryUrl = this.configService.webservice + "/hw/hwhistoryfor";
 
@@ -227,6 +232,7 @@ export class DataService {
     this.fetchVlanList();
     this.fetchApTypList();
     this.fetchHwTypList();
+    this.fetchHwKonfigInAussondList();
 
     notification.initialize();
 
@@ -254,7 +260,7 @@ export class DataService {
 
     notification.hwChange.subscribe((data) => {
       this.updateHw(data);
-      this.updateHwKonfigListCount();
+      this.fetchHwKonfigInAussondList();
       this.apListChanged.emit();
       this.checkNotification();
     });
@@ -275,6 +281,15 @@ export class DataService {
 
     notification.konfigChange.subscribe((data) => {
       this.updateKonfig(data);
+      this.checkNotification();
+    });
+
+    notification.konfigDel.subscribe((data) => {
+      this.hwKonfigList.splice(
+        this.hwKonfigList.findIndex((hk) => hk.id === data),
+        1
+      );
+      this.hwKonfigListChanged.emit();
       this.checkNotification();
     });
 
@@ -587,6 +602,15 @@ export class DataService {
     });
   }
 
+  public fetchHwKonfigInAussondList(): void {
+    this.get(this.hwKonfigInAussondUrl).subscribe((e: number[]) => {
+      this.hwKonfigInAussondList = e;
+      if (this.isHwListReady()) {
+        this.updateHwKonfigListCount();
+      }
+    });
+  }
+
   public prepareApList(): void {
     this.apList.forEach((ap) => {
       this.prepareAp(ap);
@@ -621,6 +645,7 @@ export class DataService {
       }
       conf.deviceCount = count;
       conf.apCount = inuse;
+      conf.inUse = conf.deviceCount > 0 || !!this.hwKonfigInAussondList.find((l) => conf.id === l);
     });
   }
 
