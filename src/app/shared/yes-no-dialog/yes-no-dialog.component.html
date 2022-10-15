@@ -4,5 +4,15 @@
 </mat-dialog-content>
 <div mat-dialog-actions class="end">
   <button mat-flat-button color="primary" mat-dialog-close="">Abbrechen</button>
-  <button mat-flat-button color="primary" [mat-dialog-close]="true" type="submit">OK</button>
+  <button
+    class="abstand"
+    mat-flat-button
+    color="primary"
+    [mat-dialog-close]="true"
+    type="submit"
+    #btnFocus="matButton"
+    [autofocus]="btnFocus.focus()"
+  >
+    OK
+  </button>
 </div>

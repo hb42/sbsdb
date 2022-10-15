@@ -201,13 +201,4 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
   public about(): void {
     this.dialog.open(AboutDialogComponent);
   }
-
-  // TODO Navigations-Buttons einbauen?
-  // public backBtn(): void {
-  //   history.back();
-  // }
-  //
-  // public forwardBtn(): void {
-  //   history.forward();
-  // }
 }

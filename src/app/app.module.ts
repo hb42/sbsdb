@@ -1,3 +1,4 @@
+import { A11yModule } from "@angular/cdk/a11y";
 import { registerLocaleData } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import localeDe from "@angular/common/locales/de";
@@ -171,6 +172,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     NewAussondMeldComponent,
   ],
   imports: [
+    A11yModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

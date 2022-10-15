@@ -5,7 +5,7 @@ export enum RelOp {
   equal = "GLEICH", // string, number, date
   notequal = "UNGLEICH", // string, number, date
   inlist = "IST GLEICH", // analog equal f. Listen
-  notinlist = "IST UNGLEICCH", // analog notequal f. Listen
+  notinlist = "IST UNGLEICH", // analog notequal f. Listen
   inlistlike = "ENTHAELT", // analog like f. Listen
   notinlistlike = "ENTHAELT NICHT", // analog notlike f. Listen
   startswith = "BEGINNT MIT", // string
