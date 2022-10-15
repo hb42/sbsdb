@@ -28,7 +28,7 @@ export class ConfEditService extends BaseEditService<HwKonfig> {
   }
 
   public newConf(): void {
-    this.editConf(null);
+    this.editConf(null, true);
   }
 
   public editConf(conf: HwKonfig, noNav = false): void {
