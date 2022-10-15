@@ -2,6 +2,7 @@
            - Bugfix: Exception bei neue HwKonfig
            - HwKonfig loeschen, fuer die keine HW und keine Aussonderung mehr in DB (#42)
            - keyboard handling in dialogs (#43)
+           - angular 14.2.6
            SERVER 1.2.0 - HwKonfig loeschen
 
 5.1.3       13.10.2022
