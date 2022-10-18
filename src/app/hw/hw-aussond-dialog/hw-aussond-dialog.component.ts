@@ -28,6 +28,7 @@ export class HwAussondDialogComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     this.grundCtrl = new FormControl(this.data.reason, [Validators.required]);
     this.formGroup.addControl("grund", this.grundCtrl);
+    this.grundCtrl.markAsDirty();
   }
 
   public submit(): void {
