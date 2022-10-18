@@ -1,4 +1,8 @@
-﻿5.2.0       15.10.2022
+﻿5.2.1       18.10.2022
+           - Bugfix Aussondern-Dialog
+           SERVER 1.2.1 - Bugfix HW-Aussonderung
+
+5.2.0       15.10.2022
            - Bugfix: Exception bei neue HwKonfig
            - HwKonfig loeschen, fuer die keine HW und keine Aussonderung mehr in DB (#42)
            - keyboard handling in dialogs (#43)
