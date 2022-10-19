@@ -1,4 +1,10 @@
-﻿5.2.1       18.10.2022
+﻿5.2.3       xx.10.2022
+           - Filter in AdminPanels gefixt (#45)
+
+5.2.2       19.10.2022
+           - Erster Fix fuer Filter in AdminPanels (#45)
+
+5.2.1       18.10.2022
            - Bugfix Aussondern-Dialog
            SERVER 1.2.1 - Bugfix HW-Aussonderung
 

@@ -3,7 +3,7 @@
   <div class="detail-cell-content-row">
     <div class="detail-cell-margin detail-cell-standort-text">Standort</div>
     <div class="detail-cell-margin">
-      {{ ("000" + element.oe.bstNr).slice(-3) }}<br />
+      {{ element.oe.bstNrStr }}<br />
       {{ element.oe.betriebsstelle }}<br /><br />
       {{ element.oe.adresse.strasse ? element.oe.adresse.strasse + " " : ""
       }}{{ element.oe.adresse.hausnr ? element.oe.adresse.hausnr : "" }}<br />

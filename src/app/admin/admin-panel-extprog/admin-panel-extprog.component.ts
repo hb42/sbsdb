@@ -66,6 +66,12 @@ export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
     return this.extProgList;
   }
 
+  protected changeDebug() {
+    console.debug("ChangDebug class");
+    this.buildList(false);
+    super.changeDebug();
+  }
+
   protected buildColumns() {
     this.columns.push(
       new SbsdbColumn<AdminPanelExtprogComponent, ExtProgList>(
@@ -144,19 +150,13 @@ export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
         this,
         "types",
         () => "AP-Typen",
-        () => "types",
-        () => "types",
-        (a: ExtProgList) =>
-          a.types.reduce((prev, curr) => {
-            const txt = this.adminService.userSettings.debug
-              ? `${curr.aptyp.bezeichnung} (#${curr.id})`
-              : curr.aptyp.bezeichnung;
-            return prev ? prev + ", " + txt : txt;
-          }, ""),
+        () => "typesStr",
+        () => "typesStr",
+        (a: ExtProgList) => a.typesStr,
         "",
         true,
         4,
-        ColumnType.ARRAY,
+        ColumnType.STRING,
         null,
         null,
         true,
@@ -165,7 +165,7 @@ export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
     );
   }
 
-  private buildList() {
+  private buildList(refresh = true) {
     if (this.extProgList) {
       this.extProgList.splice(0);
     } else {
@@ -186,6 +186,17 @@ export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
         });
       }
     });
-    this.refreshTableEvent.emit();
+    this.extProgList.forEach(
+      (e) =>
+        (e.typesStr = e.types.reduce((prev, curr) => {
+          const txt = this.adminService.userSettings.debug
+            ? `${curr.aptyp.bezeichnung} (#${curr.id})`
+            : curr.aptyp.bezeichnung;
+          return prev ? prev + ", " + txt : txt;
+        }, ""))
+    );
+    if (refresh) {
+      this.refreshTableEvent.emit();
+    }
   }
 }

@@ -790,6 +790,7 @@ export class DataService {
       if (idx >= 0) {
         bst.inUse = 1;
       }
+      bst.bstNrStr = `000${bst.bstNr}`.slice(-3);
     });
   }
 

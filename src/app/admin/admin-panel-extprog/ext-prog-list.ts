@@ -7,6 +7,7 @@ export class ExtProgList implements BaseTableRow {
   public param: string;
   public flag: number;
   public types: ExtprogAptyp[];
+  public typesStr?: string;
 
   public expanded?: boolean;
   public selected?: boolean;

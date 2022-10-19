@@ -32,7 +32,7 @@ export class EditOeDialogComponent extends BaseSvzDialog<Betrst> implements OnIn
 
   public ngOnInit(): void {
     this.betrstControl = this.addFormControl(this.data.betriebsstelle, "betrst", [this.required]);
-    this.bstControl = this.addFormControl(`000${this.data.bstNr}`.slice(-3), "bst", [
+    this.bstControl = this.addFormControl(this.data.bstNrStr, "bst", [
       Validators.pattern(this.intPattern),
     ]);
     this.oeffControl = this.addFormControl(this.data.oeff, "oeff");

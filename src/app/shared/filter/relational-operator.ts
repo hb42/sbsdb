@@ -2,7 +2,7 @@
  * Relationale Operatoren im Filter
  * z.B. groesser, beginnt mit, enthaelt
  */
-import { formatCurrency, formatDate, formatNumber } from "@angular/common";
+import { formatDate } from "@angular/common";
 import { GetFieldContent, ParseDate, StringToNumber } from "../helper";
 import { ColumnType } from "../table/column-type.enum";
 import { RelOp } from "./rel-op.enum";
@@ -68,17 +68,17 @@ export class RelationalOperator {
   // Werte oder normale Euro-Betraege verglichen werden, sollte das aber reichen.
   //
   // Der Vergleichswert stammt aus einem HTML-Input und kommt daher immer als String an. Fuer
-  // Vergleich mit number|Date muss er deshalb konvertiert werden.
+  // Vergleich mit number|Date muss der Feldinhalt deshalb konvertiert werden.
 
   private static fieldToString(fieldContent: string | number, type: number): string {
-    if (fieldContent) {
+    if (fieldContent != null) {
       let contentStr = fieldContent.toString();
       if (
         type === ColumnType.NUMBER &&
         typeof fieldContent === "number" &&
         isFinite(fieldContent)
       ) {
-        contentStr = formatNumber(fieldContent, "de");
+        contentStr = contentStr.replace(".", ",");
       } else if (
         type === ColumnType.DATE &&
         Object.prototype.toString.call(fieldContent) === "[object Date]"

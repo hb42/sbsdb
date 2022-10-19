@@ -17,4 +17,5 @@ export class Betrst {
   public children: Betrst[] = [];
   // berechnet
   public inUse?: number;
+  public bstNrStr?: string;
 }

@@ -131,6 +131,7 @@ export abstract class BaseSvzPanelComponent<C, R> implements AfterViewInit, OnDe
   protected abstract handleDelete(any);
 
   protected changeDebug() {
+    console.debug("ChangeDebug Base");
     this.refreshTableEvent.emit(this.adminService.userSettings.debug);
   }
 
