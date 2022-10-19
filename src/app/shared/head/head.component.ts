@@ -54,6 +54,8 @@ export class HeadComponent implements AfterViewInit, OnDestroy {
   @Input() public csv: EventEmitter<void>;
   @Input() public disableNewButton: boolean; // f. StdTable/Adminpanel
   @Input() public disableCsvButton: boolean; // f. StdTable/Adminpanel
+  @Input() public csv2: EventEmitter<void>; // zusaetzlicher CSV-Button (HW: Inventarliste)
+  @Input() public csv2Title: string;
 
   public userSettings: UserSession;
 

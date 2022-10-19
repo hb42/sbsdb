@@ -19,9 +19,10 @@ import {
 import { ConfigService } from "../shared/config/config.service";
 import { UserSession } from "../shared/config/user.session";
 import { DataService } from "../shared/data.service";
+import { BaseFilterService } from "../shared/filter/base-filter-service";
 import { EditFilterService } from "../shared/filter/edit-filter.service";
 import { RelOp } from "../shared/filter/rel-op.enum";
-import { GetColumn } from "../shared/helper";
+import { GetColumn, StringCompare, WriteCsv } from "../shared/helper";
 import { Hardware } from "../shared/model/hardware";
 import { HwKonfig } from "../shared/model/hw-konfig";
 import { NavigationService } from "../shared/navigation.service";
@@ -46,6 +47,7 @@ export class HwService {
 
   public newHwEvent: EventEmitter<void> = new EventEmitter<void>();
   public changeSelectedEvent: EventEmitter<void> = new EventEmitter<void>();
+  public inventarListEvent: EventEmitter<void> = new EventEmitter<void>();
 
   // wird getriggert, wenn die Daten an MatTableDataSource gehaengt werden koennen
   // (sollte erst passieren, nachdem auch der Paginator mit MatTableDataSource
@@ -79,6 +81,7 @@ export class HwService {
 
     this.newHwEvent.subscribe(() => this.editService.newHw(null));
     this.changeSelectedEvent.subscribe(() => this.editSelected());
+    this.inventarListEvent.subscribe(() => void this.inventarListe());
   }
 
   public onSort(event: Sort): void {
@@ -160,6 +163,31 @@ export class HwService {
 
   public editSelected(): void {
     this.editService.editSelected(this.hwFilterService.getSelected());
+  }
+
+  /**
+   * Inventar-Liste fuer IR und andere Pruefer
+   */
+  public async inventarListe() {
+    const separator: string =
+      ((await this.configService.getConfig(ConfigService.CSV_SEPARATOR)) as string) ??
+      BaseFilterService.DEFAULT_CSV_SEPARATOR;
+    const invCols: SbsdbColumn<HwService, Hardware>[] = [];
+    [
+      "invnr",
+      "typ",
+      "hersteller",
+      "bezeichnung",
+      "sernr",
+      "anschdat",
+      "anschwert",
+      "bemerkung",
+      "ap",
+    ].forEach((c) => invCols.push(GetColumn(c, this.columns) as SbsdbColumn<HwService, Hardware>));
+    const data = this.hwDataSource.data
+      .filter((hw) => !this.dataService.isFremdeHardware(hw) && hw.invNr)
+      .sort((a, b) => StringCompare(a.invNr, b.invNr));
+    WriteCsv(invCols, data, separator);
   }
 
   public test(hw: Hardware): void {

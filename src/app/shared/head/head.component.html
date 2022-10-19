@@ -109,6 +109,9 @@
   >
     <mat-icon>download</mat-icon>
   </button>
+  <button *ngIf="csv2" mat-icon-button title="{{ csv2Title }}" (click)="csv2.emit()">
+    <mat-icon>keyboard_double_arrow_down</mat-icon>
+  </button>
   <span class="menu-spacer" *ngIf="filterService">|</span>
   <button
     *ngIf="newElement && !disableNewButton"

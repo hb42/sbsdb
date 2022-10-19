@@ -61,7 +61,6 @@ export function OutputToCsv(
   separator = separator ?? BaseFilterService.DEFAULT_CSV_SEPARATOR;
   // separator \t wird in der DB als "TAB" gespeichert
   separator = separator === BaseFilterService.DEFAULT_CSV_SEPARATOR_TAB ? "\t" : separator;
-  const replacer = (key, value: unknown) => (value === null ? "" : value); // specify how you want to handle null values here
   let csvCols = columns.filter((co) => co.outputToCsv);
 
   // Dialog oeffnen
@@ -77,46 +76,63 @@ export function OutputToCsv(
         // nur eine Teilmengwe der Felder ausgeben
         csvCols = result.resultList;
       }
-      // header
-      const header: string[] = csvCols.map((c) => c.displayName);
-      // data
-      const csv: string[] = [
-        header.join(separator),
-        ...dataSource.filteredData.map((row) =>
-          csvCols
-            .map((col) => {
-              let content;
-              // fuer Number/Date muss die jew. Foramtierung in column.displayName definiert werden
-              if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
-                content = col.displayText(row);
-              } else {
-                // fuer alle anderen den Feldinhalt holen (ggf. aus mehreren Feldern)
-                if (Array.isArray(col.fieldName)) {
-                  content = col.fieldName.reduce(
-                    (prev, curr) =>
-                      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                      (prev += (prev ? " / " : "") + (GetFieldContent(row, curr) ?? "")),
-                    ""
-                  );
-                } else {
-                  content = GetFieldContent(row, col.fieldName);
-                }
-              }
-              const line = content ? JSON.stringify(content, replacer) : "";
-              // JSON.stringify escaped " als \", das versteht Excel nicht -> ersetzen mit ""
-              return line.replace(/\\"/g, '""');
-            })
-            .join(separator)
-        ),
-      ];
-      const csvblob: string = csv.join("\n");
-      // Excel versteht UTF-8 nur mit BOM (Microsoft halt);
-      const blob: Blob = new Blob([BOM, csvblob], {
-        type: "text/csv;charset=utf-8",
-      });
-      Download(blob, "sbsdb.csv");
+      WriteCsv(csvCols, dataSource.filteredData, separator);
     }
   });
+}
+
+/**
+ * Array als CSV herunterladen
+ *
+ * @param columns - SbsdbColumns
+ * @param data - Data-Array
+ * @param separator - CSV-Trennzeichen (als Param aus der DB)
+ * @constructor
+ */
+export function WriteCsv(
+  columns: SbsdbColumn<unknown, unknown>[],
+  data: unknown[],
+  separator: string
+): void {
+  const replacer = (key, value: unknown) => (value === null ? "" : value); // specify how you want to handle null values here
+  // header
+  const header: string[] = columns.map((c) => c.displayName);
+  // data
+  const csv: string[] = [
+    header.join(separator),
+    ...data.map((row) =>
+      columns
+        .map((col) => {
+          let content;
+          // fuer Number/Date muss die jew. Foramtierung in column.displayName definiert werden
+          if (col.typeKey === ColumnType.NUMBER || col.typeKey === ColumnType.DATE) {
+            content = col.displayText(row);
+          } else {
+            // fuer alle anderen den Feldinhalt holen (ggf. aus mehreren Feldern)
+            if (Array.isArray(col.fieldName)) {
+              content = col.fieldName.reduce(
+                (prev, curr) =>
+                  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                  (prev += (prev ? " / " : "") + (GetFieldContent(row, curr) ?? "")),
+                ""
+              );
+            } else {
+              content = GetFieldContent(row, col.fieldName);
+            }
+          }
+          const line = content ? JSON.stringify(content, replacer) : "";
+          // JSON.stringify escaped " als \", das versteht Excel nicht -> ersetzen mit ""
+          return line.replace(/\\"/g, '""');
+        })
+        .join(separator)
+    ),
+  ];
+  const csvblob: string = csv.join("\n");
+  // Excel versteht UTF-8 nur mit BOM (Microsoft halt);
+  const blob: Blob = new Blob([BOM, csvblob], {
+    type: "text/csv;charset=utf-8",
+  });
+  Download(blob, "sbsdb.csv");
 }
 
 /**
