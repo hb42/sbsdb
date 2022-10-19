@@ -2,7 +2,7 @@
  * Relationale Operatoren im Filter
  * z.B. groesser, beginnt mit, enthaelt
  */
-import { formatCurrency, formatDate } from "@angular/common";
+import { formatCurrency, formatDate, formatNumber } from "@angular/common";
 import { GetFieldContent, ParseDate, StringToNumber } from "../helper";
 import { ColumnType } from "../table/column-type.enum";
 import { RelOp } from "./rel-op.enum";
@@ -72,22 +72,18 @@ export class RelationalOperator {
 
   private static fieldToString(fieldContent: string | number, type: number): string {
     if (fieldContent) {
-      let contentStr: string;
-      if (type === ColumnType.NUMBER) {
-        try {
-          contentStr = formatCurrency(fieldContent as number, "de", "€");
-        } catch {
-          contentStr = "";
-        }
-      } else if (type === ColumnType.DATE) {
-        try {
-          contentStr = formatDate(fieldContent, "mediumDate", "de");
-        } catch {
-          contentStr = "";
-        }
-      } else {
-        //alles außer number oder Date wird als string behandelt
-        contentStr = fieldContent.toString();
+      let contentStr = fieldContent.toString();
+      if (
+        type === ColumnType.NUMBER &&
+        typeof fieldContent === "number" &&
+        isFinite(fieldContent)
+      ) {
+        contentStr = formatNumber(fieldContent, "de");
+      } else if (
+        type === ColumnType.DATE &&
+        Object.prototype.toString.call(fieldContent) === "[object Date]"
+      ) {
+        contentStr = formatDate(fieldContent, "mediumDate", "de");
       }
       return contentStr.toLocaleLowerCase();
     } else {

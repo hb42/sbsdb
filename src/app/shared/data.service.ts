@@ -822,6 +822,8 @@ export class DataService {
       if (idx >= 0) {
         vl.inUse = 1;
       }
+      vl.ipStr = IpHelper.getIpString(vl.ip);
+      vl.nmStr = IpHelper.getIpString(vl.netmask);
     });
   }
 

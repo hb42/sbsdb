@@ -5,4 +5,6 @@ export class Vlan {
   bezeichnung: string;
   // berechnet
   public inUse?: number;
+  public ipStr?: string;
+  public nmStr?: string;
 }
