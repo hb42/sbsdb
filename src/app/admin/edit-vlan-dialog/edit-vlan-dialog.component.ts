@@ -41,8 +41,8 @@ export class EditVlanDialogComponent extends BaseSvzDialog<Vlan> implements OnIn
 
   onSubmit(): void {
     this.data.bezeichnung = this.bezeichControl.value as string;
-    this.data.ip = Number.parseInt(this.ipControl.value as string, 10);
-    this.data.netmask = this.nmControl.value as number;
+    this.data.ip = IpHelper.getIp(this.ipControl.value as string);
+    this.data.netmask = IpHelper.getIp(this.nmControl.value as string);
   }
 
   public ipCheck = (control: FormControl): ValidationErrors => {
