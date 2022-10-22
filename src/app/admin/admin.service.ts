@@ -69,40 +69,40 @@ export class AdminService {
   }
 
   public getTcLogs(): Observable<unknown> {
-    return this.dataService.get(this.dataService.importTcLogUrl, { responseType: "text" });
+    return this.dataService.get(this.configService.importTcLogUrl, { responseType: "text" });
   }
 
   public saveExtprog(data: EditExtprogTransport): void {
     if (data.outChg || data.outDel || data.outNew) {
-      this.dataService.post(this.dataService.changeExtprogUrl, data);
+      this.dataService.post(this.configService.changeExtprogUrl, data);
     }
   }
 
   public saveApkategorie(data: EditApkategorieTransport): void {
-    this.dataService.post(this.dataService.changeApKatUrl, data);
+    this.dataService.post(this.configService.changeApKatUrl, data);
   }
 
   public saveAptyp(data: EditAptypTransport): void {
-    this.dataService.post(this.dataService.changeAptypUrl, data);
+    this.dataService.post(this.configService.changeAptypUrl, data);
   }
 
   public saveTagtyp(data: EditTagtypTransport): void {
-    this.dataService.post(this.dataService.changeTagtypUrl, data);
+    this.dataService.post(this.configService.changeTagtypUrl, data);
   }
 
   public saveOe(data: EditOeTransport): void {
-    this.dataService.post(this.dataService.changeOeUrl, data);
+    this.dataService.post(this.configService.changeOeUrl, data);
   }
 
   public saveAdresse(data: EditAdresseTransport): void {
-    this.dataService.post(this.dataService.changeAdresseUrl, data);
+    this.dataService.post(this.configService.changeAdresseUrl, data);
   }
 
   public saveHwtyp(data: EditHwtypTransport): void {
-    this.dataService.post(this.dataService.changeHwtypUrl, data);
+    this.dataService.post(this.configService.changeHwtypUrl, data);
   }
 
   public saveVlan(data: EditVlanTransport): void {
-    this.dataService.post(this.dataService.changeVlanUrl, data);
+    this.dataService.post(this.configService.changeVlanUrl, data);
   }
 }

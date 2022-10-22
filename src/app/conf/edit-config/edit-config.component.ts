@@ -93,7 +93,6 @@ export class EditConfigComponent implements OnInit {
       return "Das Feld darf nicht leer sein.";
     }
     if (control.errors) {
-      console.dir(control.errors);
       return "undefinded error";
     }
     return null;

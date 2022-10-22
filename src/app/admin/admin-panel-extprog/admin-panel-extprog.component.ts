@@ -67,7 +67,6 @@ export class AdminPanelExtprogComponent extends BaseSvzPanelComponent<
   }
 
   protected changeDebug() {
-    console.debug("ChangDebug class");
     this.buildList(false);
     super.changeDebug();
   }

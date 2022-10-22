@@ -190,10 +190,6 @@ export class HwService {
     WriteCsv(invCols, data, separator);
   }
 
-  public test(hw: Hardware): void {
-    console.dir(hw);
-  }
-
   private buildColumns() {
     this.columns.push(
       new SbsdbColumn<HwService, Hardware>(
@@ -689,7 +685,7 @@ export class HwService {
   // --- fetch data ---
 
   private async fetchData(): Promise<void> {
-    this.dataService.get(this.dataService.allHwKonfig).subscribe({
+    this.dataService.get(this.configService.allHwKonfig).subscribe({
       next: (hwk: HwKonfig[]) => {
         this.dataService.hwKonfigList = hwk;
       },
@@ -705,12 +701,14 @@ export class HwService {
       pageSize = DataService.defaultpageSize;
     }
     // Anzahl der Datensaetze
-    const recs = (await lastValueFrom(this.dataService.get(this.dataService.countHwUrl))) as number;
+    const recs = (await lastValueFrom(
+      this.dataService.get(this.configService.countHwUrl)
+    )) as number;
     // zu holende Seiten
     const count = Math.ceil(recs / pageSize);
     let fetched = 0;
     for (let page = 0; page < count; page++) {
-      this.dataService.get(`${this.dataService.pageHwUrl}${page}/${pageSize}`).subscribe({
+      this.dataService.get(`${this.configService.pageHwUrl}${page}/${pageSize}`).subscribe({
         next: (hw: Hardware[]) => {
           if (!environment.production) console.debug("fetch HW page #", page, " size=", hw.length);
           this.dataService.hwList = [...this.dataService.hwList, ...hw];

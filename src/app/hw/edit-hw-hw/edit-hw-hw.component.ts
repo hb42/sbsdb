@@ -80,7 +80,6 @@ export class EditHwHwComponent implements OnInit {
       return "Ungültiger Wert.";
     }
     if (control.errors) {
-      console.dir(control.errors);
       return "undef error";
     }
     return null;

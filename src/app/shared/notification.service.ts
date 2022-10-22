@@ -50,74 +50,91 @@ export class NotificationService {
     try {
       this.stopConnection();
 
-      // TODO die Strings sollten aus der Config kommen
       this.hubConnection = new HubConnectionBuilder()
-        .withUrl(this.configService.webservice + "/notification")
+        .withUrl(this.configService.notificationUrl)
         .build();
 
-      this.hubConnection.on("apchange", (data: ApTransport) => {
+      this.hubConnection.on(this.configService.notificationApchange, (data: ApTransport) => {
         this.apChange.emit(data);
       });
 
-      this.hubConnection.on("apchangemulti", (data: ApTransport[]) => {
+      this.hubConnection.on(this.configService.notificationApchangemulti, (data: ApTransport[]) => {
         this.apChangeMulti.emit(data);
       });
 
-      this.hubConnection.on("apchangeaptyp", (data: ApTransport) => {
+      this.hubConnection.on(this.configService.notificationApchangeaptyp, (data: ApTransport) => {
         this.apChangeAptyp.emit(data);
       });
 
-      this.hubConnection.on("hwchange", (data: HwTransport) => {
+      this.hubConnection.on(this.configService.notificationHwchange, (data: HwTransport) => {
         this.hwChange.emit(data);
       });
 
-      this.hubConnection.on("hwchangemulti", (data: HwTransport[]) => {
+      this.hubConnection.on(this.configService.notificationHwchangemulti, (data: HwTransport[]) => {
         this.hwChangeMulti.emit(data);
       });
 
-      this.hubConnection.on("addhw", (data: AddHwTransport) => {
+      this.hubConnection.on(this.configService.notificationAddhw, (data: AddHwTransport) => {
         this.addHw.emit(data);
       });
 
-      this.hubConnection.on("konfigchange", (data: HwKonfig) => {
+      this.hubConnection.on(this.configService.notificationKonfigchange, (data: HwKonfig) => {
         this.konfigChange.emit(data);
       });
 
-      this.hubConnection.on("konfigdel", (data: number) => {
+      this.hubConnection.on(this.configService.notificationKonfigdel, (data: number) => {
         this.konfigDel.emit(data);
       });
 
-      this.hubConnection.on("extprogchange", () => {
+      this.hubConnection.on(this.configService.notificationExtprogchange, () => {
         this.extprogChange.emit();
       });
 
-      this.hubConnection.on("apkategoriechange", (data: EditApkategorieTransport) => {
-        this.apkategorieChange.emit(data);
-      });
+      this.hubConnection.on(
+        this.configService.notificationApkategoriechange,
+        (data: EditApkategorieTransport) => {
+          this.apkategorieChange.emit(data);
+        }
+      );
 
-      this.hubConnection.on("aptypchange", (data: EditAptypTransport) => {
-        this.aptypChange.emit(data);
-      });
+      this.hubConnection.on(
+        this.configService.notificationAptypchange,
+        (data: EditAptypTransport) => {
+          this.aptypChange.emit(data);
+        }
+      );
 
-      this.hubConnection.on("oechange", (data: EditOeTransport) => {
+      this.hubConnection.on(this.configService.notificationOechange, (data: EditOeTransport) => {
         this.oeChange.emit(data);
       });
 
-      this.hubConnection.on("adressechange", (data: EditAdresseTransport) => {
-        this.adresseChange.emit(data);
-      });
+      this.hubConnection.on(
+        this.configService.notificationAdressechange,
+        (data: EditAdresseTransport) => {
+          this.adresseChange.emit(data);
+        }
+      );
 
-      this.hubConnection.on("hwtypchange", (data: EditHwtypTransport) => {
-        this.hwtypChange.emit(data);
-      });
+      this.hubConnection.on(
+        this.configService.notificationHwtypchange,
+        (data: EditHwtypTransport) => {
+          this.hwtypChange.emit(data);
+        }
+      );
 
-      this.hubConnection.on("vlanchange", (data: EditVlanTransport) => {
-        this.vlanChange.emit(data);
-      });
+      this.hubConnection.on(
+        this.configService.notificationVlanchange,
+        (data: EditVlanTransport) => {
+          this.vlanChange.emit(data);
+        }
+      );
 
-      this.hubConnection.on("tagtypchange", (data: EditTagtypTransport) => {
-        this.tagtypChange.emit(data);
-      });
+      this.hubConnection.on(
+        this.configService.notificationTagtypchange,
+        (data: EditTagtypTransport) => {
+          this.tagtypChange.emit(data);
+        }
+      );
 
       this.hubConnection.onclose((err: Error) => {
         console.error("## Notification has been closed: " + err.message);

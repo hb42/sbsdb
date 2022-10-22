@@ -245,7 +245,7 @@ export abstract class BaseFilterService<S, R> {
     } catch (e) {
       // Malformed URI || JSON Syntax || Base64 error
       // hier ist nichts zu retten, also params verwerfen
-      console.debug("ERROR: Ungültiger Filter - " + f);
+      console.error("ERROR: Ungültiger Filter - " + f);
       filter = [];
       std = true;
     }

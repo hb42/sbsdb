@@ -71,9 +71,6 @@ export class AdminPanelConfigComponent implements OnInit {
       Validators.required,
       this.blocksizeValidator,
     ]);
-    // this.blocksize.statusChanges.pipe(debounceTime(200)).subscribe(() => {
-    //   console.debug("--- Blocksize value changed: ", this.blocksize.value);
-    // });
   }
 
   private initSeparator() {

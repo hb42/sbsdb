@@ -84,7 +84,7 @@ export class AdminPanelAussondComponent {
     dialogRef.afterClosed().subscribe((result: NewAussondMeldData) => {
       if (result) {
         const aussDate = `/${result.meldung.toLocaleDateString("de-DE")}`;
-        this.dataService.get(this.dataService.aussondUrl + aussDate).subscribe((rc) => {
+        this.dataService.get(this.configService.aussondUrl + aussDate).subscribe((rc) => {
           const msg = rc as AussondResult;
           console.info("Aussonderungs-Meldung an ReWe:");
           console.log(`- Anzahl der Aussonderungen: ${msg.meldung}`);
@@ -269,7 +269,7 @@ export class AdminPanelAussondComponent {
   }
 
   private fechMeldungen() {
-    this.dataService.get(this.dataService.aussListUrl).subscribe((au) => {
+    this.dataService.get(this.configService.aussListUrl).subscribe((au) => {
       const meld = au as AussondMeldung[];
       meld.forEach((m) => (m.datum = m.datum ? new Date(m.datum) : null));
       this.meldungen = meld;
@@ -280,7 +280,7 @@ export class AdminPanelAussondComponent {
     this.detailsDate = per;
     const aussDate = per ? `/${per.toLocaleDateString("de-DE")}` : "/null";
 
-    return lastValueFrom(this.dataService.get(this.dataService.aussDetailsUrl + aussDate)).then(
+    return lastValueFrom(this.dataService.get(this.configService.aussDetailsUrl + aussDate)).then(
       (au) => {
         this.details = au as Aussonderung[];
         this.details.forEach((a) => {

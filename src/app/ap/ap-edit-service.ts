@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../../environments/environment";
+import { ConfigService } from "../shared/config/config.service";
 import { DataService } from "../shared/data.service";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { IpHelper } from "../shared/ip-helper";
@@ -27,6 +28,7 @@ export class ApEditService extends BaseEditService<Arbeitsplatz> {
   constructor(
     public dialog: MatDialog,
     public dataService: DataService,
+    private configSservice: ConfigService,
     private filterService: ApFilterService
   ) {
     super(dialog, dataService);
@@ -183,7 +185,7 @@ export class ApEditService extends BaseEditService<Arbeitsplatz> {
             });
             yesno.afterClosed().subscribe((res: boolean) => {
               if (res) {
-                this.dataService.post(this.dataService.changeApAptypUrl, post);
+                this.dataService.post(this.configSservice.changeApAptypUrl, post);
               }
             });
           } else {
@@ -196,12 +198,12 @@ export class ApEditService extends BaseEditService<Arbeitsplatz> {
             });
             yesno.afterClosed().subscribe((res: boolean) => {
               if (res) {
-                this.dataService.post(this.dataService.changeApAptypUrl, post);
+                this.dataService.post(this.configSservice.changeApAptypUrl, post);
               }
             });
           }
         } else {
-          this.dataService.post(this.dataService.changeApAptypUrl, post);
+          this.dataService.post(this.configSservice.changeApAptypUrl, post);
         }
       }
     });
@@ -264,7 +266,7 @@ export class ApEditService extends BaseEditService<Arbeitsplatz> {
   }
 
   private save(post: EditApTransport): void {
-    this.dataService.post(this.dataService.changeApUrl, post);
+    this.dataService.post(this.configSservice.changeApUrl, post);
   }
 
   private prepareMultiResult(result: EditApMultiData): EditApTransport[] {
@@ -385,7 +387,7 @@ export class ApEditService extends BaseEditService<Arbeitsplatz> {
     });
     yesno.afterClosed().subscribe((ok: boolean) => {
       if (ok) {
-        this.dataService.post(this.dataService.changeApMultiUrl, resultlist);
+        this.dataService.post(this.configSservice.changeApMultiUrl, resultlist);
       }
     });
   }

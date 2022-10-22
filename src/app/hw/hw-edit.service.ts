@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { lastValueFrom } from "rxjs";
 import { environment } from "../../environments/environment";
+import { ConfigService } from "../shared/config/config.service";
 import { DataService } from "../shared/data.service";
 import { BaseEditService } from "../shared/filter/base-edit-service";
 import { PrepDateForDB } from "../shared/helper";
@@ -32,6 +33,7 @@ export class HwEditService extends BaseEditService<Hardware> {
   constructor(
     public dialog: MatDialog,
     public dataService: DataService,
+    private configService: ConfigService,
     private filterService: HwFilterService
   ) {
     super(dialog, dataService);
@@ -99,13 +101,13 @@ export class HwEditService extends BaseEditService<Hardware> {
           bemerkung: result.bemerkung ?? "",
           devices: result.devices,
         };
-        this.dataService.post(this.dataService.addHwUrl, post);
+        this.dataService.post(this.configService.addHwUrl, post);
       }
     });
   }
 
   public async showHistory(hw: Hardware): Promise<void> {
-    const url = `${this.dataService.hwHistoryUrl}/${hw.id}`;
+    const url = `${this.configService.hwHistoryUrl}/${hw.id}`;
     const hwh: HwHistory[] = (await lastValueFrom(this.dataService.get(url))) as HwHistory[];
     this.dialog.open(ShowHistoryDialogComponent, {
       disableClose: true,
@@ -136,7 +138,6 @@ export class HwEditService extends BaseEditService<Hardware> {
   }
 
   public editSelected(selectlist: Hardware[]): void {
-    console.debug("edit selected count=", selectlist.length);
     const dialogRef = this.dialog.open(HwEditMultiDialogComponent, {
       disableClose: true,
       id: "edit-dialog",
@@ -147,8 +148,6 @@ export class HwEditService extends BaseEditService<Hardware> {
       } as EditHwMultiData,
     });
     dialogRef.afterClosed().subscribe((result: EditHwMultiData) => {
-      console.debug("hw edit multi dlg afterClose");
-      console.dir(result);
       const resultlist: EditHwTransport[] = [];
       if (result) {
         selectlist.forEach((hw) => {
@@ -245,7 +244,7 @@ export class HwEditService extends BaseEditService<Hardware> {
   }
 
   private save(post: EditHwTransport): void {
-    this.dataService.post(this.dataService.changeHwUrl, post);
+    this.dataService.post(this.configService.changeHwUrl, post);
   }
 
   private saveMulti(result: EditHwMultiData, resultlist: EditHwTransport[]): void {
@@ -286,7 +285,7 @@ export class HwEditService extends BaseEditService<Hardware> {
     });
     yesno.afterClosed().subscribe((ok: boolean) => {
       if (ok) {
-        this.dataService.post(this.dataService.changeHwMultiUrl, resultlist);
+        this.dataService.post(this.configService.changeHwMultiUrl, resultlist);
       }
     });
   }

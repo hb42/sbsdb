@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../../environments/environment";
+import { ConfigService } from "../shared/config/config.service";
 import { DataService } from "../shared/data.service";
 import { DialogTitleComponent } from "../shared/dialog-title/dialog-title.component";
 import { BaseEditService } from "../shared/filter/base-edit-service";
@@ -17,6 +18,7 @@ export class ConfEditService extends BaseEditService<HwKonfig> {
   constructor(
     public dialog: MatDialog,
     public dataService: DataService,
+    private configService: ConfigService,
     private filterService: ConfFilterService
   ) {
     super(dialog, dataService);
@@ -50,7 +52,7 @@ export class ConfEditService extends BaseEditService<HwKonfig> {
     dialogRef.afterClosed().subscribe((result: EditConfigData) => {
       if (result) {
         if (result.savedata) {
-          this.dataService.post(this.dataService.changeKonfigUrl, result.chg);
+          this.dataService.post(this.configService.changeKonfigUrl, result.chg);
         }
         // handle navigation
         const to = this.filterService.navigateTo(result.navigate, (k) => k.id === result.konfig.id);
@@ -70,7 +72,7 @@ export class ConfEditService extends BaseEditService<HwKonfig> {
     });
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
-        this.dataService.post(this.dataService.delHwKonfigUrl, conf.id);
+        this.dataService.post(this.configService.delHwKonfigUrl, conf.id);
       }
     });
   }

@@ -20,14 +20,11 @@
             const nochmallnk = document.getElementById("notfallreload");
             if (nochmallnk) {
               nochmallnk.style.display = "block";
-            } else {
-              console.error("Could not find element with ID 'notfallreload'.");
             }
           }, 3000);
 
           const restartApp = () => {
             const base_url = document.querySelector("head base")["href"];
-            console.log("INDEX.HTML: resetting app to " + base_url);
             window.location.replace(base_url);
           };
         </script>

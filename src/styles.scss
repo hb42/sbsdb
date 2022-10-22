@@ -333,17 +333,16 @@ table:not(.wrap-cell) .mat-cell > div {
   font-size: 13px !important;
 }
 
-/* TODO Das muss eigentlich in ap.component.scss
-        Warum es von da aus nicht greift waere mal noch zu eruieren
+/* Das Folgende funktioniert in ap.component.scss nicht, denn die mat-form-field-* classes
+   wuerden dort relativ gesetzt (mat-form-field-blah[_ngcontent...]) muessten aber ohne
+   Attribut eingetragen werden, was nur von hier aus klappt.
  */
 .search-field .mat-form-field-wrapper {
   bottom: 4px;
 }
-
 .search-field .mat-form-field-underline {
   bottom: 22px;
 }
-
 .search-field .mat-form-field-empty.mat-form-field-label {
   color: rgba(255, 110,64, 0.4); // accent color f. placeholder
 }

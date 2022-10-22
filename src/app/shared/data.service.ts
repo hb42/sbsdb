@@ -94,47 +94,6 @@ export class DataService {
   public oeListChanged: EventEmitter<void> = new EventEmitter<void>();
   public adresseListChanged: EventEmitter<void> = new EventEmitter<void>();
 
-  // Web-API calls
-  public readonly oeTreeUrl: string;
-  public readonly allApsUrl: string;
-  public readonly pageApsUrl: string;
-  public readonly singleApUrl: string;
-  public readonly countApUrl: string;
-  public readonly allBstUrl: string;
-  public readonly allHwUrl: string;
-  public readonly countHwUrl: string;
-  public readonly pageHwUrl: string;
-  public readonly allHwKonfig: string;
-  public readonly allTagTypesUrl: string;
-  public readonly allVlansUrl: string;
-  public readonly allApTypUrl: string;
-  public readonly allApKatUrl: string;
-  public readonly changeApKatUrl: string;
-  public readonly allHwTypUrl: string;
-  public readonly allAdresseUrl: string;
-  public readonly changeApUrl: string;
-  public readonly changeApMultiUrl: string;
-  public readonly changeHwUrl: string;
-  public readonly changeHwMultiUrl: string;
-  public readonly changeKonfigUrl: string;
-  public readonly delHwKonfigUrl: string;
-  public readonly addHwUrl: string;
-  public readonly hwHistoryUrl: string;
-  public readonly extProgUrl: string;
-  public readonly changeExtprogUrl: string;
-  public readonly changeAptypUrl: string;
-  public readonly changeTagtypUrl: string;
-  public readonly changeOeUrl: string;
-  public readonly changeAdresseUrl: string;
-  public readonly changeHwtypUrl: string;
-  public readonly changeVlanUrl: string;
-  public readonly importTcLogUrl: string;
-  public readonly changeApAptypUrl: string;
-  public readonly aussListUrl: string;
-  public readonly aussDetailsUrl: string;
-  public readonly aussondUrl: string;
-  public readonly hwKonfigInAussondUrl: string;
-
   private aplistfetched = false;
   private aplistready = false;
   private bstlistready = false;
@@ -152,51 +111,6 @@ export class DataService {
     private statusService: StatusService
   ) {
     if (!environment.production) console.debug(`c'tor ${this.constructor.name}`);
-
-    this.oeTreeUrl = this.configService.webservice + "/tree/oe";
-    this.allApsUrl = this.configService.webservice + "/ap/all";
-    this.pageApsUrl = this.configService.webservice + "/ap/page/";
-    this.singleApUrl = this.configService.webservice + "/ap/id/";
-    this.countApUrl = this.configService.webservice + "/ap/count";
-    this.allBstUrl = this.configService.webservice + "/betrst/all";
-    this.changeOeUrl = this.configService.webservice + "/betrst/change";
-    this.allHwUrl = this.configService.webservice + "/hw/all";
-    this.pageHwUrl = this.configService.webservice + "/hw/page/";
-    this.countHwUrl = this.configService.webservice + "/hw/count";
-    this.allHwKonfig = this.configService.webservice + "/hwkonfig/all";
-    this.allTagTypesUrl = this.configService.webservice + "/svz/tagtyp/all";
-    this.changeTagtypUrl = this.configService.webservice + "/svz/tagtyp/change";
-    this.allVlansUrl = this.configService.webservice + "/svz/vlan/all";
-    this.changeVlanUrl = this.configService.webservice + "/svz/vlan/change";
-    this.allApTypUrl = this.configService.webservice + "/svz/aptyp/all";
-    this.changeAptypUrl = this.configService.webservice + "/svz/aptyp/change";
-    this.allApKatUrl = this.configService.webservice + "/svz/apkategorie/all";
-    this.changeApKatUrl = this.configService.webservice + "/svz/apkategorie/change";
-    this.allHwTypUrl = this.configService.webservice + "/svz/hwtyp/all";
-    this.changeHwtypUrl = this.configService.webservice + "/svz/hwtyp/change";
-    this.allAdresseUrl = this.configService.webservice + "/betrst/adressen";
-    this.changeAdresseUrl = this.configService.webservice + "/betrst/chgadresse";
-
-    this.changeApUrl = this.configService.webservice + "/ap/changeap";
-    this.changeApMultiUrl = this.configService.webservice + "/ap/changeapmulti";
-    this.changeApAptypUrl = this.configService.webservice + "/ap/changeaptyp";
-    this.changeHwUrl = this.configService.webservice + "/hw/changehw";
-    this.changeHwMultiUrl = this.configService.webservice + "/hw/changehwmulti";
-    this.addHwUrl = this.configService.webservice + "/hw/addhw";
-    this.changeKonfigUrl = this.configService.webservice + "/hwkonfig/changekonfig";
-    this.delHwKonfigUrl = this.configService.webservice + "/hwkonfig/delkonfig";
-    this.hwKonfigInAussondUrl = this.configService.webservice + "/hwkonfig/hwkonfiginaussond";
-
-    this.hwHistoryUrl = this.configService.webservice + "/hw/hwhistoryfor";
-
-    this.extProgUrl = this.configService.webservice + "/svz/extprog/all";
-    this.changeExtprogUrl = this.configService.webservice + "/svz/extprog/change";
-
-    this.aussListUrl = this.configService.webservice + "/hw/ausslist";
-    this.aussDetailsUrl = this.configService.webservice + "/hw/aussdetails";
-    this.aussondUrl = this.configService.webservice + "/hw/aussond";
-
-    this.importTcLogUrl = this.configService.webservice + "/external/gettclogs";
 
     const readyEventCheck = () => {
       if (this.isDataReady()) {
@@ -558,30 +472,32 @@ export class DataService {
   }
 
   public async fetchBstList(): Promise<void> {
-    this.adresseList = (await lastValueFrom(this.get(this.allAdresseUrl))) as Adresse[];
-    this.bstList = (await lastValueFrom(this.get(this.allBstUrl))) as Betrst[];
+    this.adresseList = (await lastValueFrom(
+      this.get(this.configService.allAdresseUrl)
+    )) as Adresse[];
+    this.bstList = (await lastValueFrom(this.get(this.configService.allBstUrl))) as Betrst[];
     this.prepBstList();
     this.bstListReady.emit();
   }
 
   public fetchTagTypList(): void {
-    this.get(this.allTagTypesUrl).subscribe((tt: TagTyp[]) => {
+    this.get(this.configService.allTagTypesUrl).subscribe((tt: TagTyp[]) => {
       this.tagTypList = tt;
       this.tagTypListReady.emit();
     });
   }
 
   public fetchVlanList(): void {
-    this.get(this.allVlansUrl).subscribe((v: Vlan[]) => {
+    this.get(this.configService.allVlansUrl).subscribe((v: Vlan[]) => {
       this.vlanList = v;
       this.vlanListReady.emit();
     });
   }
 
   public fetchApTypList(): void {
-    this.get(this.allApTypUrl).subscribe((t: ApTyp[]) => {
+    this.get(this.configService.allApTypUrl).subscribe((t: ApTyp[]) => {
       this.aptypList = t;
-      this.get(this.allApKatUrl).subscribe((k: ApKategorie[]) => {
+      this.get(this.configService.allApKatUrl).subscribe((k: ApKategorie[]) => {
         this.apkatList = k;
         this.aptypListReady.emit();
       });
@@ -589,21 +505,21 @@ export class DataService {
   }
 
   public fetchHwTypList(): void {
-    this.get(this.allHwTypUrl).subscribe((t: HwTyp[]) => {
+    this.get(this.configService.allHwTypUrl).subscribe((t: HwTyp[]) => {
       this.hwtypList = t;
       this.hwtypListReady.emit();
     });
   }
 
   public fetchExtProgList(): void {
-    this.get(this.extProgUrl).subscribe((e: ExtProg[]) => {
+    this.get(this.configService.extProgUrl).subscribe((e: ExtProg[]) => {
       this.extProgList = e;
       this.extprogListChanged.emit();
     });
   }
 
   public fetchHwKonfigInAussondList(): void {
-    this.get(this.hwKonfigInAussondUrl).subscribe((e: number[]) => {
+    this.get(this.configService.hwKonfigInAussondUrl).subscribe((e: number[]) => {
       this.hwKonfigInAussondList = e;
       if (this.isHwListReady()) {
         this.updateHwKonfigListCount();

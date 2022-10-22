@@ -696,14 +696,14 @@ export class ApService {
       pageSize = DataService.defaultpageSize;
     }
     // Anzahl der Datensaetze
-    const recs = (await firstValueFrom(this.dataService.get(this.dataService.countApUrl), {
+    const recs = (await firstValueFrom(this.dataService.get(this.configService.countApUrl), {
       defaultValue: 0,
     })) as number;
     // zu holende Seiten
     const count = Math.ceil(recs / pageSize);
     let fetched = 0;
     for (let page = 0; page < count; page++) {
-      this.dataService.get(`${this.dataService.pageApsUrl}${page}/${pageSize}`).subscribe({
+      this.dataService.get(`${this.configService.pageApsUrl}${page}/${pageSize}`).subscribe({
         next: (aps: Arbeitsplatz[]) => {
           if (!environment.production) console.debug("fetch AP page #", page, " size=", aps.length);
           this.dataService.apList = [...this.dataService.apList, ...aps];

@@ -90,8 +90,6 @@ export class StdTableComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
     if (this.csvEvent) {
       this.csvEvent.subscribe(() => void this.csvOutput());
-    } else {
-      console.error("StdTable: Input csvEvent ist undefined");
     }
 
     // Tabelle updaten
