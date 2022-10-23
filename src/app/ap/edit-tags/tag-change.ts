@@ -1,6 +1,6 @@
 export interface TagChange {
   apId: number;
-  tagId: number | null;
-  apTagId: number | null;
+  tagId: number | null; // null -> DEL
+  apTagId: number | null; // null -> NEW
   text: string;
 }

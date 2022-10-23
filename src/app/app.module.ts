@@ -39,6 +39,7 @@ import { EditApComponent } from "./ap/edit-ap/edit-ap.component";
 import { EditHwComponent } from "./ap/edit-hw/edit-hw.component";
 import { EditMultiComponent } from "./ap/edit-multi/edit-multi.component";
 import { EditTagsComponent } from "./ap/edit-tags/edit-tags.component";
+import { MoveDialogComponent } from "./ap/move-dialog/move-dialog.component";
 import { NewApComponent } from "./ap/new-ap/new-ap.component";
 import { AppMaterialModule } from "./app-material.module";
 import { AppRoutingModule } from "./app-routing.module";
@@ -170,6 +171,7 @@ export function initConf(configService: ConfigService): () => Promise<void | Ver
     EditHwMultiComponent,
     AdminPanelAussondComponent,
     NewAussondMeldComponent,
+    MoveDialogComponent,
   ],
   imports: [
     A11yModule,

@@ -1,0 +1,20 @@
+$dlgwidth: 600px;
+
+.apsel {
+  width: $dlgwidth;
+}
+
+.form-pane {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.abstand {
+  margin-top: 10px;
+}
+
+.info-text {
+  margin-top: 48px;
+  width: $dlgwidth;
+  color: rgba(0, 0, 0, 0.5);
+}

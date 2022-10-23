@@ -119,6 +119,9 @@ export class ConfigService {
   public get changeApMultiUrl(): string {
     return `${this.websvc}/ap/changeapmulti`;
   }
+  public get changeApMoveUrl(): string {
+    return `${this.websvc}/ap/changeapmove`;
+  }
   public get changeApAptypUrl(): string {
     return `${this.websvc}/ap/changeaptyp`;
   }
@@ -168,6 +171,7 @@ export class ConfigService {
   // Notifications
   public readonly notificationApchange = "apchange";
   public readonly notificationApchangemulti = "apchangemulti";
+  public readonly notificationApchangemove = "apchangemove";
   public readonly notificationApchangeaptyp = "apchangeaptyp";
   public readonly notificationHwchange = "hwchange";
   public readonly notificationHwchangemulti = "hwchangemulti";

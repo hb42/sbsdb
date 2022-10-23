@@ -65,13 +65,10 @@ export class ApEditMultiDialogComponent {
   }
 
   public onSubmit() {
-    console.debug("ap multi edit submit");
     this.onSubmitEvent.emit();
   }
 
   public tagReady(evt: TagChange[]): void {
-    console.debug("evt tagReady");
-    console.dir(evt);
     this.data.tags = evt;
   }
 

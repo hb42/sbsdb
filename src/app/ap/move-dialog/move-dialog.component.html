@@ -1,0 +1,38 @@
+<sbsdb-dialog-title
+  dialogTitle="{{ data.ap.apname }}: Hardware und Sonstige Infos verschieben"
+></sbsdb-dialog-title>
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="panel">
+    <div class="form-pane">
+      <mat-form-field class="apsel">
+        <mat-label>Zu Arbeitsplatz</mat-label>
+        <select matNativeControl [formControl]="apCtrl" [errorStateMatcher]="matcher">
+          <option *ngFor="let ap of apSelect" [ngValue]="ap">
+            {{
+              ap
+                ? ap.apname + " " + ap.oe.betriebsstelle + " - " + ap.bezeichnung
+                : "- bitte auswählen -"
+            }}
+          </option>
+        </select>
+      </mat-form-field>
+      <mat-form-field class="apsel abstand">
+        <mat-label>Verschieben</mat-label>
+        <select matNativeControl [formControl]="moveCtrl" [errorStateMatcher]="matcher">
+          <option *ngFor="let m of moveSelect" [ngValue]="m">
+            {{ m ? m.text : "- bitte auswählen -" }}
+          </option>
+        </select>
+      </mat-form-field>
+
+      <div class="info-text">
+        Hardware und/oder Sonstige Informationen des Arbeitsplatz "{{ data.ap.apname }}
+        {{ data.ap.oe.betriebsstelle }} - {{ data.ap.bezeichnung }}" werden zum gewählten
+        Arbeitsplatz verschoben. Dabei werden ggf. vorhandene Hardware und/oder Sonstige
+        Informationen beim Ziel-AP{{ apCtrl.value ? " " + apCtrl.value.apname : "" }} entfernt.
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <sbsdb-dialog-actions [data]="data" [formGroup]="formGroup"></sbsdb-dialog-actions>
+</form>

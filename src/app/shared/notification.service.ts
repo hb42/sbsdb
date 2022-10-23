@@ -20,6 +20,7 @@ import { HwTransport } from "./model/hw-transport";
 export class NotificationService {
   public apChange: EventEmitter<ApTransport> = new EventEmitter<ApTransport>();
   public apChangeMulti: EventEmitter<ApTransport[]> = new EventEmitter<ApTransport[]>();
+  public apChangeMove: EventEmitter<ApTransport[]> = new EventEmitter<ApTransport[]>();
   public apChangeAptyp: EventEmitter<ApTransport> = new EventEmitter<ApTransport>();
   public hwChange: EventEmitter<HwTransport> = new EventEmitter<HwTransport>();
   public hwChangeMulti: EventEmitter<HwTransport[]> = new EventEmitter<HwTransport[]>();
@@ -60,6 +61,10 @@ export class NotificationService {
 
       this.hubConnection.on(this.configService.notificationApchangemulti, (data: ApTransport[]) => {
         this.apChangeMulti.emit(data);
+      });
+
+      this.hubConnection.on(this.configService.notificationApchangemove, (data: ApTransport[]) => {
+        this.apChangeMove.emit(data);
       });
 
       this.hubConnection.on(this.configService.notificationApchangeaptyp, (data: ApTransport) => {

@@ -62,7 +62,6 @@ export abstract class BaseEditDialogComponent {
         });
         yesno.afterClosed().subscribe((ok: boolean) => {
           if (ok) {
-            this.onSubmit();
             this.matDialogRef.close(this.data);
           } else {
             this.data.savedata = false;
@@ -70,7 +69,6 @@ export abstract class BaseEditDialogComponent {
           }
         });
       } else {
-        this.onSubmit();
         this.matDialogRef.close(this.data);
       }
     } else {

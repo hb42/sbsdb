@@ -165,6 +165,13 @@ export class DataService {
       this.checkNotification();
     });
 
+    notification.apChangeMove.subscribe((data) => {
+      data.forEach((d) => this.updateAp(d));
+      this.updateHwKonfigListCount();
+      this.apListChanged.emit();
+      this.checkNotification();
+    });
+
     notification.apChangeAptyp.subscribe((data) => {
       this.updateAp(data);
       this.updateHwKonfigListCount();

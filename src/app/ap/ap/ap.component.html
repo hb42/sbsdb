@@ -446,6 +446,14 @@
       <mat-icon>devices_other</mat-icon>
       AP-Typ ändern
     </button>
+    <button
+      mat-menu-item
+      *ngIf="apService.userSettings.isAdmin"
+      (click)="apService.editService.moveAp(ap)"
+    >
+      <mat-icon>move_down</mat-icon>
+      HW/Sonst.Info verschieben
+    </button>
     <button mat-menu-item *ngIf="apService.userSettings.isAdmin" (click)="apService.deleteAp(ap)">
       <mat-icon>delete_forever</mat-icon>
       AP löschen

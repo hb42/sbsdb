@@ -17,7 +17,10 @@ import { EditApTransport } from "./ap-edit-dialog/edit-ap-transport";
 import { ApEditMultiDialogComponent } from "./ap-edit-multi-dialog/ap-edit-multi-dialog.component";
 import { EditApMultiData } from "./ap-edit-multi-dialog/edit-ap-multi-data";
 import { ApFilterService } from "./ap-filter.service";
+import { HwPeriChange } from "./edit-ap-hw/hw-peri-change";
 import { TagChange } from "./edit-tags/tag-change";
+import { MoveData } from "./move-dialog/move-data";
+import { MoveDialogComponent } from "./move-dialog/move-dialog.component";
 import { NewApData } from "./new-ap/new-ap-data";
 import { NewApComponent } from "./new-ap/new-ap.component";
 
@@ -229,6 +232,118 @@ export class ApEditService extends BaseEditService<Arbeitsplatz> {
       const resultList = this.prepareMultiResult(result);
       if (resultList.length) {
         this.saveMulti(result, resultList);
+      }
+    });
+  }
+
+  /**
+   * Hardware und/oder TAGs zu anderem AP uebertragen
+   *
+   * Dabei werden auf dem Ziel ggf. vorhandene HW und/oder TAGs entfernt.
+   * D.h. HW und/oder TAGs der Quelle ersetzen die Eintraege im Ziel.
+   *
+   * @param ap
+   */
+  public moveAp(ap: Arbeitsplatz): void {
+    const dialogRef = this.dialog.open(MoveDialogComponent, {
+      disableClose: true,
+      data: {
+        ap: ap,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result: MoveData) => {
+      let save = false;
+      if (result) {
+        if (result.ap && result.target && result.what) {
+          const source: EditApTransport = {
+            id: result.ap.apId,
+            delAp: false,
+            ap: null,
+            hw: null,
+            tags: [],
+          };
+          const target: EditApTransport = {
+            id: result.target.apId,
+            delAp: false,
+            ap: null,
+            hw: null,
+            tags: [],
+          };
+          // result.what -> 1 - HW, 2 - TAGs, 3 - HW+TAGs
+          if (result.what > 1 && result.ap.tags && result.ap.tags.length) {
+            // move TAGs, nur wenn in Quelle TAGs vorhanden
+            // beim Ziel alte entfernen
+            save = true;
+            result.target.tags.forEach((t) =>
+              target.tags.push({
+                apId: result.target.apId,
+                tagId: null,
+                apTagId: t.apTagId,
+                text: t.text,
+              })
+            );
+            result.ap.tags.forEach((t) => {
+              source.tags.push({
+                apId: result.ap.apId,
+                tagId: null,
+                apTagId: t.apTagId,
+                text: t.text,
+              });
+              target.tags.push({
+                apId: result.target.apId,
+                tagId: t.tagId,
+                apTagId: null,
+                text: t.text,
+              });
+            });
+          }
+          if ((result.what & 0b01) > 0 && result.ap.hw && result.ap.hw.length) {
+            save = true;
+            target.hw = {
+              apid: result.target.apId,
+              newpriId: 0,
+              periph: [],
+              priVlans: [],
+            };
+            source.hw = {
+              apid: result.ap.apId,
+              newpriId: 0,
+              periph: [],
+              priVlans: [],
+            };
+            // HW von target entfernen
+            result.target.hw.forEach((hw) => {
+              if (hw.pri) {
+                target.hw.newpriId = 0;
+              } else {
+                target.hw.periph.push({ hwId: hw.id, del: true, vlans: [] });
+              }
+            });
+            result.ap.hw.forEach((hw) => {
+              if (hw.pri) {
+                target.hw.newpriId = hw.id;
+                hw.vlans.forEach((v) =>
+                  target.hw.priVlans.push({
+                    vlanId: v.vlanId,
+                    mac: v.mac,
+                    ip: v.ip,
+                    hwMacId: v.hwMacId,
+                  })
+                );
+              } else {
+                source.hw.periph.push({ hwId: hw.id, del: true, vlans: [] });
+                const periph: HwPeriChange = { hwId: hw.id, del: false, vlans: [] };
+                hw.vlans.forEach((v) =>
+                  periph.vlans.push({ vlanId: v.vlanId, mac: v.mac, ip: v.ip, hwMacId: v.hwMacId })
+                );
+                target.hw.periph.push(periph);
+              }
+            });
+          }
+          if (save) {
+            this.dataService.post(this.configSservice.changeApMoveUrl, [source, target]);
+          }
+        }
       }
     });
   }
