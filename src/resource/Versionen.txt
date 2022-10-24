@@ -1,4 +1,7 @@
-﻿5.3.0      23.10.2022
+﻿5.3.1      24.10.2022
+           - Fremde HW-Handling bei move HW/TAGs (#46)
+
+5.3.0      23.10.2022
            - Filter in AdminPanels gefixt (#45)
            - Button fuer den Download einer Inventarliste (#44)
            - angular 14.2.7
