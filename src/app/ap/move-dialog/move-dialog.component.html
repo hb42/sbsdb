@@ -6,7 +6,12 @@
     <div class="form-pane">
       <mat-form-field class="apsel">
         <mat-label>Zu Arbeitsplatz</mat-label>
-        <select matNativeControl [formControl]="apCtrl" [errorStateMatcher]="matcher">
+        <select
+          matNativeControl
+          [formControl]="apCtrl"
+          [errorStateMatcher]="matcher"
+          (change)="targetChange()"
+        >
           <option *ngFor="let ap of apSelect" [ngValue]="ap">
             {{
               ap
